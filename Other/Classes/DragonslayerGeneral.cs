@@ -54,7 +54,7 @@ public class DragonslayerGeneral
 
         Farm.Gold(30000);
         EnchantedScaleandClaw(75, 100);
-        Core.BuyItem("dragontown", 1286, 35996, shopItemID: 4644);
+        Core.BuyItem("dragontown", 1286, 35996, shopItemID: 3937);
 
         if (rankUpClass)
             Adv.RankUpClass("Dragonslayer General");

@@ -12044,7 +12044,7 @@
     ],
     "path": "Other/Classes/DragonslayerGeneral.cs",
     "size": 2959,
-    "sha256": "8592cdd5a833b7cd88ce01014c9bee13e054c3b5a80b4d30f2ce1a434d088c34",
+    "sha256": "79366c6da99e11a180b6cbdc868f58205e1cf388ff1c29cfa1ec38088d294801",
     "fileName": "DragonslayerGeneral.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/DragonslayerGeneral.cs"
   },
@@ -29902,21 +29902,20 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/FourHarbingers/Fame.cs"
   },
   {
-    "name": "Deadly Seas Loot Merge",
-    "description": "Farms the Deadly Seas Loot Merge [2767] in /deadlyseas.",
+    "name": "Isthmia Offerings Merge",
+    "description": "Farms the Isthmia Offerings Merge [2773] in /isthmiacastle.",
     "tags": [
-      "deadlyseas",
+      "isthmiacastle",
       "merge",
-      "deadly",
-      "seas",
-      "loot",
+      "isthmia",
+      "offerings",
       "merge"
     ],
-    "path": "Prototypes/DeadlySeas/DeadlySeasLoot.cs",
-    "size": 4923,
-    "sha256": "d2cb09135bba26c2ecff3e8f2d5b568ae836444a3bafc843979e88e55f24c54c",
-    "fileName": "DeadlySeasLoot.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/DeadlySeasLoot.cs"
+    "path": "Prototypes/DeadlySeas/IsthmiaOfferings.cs",
+    "size": 8020,
+    "sha256": "3a4bf41d3b919fe93b373fc459b003bb9ca3fb9d0634c9759d34a5ec7bb1b355",
+    "fileName": "IsthmiaOfferings.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/IsthmiaOfferings.cs"
   },
   {
     "name": "Deadlyseas",
@@ -29932,6 +29931,41 @@
     "sha256": "a5b3ae63278ca1ca7a81339ff8b58ece9525025e9a6334d984918e1925ff1993",
     "fileName": "Deadlyseas.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/Deadlyseas.cs"
+  },
+  {
+    "name": "Isthmiacastle",
+    "description": "Completes the quest chain in /isthmiacastle.",
+    "tags": [
+      "isthmiacastle",
+      "story",
+      "quests",
+      "isthmiacastle"
+    ],
+    "path": "Prototypes/DeadlySeas/Isthmiacastle.cs",
+    "size": 3033,
+    "sha256": "85f6858d9395f1057a3e866de467ec8fca47303825494eee8b58135fbc750d57",
+    "fileName": "Isthmiacastle.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/Isthmiacastle.cs"
+  },
+  {
+    "name": "Red Bettys Budget",
+    "description": "Farms the Red Bettys Budget [2767] in /deadlyseas.",
+    "tags": [
+      "deadlyseas",
+      "merge",
+      "deadly",
+      "seas",
+      "loot",
+      "merge",
+      "red",
+      "bettys",
+      "budget"
+    ],
+    "path": "Prototypes/DeadlySeas/RedBettysBudget.cs",
+    "size": 6093,
+    "sha256": "0c9e9928affaead38ea95cd01d13cd07d43db401176cd91b4c714499a2070e38",
+    "fileName": "RedBettysBudget.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/RedBettysBudget.cs"
   },
   {
     "name": "New Year Story",

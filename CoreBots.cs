@@ -37,7 +37,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+// skua-macos: WinForms doesn't exist on macOS; the Engine defines MACOS when compiling Scripts
+#if !MACOS
 using System.Windows.Forms;
+#endif
 using System.Data.Common;
 
 public class CoreBots
@@ -7866,6 +7869,10 @@ public class CoreBots
 
     private async Task SkuaVersionCheckerAsync()
     {
+        // skua-macos: the Windows 10 gate and the MSI updater below are Windows-only
+        if (!OperatingSystem.IsWindows())
+            return;
+
         if (Bot.Version == null
         // Skua
         || Bot.Version.ToString() == "1.4.4.4"
@@ -12164,6 +12171,8 @@ public class CoreBots
                                 "An admin has requested this action"
                             );
 
+                            // skua-macos: WinForms doesn't exist on macOS; the Engine defines MACOS when compiling Scripts
+#if !MACOS
                             // Create a new thread for the progress bar to avoid blocking the main thread
                             new Thread(() =>
                             {
@@ -12238,6 +12247,7 @@ public class CoreBots
 
                                 Application.Run(progressForm);
                             }).Start();
+#endif
 
                             // Sleep while the progress bar is running
                             Thread.Sleep(6000);

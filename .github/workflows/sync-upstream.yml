@@ -1,0 +1,107 @@
+# Merges auqw/Scripts@Skua into this fork's Skua daily, keeping the macOS patches
+# (the `// skua-macos:` lines in CoreBots.cs). It never rebases or force-pushes:
+# anything it can't merge cleanly becomes an issue for the maintainer.
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_TITLE: 'Upstream sync failed: auqw/Scripts@Skua'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: Skua
+          fetch-depth: 0
+
+      - name: Merge auqw/Scripts@Skua
+        run: |
+          body="$RUNNER_TEMP/issue.md"
+          report() { printf '%s\n\n%s\n' "$1" "$2" > "$body"; exit 1; }
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add upstream https://github.com/auqw/Scripts.git
+          git fetch --no-tags upstream Skua
+          upstream=$(git rev-parse upstream/Skua)
+
+          if git merge-base --is-ancestor "$upstream" HEAD; then
+            echo "Already up to date with auqw/Scripts@$upstream"
+            exit 0
+          fi
+
+          if ! git merge --no-edit upstream/Skua; then
+            conflicts=$(git diff --name-only --diff-filter=U)
+            # scripts.json is generated on every push, and upstream's CoreBots entry
+            # conflicts with ours whenever upstream edits CoreBots.cs. Take upstream's.
+            if [ "$conflicts" = scripts.json ]; then
+              git checkout --theirs scripts.json
+              git add scripts.json
+              git commit --no-edit
+            else
+              git merge --abort
+              report "Merging auqw/Scripts@$upstream conflicts in:" "$(printf '%s\n' "$conflicts" | sed 's/.*/- `&`/')"
+            fi
+          fi
+
+          # Both patches mark their lines with `// skua-macos:`; three lines in all.
+          if [ "$(grep -c '// skua-macos:' CoreBots.cs)" -ne 3 ] \
+            || ! grep -B1 '^using System.Windows.Forms;' CoreBots.cs | grep -q '^#if !MACOS' \
+            || ! grep -q 'if (!OperatingSystem.IsWindows())' CoreBots.cs; then
+            report "Merging auqw/Scripts@$upstream succeeded, but the macOS patches in CoreBots.cs are no longer intact, so nothing was pushed." \
+              "Expected three \`// skua-macos:\` lines, \`#if !MACOS\` right above \`using System.Windows.Forms;\`, and the \`OperatingSystem.IsWindows()\` early return."
+          fi
+
+          # GitHub refuses a GITHUB_TOKEN push that changes workflow files.
+          if ! git diff --quiet ORIG_HEAD HEAD -- .github/workflows; then
+            report "Merging auqw/Scripts@$upstream changes workflow files, which this job's token may not push:" \
+              "$(git diff --name-only ORIG_HEAD HEAD -- .github/workflows | sed 's/.*/- `&`/')"
+          fi
+
+          git push origin HEAD:Skua \
+            || report "Merging auqw/Scripts@$upstream succeeded, but \`git push origin HEAD:Skua\` was refused; see the run log." ""
+
+      - name: Open or update the sync issue
+        if: failure()
+        run: |
+          body="$RUNNER_TEMP/issue.md"
+          [ -f "$body" ] || echo "The sync job failed before merging; see the run log." > "$body"
+          cat >> "$body" <<EOF
+
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
+          To resolve by hand:
+
+          \`\`\`sh
+          git clone -b Skua https://github.com/$GITHUB_REPOSITORY.git && cd Scripts
+          git remote add upstream https://github.com/auqw/Scripts.git
+          git fetch upstream Skua
+          git merge upstream/Skua
+          # Resolve, keeping the macOS patches: \`git grep skua-macos\` shows three lines in CoreBots.cs.
+          # For scripts.json, take upstream's: git checkout --theirs scripts.json
+          git push origin Skua   # a plain push, never --force
+          \`\`\`
+
+          Then close this issue.
+          EOF
+
+          number=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "$ISSUE_TITLE in:title" \
+            --json number,title --jq 'map(select(.title == env.ISSUE_TITLE))[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" -R "$GITHUB_REPOSITORY" --body-file "$body"
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$ISSUE_TITLE" --body-file "$body"
+          fi

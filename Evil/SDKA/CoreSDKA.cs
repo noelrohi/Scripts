@@ -775,13 +775,11 @@ public class CoreSDKA
         if (Core.CheckInventory("Sepulchure's DoomKnight Armor"))
             return;
 
-        PinpointBow(500, 250);
-        OmninousAura(125);
-        PinpointBroadsword(75);
+        PinpointBow(500, 250); // DSO, CSO [Bow]
+        OmninousAura(125); // Ominous Aura [Daggers/Mace/Scythe]
+        PinpointBroadsword(75); // Diabolocal Aura [Broadsword]
 
-        Core.Logger(
-            Core.CheckInventory("Doom Aura") ? "Doom Aura found." : "Farming for Doom Aura"
-        );
+        Core.Logger(Core.CheckInventory("Doom Aura") ? "Doom Aura found." : "Farming for Doom Aura");
 
         PinpointthePieces(2181, new[] { "Doom Aura" }, new[] { 1 });
 
@@ -793,6 +791,7 @@ public class CoreSDKA
             Core.ChainComplete(2069);
             Bot.Wait.ForPickup("Experimental Dark Item");
         }
+
         DoomKnightWK();
         Core.AddDrop("Sepulchure's DoomKnight Armor");
         Core.EnsureAccept(2187);
@@ -875,8 +874,6 @@ public class CoreSDKA
 
         }
 
-
-
         Core.EquipClass(ClassType.Farm);
         Core.FarmingLogger("Dark Spirit Orb", quantDSO);
         Core.FarmingLogger("Corrupt Spirit Orb", quantCSO);
@@ -894,27 +891,23 @@ public class CoreSDKA
         if (items == null || quants == null || items.Length != quants.Length)
             return;
 
-        Core.AddDrop(
-            "Dark Energy",
-            "Dark Spirit Orb",
-            "Corrupt Spirit Orb",
-            "Ominous Aura",
-            "Diabolical Aura",
-            "Doom Aura"
-        );
-
+        Core.AddDrop("Dark Energy", "Dark Spirit Orb", "Corrupt Spirit Orb", "Ominous Aura", "Diabolical Aura", "Doom Aura");
         Core.EquipClass(ClassType.Farm);
 
-        // Process each item individually
         for (int i = 0; i < items.Length; i++)
         {
-            Core.FarmingLogger(items[i], quants[i]);
-            while (!Bot.ShouldExit && !Core.CheckInventory(items[i], quants[i]))
+            string item = items[i];
+            int quant = quants[i];
+
+            Core.FarmingLogger(item, quant);
+            while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
             {
                 Core.EnsureAccept(quest);
                 Core.KillMonster("lycan", "r4", "Left", "*", "DoomKnight Armor Piece", 10, log: false);
                 Core.EnsureComplete(quest);
-                Bot.Wait.ForPickup(items[i]);
+
+                for (int t = 0; t < 10 && !Bot.ShouldExit && !Bot.Inventory.Contains(item, quant); t++)
+                    Bot.Sleep(500);
             }
         }
 

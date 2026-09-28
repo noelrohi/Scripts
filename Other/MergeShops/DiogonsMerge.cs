@@ -120,15 +120,15 @@ public class DiogonsMerge
             Core.EquipClass(ClassType.Farm);
             Core.HuntMonster("therift", "Noxious Fumes", "Noxious Fumes", 7);
             Core.HuntMonster("shadowattack", "Toxic Fiend", "Toxic Fiend Blood", 3);
-            Core.HuntMonster("ectocave", "Sludge Beast", "Sludge Beast’s Tentacle");
+            Core.HuntMonster("ectocave", "Sludge Beast", "Sludge Beast's Tentacle");
             Core.EquipClass(ClassType.Solo);
-            Core.HuntMonster("ectocave", "Ektorax", "Ektorax’s Ectoplasm");
+            Core.HuntMonster("ectocave", "Ektorax", "Ektorax's Ectoplasm");
             Core.EnsureComplete(9748);
         }
         Core.RegisterQuests(9750);
         while (!Bot.ShouldExit && !Core.CheckInventory("Toxic Gem", quant))
         {
-            Core.HuntMonster("extriki", "Extriki", "Extriki’s Shard", log: false);
+            Core.HuntMonster("extriki", "Extriki", "Extriki's Shard", log: false);
             Bot.Wait.ForPickup("Toxic Gem");
         }
         Core.CancelRegisteredQuests();

@@ -11665,8 +11665,8 @@
       "null"
     ],
     "path": "Evil/SDKA/CoreSDKA.cs",
-    "size": 39989,
-    "sha256": "7fb1505263c53424af79d4b35b2619ed3abe76b59efd166100f58d979c778833",
+    "size": 40073,
+    "sha256": "3e91e692f1cebbd0af0cc11018d9111fc8537e000ca04236a76ade2051e9a57c",
     "fileName": "CoreSDKA.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Evil/SDKA/CoreSDKA.cs"
   },
@@ -15064,8 +15064,8 @@
       "armblades"
     ],
     "path": "Other/MergeShops/DiogonsMerge.cs",
-    "size": 8012,
-    "sha256": "21c49cd1fe3922082be84aba9ef9d17c125d5eca0fc3aa98115a03f6949e9908",
+    "size": 8006,
+    "sha256": "2d8953bb48e0d0dc4702126adf9d16a1f503eaa069a04bf1453bf4b6176c8204",
     "fileName": "DiogonsMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/DiogonsMerge.cs"
   },

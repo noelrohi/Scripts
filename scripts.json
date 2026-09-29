@@ -8181,8 +8181,8 @@
       "totengeldfactory"
     ],
     "path": "Seasonal/EarthDay/CaptainLoresQuests.cs",
-    "size": 2904,
-    "sha256": "a6cdda4cd3c65381c3cf41f489fe48bf61149f28c612f92d5e705e80885b2921",
+    "size": 2947,
+    "sha256": "d71b211c1bb8f489d526a8d15d765124b8c5e3b07a97b6f7949a3abc73df6481",
     "fileName": "CaptainLoresQuests.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/EarthDay/CaptainLoresQuests.cs"
   },
@@ -15489,6 +15489,22 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/DeimosDenRewardsMerge.cs"
   },
   {
+    "name": "Yulgars Burgers Merge",
+    "description": "Farms the Yulgars Burgers Merge [1884] in /borgars.",
+    "tags": [
+      "borgars",
+      "merge",
+      "yulgars",
+      "burgers",
+      "merge"
+    ],
+    "path": "Other/MergeShops/YulgarsBurgers.cs",
+    "size": 6573,
+    "sha256": "1ce78720c5fe3d1031864c9dfd1fbe05759e561495569bb4a36b8c3fbd2e4f20",
+    "fileName": "YulgarsBurgers.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/YulgarsBurgers.cs"
+  },
+  {
     "name": "StormCacheMerge",
     "description": "null",
     "tags": [
@@ -16594,29 +16610,16 @@
   },
   {
     "name": "Cysero Merge",
-    "description": "This bot will farm the items belonging to the selected mode for the Cysero Merge [668] in /battleontown",
+    "description": "Farms the Cysero Merge [668] in /battleontown.",
     "tags": [
-      "cysero",
-      "merge",
       "battleontown",
-      "mad",
-      "magic",
-      "manawalker",
-      "mana",
-      "green",
-      "sockatana",
-      "living",
-      "yogurt",
-      "warrior",
-      "berry",
-      "tasty",
-      "gilded",
-      "rainbow",
-      "wrap"
+      "merge",
+      "cysero",
+      "merge"
     ],
     "path": "Other/MergeShops/CyseroMerge.cs",
-    "size": 4733,
-    "sha256": "edf907607b31318c635bbf1cf3fc5f19fa7d491cb8cc7b6aff9fa36cfa35c1d0",
+    "size": 6322,
+    "sha256": "5ee2bb2e0bc1e7712c1606fb18b41ae2977fcf3509281137788365756b67c299",
     "fileName": "CyseroMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/CyseroMerge.cs"
   },
@@ -25614,8 +25617,8 @@
       "null"
     ],
     "path": "Story/LordsofChaos/Core13LoC.cs",
-    "size": 84976,
-    "sha256": "0387c44a5624efd61c2eeaaffb304f4d7ed5973b301e1295441cd634c608a3b7",
+    "size": 84975,
+    "sha256": "9ed467acf16a8b2e543485e8517bce84e78209253e91295e012505d514370fb4",
     "fileName": "Core13LoC.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/LordsofChaos/Core13LoC.cs"
   },
@@ -29637,6 +29640,22 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/SummarizeStatistics.cs"
   },
   {
+    "name": "GenerateQuestFilesv3",
+    "description": "Lean quest data generator — fetch quests in throttled batches and save.",
+    "tags": [
+      "debug",
+      "quest",
+      "data",
+      "generation",
+      "v3"
+    ],
+    "path": "Tools/ForDevelopers/GenerateQuestFilesv4.cs",
+    "size": 19752,
+    "sha256": "ed72cce29e7ced366abcec6e258f0e3737df97594d415d48b9468352700af3f1",
+    "fileName": "GenerateQuestFilesv4.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/GenerateQuestFilesv4.cs"
+  },
+  {
     "name": "Merge Template Helper v2",
     "description": "Generates a merge bot and teaches local ingredients from live monsterDrops packets.",
     "tags": [
@@ -29685,22 +29704,6 @@
     "sha256": "a273b75de42a07b798ef305525cfc3dbea50d15b954b2576494ec6d9df7a2dac",
     "fileName": "WeeklyReleaseGeneratorV2.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/WeeklyReleaseGeneratorV2.cs"
-  },
-  {
-    "name": "GenerateQuestFilesv3",
-    "description": "Lean quest data generator — no fluff, just fetch quests in batches and save.",
-    "tags": [
-      "debug",
-      "quest",
-      "data",
-      "generation",
-      "v3"
-    ],
-    "path": "Tools/ForDevelopers/GenerateQuestFilesv3.cs",
-    "size": 13641,
-    "sha256": "e887216975bb63c4d8ee60186d07fff849b4b0c1e1a9ade18a86037a5e41b7fc",
-    "fileName": "GenerateQuestFilesv3.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/GenerateQuestFilesv3.cs"
   },
   {
     "name": "Merge Shop Bot Generator/Helper",

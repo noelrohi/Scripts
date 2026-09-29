@@ -51,10 +51,10 @@ public class CaptainLoresQuests
         Story.KillQuest(622, "pollution", "General Pollution");
 
         // Reduce, Reuse, Recycle 1036
-        Story.KillQuest(1036, "pollution", new[] { "Thermax", "Kuro", "Stone Golem", "Ozone" });
+        Story.KillQuest(1036, "pollution", new[] { "Fire Elemental", "Wind Elemental", "Water Elemental", "Rock Elemental" });
 
         // Go Green like a Boss 1037
-        Story.KillQuest(1037, "pollution", new[] { "Monstername", "Monstername" });
+        Story.KillQuest(1037, "pollution", new[] { "Thermax", "Kuro", "Stone Golem", "Ozone" });
 
         // Clean Up the Core 6823
         Story.KillQuest(6823, "pollution", "Commodore Core");

@@ -1,82 +1,108 @@
 /*
 name: Cysero Merge
-description: This bot will farm the items belonging to the selected mode for the Cysero Merge [668] in /battleontown
-tags: cysero, merge, battleontown, mad, magic, manawalker, mana, green, sockatana, living, yogurt, warrior, berry, tasty, gilded, rainbow, wrap
+description: Farms the Cysero Merge [668] in /battleontown.
+tags: battleontown, merge, cysero, merge
 */
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
 //cs_include Scripts/CoreAdvanced.cs
+//cs_include Scripts/Other/MergeShops/YulgarsBurgers.cs
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Items;
 using Skua.Core.Options;
 
-public class CyseroMerge
+public class CyseroMergeShop
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
-    private static CoreAdvanced Adv
-    {
-        get => _Adv ??= new CoreAdvanced();
-        set => _Adv = value;
-    }
+    private static CoreFarms Farm { get => _Farm ??= new CoreFarms(); set => _Farm = value; }
+    private static CoreFarms _Farm;
+    private static CoreAdvanced Adv { get => _Adv ??= new CoreAdvanced(); set => _Adv = value; }
     private static CoreAdvanced _Adv;
-    private static CoreAdvanced sAdv
-    {
-        get => _sAdv ??= new CoreAdvanced();
-        set => _sAdv = value;
-    }
+    private static CoreAdvanced sAdv { get => _sAdv ??= new CoreAdvanced(); set => _sAdv = value; }
     private static CoreAdvanced _sAdv;
+    private static YulgarsBurgers Burgers { get => _Burgers ??= new YulgarsBurgers(); set => _Burgers = value; }
+    private static YulgarsBurgers _Burgers;
 
     public bool DontPreconfigure = true;
     public List<IOption> Generic = sAdv.MergeOptions;
     public string[] MultiOptions = { "Generic", "Select" };
     public string OptionsStorage = sAdv.OptionsStorage;
-
-    // [Can Change] This should only be changed by the author.
-    //  If true, it will not stop the script if the default case triggers and the user chose to only get mats
     private bool dontStopMissingIng = false;
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(new[] { "Glowing Sock" });
+        Core.BankingBlackList.AddRange([
+            "Barrel",
+            "Basic Wooden Stake",
+            "Black Knight's Nail",
+            "Borgar",
+            "Glass Bottle",
+            "Glowing Sock",
+            "New Home Weapon Display",
+            "Real Rubber Ducky",
+            "Staked Steak",
+        ]);
         Core.SetOptions();
-
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
-        //Only edit the map and shopID here
         Adv.StartBuyAllMerge("battleontown", 668, findIngredients, buyOnlyThis, buyMode: buyMode);
 
-        #region Dont edit this part
         void findIngredients()
         {
             ItemBase req = Adv.externalItem;
             int quant = Adv.externalQuant;
-            int currentQuant = req.Temp
-                ? Bot.TempInv.GetQuantity(req.Name)
-                : Bot.Inventory.GetQuantity(req.Name);
             if (req == null)
-            {
-                Core.Logger("req is NULL");
                 return;
-            }
 
             switch (req.Name)
             {
-                default:
-                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
-                    Core.Logger(
-                        $"The bot hasn't been taught how to get {req.Name}."
-                            + (shouldStop ? " Please report the issue." : " Skipping"),
-                        messageBox: shouldStop,
-                        stopBot: shouldStop
-                    );
+                case "Black Knight's Nail":
+                    Core.HuntMonster("greenguardwest", "Black Knight", req.Name, req.Quantity, req.Temp);
                     break;
-        #endregion
 
+                case "Borgar":
+                    Burgers.BuyAllMerge(req.Name);
+                    break;
+                case "Barrel":
+                    Adv.BuyItem("artixpointe", 999, req.Name, req.Quantity);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+                case "Glass Bottle":
+                    if (!Core.IsMember)
+                    {
+                        Core.Logger($"{req.Name} Requires membership");
+                        return;
+                    }
+                    Adv.BuyItem("buyhouse", 1366, req.Name, req.Quantity);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+                case "New Home Weapon Display":
+                    Core.KillMonster("cyserowed", "r1", "Down", "*", req.Name);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+                case "Staked Steak":
+                case "Basic Wooden Stake":
+                    Adv.BuyItem("darkoviaforest", 138, req.Name, req.Quantity);
+                    break;
+                case "Real Rubber Ducky":
+                    if (!Core.IsMember)
+                    {
+                        Core.Logger($"{req.Name} Requires membership");
+                        return;
+                    }
+                    Core.AddDrop(req.ID);
+                    Core.EnsureAccept(2776);
+                    Core.HuntMonster("river", "River Fishman", "Yellow Rubber Duck", 3);
+                    Core.HuntMonster("marsh", "Dark Witch", "Red Rubber Duck", 3);
+                    Core.HuntMonster("shallow", "Water Elemental", "Blue Rubber Duck", 3);
+                    Core.EnsureComplete(2776);
+                    Bot.Wait.ForPickup(req.ID);
+                    break;
                 case "Glowing Sock":
                     Core.FarmingLogger(req.Name, quant);
                     Core.RegisterQuests(2777);
@@ -88,47 +114,23 @@ public class CyseroMerge
                     }
                     Core.CancelRegisteredQuests();
                     break;
+                default:
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
+                    Core.Logger($"The bot hasn't been taught how to get {req.Name}.", messageBox: shouldStop, stopBot: shouldStop);
+                    break;
             }
         }
     }
 
-    public List<IOption> Select = new()
-    {
-        new Option<bool>(
-            "18396",
-            "Mad Magic Manawalker",
-            "Mode: [select] only\nShould the bot buy \"Mad Magic Manawalker\" ?",
-            false
-        ),
-        new Option<bool>(
-            "18397",
-            "Mad Magic Mana Helm",
-            "Mode: [select] only\nShould the bot buy \"Mad Magic Mana Helm\" ?",
-            false
-        ),
-        new Option<bool>(
-            "18421",
-            "Green Sockatana",
-            "Mode: [select] only\nShould the bot buy \"Green Sockatana\" ?",
-            false
-        ),
-        new Option<bool>(
-            "18434",
-            "Living Yogurt Warrior",
-            "Mode: [select] only\nShould the bot buy \"Living Yogurt Warrior\" ?",
-            false
-        ),
-        new Option<bool>(
-            "18439",
-            "Berry Tasty Helm",
-            "Mode: [select] only\nShould the bot buy \"Berry Tasty Helm\" ?",
-            false
-        ),
-        new Option<bool>(
-            "44109",
-            "Gilded Rainbow Wrap",
-            "Mode: [select] only\nShould the bot buy \"Gilded Rainbow Wrap\" ?",
-            false
-        ),
-    };
+    public List<IOption> Select =
+    [
+        new Option<bool>("18396", "Mad Magic Manawalker", "Mode: [select] only\nShould the bot buy \"Mad Magic Manawalker\" ?", false),
+        new Option<bool>("18434", "Living Yogurt Warrior", "Mode: [select] only\nShould the bot buy \"Living Yogurt Warrior\" ?", false),
+        new Option<bool>("44109", "Gilded Rainbow Wrap", "Mode: [select] only\nShould the bot buy \"Gilded Rainbow Wrap\" ?", false),
+        new Option<bool>("18439", "Berry Tasty Helm", "Mode: [select] only\nShould the bot buy \"Berry Tasty Helm\" ?", false),
+        new Option<bool>("18397", "Mad Magic Mana Helm", "Mode: [select] only\nShould the bot buy \"Mad Magic Mana Helm\" ?", false),
+        new Option<bool>("80008", "Cysero's Design Dais", "Mode: [select] only\nShould the bot buy \"Cysero's Design Dais\" ?", false),
+        new Option<bool>("80009", "Cysero's Showcase Stage", "Mode: [select] only\nShould the bot buy \"Cysero's Showcase Stage\" ?", false),
+        new Option<bool>("18421", "Green Sockatana", "Mode: [select] only\nShould the bot buy \"Green Sockatana\" ?", false),
+    ];
 }

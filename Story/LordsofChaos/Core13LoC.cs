@@ -472,10 +472,10 @@ public class Core13LoC
         {
             Core.EnsureAccept(470);
             Core.HuntMonsterMapID("Junkyard", 1, "Wild Kara-Kasa", 5);
-            Core.HuntMonsterMapID("Junkyard", 2, "Wild Bakezouri", 1);
             Core.HuntMonsterMapID("Junkyard", 4, "Wild Bura-Bura", 4);
             Core.HuntMonsterMapID("Junkyard", 3, "Wild Biwa-Bokuboku", 3);
-            Core.HuntMonsterMapID("Junkyard", 12, "Wild Koto-Furunushi", 2);
+            Core.HuntMonsterMapID("Junkyard", 6, "Wild Koto-Furunushi", 2);
+            Core.HuntMonsterMapID("Junkyard", 2, "Wild Bakezouri", 1);
             Core.EnsureComplete(470);
         }
 
@@ -1580,7 +1580,7 @@ public class Core13LoC
 
         //Time to Prove Yourself
         Story.MapItemQuest(2255, "timevoid", 1439, 12);
-        Story.KillQuest(2255, "timevoid", new[] { "Ephemerite", "Time-Travel Fairy" });
+        Story.KillQuest(2255, "timevoid", new[] { "Time-Travel Fairy", "Ephemerite" });
 
         //Fill the Empty Hours
         Story.KillQuest(2256, "timevoid", new[] { "Time-Travel Fairy", "Void Phoenix" });
@@ -1779,7 +1779,7 @@ public class Core13LoC
 
         //Fire Is The Thing
         Story.MapItemQuest(2615, "blackhorn", 1616);
-        Story.KillQuest(2615, "blackhorn", new[] { "Restless Undead", "Tomb Spider" });
+        Story.KillQuest(2615, "blackhorn", new[] { "Tomb Spider", "Restless Undead" });
 
         //The Wall Comes Down
         Story.MapItemQuest(2616, "blackhorn", 1617);

@@ -25,8 +25,6 @@ public class WeeklyReleaseGeneratorV2
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
-    private static GeneratorSupportUtils GSU => new();
-
 
     public string OptionsStorage = "WeeklyReleaseGeneratorV2";
     public bool DontPreconfigure = true;
@@ -37,6 +35,7 @@ public class WeeklyReleaseGeneratorV2
 
     private sealed record Dependency(string IncludePath, string ClassName, string MethodName);
     private sealed record MapItemSource(int ID, string Map, bool CurrentMapVerified);
+    private sealed record ScriptSource(string RelativePath, string Content);
     private static readonly string[] MapItemKeywords = ["click", "talk", "find", "read", "investigate"];
 
     public void ScriptMain(IScriptInterface bot)
@@ -85,7 +84,10 @@ public class WeeklyReleaseGeneratorV2
         allQuests.AddRange(mapQuests);
 
         IReadOnlyList<DropPacketCollector.MonsterDrops> monsters = new DropPacketCollector().Collect();
-        IReadOnlyDictionary<int, IReadOnlyList<MapItemSource>> existingMapItems = FindExistingMapItems(mapQuests);
+        // One scan of the scripts tree is shared by map-item recovery and
+        // prerequisite dependency discovery so we do not read every .cs twice.
+        IReadOnlyList<ScriptSource> scriptSources = LoadScriptSources();
+        IReadOnlyDictionary<int, IReadOnlyList<MapItemSource>> existingMapItems = FindExistingMapItems(mapQuests, scriptSources);
         List<Quest> repeatableQuests = mapQuests
             .DistinctBy(quest => quest.ID)
             .Where(quest => quest.Slot == -1 && !quest.Once)
@@ -132,7 +134,7 @@ public class WeeklyReleaseGeneratorV2
                 .FirstOrDefault();
             Dependency? dependency = predecessor == null
                 ? null
-                : FindDependency(predecessor, currentMapQuestIDs, allQuests);
+                : FindDependency(predecessor, currentMapQuestIDs, allQuests, scriptSources);
             string className = chains.Count > 1 ? $"{mapIdentifier}{index + 1}" : mapIdentifier;
             string path = Path.Combine(outputDirectory, className + ".cs");
             Core.WriteFile(path, BuildStory(
@@ -219,26 +221,34 @@ public class WeeklyReleaseGeneratorV2
         return quests;
     }
 
-    private IReadOnlyDictionary<int, IReadOnlyList<MapItemSource>> FindExistingMapItems(
-        IReadOnlyList<Quest> quests
+    private static IReadOnlyList<ScriptSource> LoadScriptSources()
+    {
+        string scripts = ClientFileSources.SkuaScriptsDIR;
+        return [.. Directory.GetFiles(scripts, "*.cs", SearchOption.AllDirectories)
+            .Select(file =>
+            {
+                string relative = Path.GetRelativePath(scripts, file).Replace('\\', '/');
+                return (Relative: relative, File: file);
+            })
+            .Where(entry =>
+                !entry.Relative.StartsWith("WIP/", StringComparison.OrdinalIgnoreCase)
+                && !entry.Relative.StartsWith("Tools/", StringComparison.OrdinalIgnoreCase))
+            .Select(entry => new ScriptSource(entry.Relative, File.ReadAllText(entry.File)))];
+    }
+
+    private static IReadOnlyDictionary<int, IReadOnlyList<MapItemSource>> FindExistingMapItems(
+        IReadOnlyList<Quest> quests,
+        IReadOnlyList<ScriptSource> scriptSources
     )
     {
         Dictionary<int, IReadOnlyList<MapItemSource>> result = new();
-        string scripts = ClientFileSources.SkuaScriptsDIR;
-        List<string> sources = [.. Directory.GetFiles(scripts, "*.cs", SearchOption.AllDirectories)
-            .Where(file =>
-            {
-                string relative = Path.GetRelativePath(scripts, file).Replace('\\', '/');
-                return !relative.StartsWith("WIP/", StringComparison.OrdinalIgnoreCase)
-                    && !relative.StartsWith("Tools/", StringComparison.OrdinalIgnoreCase);
-            })
-            .Select(File.ReadAllText)];
 
         foreach (Quest quest in quests)
         {
             List<MapItemSource> found = new();
-            foreach (string source in sources)
+            foreach (ScriptSource script in scriptSources)
             {
+                string source = script.Content;
                 foreach (Match questReference in Regex.Matches(source, $@"\b{quest.ID}\b"))
                 {
                     int end = Math.Min(source.Length, questReference.Index + 2500);
@@ -614,7 +624,7 @@ public class WeeklyReleaseGeneratorV2
                     lines.Add($"        Core.EnsureAccept({quest.ID});");
                     accepted = true;
                 }
-                EmitExplicitHunts(lines, requirements, localDrops, huntIndexes, map, usedMonsters);
+                EmitExplicitHunts(lines, quest, requirements, localDrops, huntIndexes, map, usedMonsters);
                 lines.Add($"        Core.EnsureComplete({quest.ID});");
                 return;
             }
@@ -682,6 +692,7 @@ public class WeeklyReleaseGeneratorV2
 
     private static void EmitExplicitHunts(
         List<string> lines,
+        Quest quest,
         IReadOnlyList<ItemBase> requirements,
         IReadOnlyList<DropPacketCollector.MonsterDrops?> localDrops,
         IReadOnlyList<int> huntIndexes,
@@ -708,11 +719,23 @@ public class WeeklyReleaseGeneratorV2
             }
         }
 
-        foreach (int index in huntIndexes.Where(index => localDrops[index] == null))
+        List<int> unresolvedDropIndexes = [.. huntIndexes.Where(index => localDrops[index] == null)];
+        if (unresolvedDropIndexes.Count > 0)
+        {
+            string missing = string.Join(", ", unresolvedDropIndexes.Select(index =>
+                $"{requirements[index].Name} [{requirements[index].ID}]"));
+            // Loud on purpose: generated FILL_* lines are easy to miss in review.
+            CoreBots.Instance.Logger(
+                $"Unresolved drop monster(s) for quest {quest.Name} [{quest.ID}]: {missing}. FILL_LOCATION / FILL_MONSTER emitted.",
+                messageBox: true
+            );
+        }
+        foreach (int index in unresolvedDropIndexes)
         {
             ItemBase requirement = requirements[index];
             string quantity = Math.Max(1, requirement.Quantity).ToString(CultureInfo.InvariantCulture);
             string permanence = requirement.Temp ? string.Empty : ", isTemp: false";
+            lines.Add($"        // TODO: resolve drop source for {EscapeComment(requirement.Name)} [{requirement.ID}]");
             lines.Add($"        Core.HuntMonster(\"FILL_LOCATION\", \"FILL_MONSTER\", \"{Escape(requirement.Name)}\", {quantity}{permanence});");
         }
     }
@@ -728,24 +751,20 @@ public class WeeklyReleaseGeneratorV2
             || args.Split(',').All(arg => arg.Contains('=') || arg.TrimStart().StartsWith("params "));
     }
 
-    private Dependency? FindDependency(
+    private static Dependency? FindDependency(
         Quest predecessor,
         IReadOnlySet<int> currentMapQuestIDs,
-        IReadOnlyList<Quest> allQuests
+        IReadOnlyList<Quest> allQuests,
+        IReadOnlyList<ScriptSource> scriptSources
     )
     {
-        string scripts = ClientFileSources.SkuaScriptsDIR;
         List<(Dependency Dependency, int Score)> candidates = new();
         List<Quest> sameSlotQuests = allQuests
             .Where(quest => quest.Slot == predecessor.Slot)
             .ToList();
-        foreach (string file in Directory.GetFiles(scripts, "*.cs", SearchOption.AllDirectories))
+        foreach (ScriptSource script in scriptSources)
         {
-            string relative = Path.GetRelativePath(scripts, file).Replace('\\', '/');
-            if (relative.StartsWith("WIP/", StringComparison.OrdinalIgnoreCase)
-                || relative.StartsWith("Tools/", StringComparison.OrdinalIgnoreCase))
-                continue;
-            string source = File.ReadAllText(file);
+            string source = script.Content;
             if (!Regex.IsMatch(source, $@"\b{predecessor.ID}\b"))
                 continue;
             Match classMatch = Regex.Match(source, @"public\s+class\s+(?<name>\w+)");
@@ -776,21 +795,13 @@ public class WeeklyReleaseGeneratorV2
                     continue;
 
                 int score = 100;
-                if (Path.GetFileName(file).StartsWith("Core", StringComparison.OrdinalIgnoreCase))
+                if (Path.GetFileName(script.RelativePath).StartsWith("Core", StringComparison.OrdinalIgnoreCase))
                     score += 20;
-                candidates.Add((new Dependency(relative, classMatch.Groups["name"].Value, method.Groups["name"].Value), score));
+                candidates.Add((new Dependency(script.RelativePath, classMatch.Groups["name"].Value, method.Groups["name"].Value), score));
             }
         }
         return candidates.OrderByDescending(candidate => candidate.Score).Select(candidate => candidate.Dependency).FirstOrDefault();
     }
-
-    private static DropPacketCollector.MonsterDrops? FindDropMonster(
-        ItemBase requirement,
-        IEnumerable<Quest> quests,
-        IReadOnlyList<DropPacketCollector.MonsterDrops> monsters
-    ) => quests
-        .Select(quest => FindDropMonster(requirement, quest.Name, monsters))
-        .FirstOrDefault(monster => monster != null);
 
     private static DropPacketCollector.MonsterDrops? FindDropMonster(
         ItemBase requirement,

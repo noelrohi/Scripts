@@ -163,11 +163,37 @@ public sealed class LocationSwfQuestReader
         (data[0] == (byte)'F' || data[0] == (byte)'C' || data[0] == (byte)'Z')
         && data[1] == (byte)'W'
         && data[2] == (byte)'S';
+    private static string ResolveFfdec()
+    {
+        string? fromEnv = Environment.GetEnvironmentVariable("FFDEC_PATH");
+        if (!string.IsNullOrWhiteSpace(fromEnv) && File.Exists(fromEnv))
+            return fromEnv;
+
+        string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+        string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+        string[] candidates =
+        [
+            Path.Combine(localAppData, "Programs", "FFDec", "ffdec-cli.exe"),
+        Path.Combine(programFiles, "FFDec", "ffdec-cli.exe"),
+        Path.Combine(programFilesX86, "FFDec", "ffdec-cli.exe"),
+        Path.Combine(localAppData, "Programs", "FFDec", "ffdec.exe"),
+        Path.Combine(programFiles, "FFDec", "ffdec.exe"),
+        Path.Combine(programFilesX86, "FFDec", "ffdec.exe"),
+    ];
+
+        foreach (string candidate in candidates)
+            if (File.Exists(candidate))
+                return candidate;
+
+        throw new FileNotFoundException(
+            "FFDec was not found. Install it, or set FFDEC_PATH to ffdec-cli.exe.");
+    }
 
     private static void ExportScripts(string swf, string output)
     {
-        string ffdec = Environment.GetEnvironmentVariable("FFDEC_PATH")
-            ?? @"C:\Program Files (x86)\FFDec\ffdec-cli.exe";
+        string ffdec = ResolveFfdec();
         if (!File.Exists(ffdec))
             throw new FileNotFoundException("FFDec was not found. Install it or set FFDEC_PATH.", ffdec);
 

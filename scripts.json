@@ -29700,8 +29700,8 @@
       "v2"
     ],
     "path": "Tools/ForDevelopers/WeeklyReleaseGeneratorV2.cs",
-    "size": 39768,
-    "sha256": "a273b75de42a07b798ef305525cfc3dbea50d15b954b2576494ec6d9df7a2dac",
+    "size": 40467,
+    "sha256": "efef8dad3dc0d6958a5b55927cb47317c20938a5e8701c6af6090bd46688055d",
     "fileName": "WeeklyReleaseGeneratorV2.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/WeeklyReleaseGeneratorV2.cs"
   },
@@ -29716,8 +29716,8 @@
       "developer"
     ],
     "path": "Tools/ForDevelopers/CaseStorage.cs",
-    "size": 1117855,
-    "sha256": "e0eb56a671e36b9c33b39b075b8624f0d624dde6601564a26bebe72c5920ef09",
+    "size": 1120155,
+    "sha256": "343148ee0379c57a1608023060cb5b58ca199f93d4003f0b383078617afe8e97",
     "fileName": "CaseStorage.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/CaseStorage.cs"
   },
@@ -35005,8 +35005,8 @@
       "null"
     ],
     "path": "Tools/ForDevelopers/GeneratorHelpers/LocationSwfQuestReader.cs",
-    "size": 16689,
-    "sha256": "69b7ae999779fd37ca09a3133f6881da7b27033ae8f8297aaee87b6b7b2211a8",
+    "size": 17823,
+    "sha256": "50ba189bca8a0a3f79ebb8427a5de89f75561ade9da70e71cdb85ab73b7bd1b1",
     "fileName": "LocationSwfQuestReader.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/GeneratorHelpers/LocationSwfQuestReader.cs"
   },

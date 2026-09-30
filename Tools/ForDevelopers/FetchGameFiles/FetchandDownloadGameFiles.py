@@ -1,5 +1,5 @@
 """
-AQ Game Fetcher -- GUI edition.
+AQ Game Fetcher -- Neon edition.
 
 Fetches AQW game resources:
   - Client        (Game####.swf)   -- via gameversion API, falls back to
@@ -8,9 +8,9 @@ Fetches AQW game resources:
   - Game Assets   (Assets_YYYYMMDD.swf, date-stamped -- you supply the date)
   - Game Version  (JSON metadata)
   - Servers       (JSON server list)
+  - ALL           -- runs every resource in sequence
 
-Everything runs on a background thread so the window never freezes, with
-a shared log panel and per-resource Fetch buttons.
+Background worker, shared neon log, per-resource + Fetch All controls.
 """
 
 import json
@@ -22,6 +22,7 @@ import subprocess
 import threading
 import time
 import tkinter as tk
+from datetime import datetime
 from tkinter import ttk, scrolledtext
 
 import requests
@@ -36,14 +37,14 @@ ASSETS_URL_TMPL = "https://game.aq.com/game/gamefiles/interface/Assets/Assets_{}
 GAMEVERSION_URL = "https://game.aq.com/game/api/data/gameversion"
 SERVERS_URL = "https://game.aq.com/game/api/data/servers"
 
-START_NUMBER = 3097       # fallback seed for the manual-search path only
-TIMEOUT = 10
+START_NUMBER = 3097
+TIMEOUT = 12
 
-MIN_DELAY = 0.25
-MAX_DELAY = 0.75
+MIN_DELAY = 0.12
+MAX_DELAY = 0.40
 
 MAX_RETRIES = 4
-BACKOFF_BASE = 5
+BACKOFF_BASE = 3
 
 VERBOSE = False
 
@@ -64,23 +65,30 @@ session = requests.Session()
 session.headers.update(HEADERS)
 
 # --------------------------------------------------------------------------
-# Colors (dark theme)
+# Neon palette
 # --------------------------------------------------------------------------
 
-BG = "#1e1f26"
-PANEL = "#262832"
-ROW_BG = "#2c2f3a"
-FG = "#e6e6e6"
-ACCENT = "#7aa2f7"
-GREEN = "#9ece6a"
-YELLOW = "#e0af68"
-RED = "#f7768e"
-DIM = "#6b7089"
+BG = "#0d0f14"
+PANEL = "#151821"
+CARD = "#1a1e2a"
+CARD_HOVER = "#222838"
+FG = "#e8eaef"
+ACCENT = "#7c9cff"
+ACCENT_DIM = "#5a78d4"
+CYAN = "#56d4c8"
+GREEN = "#7ee787"
+YELLOW = "#e3b341"
+RED = "#f7788a"
+DIM = "#6b7385"
+BORDER = "#2a3040"
+GLOW = "#3d5afe"
 
 FONT_UI = ("Segoe UI", 10)
 FONT_UI_BOLD = ("Segoe UI Semibold", 10)
-FONT_MONO = ("Consolas", 10)
-FONT_TITLE = ("Segoe UI Semibold", 13)
+FONT_MONO = ("Consolas", 9)
+FONT_TITLE = ("Segoe UI Semibold", 16)
+FONT_SUB = ("Segoe UI", 9)
+FONT_TINY = ("Segoe UI", 8)
 
 
 class Cancelled(Exception):
@@ -88,18 +96,16 @@ class Cancelled(Exception):
 
 
 # --------------------------------------------------------------------------
-# Worker logic -- everything reports through a queue, nothing prints directly
+# Worker
 # --------------------------------------------------------------------------
 
 class Fetcher:
-    """Runs one resource fetch on a background thread."""
+    """Runs resource fetch(es) on a background thread."""
 
     def __init__(self, out_queue: queue.Queue):
         self.q = out_queue
         self.cancel_flag = threading.Event()
         self.checks_done = 0
-
-    # -- messaging -----------------------------------------------------
 
     def emit(self, kind, **payload):
         self.q.put((kind, payload))
@@ -116,8 +122,6 @@ class Fetcher:
     def progress(self, pct):
         self.emit("progress", pct=pct)
 
-    # -- generic HTTP -----------------------------------------------------
-
     def get_json(self, url):
         resp = session.get(url, timeout=TIMEOUT)
         resp.raise_for_status()
@@ -130,7 +134,7 @@ class Fetcher:
             total = int(resp.headers.get("Content-Length", 0))
             downloaded = 0
             with open(dest_path, "wb") as f:
-                for chunk in resp.iter_content(chunk_size=65536):
+                for chunk in resp.iter_content(chunk_size=131072):
                     if self.cancel_flag.is_set():
                         raise Cancelled()
                     if not chunk:
@@ -143,12 +147,10 @@ class Fetcher:
                         speed = downloaded / elapsed
                         self.progress(pct)
                         self.status(
-                            f"Downloading...  {downloaded/1024/1024:.2f}/"
-                            f"{total/1024/1024:.2f} MB  ({speed/1024/1024:.2f} MB/s)"
+                            f"{downloaded/1024/1024:.1f}/{total/1024/1024:.1f} MB  "
+                            f"·  {speed/1024/1024:.1f} MB/s"
                         )
         return time.time() - start_time
-
-    # -- manual search fallback (only used if the API call fails) ----------
 
     def _looks_like_real_swf(self, resp):
         if resp.history and not resp.url.lower().endswith(".swf"):
@@ -207,17 +209,16 @@ class Fetcher:
     def _check(self, n):
         self.checks_done += 1
         found = self.exists(CLIENT_URL_TMPL.format(n))
-        self.status(f"Checking Game{n}.swf...  ({self.checks_done} probes)")
+        self.status(f"Probe Game{n}.swf  ·  {self.checks_done} checks")
         if found:
             self.log(f"Game{n}.swf found", "ok")
         self.polite_pause()
         return found
 
     def search_client_number(self):
-        """Exponential + binary search fallback, only used if the API fails."""
         self.checks_done = 0
         start = self.load_last_version(START_NUMBER)
-        self.phase("Fallback: searching for latest Game####.swf")
+        self.phase("Fallback search · latest Game####.swf")
 
         if not self._check(start):
             if start != START_NUMBER:
@@ -247,18 +248,20 @@ class Fetcher:
                 hi = mid
         return lo
 
-    # -- resource jobs -------------------------------------------------------
+    # -- individual jobs -------------------------------------------------
 
     def run_client(self):
-        self.phase("Fetching client")
+        self.phase("Client")
         try:
-            self.status("Reading current version from gameversion API...")
+            self.status("Reading gameversion API…")
             data = self.get_json(GAMEVERSION_URL)
             sfile = data["sFile"]
-            self.log(f"gameversion API reports: {sfile} "
-                     f"(build {data.get('sVersion', '?')})", "ok")
+            self.log(
+                f"API → {sfile}  (build {data.get('sVersion', '?')})",
+                "ok",
+            )
         except Exception as e:
-            self.log(f"gameversion API failed ({e}), falling back to search", "warn")
+            self.log(f"API failed ({e}) · falling back to search", "warn")
             n = self.search_client_number()
             if n is None:
                 self.log("Could not determine latest client version.", "error")
@@ -268,43 +271,42 @@ class Fetcher:
 
         url = GAMEFILES_BASE.format(sfile)
         dest = os.path.join(SCRIPT_DIR, sfile)
-        self.status(f"Downloading {sfile}...")
+        self.status(f"Downloading {sfile}…")
         duration = self.download_file(url, dest)
         self.progress(100)
-        self.log(f"Saved: {dest}", "ok")
+        self.log(f"Saved → {dest}", "ok")
 
-        # remember the numeric version for the fallback search next time
         digits = "".join(c for c in sfile if c.isdigit())
         if digits:
             self.save_last_version(int(digits))
 
-        self.emit("done", ok=True, dest=dest,
-                   summary=f"{sfile} in {duration:.2f}s")
+        self.emit("done", ok=True, dest=dest, summary=f"{sfile} · {duration:.1f}s")
 
     def run_assets(self, date_str):
-        self.phase("Fetching game assets")
+        self.phase("Game Assets")
         fname = f"Assets_{date_str}.swf"
         url = ASSETS_URL_TMPL.format(date_str)
         dest = os.path.join(SCRIPT_DIR, fname)
-        self.status(f"Downloading {fname}...")
+        self.status(f"Downloading {fname}…")
         try:
             duration = self.download_file(url, dest)
         except requests.RequestException as e:
             self.log(f"Download failed: {e}", "error")
-            self.log("The assets filename is date-stamped and not exposed by "
-                     "the version API -- double check the date is correct.",
-                     "warn")
+            self.log(
+                "Assets are date-stamped and not in the version API — "
+                "double-check the YYYYMMDD value.",
+                "warn",
+            )
             self.emit("done", ok=False)
             return
         self.progress(100)
-        self.log(f"Saved: {dest}", "ok")
-        self.emit("done", ok=True, dest=dest,
-                   summary=f"{fname} in {duration:.2f}s")
+        self.log(f"Saved → {dest}", "ok")
+        self.emit("done", ok=True, dest=dest, summary=f"{fname} · {duration:.1f}s")
 
     def run_gameversion(self):
-        self.phase("Fetching game version info")
+        self.phase("Game Version")
         try:
-            self.status("Requesting gameversion API...")
+            self.status("Requesting gameversion API…")
             data = self.get_json(GAMEVERSION_URL)
         except Exception as e:
             self.log(f"Request failed: {e}", "error")
@@ -317,13 +319,13 @@ class Fetcher:
         dest = os.path.join(SCRIPT_DIR, "gameversion.json")
         with open(dest, "w") as f:
             json.dump(data, f, indent=2)
-        self.log(f"Saved: {dest}", "ok")
-        self.emit("done", ok=True, dest=dest, summary="gameversion.json saved")
+        self.log(f"Saved → {dest}", "ok")
+        self.emit("done", ok=True, dest=dest, summary="gameversion.json")
 
     def run_servers(self):
-        self.phase("Fetching server list")
+        self.phase("Servers")
         try:
-            self.status("Requesting servers API...")
+            self.status("Requesting servers API…")
             data = self.get_json(SERVERS_URL)
         except Exception as e:
             self.log(f"Request failed: {e}", "error")
@@ -331,53 +333,195 @@ class Fetcher:
             return
 
         online = sum(1 for s in data if s.get("bOnline"))
-        self.log(f"{len(data)} servers listed, {online} online", "ok")
+        self.log(f"{len(data)} servers · {online} online", "ok")
         for s in sorted(data, key=lambda s: -s.get("iCount", 0)):
-            self.log(f"  {s['sName']:<18} {s['iCount']:>4}/{s['iMax']:<4} "
-                     f"({s['sIP']}:{s['iPort']})", "info")
+            self.log(
+                f"  {s['sName']:<18} {s['iCount']:>4}/{s['iMax']:<4}  "
+                f"{s['sIP']}:{s['iPort']}",
+                "info",
+            )
 
         dest = os.path.join(SCRIPT_DIR, "servers.json")
         with open(dest, "w") as f:
             json.dump(data, f, indent=2)
-        self.log(f"Saved: {dest}", "ok")
-        self.emit("done", ok=True, dest=dest, summary="servers.json saved")
+        self.log(f"Saved → {dest}", "ok")
+        self.emit("done", ok=True, dest=dest, summary="servers.json")
+
+    def run_all(self, date_str):
+        """Sequential full pull: version → client → servers → assets."""
+        jobs = [
+            ("run_gameversion", ()),
+            ("run_client", ()),
+            ("run_servers", ()),
+            ("run_assets", (date_str,)),
+        ]
+        total = len(jobs)
+        results = []
+        last_dest = SCRIPT_DIR
+
+        for i, (name, args) in enumerate(jobs):
+            if self.cancel_flag.is_set():
+                self.log("All-fetch cancelled.", "warn")
+                self.emit("done", ok=False)
+                return
+
+            self.emit("all_step", index=i + 1, total=total, name=name)
+            # Reset per-job progress so the bar restarts cleanly
+            self.progress(0)
+
+            # Capture done via a temporary flag pattern: run method emits done,
+            # but we intercept by re-binding emit temporarily is messy.
+            # Instead, call the methods and let them emit; the GUI will
+            # treat intermediate "done" as step-complete when in all-mode.
+            method = getattr(self, name)
+            # We need the method NOT to emit final done until the end.
+            # Patch: run the body, then decide.
+            try:
+                if name == "run_gameversion":
+                    self._all_gameversion()
+                elif name == "run_client":
+                    dest = self._all_client()
+                    if dest:
+                        last_dest = os.path.dirname(dest)
+                elif name == "run_servers":
+                    self._all_servers()
+                elif name == "run_assets":
+                    dest = self._all_assets(date_str)
+                    if dest:
+                        last_dest = os.path.dirname(dest)
+                results.append(True)
+            except Cancelled:
+                self.log("All-fetch cancelled.", "warn")
+                self.emit("done", ok=False)
+                return
+            except Exception as e:
+                self.log(f"Step failed: {e}", "error")
+                results.append(False)
+
+            # small inter-job pause
+            time.sleep(0.15)
+
+        ok = all(results)
+        summary = f"{sum(results)}/{total} resources"
+        self.emit("done", ok=ok, dest=last_dest, summary=summary)
+
+    # Internal all-mode variants that do NOT emit "done"
+    def _all_gameversion(self):
+        self.phase("Game Version")
+        self.status("Requesting gameversion API…")
+        data = self.get_json(GAMEVERSION_URL)
+        for k, v in data.items():
+            self.log(f"{k}: {v}", "info")
+        dest = os.path.join(SCRIPT_DIR, "gameversion.json")
+        with open(dest, "w") as f:
+            json.dump(data, f, indent=2)
+        self.log(f"Saved → {dest}", "ok")
+        self.progress(100)
+
+    def _all_client(self):
+        self.phase("Client")
+        try:
+            self.status("Reading gameversion API…")
+            data = self.get_json(GAMEVERSION_URL)
+            sfile = data["sFile"]
+            self.log(
+                f"API → {sfile}  (build {data.get('sVersion', '?')})",
+                "ok",
+            )
+        except Exception as e:
+            self.log(f"API failed ({e}) · falling back to search", "warn")
+            n = self.search_client_number()
+            if n is None:
+                self.log("Could not determine latest client version.", "error")
+                raise RuntimeError("client version unknown")
+            sfile = f"Game{n}.swf"
+
+        url = GAMEFILES_BASE.format(sfile)
+        dest = os.path.join(SCRIPT_DIR, sfile)
+        self.status(f"Downloading {sfile}…")
+        duration = self.download_file(url, dest)
+        self.progress(100)
+        self.log(f"Saved → {dest}  ({duration:.1f}s)", "ok")
+        digits = "".join(c for c in sfile if c.isdigit())
+        if digits:
+            self.save_last_version(int(digits))
+        return dest
+
+    def _all_servers(self):
+        self.phase("Servers")
+        self.status("Requesting servers API…")
+        data = self.get_json(SERVERS_URL)
+        online = sum(1 for s in data if s.get("bOnline"))
+        self.log(f"{len(data)} servers · {online} online", "ok")
+        for s in sorted(data, key=lambda s: -s.get("iCount", 0)):
+            self.log(
+                f"  {s['sName']:<18} {s['iCount']:>4}/{s['iMax']:<4}  "
+                f"{s['sIP']}:{s['iPort']}",
+                "info",
+            )
+        dest = os.path.join(SCRIPT_DIR, "servers.json")
+        with open(dest, "w") as f:
+            json.dump(data, f, indent=2)
+        self.log(f"Saved → {dest}", "ok")
+        self.progress(100)
+
+    def _all_assets(self, date_str):
+        self.phase("Game Assets")
+        fname = f"Assets_{date_str}.swf"
+        url = ASSETS_URL_TMPL.format(date_str)
+        dest = os.path.join(SCRIPT_DIR, fname)
+        self.status(f"Downloading {fname}…")
+        duration = self.download_file(url, dest)
+        self.progress(100)
+        self.log(f"Saved → {dest}  ({duration:.1f}s)", "ok")
+        return dest
 
 
 # --------------------------------------------------------------------------
-# GUI
+# Resource card
 # --------------------------------------------------------------------------
 
-class ResourceRow(tk.Frame):
-    """One resource with a label, optional input, status text, and a Fetch button."""
+class ResourceCard(tk.Frame):
+    """Compact card: icon · title · subtitle · optional input · status · Fetch."""
 
-    def __init__(self, master, title, subtitle, on_fetch, extra_widget=None):
-        super().__init__(master, bg=ROW_BG)
+    def __init__(self, master, icon, title, subtitle, on_fetch, extra_widget=None):
+        super().__init__(master, bg=CARD, highlightthickness=1,
+                         highlightbackground=BORDER, highlightcolor=ACCENT)
         self.on_fetch = on_fetch
 
-        pad = dict(padx=12, pady=10)
+        inner = tk.Frame(self, bg=CARD)
+        inner.pack(fill="x", padx=14, pady=12)
 
-        text_frame = tk.Frame(self, bg=ROW_BG)
-        text_frame.pack(side="left", fill="x", expand=True, **pad)
+        # left: icon + text
+        left = tk.Frame(inner, bg=CARD)
+        left.pack(side="left", fill="x", expand=True)
 
-        tk.Label(text_frame, text=title, font=FONT_UI_BOLD,
-                 bg=ROW_BG, fg=FG, anchor="w").pack(fill="x")
-        tk.Label(text_frame, text=subtitle, font=("Segoe UI", 8),
-                 bg=ROW_BG, fg=DIM, anchor="w").pack(fill="x")
+        top_row = tk.Frame(left, bg=CARD)
+        top_row.pack(fill="x")
+        tk.Label(top_row, text=icon, font=("Segoe UI", 14),
+                 bg=CARD, fg=ACCENT).pack(side="left", padx=(0, 8))
+        tk.Label(top_row, text=title, font=FONT_UI_BOLD,
+                 bg=CARD, fg=FG, anchor="w").pack(side="left")
+
+        tk.Label(left, text=subtitle, font=FONT_TINY,
+                 bg=CARD, fg=DIM, anchor="w").pack(fill="x", pady=(2, 0))
 
         if extra_widget is not None:
-            extra_widget(text_frame).pack(anchor="w", pady=(4, 0))
+            extra_widget(left).pack(anchor="w", pady=(6, 0))
 
+        # right: status + button
         self.status_var = tk.StringVar(value="")
-        tk.Label(self, textvariable=self.status_var, font=("Segoe UI", 8),
-                 bg=ROW_BG, fg=ACCENT, width=16, anchor="e").pack(
-            side="left", padx=(0, 8))
+        tk.Label(inner, textvariable=self.status_var, font=FONT_TINY,
+                 bg=CARD, fg=CYAN, width=14, anchor="e").pack(
+            side="left", padx=(8, 10))
 
         self.btn = tk.Button(
-            self, text="Fetch", font=FONT_UI, command=self._fetch,
-            bg=ACCENT, fg="#101116", activebackground="#5f86d6",
-            relief="flat", padx=14, pady=6, cursor="hand2"
+            inner, text="Fetch", font=FONT_UI_BOLD, command=self._fetch,
+            bg=ACCENT, fg="#0a0c12", activebackground=ACCENT_DIM,
+            activeforeground="#0a0c12", relief="flat", padx=16, pady=5,
+            cursor="hand2", borderwidth=0,
         )
-        self.btn.pack(side="right", padx=12, pady=10)
+        self.btn.pack(side="right")
 
     def _fetch(self):
         self.on_fetch(self)
@@ -389,12 +533,16 @@ class ResourceRow(tk.Frame):
         self.status_var.set(text)
 
 
+# --------------------------------------------------------------------------
+# App
+# --------------------------------------------------------------------------
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("AQ Game Fetcher")
-        self.geometry("620x640")
-        self.minsize(520, 500)
+        self.title("AQ Game Fetcher  ·  Neon")
+        self.geometry("680x720")
+        self.minsize(560, 560)
         self.configure(bg=BG)
 
         self.worker = None
@@ -402,147 +550,225 @@ class App(tk.Tk):
         self.msg_queue = queue.Queue()
         self.active_row = None
         self.last_dest_dir = SCRIPT_DIR
+        self.all_mode = False
 
         self.assets_date_var = tk.StringVar(value="20250328")
 
         self._build_ui()
-        self.after(80, self._poll_queue)
-
-    # -- layout --------------------------------------------------------------
+        self.after(60, self._poll_queue)
 
     def _build_ui(self):
+        # ── header ────────────────────────────────────────────────────
         header = tk.Frame(self, bg=BG)
-        header.pack(fill="x", padx=18, pady=(18, 6))
-        tk.Label(header, text="AQ Game Fetcher", font=FONT_TITLE,
-                  bg=BG, fg=FG).pack(side="left")
-        tk.Label(header, text="game.aq.com resource downloader",
-                  font=FONT_UI, bg=BG, fg=DIM).pack(side="left", padx=(10, 0))
+        header.pack(fill="x", padx=20, pady=(18, 4))
 
+        title_row = tk.Frame(header, bg=BG)
+        title_row.pack(fill="x")
+        tk.Label(title_row, text="◈", font=("Segoe UI", 18),
+                 bg=BG, fg=ACCENT).pack(side="left", padx=(0, 8))
+        tk.Label(title_row, text="AQ Game Fetcher", font=FONT_TITLE,
+                 bg=BG, fg=FG).pack(side="left")
+        tk.Label(title_row, text="neon", font=("Segoe UI", 9),
+                 bg=BG, fg=CYAN).pack(side="left", padx=(10, 0), pady=(6, 0))
+
+        tk.Label(header, text="game.aq.com  ·  client · assets · version · servers",
+                 font=FONT_SUB, bg=BG, fg=DIM).pack(anchor="w", pady=(2, 0))
+
+        # status line
         self.status_var = tk.StringVar(value="Ready.")
         tk.Label(self, textvariable=self.status_var, font=FONT_UI,
-                  bg=BG, fg=ACCENT, anchor="w").pack(fill="x", padx=18)
+                 bg=BG, fg=CYAN, anchor="w").pack(fill="x", padx=20, pady=(8, 0))
 
+        # progress
         style = ttk.Style(self)
         style.theme_use("default")
-        style.configure("Fetch.Horizontal.TProgressbar",
-                         troughcolor=PANEL, background=ACCENT,
-                         bordercolor=PANEL, lightcolor=ACCENT, darkcolor=ACCENT)
+        style.configure(
+            "Neon.Horizontal.TProgressbar",
+            troughcolor=PANEL,
+            background=ACCENT,
+            bordercolor=PANEL,
+            lightcolor=ACCENT,
+            darkcolor=ACCENT,
+            thickness=8,
+        )
         self.progress_var = tk.DoubleVar(value=0)
-        ttk.Progressbar(self, variable=self.progress_var, maximum=100,
-                         style="Fetch.Horizontal.TProgressbar").pack(
-            fill="x", padx=18, pady=(6, 12))
+        ttk.Progressbar(
+            self, variable=self.progress_var, maximum=100,
+            style="Neon.Horizontal.TProgressbar",
+        ).pack(fill="x", padx=20, pady=(6, 14))
 
-        # Resource rows
-        rows_frame = tk.Frame(self, bg=BG)
-        rows_frame.pack(fill="x", padx=18)
+        # ── Fetch All banner ──────────────────────────────────────────
+        all_frame = tk.Frame(self, bg=PANEL, highlightthickness=1,
+                             highlightbackground=GLOW)
+        all_frame.pack(fill="x", padx=20, pady=(0, 10))
 
-        def make_row(title, subtitle, handler, extra_widget=None):
-            row = ResourceRow(rows_frame, title, subtitle, handler, extra_widget)
-            row.pack(fill="x", pady=4)
-            return row
+        all_inner = tk.Frame(all_frame, bg=PANEL)
+        all_inner.pack(fill="x", padx=14, pady=12)
 
-        self.client_row = make_row(
-            "Client", "Game####.swf -- via gameversion API (search fallback)",
-            self.fetch_client
+        left_all = tk.Frame(all_inner, bg=PANEL)
+        left_all.pack(side="left", fill="x", expand=True)
+        tk.Label(left_all, text="⚡  Fetch All", font=FONT_UI_BOLD,
+                 bg=PANEL, fg=FG).pack(anchor="w")
+        tk.Label(left_all, text="Version → Client → Servers → Assets  ·  sequential",
+                 font=FONT_TINY, bg=PANEL, fg=DIM).pack(anchor="w")
+
+        self.all_btn = tk.Button(
+            all_inner, text="Fetch All", font=FONT_UI_BOLD,
+            command=self.fetch_all,
+            bg=GLOW, fg="#e8eaef", activebackground="#536dfe",
+            activeforeground="#e8eaef", relief="flat", padx=20, pady=8,
+            cursor="hand2", borderwidth=0,
+        )
+        self.all_btn.pack(side="right")
+
+        # ── resource cards ────────────────────────────────────────────
+        cards = tk.Frame(self, bg=BG)
+        cards.pack(fill="x", padx=20)
+
+        def make_card(icon, title, subtitle, handler, extra=None):
+            card = ResourceCard(cards, icon, title, subtitle, handler, extra)
+            card.pack(fill="x", pady=4)
+            return card
+
+        self.client_row = make_card(
+            "◆", "Client",
+            "Game####.swf  ·  gameversion API  ·  search fallback",
+            self.fetch_client,
         )
 
         def assets_extra(parent):
-            f = tk.Frame(parent, bg=ROW_BG)
-            tk.Label(f, text="Date (YYYYMMDD):", font=("Segoe UI", 8),
-                     bg=ROW_BG, fg=DIM).pack(side="left")
-            entry = tk.Entry(f, textvariable=self.assets_date_var, width=10,
-                              bg=PANEL, fg=FG, insertbackground=FG,
-                              relief="flat")
-            entry.pack(side="left", padx=(6, 0))
+            f = tk.Frame(parent, bg=CARD)
+            tk.Label(f, text="Date  YYYYMMDD", font=FONT_TINY,
+                     bg=CARD, fg=DIM).pack(side="left")
+            entry = tk.Entry(
+                f, textvariable=self.assets_date_var, width=11,
+                bg=PANEL, fg=FG, insertbackground=FG,
+                relief="flat", font=FONT_MONO,
+                highlightthickness=1, highlightbackground=BORDER,
+                highlightcolor=ACCENT,
+            )
+            entry.pack(side="left", padx=(8, 0), ipady=3)
             return f
 
-        self.assets_row = make_row(
-            "Game Assets", "Assets_YYYYMMDD.swf -- date-stamped, set manually",
-            self.fetch_assets, extra_widget=assets_extra
+        self.assets_row = make_card(
+            "◇", "Game Assets",
+            "Assets_YYYYMMDD.swf  ·  date-stamped, set manually",
+            self.fetch_assets, extra=assets_extra,
         )
 
-        self.version_row = make_row(
-            "Game Version", "JSON metadata (current file, title, build)",
-            self.fetch_version
+        self.version_row = make_card(
+            "▣", "Game Version",
+            "JSON metadata  ·  current file, title, build",
+            self.fetch_version,
         )
 
-        self.servers_row = make_row(
-            "Servers", "JSON server list with live population",
-            self.fetch_servers
+        self.servers_row = make_card(
+            "☰", "Servers",
+            "JSON server list  ·  live population counts",
+            self.fetch_servers,
         )
 
-        self.rows = [self.client_row, self.assets_row,
-                     self.version_row, self.servers_row]
+        self.rows = [
+            self.client_row, self.assets_row,
+            self.version_row, self.servers_row,
+        ]
 
-        # Log panel
-        log_frame = tk.Frame(self, bg=PANEL)
-        log_frame.pack(fill="both", expand=True, padx=18, pady=(12, 0))
+        # ── log ───────────────────────────────────────────────────────
+        log_wrap = tk.Frame(self, bg=PANEL, highlightthickness=1,
+                            highlightbackground=BORDER)
+        log_wrap.pack(fill="both", expand=True, padx=20, pady=(12, 0))
+
+        log_hdr = tk.Frame(log_wrap, bg=PANEL)
+        log_hdr.pack(fill="x", padx=10, pady=(8, 0))
+        tk.Label(log_hdr, text="LOG", font=FONT_TINY,
+                 bg=PANEL, fg=DIM).pack(side="left")
 
         self.log_box = scrolledtext.ScrolledText(
-            log_frame, bg=PANEL, fg=FG, insertbackground=FG,
-            font=FONT_MONO, wrap="word", borderwidth=0, highlightthickness=0,
-            state="disabled"
+            log_wrap, bg=PANEL, fg=FG, insertbackground=FG,
+            font=FONT_MONO, wrap="word", borderwidth=0,
+            highlightthickness=0, state="disabled",
+            padx=8, pady=6,
         )
-        self.log_box.pack(fill="both", expand=True, padx=1, pady=1)
+        self.log_box.pack(fill="both", expand=True, padx=4, pady=4)
 
-        for tag, color in (("ok", GREEN), ("warn", YELLOW),
-                            ("error", RED), ("info", DIM),
-                            ("phase", ACCENT)):
+        for tag, color in (
+            ("ok", GREEN), ("warn", YELLOW), ("error", RED),
+            ("info", DIM), ("phase", ACCENT), ("time", DIM),
+        ):
             self.log_box.tag_configure(tag, foreground=color)
 
-        # Bottom bar
-        btn_frame = tk.Frame(self, bg=BG)
-        btn_frame.pack(fill="x", padx=18, pady=18)
+        # ── bottom bar ────────────────────────────────────────────────
+        bar = tk.Frame(self, bg=BG)
+        bar.pack(fill="x", padx=20, pady=16)
 
         self.cancel_btn = tk.Button(
-            btn_frame, text="Cancel", font=FONT_UI, command=self.cancel_fetch,
-            bg=RED, fg="#101116", activebackground="#c94f63",
-            relief="flat", padx=16, pady=8, cursor="hand2", state="disabled"
+            bar, text="Cancel", font=FONT_UI, command=self.cancel_fetch,
+            bg=RED, fg="#0a0c12", activebackground="#d45a6c",
+            relief="flat", padx=16, pady=7, cursor="hand2",
+            state="disabled", borderwidth=0,
         )
         self.cancel_btn.pack(side="left")
 
         self.open_btn = tk.Button(
-            btn_frame, text="Open Folder", font=FONT_UI, command=self.open_folder,
-            bg=PANEL, fg=FG, activebackground="#33364a",
-            relief="flat", padx=16, pady=8, cursor="hand2"
+            bar, text="Open Folder", font=FONT_UI, command=self.open_folder,
+            bg=CARD, fg=FG, activebackground=CARD_HOVER,
+            relief="flat", padx=14, pady=7, cursor="hand2", borderwidth=0,
         )
-        self.open_btn.pack(side="left", padx=(10, 0))
+        self.open_btn.pack(side="left", padx=(8, 0))
 
         self.clear_btn = tk.Button(
-            btn_frame, text="Clear Log", font=FONT_UI, command=self.clear_log,
-            bg=PANEL, fg=FG, activebackground="#33364a",
-            relief="flat", padx=16, pady=8, cursor="hand2"
+            bar, text="Clear Log", font=FONT_UI, command=self.clear_log,
+            bg=CARD, fg=FG, activebackground=CARD_HOVER,
+            relief="flat", padx=14, pady=7, cursor="hand2", borderwidth=0,
         )
-        self.clear_btn.pack(side="left", padx=(10, 0))
+        self.clear_btn.pack(side="left", padx=(8, 0))
 
-    # -- log helpers -----------------------------------------------------------
+        tk.Label(bar, text="files land next to this script",
+                 font=FONT_TINY, bg=BG, fg=DIM).pack(side="right")
+
+    # -- log -------------------------------------------------------------
 
     def append_log(self, msg, tag="info"):
         self.log_box.configure(state="normal")
-        prefix = {"ok": "[OK]   ", "warn": "[WARN] ", "error": "[FAIL] ",
-                  "phase": "=== ", "info": "  "}.get(tag, "  ")
-        suffix = " ===" if tag == "phase" else ""
-        self.log_box.insert("end", f"{prefix}{msg}{suffix}\n", tag)
+        ts = datetime.now().strftime("%H:%M:%S")
+        prefix = {
+            "ok": "  ✓  ", "warn": "  !  ", "error": "  ✗  ",
+            "phase": "▶ ", "info": "     ",
+        }.get(tag, "     ")
+        if tag == "phase":
+            self.log_box.insert("end", f"\n{ts}  ", "time")
+            self.log_box.insert("end", f"{prefix}{msg}\n", tag)
+        else:
+            self.log_box.insert("end", f"{ts}  ", "time")
+            self.log_box.insert("end", f"{prefix}{msg}\n", tag)
         self.log_box.see("end")
         self.log_box.configure(state="disabled")
 
     # -- job control -----------------------------------------------------
 
-    def _start_job(self, row, target_name, *args):
+    def _set_busy(self, busy):
+        for r in self.rows:
+            r.set_busy(busy)
+        self.all_btn.configure(state="disabled" if busy else "normal")
+        self.cancel_btn.configure(state="normal" if busy else "disabled")
+
+    def _start_job(self, row, target_name, *args, all_mode=False):
         if self.worker and self.worker.is_alive():
             return
         self.active_row = row
+        self.all_mode = all_mode
         self.progress_var.set(0)
-        self.status_var.set("Starting...")
-        row.set_status("Working...")
-        for r in self.rows:
-            r.set_busy(True)
-        self.cancel_btn.configure(state="normal")
+        self.status_var.set("Starting…")
+        if row:
+            row.set_status("Working…")
+        self._set_busy(True)
 
         self.msg_queue = queue.Queue()
         self.fetcher = Fetcher(self.msg_queue)
         target = getattr(self.fetcher, target_name)
-        self.worker = threading.Thread(target=target, args=args, daemon=True)
+        self.worker = threading.Thread(
+            target=target, args=args, daemon=True
+        )
         self.worker.start()
 
     def fetch_client(self, row):
@@ -561,10 +787,20 @@ class App(tk.Tk):
     def fetch_servers(self, row):
         self._start_job(row, "run_servers")
 
+    def fetch_all(self):
+        date_str = self.assets_date_var.get().strip()
+        if not (len(date_str) == 8 and date_str.isdigit()):
+            self.append_log(
+                "Assets date must be 8 digits before Fetch All, e.g. 20250328",
+                "error",
+            )
+            return
+        self._start_job(None, "run_all", date_str, all_mode=True)
+
     def cancel_fetch(self):
         if self.fetcher:
             self.fetcher.cancel_flag.set()
-        self.status_var.set("Cancelling...")
+        self.status_var.set("Cancelling…")
 
     def open_folder(self):
         path = self.last_dest_dir
@@ -585,14 +821,13 @@ class App(tk.Tk):
         self.log_box.configure(state="disabled")
 
     def _job_finished(self):
-        for r in self.rows:
-            r.set_busy(False)
-        self.cancel_btn.configure(state="disabled")
+        self._set_busy(False)
         if self.active_row:
             self.active_row.set_status("")
         self.active_row = None
+        self.all_mode = False
 
-    # -- queue polling -----------------------------------------------------
+    # -- queue poll ------------------------------------------------------
 
     def _poll_queue(self):
         try:
@@ -603,21 +838,31 @@ class App(tk.Tk):
                 elif kind == "status":
                     self.status_var.set(payload["msg"])
                     if self.active_row:
-                        self.active_row.set_status(payload["msg"][:20])
+                        self.active_row.set_status(payload["msg"][:18])
                 elif kind == "phase":
                     self.append_log(payload["title"], "phase")
                 elif kind == "progress":
                     self.progress_var.set(payload["pct"])
+                elif kind == "all_step":
+                    i, t = payload["index"], payload["total"]
+                    self.status_var.set(f"All  ·  step {i}/{t}")
                 elif kind == "done":
                     if payload.get("ok"):
-                        self.status_var.set(f"Done -- {payload.get('summary', '')}")
-                        self.last_dest_dir = os.path.dirname(payload["dest"])
+                        self.status_var.set(
+                            f"Done  ·  {payload.get('summary', '')}"
+                        )
+                        dest = payload.get("dest")
+                        if dest:
+                            self.last_dest_dir = (
+                                dest if os.path.isdir(dest)
+                                else os.path.dirname(dest)
+                            )
                     else:
-                        self.status_var.set("Failed -- see log.")
+                        self.status_var.set("Failed  ·  see log")
                     self._job_finished()
         except queue.Empty:
             pass
-        self.after(80, self._poll_queue)
+        self.after(60, self._poll_queue)
 
 
 if __name__ == "__main__":

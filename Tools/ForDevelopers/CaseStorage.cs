@@ -32818,6 +32818,89 @@ case ""Example Item"":
 
     "
 },
+{
+    "Black Knight's Nail",
+    @"
+case ""Black Knight's Nail"":
+                    Core.HuntMonster(""greenguardwest"", ""Black Knight"", req.Name, req.Quantity, req.Temp);
+                    break;
+    "
+},
+{
+    "Borgar",
+    @"
+case ""Borgar"":
+                    Burgers.BuyAllMerge(req.Name);
+                    break;
+    "
+},
+{
+    "Barrel",
+    @"
+case ""Barrel"":
+                    Adv.BuyItem(""artixpointe"", 999, req.Name, req.Quantity);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+    "
+},
+{
+    "Glass Bottle",
+    @"
+case ""Glass Bottle"":
+                    if (!Core.IsMember)
+                    {
+                        Core.Logger($""{req.Name} Requires membership"");
+                        return;
+                    }
+                    Adv.BuyItem(""buyhouse"", 1366, req.Name, req.Quantity);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+    "
+},
+{
+    "New Home Weapon Display",
+    @"
+case ""New Home Weapon Display"":
+                    Core.KillMonster(""cyserowed"", ""r1"", ""Down"", ""*"", req.Name);
+                    Bot.Wait.ForPickup(req.Name);
+                    break;
+    "
+},
+{
+    "Staked Steak",
+    @"
+case ""Staked Steak"":
+                    Adv.BuyItem(""darkoviaforest"", 138, req.Name, req.Quantity);
+                    break;
+    "
+},
+{
+    "Basic Wooden Stake",
+    @"
+case ""Basic Wooden Stake"":
+                    Adv.BuyItem(""darkoviaforest"", 138, req.Name, req.Quantity);
+                    break;
+    "
+},
+{
+    "Real Rubber Ducky",
+    @"
+case ""Real Rubber Ducky"":
+                    if (!Core.IsMember)
+                    {
+                        Core.Logger($""{req.Name} Requires membership"");
+                        return;
+                    }
+                    Core.AddDrop(req.ID);
+                    Core.EnsureAccept(2776);
+                    Core.HuntMonster(""river"", ""River Fishman"", ""Yellow Rubber Duck"", 3);
+                    Core.HuntMonster(""marsh"", ""Dark Witch"", ""Red Rubber Duck"", 3);
+                    Core.HuntMonster(""shallow"", ""Water Elemental"", ""Blue Rubber Duck"", 3);
+                    Core.EnsureComplete(2776);
+                    Bot.Wait.ForPickup(req.ID);
+                    break;
+    "
+},
 };
 
     public static bool TryGetCase(string itemName, out string? logic) =>

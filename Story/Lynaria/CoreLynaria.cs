@@ -96,8 +96,8 @@ public class CoreLynaria
         {
             Core.HuntMonsterQuest(
                 10238,
-                ("bocklingrove", UseableMonsters[5], ClassType.Farm),
-                ("bocklingrove", UseableMonsters[4], ClassType.Farm)
+                ("bocklingrove", UseableMonsters[4], ClassType.Farm),
+                ("bocklingrove", UseableMonsters[5], ClassType.Farm)
             );
         }
 

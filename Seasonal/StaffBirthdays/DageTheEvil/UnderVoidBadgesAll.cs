@@ -175,8 +175,8 @@ public class UnderVoidBadgesAll
         }
     }
 
-    private string badge1 = "Conquest Victor";
-    private string badge2 = "War Victor";
-    private string badge3 = "Famine Victor";
-    private string badge4 = "Death Victor";
+    private readonly string badge1 = "Conquest Victor";
+    private readonly string badge2 = "War Victor";
+    private readonly string badge3 = "Famine Victor";
+    private readonly string badge4 = "Death Victor";
 }

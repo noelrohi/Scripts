@@ -29,8 +29,7 @@ public class HollowSoul
     {
         Core.BankingBlackList.Add("Hollow Soul");
         Core.SetOptions();
-        Core.SellItem("Hollow Soul", all: true);
-        GetYaSoulsHeeeere(1);
+        GetYaSoulsHeeeere();
 
         Core.SetOptions(false);
     }

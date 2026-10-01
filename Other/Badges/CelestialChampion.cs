@@ -44,5 +44,5 @@ public class CelestialArenaChampion
         CA.Arena21to29();
     }
 
-    private string badge = "Celestial Champion";
+    private readonly string badge = "Celestial Champion";
 }

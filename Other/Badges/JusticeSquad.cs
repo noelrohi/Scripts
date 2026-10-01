@@ -36,5 +36,5 @@ public class JusticeSquadBadge
         Core.TrashCan("Enchanted Justice Blade");
     }
 
-    private string badge = "Justice Squad";
+    private readonly string badge = "Justice Squad";
 }

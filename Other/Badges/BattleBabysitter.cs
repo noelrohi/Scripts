@@ -40,5 +40,5 @@ public class BattleBabysitter
         Doomwood.DoomwoodPart3();
     }
 
-    private string badge = "Battle Babysitter";
+    private readonly string badge = "Battle Babysitter";
 }

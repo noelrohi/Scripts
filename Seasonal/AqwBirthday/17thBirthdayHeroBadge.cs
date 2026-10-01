@@ -44,5 +44,5 @@ public class BirthdayHeroBadge
         );
     }
 
-    private string badge = "17th Birthday Hero";
+    private readonly string badge = "17th Birthday Hero";
 }

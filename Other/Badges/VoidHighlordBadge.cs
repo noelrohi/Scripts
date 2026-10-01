@@ -38,5 +38,5 @@ public class VoidHighlordBadge
         Core.EnsureComplete(7651);
     }
 
-    private string badge = "Void Highlord";
+    private readonly string badge = "Void Highlord";
 }

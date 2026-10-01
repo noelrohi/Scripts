@@ -406,10 +406,10 @@ public class CoreNation
                 Core.Join("evilwarnul");
                 Bot.Wait.ForMapLoad("evilwarnul");
             }
-            if (Bot.Player.Cell != "r12")
+            if (Bot.Player.Cell != "r9")
             {
-                Bot.Map.Jump("r12", "Left", false);
-                Bot.Wait.ForCellChange("r12");
+                Bot.Map.Jump("r9", "Left", false);
+                Bot.Wait.ForCellChange("r9");
             }
             Core.CanWeAggro();
             Bot.Combat.Attack("*");

@@ -46,5 +46,5 @@ public class StoryArcBadge
         DW.DoomwoodPart1();
     }
 
-    private string badge = "Story ARC";
+    private readonly string badge = "Story ARC";
 }

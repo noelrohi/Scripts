@@ -46,5 +46,5 @@ public class UltraCarnaxBadge
         Story.KillQuest(2388, "ultracarnax", "Ultra-Carnax");
     }
 
-    private string badge = "Ultra-Carnax";
+    private readonly string badge = "Ultra-Carnax";
 }

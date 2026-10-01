@@ -95,5 +95,5 @@ public class ConZombieSlayer
         Core.AbandonQuest(3144);
     }
 
-    private string badge = "ConZombie Slayer";
+    private readonly string badge = "ConZombie Slayer";
 }

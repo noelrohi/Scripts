@@ -118,5 +118,5 @@ public class ZorbakPunt
         // }
     }
 
-    private string badge = "Zorbak Punter";
+    private readonly string badge = "Zorbak Punter";
 }

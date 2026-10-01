@@ -1933,8 +1933,8 @@
       "null"
     ],
     "path": "Nation/CoreNation.cs",
-    "size": 116731,
-    "sha256": "b7d4293527e1d723fcd423ec50973cc2dcb13d924ba9cc5b75f03a86ba341e44",
+    "size": 116728,
+    "sha256": "f2ffd680e007c35a440dfdcb7d23f09697a2ef3bc0d0f326f7325884fa4fe163",
     "fileName": "CoreNation.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/CoreNation.cs"
   },
@@ -6278,8 +6278,8 @@
       "seasonal"
     ],
     "path": "Seasonal/AqwBirthday/17thBirthdayHeroBadge.cs",
-    "size": 1198,
-    "sha256": "528e5f8706a2c0868abaf03d0801342cb7672cd6349612b3e7b8ca123be04b48",
+    "size": 1207,
+    "sha256": "2d4823f690b8da853117e361009244cb2a85826aaf2d536154a79ba3666f3a29",
     "fileName": "17thBirthdayHeroBadge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/AqwBirthday/17thBirthdayHeroBadge.cs"
   },
@@ -7453,8 +7453,8 @@
       "seasonal"
     ],
     "path": "Seasonal/Frostvale/FrostvaleBadges.cs",
-    "size": 1492,
-    "sha256": "66c5640e55dd31d0a9abfddac07e38f745c344c209d20a1592462e9cce568b01",
+    "size": 1510,
+    "sha256": "95d8af2c2c513294d952679479b0656bd51e2634d33d9eb4e4bda08726395084",
     "fileName": "FrostvaleBadges.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Frostvale/FrostvaleBadges.cs"
   },
@@ -8262,8 +8262,8 @@
       "april-fools"
     ],
     "path": "Seasonal/AprilFools/ArtIficialErrorBadge.cs",
-    "size": 1129,
-    "sha256": "3e8cf6a2d94934352353e3c20b7a0d61f1cb22da52f3e85f2e07fce59fbe1290",
+    "size": 1138,
+    "sha256": "813d99ea82408ae3be0c93ca2d13d8565b72b728413c52633ce65bfcf5cea8f0",
     "fileName": "ArtIficialErrorBadge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/AprilFools/ArtIficialErrorBadge.cs"
   },
@@ -8918,8 +8918,8 @@
       "harvest-day"
     ],
     "path": "Seasonal/HarvestDay/NoEgretsBadge.cs",
-    "size": 1318,
-    "sha256": "2c001955a82a975ec9d620224595a290283a7272b4fe3d47fcd7a93b5f492c7d",
+    "size": 1327,
+    "sha256": "348b76563e8a478e4f3a6c4ee8e090ee292eff89d652f9a3b26d19fa513bacdc",
     "fileName": "NoEgretsBadge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/HarvestDay/NoEgretsBadge.cs"
   },
@@ -10799,8 +10799,8 @@
       "hollowborn"
     ],
     "path": "Hollowborn/Materials/HollowSoul.cs",
-    "size": 1346,
-    "sha256": "e8590cf48dbf36aa2cfeefb7b3ef06604de75c218527431f487142e976facbbe",
+    "size": 1296,
+    "sha256": "b4b32cc8b6bbae58b17036ac97f5c3cfbe8b39ac5ac05aaacd76675b4750daca",
     "fileName": "HollowSoul.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Hollowborn/Materials/HollowSoul.cs"
   },
@@ -18715,8 +18715,8 @@
       "badge"
     ],
     "path": "Other/Badges/WorldCup.cs",
-    "size": 1152,
-    "sha256": "d633edc8e567ee09882f9cb4db6d7fec877b041507c82f88cafb212d5c8ba0b2",
+    "size": 1161,
+    "sha256": "a09a359ca10d0fb196ee7ea74937412b154e9fce2768654c888754d33f540192",
     "fileName": "WorldCup.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/WorldCup.cs"
   },
@@ -18739,8 +18739,8 @@
       "null"
     ],
     "path": "Other/Badges/TableFlipper.cs",
-    "size": 939,
-    "sha256": "6e95b003ffbe3c181fdd2a8a22e1f04394d2016c4b967fa028b69d31b9d37df4",
+    "size": 948,
+    "sha256": "7ebde8bba947749486a16d56326abcbc7627d81ab750e2db1f09d006f78bfb8d",
     "fileName": "TableFlipper.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/TableFlipper.cs"
   },
@@ -18751,8 +18751,8 @@
       "null"
     ],
     "path": "Other/Badges/UltraCarnax.cs",
-    "size": 1105,
-    "sha256": "72f7c39b45454396d98a224959d78a404194b29e22edb94de909f8e43d82f48f",
+    "size": 1114,
+    "sha256": "e81dc98f1ad8eaab1fbad8e4b67b392d2abf2bcaa804583db921dee5554a52f2",
     "fileName": "UltraCarnax.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/UltraCarnax.cs"
   },
@@ -18767,8 +18767,8 @@
       "shadowfall"
     ],
     "path": "Other/Badges/GravelynsWarrior.cs",
-    "size": 923,
-    "sha256": "8a078a8cde2979482760f4f31cd914bad0821b5ac277955dfa751521ea37e22d",
+    "size": 932,
+    "sha256": "01348ef08a5f0919fe6bc9c108dcd5518d58bd4e15e4c1ccef54f92b1b33e054",
     "fileName": "GravelynsWarrior.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/GravelynsWarrior.cs"
   },
@@ -18804,8 +18804,8 @@
       "null"
     ],
     "path": "Other/Badges/ChaosPuppetMaster.cs",
-    "size": 989,
-    "sha256": "286fa79a888193c8966990b02f1bcc02aea5bfd9ae8bb5068e4291c17cee093b",
+    "size": 998,
+    "sha256": "098cea9d560079c9cf80e58df93e2385ac8b8afc6d345a98a636b38b68cc33b0",
     "fileName": "ChaosPuppetMaster.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/ChaosPuppetMaster.cs"
   },
@@ -18821,8 +18821,8 @@
       "vip"
     ],
     "path": "Other/Badges/BattleConVIP.cs",
-    "size": 1046,
-    "sha256": "a94378b29e94f01d0b0bf992aefb79ad7a1ec3298181476439254fcff4d5619c",
+    "size": 1055,
+    "sha256": "a3a325f2a49a70e286ca7247a821f3e8e365e7118716168637eeb793e923e08b",
     "fileName": "BattleConVIP.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/BattleConVIP.cs"
   },
@@ -18845,8 +18845,8 @@
       "null"
     ],
     "path": "Other/Badges/JusticeSquad.cs",
-    "size": 923,
-    "sha256": "b65aed379a9ec6c615f6fa857af813a0ef1da21cca46e3371e384243fb28e672",
+    "size": 932,
+    "sha256": "97e81bf8629d21b9eefd26a86b94cfa98273b171d7cc3d84f58508ce02d17493",
     "fileName": "JusticeSquad.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/JusticeSquad.cs"
   },
@@ -18857,10 +18857,23 @@
       "null"
     ],
     "path": "Other/Badges/StoryARC.cs",
-    "size": 1108,
-    "sha256": "2c1c1ac8c2e84317d115770a28ae8bf2a633878726cb11b85d190e1f2fe828c8",
+    "size": 1117,
+    "sha256": "e1e8361b5f5698baa5de45b0a091b93f2f5bc122f1258f27e9ff2eaf3cb8dda4",
     "fileName": "StoryARC.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/StoryARC.cs"
+  },
+  {
+    "name": "YouChuteYouScore",
+    "description": "does the `You Chute, You Score` badge",
+    "tags": [
+      "youchuteyouscore",
+      "you chute you score"
+    ],
+    "path": "Other/Badges/YouChuteYouScore.cs",
+    "size": 916,
+    "sha256": "c84b27f4369ab30875377d0f48bb7c80e82185c52442a49530276859d0859e71",
+    "fileName": "YouChuteYouScore.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/YouChuteYouScore.cs"
   },
   {
     "name": "VoidHighlordBadge",
@@ -18869,8 +18882,8 @@
       "null"
     ],
     "path": "Other/Badges/VoidHighlordBadge.cs",
-    "size": 948,
-    "sha256": "c389df521a3b39282012a40dfaa76b5755eda03bfbc887b979a3c6a68ae1e220",
+    "size": 957,
+    "sha256": "d8a55c68e9bd63b52637712f9c8dd1d1392d4120024649fc681ce14a9a798c19",
     "fileName": "VoidHighlordBadge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/VoidHighlordBadge.cs"
   },
@@ -18884,8 +18897,8 @@
       "champion"
     ],
     "path": "Other/Badges/CelestialChampion.cs",
-    "size": 1215,
-    "sha256": "4ac3fbd01638290d5f62489d45aceae876b9099b848d2338d68654092cb6d8e8",
+    "size": 1224,
+    "sha256": "8224fdd4ddfb3dc12fcfe0da735d7c81abd92dee1c188868922f6ee36abfd1ca",
     "fileName": "CelestialChampion.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/CelestialChampion.cs"
   },
@@ -18901,8 +18914,8 @@
       "yokai realm"
     ],
     "path": "Other/Badges/YokaiAscension.cs",
-    "size": 1048,
-    "sha256": "309c42bac0c882aa5cd050fcdf4dbc459b09e861af50355b3f55d227892e3ebf",
+    "size": 1057,
+    "sha256": "7ac6d82c642189dd83f1a0cea91df81081470b58d3b27cc3692271e8c7f0e499",
     "fileName": "YokaiAscension.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/YokaiAscension.cs"
   },
@@ -18913,8 +18926,8 @@
       "null"
     ],
     "path": "Other/Badges/ZorbakPunter.cs",
-    "size": 3946,
-    "sha256": "aa91a0828b34b75286705087f7d24b1887099255ec6e660779abc0b2ef6994a5",
+    "size": 3955,
+    "sha256": "9e321007b570561a80cb0180f412c9200fc4542b79595a4dbcc650e0c54fdd7d",
     "fileName": "ZorbakPunter.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/ZorbakPunter.cs"
   },
@@ -18961,8 +18974,8 @@
       "null"
     ],
     "path": "Other/Badges/HordeZombieSLAYER.cs",
-    "size": 890,
-    "sha256": "ce2bef349553c9502b39c5b7da80fa3cac9291e6dc0c0a3bbabc96637456a341",
+    "size": 899,
+    "sha256": "254ea9d9e9bfa61c7c1b8bd802acf592903471c3e1730667423ac8e2fb18dd14",
     "fileName": "HordeZombieSLAYER.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/HordeZombieSLAYER.cs"
   },
@@ -18988,8 +19001,8 @@
       "baby-sitter"
     ],
     "path": "Other/Badges/BattleBabysitter.cs",
-    "size": 1069,
-    "sha256": "3dae4cbe825af5c2c5b3f66e26343cb6d074d2e731d6bf3a9fc80cf5f649bc20",
+    "size": 1078,
+    "sha256": "c5f214611a16ba291623b394da0d339da60d1289343f690a33cf53bf4c98587d",
     "fileName": "BattleBabysitter.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/BattleBabysitter.cs"
   },
@@ -19000,8 +19013,8 @@
       "null"
     ],
     "path": "Other/Badges/LordOfTheWeddingRing.cs",
-    "size": 978,
-    "sha256": "2a0d7f0b9f9f378430d9e1e26622ff58506a95418f48156ea3eff36a756b4576",
+    "size": 987,
+    "sha256": "770ae71d98c273ab82c116b605798493aaa3835c4b522194f1ff3cc816b656e0",
     "fileName": "LordOfTheWeddingRing.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/LordOfTheWeddingRing.cs"
   },
@@ -19027,8 +19040,8 @@
       "null"
     ],
     "path": "Other/Badges/Committed.cs",
-    "size": 919,
-    "sha256": "4c8c5f8c64803745bb756678947895c0555b8e0d39a3bea13c26220967684be4",
+    "size": 928,
+    "sha256": "d682ae9d74c44168973043b0de3493287a3714cd21ba9411defdc71e92f771b2",
     "fileName": "Committed.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/Committed.cs"
   },
@@ -19039,8 +19052,8 @@
       "null"
     ],
     "path": "Other/Badges/GoldenLaurel.cs",
-    "size": 957,
-    "sha256": "bf2e97a7546ecf32b44cf7cf95aecc65d7342e5323f834b89e444ebed43c32ce",
+    "size": 966,
+    "sha256": "7af7f0b747b53036acdbce393076fc1b039c3c145b061db6660a8b5058a8b154",
     "fileName": "GoldenLaurel.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/GoldenLaurel.cs"
   },
@@ -19051,8 +19064,8 @@
       "twillypunt"
     ],
     "path": "Other/Badges/MoglinPunter.cs",
-    "size": 3735,
-    "sha256": "e0e8709e76c5b33adc4461a77bbaa7110d62f10579e120ac11a3c47ff26fbbe5",
+    "size": 3744,
+    "sha256": "50b4d04f6c7a2652844d0439ca83eb50e7cd642794f8b58099f4dd5253a06e2e",
     "fileName": "MoglinPunter.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/MoglinPunter.cs"
   },
@@ -19063,8 +19076,8 @@
       "null"
     ],
     "path": "Other/Badges/ConZombieSlayer.cs",
-    "size": 3046,
-    "sha256": "9eb8bc093193757be2e962e5d36a3b52059bf822200288b30c9b687cc5604fd5",
+    "size": 3055,
+    "sha256": "651ed5ea4dfc8f4fe5ba1749af0439473d7a19c791127f7c2de94b12e007d57e",
     "fileName": "ConZombieSlayer.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/ConZombieSlayer.cs"
   },
@@ -19075,8 +19088,8 @@
       "null"
     ],
     "path": "Other/Badges/StoneCold.cs",
-    "size": 940,
-    "sha256": "e6b8aeda5a92881008c38409f5e76285ca623b07ca0169b08d69e76cf17e88ce",
+    "size": 949,
+    "sha256": "c1777703c06603ab83d296726f204d2897b2758f1bdf0feceaa963ab7af59515",
     "fileName": "StoneCold.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/StoneCold.cs"
   },
@@ -19099,8 +19112,8 @@
       "null"
     ],
     "path": "Other/Badges/6thBirthdaySavior.cs",
-    "size": 950,
-    "sha256": "7d35bab429ffe814b37a000f6c79dbf78551dc36abe90504601f6bfa1ea6be9f",
+    "size": 959,
+    "sha256": "6ba002137f25acdaf943bbe8392ddb463aaf915c3566054dde3d6bed87eb62e1",
     "fileName": "6thBirthdaySavior.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/6thBirthdaySavior.cs"
   },
@@ -19111,22 +19124,10 @@
       "null"
     ],
     "path": "Other/Badges/ThiefofChaos.cs",
-    "size": 1096,
-    "sha256": "743ee4091d1a2403385899df1ed94b7d32ef5d0763363a93a80213e237eb71b1",
+    "size": 1105,
+    "sha256": "868e075ebf26f3d9ae91a7c8d7724b69af73e33781390bce3a7a90841d3c0adf",
     "fileName": "ThiefofChaos.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/ThiefofChaos.cs"
-  },
-  {
-    "name": "Goal",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Other/Badges/Goal.cs",
-    "size": 826,
-    "sha256": "7673edf795a9f2c9a1e33a4bd468d1effbb760e163243ada76d006226cf8e876",
-    "fileName": "Goal.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/Goal.cs"
   },
   {
     "name": "ShadowVaultChampion",
@@ -19135,8 +19136,8 @@
       "null"
     ],
     "path": "Other/Badges/ShadowVaultChampion.cs",
-    "size": 956,
-    "sha256": "778a20c5a7ec75d4bf27d8327928f89619a2a1fd6ef86840fc9a0a68eaee38b2",
+    "size": 965,
+    "sha256": "85a2a9ba7626c99d9219cfd32470b5e712296b0fc108ce94b070fe29eae999bb",
     "fileName": "ShadowVaultChampion.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Badges/ShadowVaultChampion.cs"
   },
@@ -19765,8 +19766,8 @@
       "badge"
     ],
     "path": "Army/Badges/TouchMass.cs",
-    "size": 5819,
-    "sha256": "b55b8945ed902210d66f0c86abfee05ed15de13617c7d4b8cb9a2f98b5287212",
+    "size": 5828,
+    "sha256": "1efe0ae064b7169e732e41e6e03246bd63f597dd8bd369c5757fa43bf49204d3",
     "fileName": "TouchMass.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Army/Badges/TouchMass.cs"
   },
@@ -29640,7 +29641,7 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/SummarizeStatistics.cs"
   },
   {
-    "name": "GenerateQuestFilesv3",
+    "name": "GenerateQuestFilesv4",
     "description": "Lean quest data generator — fetch quests in throttled batches and save.",
     "tags": [
       "debug",
@@ -29650,8 +29651,8 @@
       "v3"
     ],
     "path": "Tools/ForDevelopers/GenerateQuestFilesv4.cs",
-    "size": 19752,
-    "sha256": "ed72cce29e7ced366abcec6e258f0e3737df97594d415d48b9468352700af3f1",
+    "size": 19753,
+    "sha256": "5ac5394eee426661b06b2b6b88191096e51aaaf93a4d2146a14f5208bad53d27",
     "fileName": "GenerateQuestFilesv4.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/GenerateQuestFilesv4.cs"
   },
@@ -29700,8 +29701,8 @@
       "v2"
     ],
     "path": "Tools/ForDevelopers/WeeklyReleaseGeneratorV2.cs",
-    "size": 40467,
-    "sha256": "efef8dad3dc0d6958a5b55927cb47317c20938a5e8701c6af6090bd46688055d",
+    "size": 37909,
+    "sha256": "160c26e3a5a795b8286c557b93502fa131e71ac800cc9462ef64ca163098d6d0",
     "fileName": "WeeklyReleaseGeneratorV2.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/WeeklyReleaseGeneratorV2.cs"
   },
@@ -31789,8 +31790,8 @@
       "death victor"
     ],
     "path": "Seasonal/StaffBirthdays/DageTheEvil/UnderVoidBadgesAll.cs",
-    "size": 5384,
-    "sha256": "2d4d3fcbcf12c8d9e0ee171e1c155188def05a8a17cbeeea4d7aec3deb887316",
+    "size": 5420,
+    "sha256": "410dda6b5211e680613b5075de4cccfcfcb35c1affd208e448b6db7a04e9b4f0",
     "fileName": "UnderVoidBadgesAll.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/StaffBirthdays/DageTheEvil/UnderVoidBadgesAll.cs"
   },

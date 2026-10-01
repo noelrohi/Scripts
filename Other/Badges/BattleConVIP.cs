@@ -40,5 +40,5 @@ public class BattleConVIP
         UGL.partofundergroundlabb();
     }
 
-    private string badge = "BattleCon VIP";
+    private readonly string badge = "BattleCon VIP";
 }

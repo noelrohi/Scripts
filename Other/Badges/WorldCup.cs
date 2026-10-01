@@ -44,5 +44,5 @@ public class WorldCup
     }
 
 
-    private string badge = "World Cup";
+    private readonly string badge = "World Cup";
 }

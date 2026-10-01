@@ -41,5 +41,5 @@ public class ChaosPuppetMaster
         QOM.CompleteEverything();
     }
 
-    private string badge = "Chaos PuppetMaster";
+    private readonly string badge = "Chaos PuppetMaster";
 }

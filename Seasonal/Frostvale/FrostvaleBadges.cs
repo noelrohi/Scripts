@@ -47,6 +47,6 @@ public class FrostvaleBadges
         Frostvale.DoAll();
     }
 
-    private string badge1 = "World Savior";
-    private string badge2 = "Frost Defanged";
+    private readonly string badge1 = "World Savior";
+    private readonly string badge2 = "Frost Defanged";
 }

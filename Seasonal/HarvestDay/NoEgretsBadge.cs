@@ -48,5 +48,5 @@ public class NoEgrets
         HarvestDay.BirdsWithHarms();
     }
 
-    private string badge = "No Egrets";
+    private readonly string badge = "No Egrets";
 }

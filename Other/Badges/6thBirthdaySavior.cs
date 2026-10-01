@@ -40,5 +40,5 @@ public class BirthdaySavior
         AP.OmniArtifact();
     }
 
-    private string badge = "6th Birthday Savior";
+    private readonly string badge = "6th Birthday Savior";
 }

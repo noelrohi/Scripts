@@ -37,5 +37,5 @@ public class HordeZombieSLAYER
         Core.EnsureComplete(8670);
     }
 
-    private string badge = "Zombie Slayer";
+    private readonly string badge = "Zombie Slayer";
 }

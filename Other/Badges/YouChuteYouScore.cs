@@ -1,12 +1,12 @@
 /*
-name: Goal
-description: null
-tags: null
+name: YouChuteYouScore
+description: does the `You Chute, You Score` badge
+tags: YouChuteYouScore, You Chute You Score
 */
 //cs_include Scripts/CoreBots.cs
 using Skua.Core.Interfaces;
 
-public class GoalBadge
+public class YouChuteYouScoreBadge
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;

@@ -40,5 +40,5 @@ public class LordOfTheWeddingRing
         AW.ArtixWeddingComplete();
     }
 
-    private string badge = "Lord of the Wedding Ring";
+    private readonly string badge = "Lord of the Wedding Ring";
 }

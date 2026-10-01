@@ -40,5 +40,5 @@ public class ShadowVaultChampion
         SV.StoryLine();
     }
 
-    private string badge = "ShadowScythe Champion";
+    private readonly string badge = "ShadowScythe Champion";
 }

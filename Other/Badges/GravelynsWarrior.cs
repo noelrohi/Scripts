@@ -33,5 +33,5 @@ public class GravelynsWarrior
         Core.EnsureComplete(8671);
     }
 
-    private string badge = "Gravelyn's Warrior";
+    private readonly string badge = "Gravelyn's Warrior";
 }

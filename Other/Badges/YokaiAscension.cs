@@ -41,5 +41,5 @@ public class YokaiAscension
         DOY.YokaiRealm();
     }
 
-    private string badge = "Yokai Ascension";
+    private readonly string badge = "Yokai Ascension";
 }

@@ -21,7 +21,7 @@ using Skua.Core.Models.Items;
 using Skua.Core.Models.Quests;
 using Skua.Core.Options;
 
-public class WeeklyReleaseGeneratorV2
+public class WeeklyReleaseGeneratorv2
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
@@ -30,7 +30,8 @@ public class WeeklyReleaseGeneratorV2
     public bool DontPreconfigure = true;
     public List<IOption> Options = new()
     {
-        new Option<string>("MapName", "Map", "Map to join and generate from.", ""),
+        new Option<bool>("UseCurrentMap", "Use Current Map", "Automatically use the map you are currently joined in.", true),
+        new Option<string>("MapName", "Map", "Map to join and generate from (ignored if 'Use Current Map' is true and you are already in a map).", ""),
     };
 
     private sealed record Dependency(string IncludePath, string ClassName, string MethodName);
@@ -58,13 +59,27 @@ public class WeeklyReleaseGeneratorV2
 
     private void Generate()
     {
-        string map = (Bot.Config?.Get<string>("MapName") ?? string.Empty).Trim().ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(map))
-            throw new InvalidOperationException("Enter the release map name.");
+        bool useCurrentMap = Bot.Config?.Get<bool>("UseCurrentMap") ?? true;
+        string map = string.Empty;
 
-        Core.Join(map);
-        if (!Bot.Wait.ForMapLoad(map))
-            throw new InvalidOperationException($"Failed to join /{map}.");
+        if (useCurrentMap && !string.IsNullOrWhiteSpace(Bot.Map?.Name))
+        {
+            map = Bot.Map.Name.Trim().ToLowerInvariant();
+        }
+        else
+        {
+            map = (Bot.Config?.Get<string>("MapName") ?? string.Empty).Trim().ToLowerInvariant();
+        }
+
+        if (string.IsNullOrWhiteSpace(map))
+            throw new InvalidOperationException("No map specified and not currently joined in a valid map.");
+
+        if (!Bot.Map.Name.Equals(map, StringComparison.OrdinalIgnoreCase))
+        {
+            Core.Join(map);
+            if (!Bot.Wait.ForMapLoad(map))
+                throw new InvalidOperationException($"Failed to join /{map}.");
+        }
 
         LocationSwfQuestReader.LocationQuestData location = new LocationSwfQuestReader().ReadCurrentMap();
         IReadOnlyList<int> questIDs = location.QuestIDs;
@@ -76,42 +91,31 @@ public class WeeklyReleaseGeneratorV2
         if (mapQuests.Count == 0)
             throw new InvalidOperationException("The map referenced quests, but none could be loaded.");
 
-        // Live-loaded release quests may not exist in QuestData.json yet. Merge
-        // them into the working catalog so the rest of generation sees their
-        // slots, values, requirements, and rewards exactly like cached quests.
         HashSet<int> loadedMapQuestIDs = mapQuests.Select(quest => quest.ID).ToHashSet();
         allQuests.RemoveAll(quest => loadedMapQuestIDs.Contains(quest.ID));
         allQuests.AddRange(mapQuests);
 
         IReadOnlyList<DropPacketCollector.MonsterDrops> monsters = new DropPacketCollector().Collect();
-        // One scan of the scripts tree is shared by map-item recovery and
-        // prerequisite dependency discovery so we do not read every .cs twice.
         IReadOnlyList<ScriptSource> scriptSources = LoadScriptSources();
         IReadOnlyDictionary<int, IReadOnlyList<MapItemSource>> existingMapItems = FindExistingMapItems(mapQuests, scriptSources);
+
         List<Quest> repeatableQuests = mapQuests
             .DistinctBy(quest => quest.ID)
             .Where(quest => quest.Slot == -1 && !quest.Once)
             .OrderBy(quest => quest.Value)
             .ThenBy(quest => quest.ID)
             .ToList();
-        List<List<Quest>> chains = mapQuests
-            // Quest references from every placed NPC are combined before any
-            // chain is formed. NPC boundaries never split a progression slot.
+
+        // Single story list combined across all progression slots
+        List<Quest> storyQuests = mapQuests
             .DistinctBy(quest => quest.ID)
-            // Slot -1 quests are freely invokable side/repeatable quests, not
-            // gated story progressions, so they do not get story files.
             .Where(quest => quest.Slot != -1)
-            // Every remaining identical slot is exactly one output chain.
-            .GroupBy(quest => quest.Slot)
-            .Select(RemovePostFinalFarmQuests)
-            .Where(chain => chain.Count > 0)
-            // Story file numbering follows progression metadata, never the
-            // arbitrary order of quest IDs found in the SWF or quest cache.
-            .OrderBy(chain => chain[0].Slot)
-            .ThenBy(chain => chain[0].Value)
-            .ThenBy(chain => chain[0].ID)
+            .OrderBy(quest => quest.Slot)
+            .ThenBy(quest => quest.Value)
+            .ThenBy(quest => quest.ID)
             .ToList();
-        if (chains.Count == 0 && repeatableQuests.Count == 0)
+
+        if (storyQuests.Count == 0 && repeatableQuests.Count == 0)
             throw new InvalidOperationException("No quest chains were found in the map.");
 
         string outputDirectory = Path.Combine(ClientFileSources.SkuaScriptsDIR, "WIP");
@@ -121,39 +125,41 @@ public class WeeklyReleaseGeneratorV2
         foreach (string stale in Directory.GetFiles(outputDirectory, $"{mapIdentifier}*.cs")
             .Where(file => Regex.IsMatch(Path.GetFileName(file), stalePattern, RegexOptions.IgnoreCase)))
             File.Delete(stale);
+
         List<string> outputs = new();
         HashSet<int> currentMapQuestIDs = mapQuests.Select(quest => quest.ID).ToHashSet();
-        for (int index = 0; index < chains.Count; index++)
+
+        if (storyQuests.Count > 0)
         {
-            List<Quest> chain = chains[index];
             Quest? predecessor = allQuests
-                .Where(quest => quest.Slot == chain[0].Slot && quest.Value < chain[0].Value)
+                .Where(quest => quest.Slot == storyQuests[0].Slot && quest.Value < storyQuests[0].Value)
                 .OrderByDescending(quest => quest.Value)
                 .ThenByDescending(quest => quest.Once)
                 .ThenByDescending(quest => quest.ID)
                 .FirstOrDefault();
+
             Dependency? dependency = predecessor == null
                 ? null
                 : FindDependency(predecessor, currentMapQuestIDs, allQuests, scriptSources);
-            string className = chains.Count > 1 ? $"{mapIdentifier}{index + 1}" : mapIdentifier;
+
+            string className = mapIdentifier;
             string path = Path.Combine(outputDirectory, className + ".cs");
             Core.WriteFile(path, BuildStory(
                 className,
                 map,
-                chain,
+                storyQuests,
                 monsters,
                 location.MapObjectsByQuest,
                 existingMapItems,
                 predecessor,
-                dependency,
-                part: chains.Count > 1 ? index + 1 : null
+                dependency
             ));
             outputs.Add(path);
         }
 
         if (repeatableQuests.Count > 0)
         {
-            string repeatablesClassName = chains.Count > 0 ? $"{mapIdentifier}Repeatables" : mapIdentifier;
+            string repeatablesClassName = $"{mapIdentifier}Repeatables";
             string repeatablesPath = Path.Combine(outputDirectory, repeatablesClassName + ".cs");
             Core.WriteFile(repeatablesPath, BuildStory(
                 repeatablesClassName,
@@ -201,14 +207,18 @@ public class WeeklyReleaseGeneratorV2
 
         foreach (int questID in questIDs.Where(id => id > 0).Distinct())
         {
-            Core.Logger($"Capturing quest {questID} from its getQuests packet.");
             try
             {
-                quests.Add(new QuestPacketCollector().Load(questID));
+                Quest loadedQuest = new QuestPacketCollector().Load(questID);
+                quests.Add(loadedQuest);
+
+                int reqCount = loadedQuest.Requirements?.Count ?? 0;
+                int rwdCount = loadedQuest.Rewards?.Count ?? 0;
+                Core.Logger($"Captured quest '{loadedQuest.Name}' [{loadedQuest.ID}] (Slot: {loadedQuest.Slot}, Value: {loadedQuest.Value} | Req: {reqCount}, Rwd: {rwdCount})");
             }
             catch (Exception ex)
             {
-                Core.Logger($"Quest {questID} packet load failed: {ex.Message}");
+                Core.Logger($"Failed to capture packet for Quest [{questID}]: {ex.Message}");
                 failed.Add(questID);
             }
         }
@@ -296,9 +306,6 @@ public class WeeklyReleaseGeneratorV2
                         string knownMap = strings.Count == 0
                             ? string.Empty
                             : strings[^1].Groups["value"].Value;
-                        // Existing scripts are only an ID source. They do not
-                        // prove that the object belongs to the currently joined
-                        // SWF, so their location must remain explicitly fillable.
                         found.Add(new MapItemSource(mapItemID, knownMap, CurrentMapVerified: false));
                     }
                 }
@@ -325,10 +332,12 @@ public class WeeklyReleaseGeneratorV2
     {
         Quest gate = quests
             .Where(quest => quest.Once)
-            .OrderByDescending(quest => quest.Value)
+            .OrderByDescending(quest => quest.Slot)
+            .ThenByDescending(quest => quest.Value)
             .ThenByDescending(quest => quest.ID)
             .FirstOrDefault()
-            ?? quests.OrderByDescending(quest => quest.Value).ThenByDescending(quest => quest.ID).First();
+            ?? quests.OrderByDescending(quest => quest.Slot).ThenByDescending(quest => quest.Value).ThenByDescending(quest => quest.ID).First();
+
         List<DropPacketCollector.MonsterDrops> usedMonsters = quests
             .SelectMany(quest => (quest.Requirements ?? new List<ItemBase>())
                 .Select(requirement => FindDropMonster(requirement, quest.Name, monsters)))
@@ -338,9 +347,11 @@ public class WeeklyReleaseGeneratorV2
             .OrderBy(monster => monster.MonsterName)
             .ThenBy(monster => monster.MonsterID)
             .ToList();
+
         List<DropPacketCollector.MonsterDrops> namedMonsters = [.. usedMonsters
             .Where(monster => !IsMonsterNameAmbiguous(monster, usedMonsters))
             .DistinctBy(monster => monster.MonsterName, StringComparer.OrdinalIgnoreCase)];
+
         Dictionary<int, int> monsterIndexes = usedMonsters
             .Where(monster => !IsMonsterNameAmbiguous(monster, usedMonsters))
             .ToDictionary(
@@ -350,12 +361,12 @@ public class WeeklyReleaseGeneratorV2
                     StringComparison.OrdinalIgnoreCase
                 ))
             );
+
         string displayMap = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(map);
         string label = repeatables
             ? $"{displayMap} Repeatable Quests"
-            : part.HasValue
-                ? $"{displayMap} Part {part}"
-                : displayMap;
+            : displayMap;
+
         List<string> lines = new()
         {
             "/*",
@@ -431,10 +442,9 @@ public class WeeklyReleaseGeneratorV2
             lines.Add("        ];");
         }
 
-        // Sort again at the point of emission so execution cannot accidentally
-        // inherit SWF, JSON, dictionary, or quest-ID ordering.
         foreach (Quest quest in quests
-            .OrderBy(quest => quest.Value)
+            .OrderBy(quest => quest.Slot)
+            .ThenBy(quest => quest.Value)
             .ThenByDescending(quest => quest.Once)
             .ThenBy(quest => quest.ID))
             AddQuest(
@@ -451,26 +461,6 @@ public class WeeklyReleaseGeneratorV2
 
         lines.AddRange(new[] { "    }", "}" });
         return [.. lines];
-    }
-
-    private static List<Quest> RemovePostFinalFarmQuests(IGrouping<int, Quest> group)
-    {
-        List<Quest> quests = group
-            .OrderBy(quest => quest.Value)
-            .ThenByDescending(quest => quest.Once)
-            .ThenBy(quest => quest.ID)
-            .ToList();
-        Quest? finale = quests
-            .Where(quest => quest.Once)
-            .OrderByDescending(quest => quest.Value)
-            .ThenByDescending(quest => quest.ID)
-            .FirstOrDefault();
-        if (finale == null)
-            return quests;
-
-        return quests
-            .Where(quest => quest.Once || quest.Value < finale.Value)
-            .ToList();
     }
 
     private static void AddQuest(
@@ -511,9 +501,6 @@ public class WeeklyReleaseGeneratorV2
 
         lines.Add("");
         lines.Add($"        // {quest.ID} | {EscapeComment(quest.Name)}");
-        // ChainQuest already checks and unbanks both normal and accept
-        // requirements. Other quest helpers do not handle accept requirements
-        // consistently, so only those paths need this explicit guard.
         if (requirements.Count > 0 && acceptRequirements.Count > 0)
         {
             lines.Add("        if (");
@@ -613,8 +600,6 @@ public class WeeklyReleaseGeneratorV2
 
             bool hasAmbiguousTarget = huntIndexes.Any(index => localDrops[index] != null
                 && IsMonsterNameAmbiguous(localDrops[index]!, usedMonsters));
-            // KillQuest can't take a per-item map, so unresolved monsters
-            // (local == null) still need the old explicit-hunt path.
             bool needsExplicitHunt = hasAmbiguousTarget
                 || huntIndexes.Any(index => localDrops[index] == null);
             if (needsExplicitHunt)
@@ -629,12 +614,6 @@ public class WeeklyReleaseGeneratorV2
                 return;
             }
 
-            // Every remaining requirement is resolved here, so KillQuest's array
-            // overload maps items to monsters purely by list position at runtime
-            // (matching live QuestData.Requirements order after it filters out
-            // already-owned items) — NOT the Solo/Farm sort order huntIndexes uses
-            // above. Re-sort back to original requirement order before emitting so
-            // positions line up correctly.
             List<int> orderedIndexes = [.. huntIndexes.OrderBy(index => index)];
             List<string> monsterNames = orderedIndexes
                 .Select(index =>
@@ -724,7 +703,6 @@ public class WeeklyReleaseGeneratorV2
         {
             string missing = string.Join(", ", unresolvedDropIndexes.Select(index =>
                 $"{requirements[index].Name} [{requirements[index].ID}]"));
-            // Loud on purpose: generated FILL_* lines are easy to miss in review.
             CoreBots.Instance.Logger(
                 $"Unresolved drop monster(s) for quest {quest.Name} [{quest.ID}]: {missing}. FILL_LOCATION / FILL_MONSTER emitted.",
                 messageBox: true
@@ -809,14 +787,9 @@ public class WeeklyReleaseGeneratorV2
         IReadOnlyList<DropPacketCollector.MonsterDrops> monsters
     ) => monsters
         .Where(monster => monster.Items.Any(item => item.ID == requirement.ID))
-        // ItemID establishes locality. questObjective/questGated confirm that
-        // the returned item is bound to this quest when the server supplies
-        // those annotations; ordinary ungated drops do not have them.
         .OrderByDescending(monster => monster.Items
             .Where(item => item.ID == requirement.ID)
             .Max(item => QuestAssociation(item, questName)))
-        // Prefer a projected mob pack over a single spawn, then the weaker
-        // candidate when more than one monster can supply the same item.
         .ThenByDescending(monster => monster.MonMapIDs.Count)
         .ThenBy(monster => monster.MaxHP)
         .ThenBy(monster => monster.MonsterID)

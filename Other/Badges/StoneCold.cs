@@ -40,5 +40,5 @@ public class StoneCold
         DW.TempleOfTheLight();
     }
 
-    private string badge = "Stone Cold";
+    private readonly string badge = "Stone Cold";
 }

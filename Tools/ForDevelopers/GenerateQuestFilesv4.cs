@@ -1,5 +1,5 @@
 /*
-name: GenerateQuestFilesv3
+name: GenerateQuestFilesv4
 description: Lean quest data generator — fetch quests in throttled batches and save.
 tags: debug, quest, data, generation, v3
 */
@@ -22,7 +22,7 @@ using Skua.Core.Models.Quests;
 using Skua.Core.Options;
 using Skua.Core.Scripts;
 
-public class QuestFileUpdaterV3
+public class QuestFileUpdaterV4
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
@@ -298,7 +298,7 @@ public class QuestFileUpdaterV3
                 map[quest.ID] = quest;
                 added++;
             }
-            else if (QuestChanged(old, quest))
+            else if (QuestChanged(old!, quest))
             {
                 int idx = existingData.FindIndex(x => x.ID == quest.ID);
                 if (idx >= 0) existingData[idx] = quest;

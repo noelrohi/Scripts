@@ -40,5 +40,5 @@ public class Committed
         Asylum.StoryLine();
     }
 
-    private string badge = "Committed";
+    private readonly string badge = "Committed";
 }

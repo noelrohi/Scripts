@@ -40,5 +40,5 @@ public class GoldenLaurel
         GA.StoryLine();
     }
 
-    private string badge = "Golden Laurel";
+    private readonly string badge = "Golden Laurel";
 }

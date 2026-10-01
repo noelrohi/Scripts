@@ -157,7 +157,7 @@ public class TouchMass
         }
     }
 
-    private string badge = "Touch Mass";
+    private readonly string badge = "Touch Mass";
 
     private void SetAdditonOptions()
     {

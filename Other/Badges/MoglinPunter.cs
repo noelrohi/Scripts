@@ -112,5 +112,5 @@ public class MoglinPunt
     //     }
     // }
 
-    private string badge = "Moglin Punter";
+    private readonly string badge = "Moglin Punter";
 }

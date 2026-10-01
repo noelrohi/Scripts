@@ -40,5 +40,5 @@ public class TableFlipper
         Borgars.StoryLine();
     }
 
-    private string badge = "Table Flipper";
+    private readonly string badge = "Table Flipper";
 }

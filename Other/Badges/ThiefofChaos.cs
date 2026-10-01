@@ -46,5 +46,5 @@ public class ThiefofChaosBadge
         MT.Storyline();
     }
 
-    private string badge = "Thief of Chaos";
+    private readonly string badge = "Thief of Chaos";
 }

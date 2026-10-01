@@ -43,5 +43,5 @@ public class ArtificialErrorBadge
         Core.EnsureComplete(9666);
     }
 
-    private string badge = "Art-ificial Error";
+    private readonly string badge = "Art-ificial Error";
 }

@@ -38,19 +38,19 @@ public class UndeadDoomParrot
         Core.AddDrop(Core.QuestRewards(10425));
 
         // Drink Shipment Found!
-        Core.HuntMonster("piratewar", "Blazing Commander", Core.QuestRequirements<string>(10425)[2]);
+        Core.HuntMonster("piratewar", "Blazing Commander", "Drink Shipment Found!");
 
         // Doomknight Commander Defeated
-        Core.HuntMonster("piratewar", "Doomknight Commander", Core.QuestRequirements<string>(10425)[0], 10);
-
-        // Shard of Ice
-        Adv.BuyItem("pirates", 724, Core.QuestRequirements<string>(10425)[1]);
+        Core.HuntMonster("piratewar", "Doomknight Commander", "Doomknight Commander Defeated", 10);
 
         // Gallaeon Defeated for Fun
-        Core.HuntMonster("doompirate", "Gallaeon", Core.QuestRequirements<string>(10425)[3]);
+        Core.HuntMonster("doompirate", "Gallaeon", "Gallaeon Defeated for Fun");
 
+        // Shard of Ice
+        Adv.BuyItem("pirates", 724, "Shard of Ice");
+        
         Core.EnsureComplete(10425);
-        Bot.Wait.ForPickup(Core.QuestRewards(10425)[0]);
+        Bot.Wait.ForPickup("Gravelyn's Undead Doom Parrot");
         Core.ToBank(Core.QuestRewards(10425));
     }
 }

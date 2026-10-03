@@ -1578,6 +1578,22 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Farm/GoldFarm.cs"
   },
   {
+    "name": "Radiant Goddess of War PreReqs",
+    "description": "Farms the six item requirements needed to accept quest 9184, The Goddess of War. This script does not complete the quest or obtain Radiant Goddess of War.",
+    "tags": [
+      "radiant goddess of war",
+      "rgow",
+      "goddess of war",
+      "prerequisites",
+      "prereqs"
+    ],
+    "path": "ShadowsOfWar/RGOWQuestPrereq.cs",
+    "size": 4542,
+    "sha256": "5716c4ba3942aae83f07053095d6dded34cfc4c140d58463e02227eb09497b5a",
+    "fileName": "RGOWQuestPrereq.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/ShadowsOfWar/RGOWQuestPrereq.cs"
+  },
+  {
     "name": "null",
     "description": "null",
     "tags": [
@@ -1590,22 +1606,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/ShadowsOfWar/CoreSoWMats.cs"
   },
   {
-    "name": "Radiant Goddess of War PreReqs",
-    "description": "Farms the six item requirements needed to accept quest 9184, The Goddess of War. This script does not complete the quest or obtain Radiant Goddess of War.",
-    "tags": [
-      "radiant goddess of war",
-      "rgow",
-      "goddess of war",
-      "prerequisites",
-      "prereqs"
-    ],
-    "path": "ShadowsOfWar/RadiantGoddessOfWarPreReqs.cs",
-    "size": 4542,
-    "sha256": "5716c4ba3942aae83f07053095d6dded34cfc4c140d58463e02227eb09497b5a",
-    "fileName": "RadiantGoddessOfWarPreReqs.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/ShadowsOfWar/RadiantGoddessOfWarPreReqs.cs"
-  },
-  {
     "name": "Ultra Speaker Merge PreReqs",
     "description": "Gets the prerequisites for the Ultra Speaker merge.",
     "tags": [
@@ -1614,11 +1614,11 @@
       "rgow",
       "goddess of war"
     ],
-    "path": "ShadowsOfWar/UltraSpeakerMergePreReqs.cs",
+    "path": "ShadowsOfWar/RGOWMergePrereq.cs",
     "size": 17329,
     "sha256": "c0bd8798728d2ecc0ddd15f15466fab807464783b6a654a90008897e6907e6bb",
-    "fileName": "UltraSpeakerMergePreReqs.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/ShadowsOfWar/UltraSpeakerMergePreReqs.cs"
+    "fileName": "RGOWMergePrereq.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/ShadowsOfWar/RGOWMergePrereq.cs"
   },
   {
     "name": "Head of the Legion Beast",

@@ -18067,6 +18067,22 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/ChronoMerge.cs"
   },
   {
+    "name": "Divorares Hoard Merge",
+    "description": "Farms the Divorares Hoard Merge [2777] in /divorarepass.",
+    "tags": [
+      "divorarepass",
+      "merge",
+      "divorares",
+      "hoard",
+      "merge"
+    ],
+    "path": "Other/MergeShops/DivoraresHoard.cs",
+    "size": 5077,
+    "sha256": "949adfe42995f90e618823af41f7274c5214e4a6e9516ec647bd0c17f2d7842a",
+    "fileName": "DivoraresHoard.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/DivoraresHoard.cs"
+  },
+  {
     "name": "Felixs Gilded Gear Merge",
     "description": "This bot will farm the items belonging to the selected mode for the Felixs Gilded Gear Merge [2446] in /castleeblana",
     "tags": [
@@ -25619,7 +25635,7 @@
     ],
     "path": "Story/LordsofChaos/Core13LoC.cs",
     "size": 84975,
-    "sha256": "9ed467acf16a8b2e543485e8517bce84e78209253e91295e012505d514370fb4",
+    "sha256": "385218935cec8b10898e521c243ec92a9c1e119336fbc7a9a0ec0b91f73e6a59",
     "fileName": "Core13LoC.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/LordsofChaos/Core13LoC.cs"
   },
@@ -29906,72 +29922,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/FourHarbingers/Fame.cs"
   },
   {
-    "name": "Isthmia Offerings Merge",
-    "description": "Farms the Isthmia Offerings Merge [2773] in /isthmiacastle.",
-    "tags": [
-      "isthmiacastle",
-      "merge",
-      "isthmia",
-      "offerings",
-      "merge"
-    ],
-    "path": "Prototypes/DeadlySeas/IsthmiaOfferings.cs",
-    "size": 8020,
-    "sha256": "3a4bf41d3b919fe93b373fc459b003bb9ca3fb9d0634c9759d34a5ec7bb1b355",
-    "fileName": "IsthmiaOfferings.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/IsthmiaOfferings.cs"
-  },
-  {
-    "name": "Deadlyseas",
-    "description": "Completes the quest chain in /deadlyseas.",
-    "tags": [
-      "deadlyseas",
-      "story",
-      "quests",
-      "deadlyseas"
-    ],
-    "path": "Prototypes/DeadlySeas/Deadlyseas.cs",
-    "size": 2776,
-    "sha256": "a5b3ae63278ca1ca7a81339ff8b58ece9525025e9a6334d984918e1925ff1993",
-    "fileName": "Deadlyseas.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/Deadlyseas.cs"
-  },
-  {
-    "name": "Isthmiacastle",
-    "description": "Completes the quest chain in /isthmiacastle.",
-    "tags": [
-      "isthmiacastle",
-      "story",
-      "quests",
-      "isthmiacastle"
-    ],
-    "path": "Prototypes/DeadlySeas/Isthmiacastle.cs",
-    "size": 3033,
-    "sha256": "85f6858d9395f1057a3e866de467ec8fca47303825494eee8b58135fbc750d57",
-    "fileName": "Isthmiacastle.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/Isthmiacastle.cs"
-  },
-  {
-    "name": "Red Bettys Budget",
-    "description": "Farms the Red Bettys Budget [2767] in /deadlyseas.",
-    "tags": [
-      "deadlyseas",
-      "merge",
-      "deadly",
-      "seas",
-      "loot",
-      "merge",
-      "red",
-      "bettys",
-      "budget"
-    ],
-    "path": "Prototypes/DeadlySeas/RedBettysBudget.cs",
-    "size": 6093,
-    "sha256": "0c9e9928affaead38ea95cd01d13cd07d43db401176cd91b4c714499a2070e38",
-    "fileName": "RedBettysBudget.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/DeadlySeas/RedBettysBudget.cs"
-  },
-  {
     "name": "New Year Story",
     "description": "This will complete the New Year story.",
     "tags": [
@@ -32320,6 +32270,72 @@
     "sha256": "9eb57d114f307be1cdb1326e718a254fb693495d3ddada1b47556bf7711d6e81",
     "fileName": "YangsFavorsMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/StaffBirthdays/Yang/YangsFavorsMerge.cs"
+  },
+  {
+    "name": "Isthmia Offerings Merge",
+    "description": "Farms the Isthmia Offerings Merge [2773] in /isthmiacastle.",
+    "tags": [
+      "isthmiacastle",
+      "merge",
+      "isthmia",
+      "offerings",
+      "merge"
+    ],
+    "path": "Seasonal/TalkLikeaPirateDay/DeadlySeas/IsthmiaOfferings.cs",
+    "size": 7910,
+    "sha256": "c86fda987b3cd5e7b0928a5e630e916646b6ffeeb92a28e2a928d29526ee34e7",
+    "fileName": "IsthmiaOfferings.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/TalkLikeaPirateDay/DeadlySeas/IsthmiaOfferings.cs"
+  },
+  {
+    "name": "Deadlyseas",
+    "description": "Completes the quest chain in /deadlyseas.",
+    "tags": [
+      "deadlyseas",
+      "story",
+      "quests",
+      "deadlyseas"
+    ],
+    "path": "Seasonal/TalkLikeaPirateDay/DeadlySeas/Deadlyseas.cs",
+    "size": 2776,
+    "sha256": "a5b3ae63278ca1ca7a81339ff8b58ece9525025e9a6334d984918e1925ff1993",
+    "fileName": "Deadlyseas.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/TalkLikeaPirateDay/DeadlySeas/Deadlyseas.cs"
+  },
+  {
+    "name": "Isthmiacastle",
+    "description": "Completes the quest chain in /isthmiacastle.",
+    "tags": [
+      "isthmiacastle",
+      "story",
+      "quests",
+      "isthmiacastle"
+    ],
+    "path": "Seasonal/TalkLikeaPirateDay/DeadlySeas/Isthmiacastle.cs",
+    "size": 2962,
+    "sha256": "c1863128f662f47fdd8da91568308cef408d916f26663d8b9c9427d12f38eeff",
+    "fileName": "Isthmiacastle.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/TalkLikeaPirateDay/DeadlySeas/Isthmiacastle.cs"
+  },
+  {
+    "name": "Red Bettys Budget",
+    "description": "Farms the Red Bettys Budget [2767] in /deadlyseas.",
+    "tags": [
+      "deadlyseas",
+      "merge",
+      "deadly",
+      "seas",
+      "loot",
+      "merge",
+      "red",
+      "bettys",
+      "budget"
+    ],
+    "path": "Seasonal/TalkLikeaPirateDay/DeadlySeas/RedBettysBudget.cs",
+    "size": 6110,
+    "sha256": "dd4ff417f47c09414018a064fe3d5c777580149740754e58c35e9b015378322a",
+    "fileName": "RedBettysBudget.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/TalkLikeaPirateDay/DeadlySeas/RedBettysBudget.cs"
   },
   {
     "name": "Dragon Capital Merge",

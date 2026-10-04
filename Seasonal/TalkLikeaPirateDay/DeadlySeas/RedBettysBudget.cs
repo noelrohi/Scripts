@@ -6,7 +6,7 @@ tags: deadlyseas, merge, deadly, seas, loot, merge, red, bettys, budget
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
 //cs_include Scripts/CoreAdvanced.cs
-//cs_include Scripts/Prototypes/DeadlySeas/Deadlyseas.cs
+//cs_include Scripts/Seasonal/TalkLikeaPirateDay/DeadlySeas/Deadlyseas.cs
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Items;
 using Skua.Core.Options;

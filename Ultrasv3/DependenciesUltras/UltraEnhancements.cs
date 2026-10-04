@@ -167,7 +167,13 @@ public class UltraEnhancements
                 break;
 
             case "Legion Revenant":
-                Adv.SmartEnhance(className, false, WeaponSpecial.Health_Vamp);
+                // Left-orb taunter: Penitence cape and Arcana's Concerto weapon.
+                Adv.EnhanceEquipped(
+                    type: EnhancementType.Wizard,
+                    hSpecial: Adv.uPneuma() ? HelmSpecial.Pneuma : HelmSpecial.None,
+                    wSpecial: Adv.uArcanasConcerto() ? WeaponSpecial.Arcanas_Concerto : WeaponSpecial.Health_Vamp,
+                    cSpecial: Adv.uPenitence() ? CapeSpecial.Penitence : CapeSpecial.Vainglory
+                );
                 break;
 
             case "ArchPaladin":

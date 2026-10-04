@@ -60,7 +60,7 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 | Ezrajal | 4 × DPS (Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo). Any class works with a layout. Everyone stops attacking during Counter Attack. |
 | Warden | Taunter 1 (Verus DoomKnight), Taunter 2 (Lord of Order), DPS (King's Echo), DPS (StoneCrusher). Taunters alternate every 5 s. |
 | Engineer | 4 × DPS (Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo), drones first. Any class works with a layout. |
-| Tyndarius | Right orb then Tyndarius (King's Echo), left orb taunter (Legion Revenant), Tyndarius taunter every 12 s (ArchPaladin), Tyndarius attacker (Lord of Order). |
+| Tyndarius | Right orb then Tyndarius (King's Echo), left orb taunter (Legion Revenant: Wizard, Arcana's Concerto weapon, Penitence cape, Pneuma helm), Tyndarius taunter every 12 s (ArchPaladin), Tyndarius attacker (Lord of Order). |
 | Drakath | Taunters 1–3 (ArchPaladin, Lord of Order, Shaman), 4 s apart, DPS (StoneCrusher). |
 | Nulgath | Two role sets, see below. |
 | Drago | Taunter 1 and Taunter 2 (Lord of Order, Verus DoomKnight) hit the right summon and taunt the left one, 2 × DPS (StoneCrusher, King's Echo). |

@@ -238,6 +238,15 @@ public class UltraPotions
                 GetHonorOrMalicePotion()
             };
 
+        // Body Tonic for the HP: Legion Revenant taunts adds (Tyndarius' left orb) and dies at its base HP.
+        if (HasAssignedClass("Legion Revenant"))
+            return new[]
+            {
+                "Body Tonic",
+                "Potent Destruction Elixir",
+                GetHonorOrMalicePotion()
+            };
+
         if (HasAssignedClass("Arcana Invoker"))
             return new[]
             {

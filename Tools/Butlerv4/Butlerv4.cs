@@ -42,6 +42,8 @@ public class Butlerv4
         new Option<string>("Leader4Butlers", "Butlers For Leader 4", "Comma-separated butler account names. Example: acc1,acc2,acc3", ""),
         new Option<bool>("AutoEnhance", "Auto Enhance", "Automatically enhance equipped class on startup.", true),
         new Option<bool>("UseGoto", "Use Goto", "Use Goto to follow instead of direct Join+Jump.", true),
+        new Option<string>("PickupDrops", "Pickup Drops", "Comma-separated item names this butler always picks up. Example: Void Scale,Dark Crystal Shard", ""),
+        new Option<bool>("PickupAllDrops", "Pickup All Drops", "Pick up every drop. When off, drops not in Pickup Drops are left in the drop stack, never rejected.", false),
         CoreBots.Instance.SkipOptions,
     };
 
@@ -68,6 +70,7 @@ public class Butlerv4
     private bool _isParked = false;
     private bool _houseJoined = false;
     private bool _leaderPortLookupFailedLogged = false;
+    private bool _pickupAllDrops = false;
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -94,6 +97,7 @@ public class Butlerv4
             return;
         }
 
+        SetupDrops();
         ConnectToLeader();
 
         // Auto-enhance equipped class if enabled
@@ -121,6 +125,9 @@ public class Butlerv4
                 Core.Sleep(250);
 
             PollTcpData();
+
+            if (_pickupAllDrops && Bot.Drops.CurrentDrops.Any())
+                Bot.Drops.PickupAll(true);
 
             if (_isParked)
             {
@@ -245,6 +252,37 @@ public class Butlerv4
             catch { }
             _gotoPending = false;
         });
+    }
+
+    // ================================================================
+    //  DROPS
+    // ================================================================
+
+    /// <summary>
+    /// Core.SetOptions turns on RejectElse with an empty pickup list, so the drop
+    /// grabber would reject every drop the butler gets. A butler never adds drops
+    /// itself, so turn RejectElse off: drops it doesn't pick up stay in the drop
+    /// stack instead of being thrown away.
+    /// </summary>
+    private void SetupDrops()
+    {
+        Bot.Drops.RejectElse = false;
+
+        if (Bot.Config!.Get<bool>("PickupAllDrops"))
+        {
+            _pickupAllDrops = true;
+            Core.Logger("[Butler] Picking up all drops.");
+            return;
+        }
+
+        string[] drops = (Bot.Config!.Get<string>("PickupDrops") ?? "")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (drops.Length > 0)
+        {
+            Bot.Drops.Add(drops);
+            Core.Logger($"[Butler] Picking up drops: {string.Join(", ", drops)}");
+        }
+        else Core.Logger("[Butler] No drops to pick up; other drops stay in the drop stack, not rejected.");
     }
 
     // ================================================================

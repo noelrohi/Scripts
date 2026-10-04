@@ -28232,13 +28232,13 @@
   },
   {
     "name": "UltraAvatarTyndariusv3",
-    "description": "Ultra Avatar Tyndarius v3 — Ball1TaunterAttackBall2 + Ball2TaunterAttackBall2 + Ball2Attacker1 + Ball2Attacker2 with pulse-driven targeting.",
+    "description": "Ultra Avatar Tyndarius v3 — King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius on a timer, Lord of Order hits Tyndarius.",
     "tags": [
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs",
-    "size": 10038,
-    "sha256": "3a9488154d399d7a5f74953124d57fa476b2a938d424a0bbd2cc8b45df85a5c1",
+    "size": 12300,
+    "sha256": "63fbc9117419704e2f8386442a594aa669c6e0f9eeef9dda2cf7828a4a96306d",
     "fileName": "4UltraAvatarTyndariusv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs"
   },
@@ -28478,8 +28478,8 @@
       "enhancements"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraEnhancements.cs",
-    "size": 26715,
-    "sha256": "41710f3f75b0f9a293d79052ff099c7eb60ae9353be1b72678c6aa35305e83d1",
+    "size": 25516,
+    "sha256": "0f73ee62546a18851a91690850255a85e4e4364fdfd25fc258f1d2918881dcc4",
     "fileName": "UltraEnhancements.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraEnhancements.cs"
   },
@@ -28535,8 +28535,8 @@
       "potions"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraPotions.cs",
-    "size": 12894,
-    "sha256": "fa2f7e17cf4a54c8f0453e11428137ac84ab8820df38aac21c70415c5d611a93",
+    "size": 13223,
+    "sha256": "f2795fd44f263894a7e06105fc214f7e245f0430c1194d70726be7065f0c7672",
     "fileName": "UltraPotions.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPotions.cs"
   },
@@ -29596,8 +29596,8 @@
       "tcp"
     ],
     "path": "Tools/Butlerv4/Butlerv4.cs",
-    "size": 18705,
-    "sha256": "273624b4d776c42daa691c2025ad39bb297983c2681443d2fb30c05703677d6b",
+    "size": 26209,
+    "sha256": "ef7996786bc10e3f01da1e92210f64a7cb58dada24ce818034e013e3eaa48dd2",
     "fileName": "Butlerv4.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/Butlerv4/Butlerv4.cs"
   },

@@ -13,6 +13,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Quests;
 using Skua.Core.Options;
 
 public class Butlerv4
@@ -44,6 +45,8 @@ public class Butlerv4
         new Option<bool>("UseGoto", "Use Goto", "Use Goto to follow instead of direct Join+Jump.", true),
         new Option<string>("PickupDrops", "Pickup Drops", "Comma-separated item names this butler always picks up. Example: Void Scale,Dark Crystal Shard", ""),
         new Option<bool>("PickupAllDrops", "Pickup All Drops", "Pick up every drop. When off, drops not in Pickup Drops are left in the drop stack, never rejected.", false),
+        new Option<string>("Quests", "Quests", "Comma-separated quest IDs this butler accepts and turns in while following, usually the leader's quest. Their items are picked up. Example: 7324", ""),
+        new Option<bool>("AttackFirst", "Attack First", "Attack monsters in the leader's cell as soon as the butler is there, instead of waiting for the leader to fight. Lets the butler hit (and get drops from) monsters the leader kills in one hit.", false),
         CoreBots.Instance.SkipOptions,
     };
 
@@ -71,6 +74,14 @@ public class Butlerv4
     private bool _houseJoined = false;
     private bool _leaderPortLookupFailedLogged = false;
     private bool _pickupAllDrops = false;
+    private bool _attackFirst = false;
+
+    // ── Quest state ──────────────────────────────────────────────────
+    private int[] _questIds = Array.Empty<int>();
+    private readonly HashSet<int> _registeredQuests = new();
+    private readonly Dictionary<int, string> _skippedQuests = new();
+    private volatile bool _questCheckPending = false;
+    private readonly object _questLock = new();
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -97,7 +108,12 @@ public class Butlerv4
             return;
         }
 
+        _attackFirst = Bot.Config!.Get<bool>("AttackFirst");
+        if (_attackFirst)
+            Core.Logger("[Butler] Attack First: attacking monsters in the leader's cell without waiting for the leader.");
+
         SetupDrops();
+        SetupQuests();
         ConnectToLeader();
 
         // Auto-enhance equipped class if enabled
@@ -128,6 +144,12 @@ public class Butlerv4
 
             if (_pickupAllDrops && Bot.Drops.CurrentDrops.Any())
                 Bot.Drops.PickupAll(true);
+
+            if (_questCheckPending && !_gotoPending && Bot.Map?.Loaded == true)
+            {
+                _questCheckPending = false;
+                CheckQuests();
+            }
 
             if (_isParked)
             {
@@ -197,7 +219,9 @@ public class Butlerv4
 
             TryGotoLeader();
 
-            if (_tcpInCombat || _tcpHasTarget)
+            // Attack First: hit monsters in the leader's cell before the leader
+            // kills them, so the butler gets drop credit. Same cell only.
+            if (_tcpInCombat || _tcpHasTarget || (_attackFirst && !_gotoPending && IsLeaderInSameCell()))
                 Bot.Combat.Attack("*");
             else if ((Bot.Player?.InCombat == true || Bot.Player?.HasTarget == true) && !IsLeaderInSameCell())
                 QuickDeaggro();
@@ -283,6 +307,166 @@ public class Butlerv4
             Core.Logger($"[Butler] Picking up drops: {string.Join(", ", drops)}");
         }
         else Core.Logger("[Butler] No drops to pick up; other drops stay in the drop stack, not rejected.");
+    }
+
+    // ================================================================
+    //  QUESTS
+    // ================================================================
+
+    /// <summary>
+    /// Reads the Quests option and registers the quests this account can take.
+    /// Quests are checked again after every map change (see <see cref="CheckQuests"/>),
+    /// never in a loop, and are cancelled when the script stops.
+    /// </summary>
+    private void SetupQuests()
+    {
+        string raw = Bot.Config!.Get<string>("Quests") ?? "";
+        var ids = new List<int>();
+        foreach (string part in raw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (int.TryParse(part, out int id) && id > 0)
+                ids.Add(id);
+            else
+                Core.Logger($"[Butler] Quests: '{part}' is not a quest ID, ignored.");
+        }
+        _questIds = ids.Distinct().ToArray();
+        if (_questIds.Length == 0)
+            return;
+
+        Bot.Events.MapChanged += OnMapChangedQuests;
+        Bot.Events.ScriptStopping += OnScriptStoppingQuests;
+        CheckQuests();
+    }
+
+    private void OnMapChangedQuests(string map) => _questCheckPending = true;
+
+    private bool OnScriptStoppingQuests(Exception? e)
+    {
+        Bot.Events.MapChanged -= OnMapChangedQuests;
+        Bot.Events.ScriptStopping -= OnScriptStoppingQuests;
+        CancelQuests();
+        return true;
+    }
+
+    /// <summary>
+    /// For each quest ID: register it if this account can take it, otherwise log
+    /// why not (once per reason) and unregister it if it was registered before
+    /// (e.g. a daily that was just turned in).
+    /// </summary>
+    private void CheckQuests()
+    {
+        lock (_questLock)
+            CheckQuestsLocked();
+    }
+
+    private void CheckQuestsLocked()
+    {
+        foreach (int id in _questIds)
+        {
+            if (Bot.ShouldExit)
+                return;
+
+            Quest? quest = Bot.Quests.EnsureLoad(id);
+            // A failed load (e.g. mid map change) is not a reason to drop a registered quest.
+            if (quest == null && _registeredQuests.Contains(id))
+                continue;
+
+            string? reason = quest == null ? "could not be loaded" : QuestSkipReason(quest);
+
+            if (reason != null)
+            {
+                if (_registeredQuests.Remove(id))
+                    Bot.Quests.UnregisterQuests(id);
+
+                if (!_skippedQuests.TryGetValue(id, out string? lastReason) || lastReason != reason)
+                    Core.Logger($"[Butler] Skipping quest {id}{(quest == null ? "" : $" ({quest.Name})")}: {reason}.");
+                _skippedQuests[id] = reason;
+                continue;
+            }
+
+            _skippedQuests.Remove(id);
+            if (!_registeredQuests.Add(id))
+                continue;
+
+            Bot.Quests.RegisterQuests(id);
+
+            string[] items = quest!.Requirements.Concat(quest.Rewards)
+                .Where(i => i != null && !i.Temp && !string.IsNullOrEmpty(i.Name))
+                .Select(i => i.Name)
+                .Distinct()
+                .ToArray();
+            if (!_pickupAllDrops && items.Length > 0)
+                Bot.Drops.Add(items);
+
+            Core.Logger($"[Butler] Registered quest {id} ({quest.Name}); picking up: {(items.Length > 0 ? string.Join(", ", items) : "nothing")}.");
+        }
+    }
+
+    /// <summary>
+    /// Why this account can't take the quest, or null if it can.
+    /// </summary>
+    private string? QuestSkipReason(Quest quest)
+    {
+        if (quest.Upgrade && !Bot.Player.IsMember)
+            return "member-only quest, this account is not a member";
+
+        if (!Bot.Quests.IsUnlocked(quest))
+            return "not unlocked yet (an earlier quest in its chain is not done)";
+
+        if (quest.Once && Bot.Quests.HasBeenCompleted(quest))
+            return "one-time quest, already completed";
+
+        if (!string.IsNullOrEmpty(quest.Field) && Bot.Quests.IsDailyComplete(quest))
+            return "already completed today";
+
+        if (Bot.Player.Level < quest.Level)
+            return $"needs level {quest.Level}, this account is level {Bot.Player.Level}";
+
+        if (quest.RequiredClassID > 0)
+        {
+            int cp = Bot.Flash.CallGameFunction<int>("world.myAvatar.getCPByID", quest.RequiredClassID);
+            if (cp < quest.RequiredClassPoints)
+                return $"needs {quest.RequiredClassPoints} class points in class ID {quest.RequiredClassID}, has {cp}";
+        }
+
+        if (quest.RequiredFactionId > 1)
+        {
+            int rep = Bot.Flash.CallGameFunction<int>("world.myAvatar.getRep", quest.RequiredFactionId);
+            if (rep < quest.RequiredFactionRep)
+            {
+                string faction = Bot.Reputation.FactionList.FirstOrDefault(f => f.ID == quest.RequiredFactionId)?.Name ?? $"faction ID {quest.RequiredFactionId}";
+                return $"needs {quest.RequiredFactionRep} {faction} reputation, has {rep}";
+            }
+        }
+
+        var missing = quest.AcceptRequirements
+            .Where(r => r != null && !Core.CheckInventory(r.ID, r.Quantity))
+            .Select(r => r.Name)
+            .ToList();
+        if (missing.Count > 0)
+            return $"missing accept requirement(s): {string.Join(", ", missing)}";
+
+        if (!Bot.Quests.IsAvailable(quest.ID))
+            return "not available to this account";
+
+        return null;
+    }
+
+    private void CancelQuests()
+    {
+        int[] ids;
+        lock (_questLock)
+        {
+            ids = _registeredQuests.ToArray();
+            _registeredQuests.Clear();
+        }
+        if (ids.Length == 0)
+            return;
+
+        Bot.Quests.UnregisterQuests(ids);
+        Core.CancelRegisteredQuests();
+        Core.AbandonQuest(ids);
+        Core.Logger($"[Butler] Cancelled quests: {string.Join(", ", ids)}");
     }
 
     // ================================================================

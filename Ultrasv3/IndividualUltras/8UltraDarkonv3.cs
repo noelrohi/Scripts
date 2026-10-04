@@ -9,6 +9,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
@@ -54,6 +55,8 @@ public class UltraDarkonv3
         new[] { Dps2 }
     };
 
+    private UltraPartyLayout _party = null!;
+
     private CancellationTokenSource _tauntCts = new();
     private CancellationTokenSource _wipeCts = new();
     private System.Threading.ManualResetEvent _retreatComplete = new(false);
@@ -70,6 +73,7 @@ public class UltraDarkonv3
     public void RunBoss()
     {
         C.SetOptions(true);
+        _party = UltraPartyLayout.Read("UltraDarkon");
         _fbsMuteFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Skua", "fbs_mute.sync"
@@ -134,7 +138,7 @@ public class UltraDarkonv3
             classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
         }
 
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_darkon_class-v3.sync", allowDuplicates);
+        _party.EquipClass(Ultra, classSlots, armySize, "ultra_darkon_class-v3.sync", allowDuplicates);
     }
 
     private void Prep()
@@ -143,6 +147,7 @@ public class UltraDarkonv3
         Bot.Sleep(2000);
         EquipPresetClasses();
         Bot.Sleep(2000);
+        _party.EnsureClass();
 
         Enh.ApplyDarkon();
 
@@ -177,6 +182,7 @@ public class UltraDarkonv3
         Pots.EnsureRecommendedPotions(skipThird: skipThird);
         Scrolls.GetScrollOfEnrage();
 
+        _party.EnsureClass();
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
@@ -188,6 +194,7 @@ public class UltraDarkonv3
             Engine.EquipEnrage();
         }
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 

@@ -9,6 +9,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
@@ -50,6 +51,8 @@ public class UltraDragov3
         new[] { DPSAttackRightSummon2 }
     };
 
+    private UltraPartyLayout _party = null!;
+
     private CancellationTokenSource _tauntCts = new();
     private DateTime fightStartTime = DateTime.MinValue;
     private string _role = "";
@@ -63,6 +66,7 @@ public class UltraDragov3
     public void RunBoss()
     {
         C.SetOptions(true);
+        _party = UltraPartyLayout.Read("UltraDrago");
         _fbsMuteFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Skua", "fbs_mute.sync"
@@ -113,7 +117,7 @@ public class UltraDragov3
             classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
         }
 
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_drago_class-v3.sync", allowDuplicates);
+        _party.EquipClass(Ultra, classSlots, armySize, "ultra_drago_class-v3.sync", allowDuplicates);
     }
 
     private void Prep()
@@ -122,6 +126,7 @@ public class UltraDragov3
         Bot.Sleep(2000);
         EquipPresetClasses();
         Bot.Sleep(2000);
+        _party.EnsureClass();
 
         string? className = Bot.Player.CurrentClass?.Name;
         if (className == Taunter1AttackRightSummon1) _role = "Taunter1AttackRightSummon1";
@@ -163,6 +168,7 @@ public class UltraDragov3
         Pots.EnsureRecommendedPotions(skipThird: skipThird);
         Scrolls.GetScrollOfEnrage();
 
+        _party.EnsureClass();
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
@@ -174,6 +180,7 @@ public class UltraDragov3
             Engine.EquipEnrage();
         }
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 

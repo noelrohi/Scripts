@@ -597,6 +597,29 @@ public class UltraEnhancements
         }
     }
 
+    /// <summary>
+    /// Nulgath party roles: the Dragon of Time gets the gear of the run that beat Nulgath
+    /// with this layout. The Legion Revenant, ArchPaladin and Lord of Order kept their own gear.
+    /// </summary>
+    public void ApplyNulgathParty()
+    {
+        string className = Bot.Player?.CurrentClass?.Name ?? string.Empty;
+        if (className != "Dragon of Time")
+        {
+            C.Logger($"[UltraEnhancements] Nulgath party: {className} keeps its own gear.");
+            return;
+        }
+
+        C.Logger($"[UltraEnhancements] Nulgath party enhancing for: {className}");
+        Adv.EnhanceEquipped(
+            EnhancementType.Wizard,
+            CapeSpecial.Vainglory,
+            HelmSpecial.Pneuma,
+            WeaponSpecial.Elysium,
+            true
+        );
+    }
+
     public void ApplyAstralEmpyrean()
     {
         string className = Bot.Player?.CurrentClass?.Name ?? string.Empty;

@@ -1,6 +1,6 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — Ball1TaunterAttackBall2 + Ball2TaunterAttackBall2 + Ball2Attacker1 + Ball2Attacker2 with pulse-driven targeting.
+description: Ultra Avatar Tyndarius v3 — King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius on a timer, Lord of Order hits Tyndarius.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -18,6 +18,7 @@ tags: null
 
 using System;
 using System.Linq;
+using System.Threading;
 using Skua.Core.Interfaces;
 
 public class UltraAvatarTyndariusv3
@@ -33,29 +34,37 @@ public class UltraAvatarTyndariusv3
     private static UltraPotions _Pots;
     private static GetScrolls Scrolls => _Scrolls ??= new GetScrolls();
     private static GetScrolls _Scrolls;
-    private static UltraDeath Death => _Death ??= new UltraDeath();
-    private static UltraDeath _Death;
 
-    private const string Ball1TaunterAttackBall2 = "Verus DoomKnight";
-    private const string Ball2TaunterAttackBall2 = "Lord of Order";
-    private const string Ball2Attacker1 = "StoneCrusher";
-    private const string Ball2Attacker2 = "King's Echo";
+    // Monster MapIDs in ultratyndarius, cell Boss.
+    private const int LeftOrb = 1;
+    private const int Tyndarius = 2;
+    private const int RightOrb = 3;
+
+    // One class per role. The class an account ends up on after the single
+    // class sync IS its role for the whole run.
+    private const string RightOrbKiller = "King's Echo";
+    private const string LeftOrbTaunter = "Legion Revenant";
+    private const string TyndariusTaunter = "ArchPaladin";
+    private const string TyndariusAttacker = "Lord of Order";
 
     private static readonly string[][] UltraClassesByRole =
     {
-        new[] { Ball1TaunterAttackBall2 },
-        new[] { Ball2TaunterAttackBall2 },
-        new[] { Ball2Attacker1 },
-        new[] { Ball2Attacker2 }
+        new[] { RightOrbKiller },
+        new[] { LeftOrbTaunter },
+        new[] { TyndariusTaunter },
+        new[] { TyndariusAttacker }
     };
+
+    // Seconds between Tyndarius taunts. The ArchPaladin taunted every 12s in
+    // the v2 layout that beat the boss.
+    private const int TyndariusTauntIntervalSec = 12;
 
     private CancellationTokenSource _tauntCts = new();
     private CancellationTokenSource _wipeCts = new();
-    private System.Threading.ManualResetEvent _retreatComplete = new(false);
+    private ManualResetEvent _retreatComplete = new(false);
     private UltraDeath.RetryCounter _deathRetries = new();
     private const int MaxDeathRetries = 10;
-    private DateTime fightStartTime = DateTime.MinValue;
-    private string _role = "";
+    private string _roleClass = "";
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -69,7 +78,11 @@ public class UltraAvatarTyndariusv3
 
         try
         {
-            while (_deathRetries.Value < MaxDeathRetries)
+            Engine.Boot();
+            if (!FixRole())
+                return;
+
+            while (_deathRetries.Value < MaxDeathRetries && !Bot.ShouldExit)
             {
                 Engine.Boot();
                 _tauntCts?.Cancel();
@@ -85,7 +98,6 @@ public class UltraAvatarTyndariusv3
                     () => UltraDeath.PerformRetreat(C, 4, MaxDeathRetries, _deathRetries, "UltraAvatarTyndariusRetreat.sync")
                 );
 
-                Prep();
                 Fight();
             }
         }
@@ -105,42 +117,60 @@ public class UltraAvatarTyndariusv3
         return true;
     }
 
+    private bool IsTaunter() => _roleClass == LeftOrbTaunter || _roleClass == TyndariusTaunter;
 
-
-    private void EquipPresetClasses()
-    {
-        int armySize = 4;
-        bool allowDuplicates = armySize > UltraClassesByRole.Length;
-
-        C.Logger($"[UltraAvatarTyndarius-v3] Equipping role-based ultra classes for army size {armySize}.");
-        string[][] classSlots = new string[armySize][];
-
-        for (int i = 0; i < armySize; i++)
-        {
-            classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
-        }
-
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_tyndarius_class-v3.sync", allowDuplicates);
-    }
-
-    private bool IsTaunter() => _role == "Ball1TaunterAttackBall2" || _role == "Ball2TaunterAttackBall2";
-
-    private void Prep()
+    /// <summary>
+    /// Runs the class sync once and fixes this account's role from the class it equipped.
+    /// Retries after a wipe keep the role; nothing re-runs the sync.
+    /// </summary>
+    private bool FixRole()
     {
         UltraGeneral.EquipWarriorClass();
         Bot.Sleep(2000);
-        EquipPresetClasses();
-        Bot.Sleep(2000);
 
+        C.Logger("[UltraAvatarTyndarius-v3] Assigning role classes for army size 4.");
+        string assigned = UltraCustomClassSync.CustomClassSync(Ultra, Bot, UltraClassesByRole, 4, "ultra_tyndarius_class-v3.sync");
+        if (string.IsNullOrEmpty(assigned))
+            return false;
+
+        Bot.Wait.ForTrue(() => IsOnClass(assigned), 20);
         string? className = Bot.Player.CurrentClass?.Name;
-        if (className == Ball1TaunterAttackBall2) _role = "Ball1TaunterAttackBall2";
-        else if (className == Ball2TaunterAttackBall2) _role = "Ball2TaunterAttackBall2";
-        else if (className == Ball2Attacker1) _role = "Ball2Attacker1";
-        else _role = "Ball2Attacker2";
+        if (!IsOnClass(assigned))
+        {
+            C.Logger($"[UltraAvatarTyndarius-v3] Assigned {assigned} but {className ?? "no class"} is equipped.", "Error", messageBox: true, stopBot: true);
+            return false;
+        }
+
+        _roleClass = UltraClassesByRole.Select(r => r[0]).First(r => r.Equals(className, StringComparison.OrdinalIgnoreCase));
+        C.Logger($"[UltraAvatarTyndarius-v3] Role fixed: {RoleName()} ({_roleClass})");
 
         Enh.ApplyTyndarius();
+        return true;
+    }
 
-        C.Logger($"[UltraAvatarTyndarius-v3] Role: {_role} ({className})");
+    private string RoleName() => _roleClass switch
+    {
+        RightOrbKiller => "RightOrbKiller",
+        LeftOrbTaunter => "LeftOrbTaunter",
+        TyndariusTaunter => "TyndariusTaunter",
+        _ => "TyndariusAttacker"
+    };
+
+    private static bool IsOnClass(string className) =>
+        string.Equals(Bot.Player.CurrentClass?.Name, className, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Puts the role's class back on if something swapped it, e.g. potion-reagent
+    /// rep farming equipping the account's CBO Farm class. Never picks a new class.
+    /// </summary>
+    private void EnsureRoleClass()
+    {
+        if (IsOnClass(_roleClass))
+            return;
+
+        C.Logger($"[UltraAvatarTyndarius-v3] Class drifted to {Bot.Player.CurrentClass?.Name ?? "none"}, re-equipping {_roleClass}.");
+        C.Equip(_roleClass);
+        Bot.Wait.ForTrue(() => IsOnClass(_roleClass), 20);
     }
 
     private void Fight()
@@ -162,25 +192,31 @@ public class UltraAvatarTyndariusv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
+        // Potions are picked from the equipped class, so it has to be the role's class.
         bool skipThird = IsTaunter();
+        EnsureRoleClass();
         Pots.EnsureRecommendedPotions(skipThird: skipThird);
-        Scrolls.GetScrollOfEnrage();
+        if (IsTaunter())
+            Scrolls.GetScrollOfEnrage();
+        EnsureRoleClass();
 
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
         Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false);
 
-        if (skipThird)
+        if (IsTaunter())
         {
-            C.Logger("[UltraAvatarTyndarius-v3] Taunter detected, equipping Scroll of Enrage.");
+            C.Logger("[UltraAvatarTyndarius-v3] Taunter, equipping Scroll of Enrage.");
             Engine.EquipEnrage();
+            if (!Bot.Inventory.IsEquipped("Scroll of Enrage"))
+                C.Logger("[UltraAvatarTyndarius-v3] Scroll of Enrage is not equipped, this taunter cannot taunt.", "Warning");
         }
 
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
-        Engine.ChooseBestCell(boss);
+        var (bestCell, bestPad) = Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
         Bot.Sleep(2000);
 
@@ -193,20 +229,10 @@ public class UltraAvatarTyndariusv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        string fightTimeSyncPath = Ultra.ResolveSyncPath(fightTimeSyncFile);
-
-        // Set or retrieve fight start time, then launch the appropriate taunter loop
-        if (_role == "Ball1TaunterAttackBall2")
+        if (_roleClass == TyndariusTaunter)
         {
-            C.Logger("[UltraAvatarTyndarius-v3] Ball1TaunterAttackBall2 (Primary) — setting fight start time.");
-            fightStartTime = UltraAsync.SetFightTime(C, fightTimeSyncPath);
-            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 0, 2, cancellationToken: _tauntCts.Token);
-        }
-        else if (_role == "Ball2TaunterAttackBall2")
-        {
-            C.Logger("[UltraAvatarTyndarius-v3] Ball2TaunterAttackBall2 — reading fight start time.");
-            fightStartTime = UltraAsync.GetFightTime(Ultra, C, fightTimeSyncPath);
-            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 1, 2, cancellationToken: _tauntCts.Token);
+            DateTime fightStartTime = UltraAsync.SetFightTime(C, Ultra.ResolveSyncPath(fightTimeSyncFile));
+            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 0, 1, pulseIntervalSec: TyndariusTauntIntervalSec, cancellationToken: _tauntCts.Token);
         }
 
         while (!Bot.ShouldExit && !_wipeCts.IsCancellationRequested)
@@ -233,30 +259,62 @@ public class UltraAvatarTyndariusv3
                 break;
             }
 
-            // All roles: ball2 (MapID 3) → ball1 (MapID 1) → Tyndarius (MapID 2)
-            if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == 3 && x.HP > 0))
+            // Back to the fight if a respawn landed somewhere else.
+            if (!string.IsNullOrEmpty(bestCell) && Bot.Player.Cell != bestCell)
             {
-                if (Bot.Player.Target?.MapID != 3)
-                    Bot.Combat.Attack(3);
-            }
-            else if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == 1 && x.HP > 0))
-            {
-                if (Bot.Player.Target?.MapID != 1)
-                    Bot.Combat.Attack(1);
-            }
-            else if (Bot.Player.Target?.MapID != 2)
-            {
-                Bot.Combat.Attack(2);
+                C.Jump(bestCell, bestPad ?? "Left");
+                Bot.Wait.ForCellChange(bestCell);
+                continue;
             }
 
+            switch (_roleClass)
+            {
+                case RightOrbKiller:
+                    AttackTarget(IsAlive(RightOrb) ? RightOrb : Tyndarius);
+                    break;
+
+                case LeftOrbTaunter:
+                    // Orbs respawn: whenever the left orb is up, it is this role's.
+                    if (IsAlive(LeftOrb))
+                    {
+                        AttackTarget(LeftOrb);
+                        if (Bot.Player.Target?.MapID == LeftOrb)
+                            Engine.Cast(5);
+                    }
+                    else
+                        AttackTarget(Tyndarius);
+                    break;
+
+                case TyndariusTaunter:
+                    // The taunt loop presses the scroll on whatever is targeted, so stay on Tyndarius.
+                    AttackTarget(Tyndarius);
+                    break;
+
+                default:
+                    AttackTarget(Tyndarius);
+                    break;
+            }
+
+            // No-op for the taunters: their consumable slot holds the scroll.
             Pots.ActivateEquippedPotion();
 
-            Bot.Sleep(500);
+            Bot.Sleep(250);
         }
+
+        // The taunt loop must not keep pressing during a retreat.
+        _tauntCts.Cancel();
 
         // If retreat is still in progress (background), wait for it
         if (_wipeCts.IsCancellationRequested)
             _retreatComplete.WaitOne(TimeSpan.FromSeconds(120));
     }
 
+    private static bool IsAlive(int mapId) =>
+        Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.Alive && x.MapID == mapId);
+
+    private static void AttackTarget(int mapId)
+    {
+        if (!Bot.Player.HasTarget || Bot.Player.Target == null || !Bot.Player.Target.Alive || Bot.Player.Target.MapID != mapId)
+            Bot.Combat.Attack(mapId);
+    }
 }

@@ -44,6 +44,9 @@ public class UltraPartyLayout
     /// <summary>The class this account plays this run, set by <see cref="EquipClass"/>.</summary>
     public string Class { get; private set; } = string.Empty;
 
+    // Skua instantiates every included Script's class; layouts come from Read.
+    public UltraPartyLayout() : this(string.Empty, new()) { }
+
     private UltraPartyLayout(string boss, Dictionary<string, string> classByUser)
     {
         Boss = boss;

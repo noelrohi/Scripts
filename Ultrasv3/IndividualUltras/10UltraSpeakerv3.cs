@@ -154,7 +154,7 @@ public class UltraSpeakerv3
         finally
         {
             // An Attempt still open here ended without a kill. The Speaker has no Wipe detection.
-            _attempt?.End(UltraAttempt.Stopped);
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
             Bot.Events.ScriptStopping -= StopAttemptEvent;
             Bot.Events.ExtensionPacketReceived -= SpeakerMessageListener;
             Bot.Flash.FlashCall -= SpeakerFlashListener;
@@ -166,7 +166,7 @@ public class UltraSpeakerv3
 
     private bool StopAttemptEvent(Exception? e)
     {
-        _attempt?.End(UltraAttempt.Stopped);
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
         return true;
     }
 
@@ -254,7 +254,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss);
 
         while (!Bot.ShouldExit)
         {
@@ -263,7 +263,8 @@ public class UltraSpeakerv3
 
             if (Bot.Player?.Alive != true)
             {
-                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, 20);
+                // The boss's HP is still noted while dead.
+                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, attempt.SeeBoss, 20);
                 // Just respawned — re-sync truth taunt turn counter from sync file
                 try
                 {
@@ -322,10 +323,10 @@ public class UltraSpeakerv3
                 _positioned = true;
             }
 
-            attempt.SeeBoss(Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && m.Name == boss));
+            attempt.SeeBoss();
 
             if (Bot.Inventory.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Kill);
+                attempt.End(UltraAttempt.Outcome.Kill);
 
             if (Ultra.CheckArmyProgressBool(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {

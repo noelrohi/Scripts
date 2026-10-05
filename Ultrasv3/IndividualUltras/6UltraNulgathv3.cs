@@ -211,7 +211,7 @@ public class UltraNulgathv3
         finally
         {
             // An Attempt still open here ended without a kill or a Wipe.
-            _attempt?.End(UltraAttempt.Stopped);
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
             _wipeCts.Cancel();
@@ -223,7 +223,7 @@ public class UltraNulgathv3
 
     private bool StopTauntEvent(Exception? e)
     {
-        _attempt?.End(UltraAttempt.Stopped);
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
         _tauntCts.Cancel();
         return true;
     }
@@ -303,9 +303,9 @@ public class UltraNulgathv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath);
         // The wipe monitor cancels this token the moment the whole party is dead.
-        using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Wipe));
+        using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
         DateTime fightStart = _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
 
@@ -318,15 +318,15 @@ public class UltraNulgathv3
 
             if (!Bot.Player.Alive)
             {
-                // Death is signaled by the background wipe monitor
-                Bot.Wait.ForTrue(() => Bot.Player.Alive || _wipeCts.IsCancellationRequested, 20);
+                // Death is signaled by the background wipe monitor. The boss's HP is still noted while dead.
+                Bot.Wait.ForTrue(() => Bot.Player.Alive || _wipeCts.IsCancellationRequested, attempt.SeeBoss, 20);
                 continue;
             }
 
-            attempt.SeeBoss(Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && m.MapID == Nulgath));
+            attempt.SeeBoss();
 
             if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Kill);
+                attempt.End(UltraAttempt.Outcome.Kill);
 
             if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {

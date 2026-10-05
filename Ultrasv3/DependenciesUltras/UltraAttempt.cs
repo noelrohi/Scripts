@@ -22,9 +22,9 @@ public class UltraAttempt
     private static IScriptInterface Bot => IScriptInterface.Instance;
 
     public const string ReportName = "ultra.attempt";
-    public const string Kill = "kill";
-    public const string Wipe = "wipe";
-    public const string Stopped = "stopped";
+
+    /// <summary>How an Attempt ended; reported as <c>kill</c>, <c>wipe</c> or <c>stopped</c>.</summary>
+    public enum Outcome { Kill, Wipe, Stopped }
 
     // The game can say the player died more than once for one death.
     private const double SameDeathSec = 5;
@@ -34,6 +34,8 @@ public class UltraAttempt
     private readonly string _comp = string.Empty;
     private readonly string _class = string.Empty;
     private readonly string _role = string.Empty;
+    private readonly string _map = string.Empty;
+    private readonly Func<Monster, bool> _isBoss = _ => false;
     private readonly DateTime _startedAt;
     private readonly List<double> _deaths = new();
     private int? _bossHp;
@@ -43,27 +45,38 @@ public class UltraAttempt
     // Skua instantiates every included Script's class; Attempts come from Begin.
     public UltraAttempt() { }
 
-    private UltraAttempt(string boss, string comp, string className, string role)
+    private UltraAttempt(string boss, string comp, string className, string role, string map, Func<Monster, bool> isBoss)
     {
         _boss = boss;
         _comp = comp;
         _class = className;
         _role = role;
+        _map = map;
+        _isBoss = isBoss;
         _startedAt = DateTime.UtcNow;
         _ended = false;
     }
 
-    /// <summary>Starts an Attempt now. <paramref name="boss"/> is the DoAllUltras boss key, e.g. UltraNulgath.</summary>
-    public static UltraAttempt Begin(string boss, string comp, string className, string role)
+    /// <summary>
+    /// Starts an Attempt now. <paramref name="boss"/> is the DoAllUltras boss key, e.g. UltraNulgath;
+    /// <paramref name="map"/> is the boss's map and <paramref name="isBoss"/> picks the boss among its monsters.
+    /// </summary>
+    public static UltraAttempt Begin(string boss, string comp, string className, string role, string map, Func<Monster, bool> isBoss)
     {
-        UltraAttempt attempt = new(boss, comp, className, role);
+        UltraAttempt attempt = new(boss, comp, className, role, map, isBoss);
         Bot.Events.PlayerDeath += attempt.OnDeath;
         return attempt;
     }
 
-    /// <summary>Notes the boss's HP; call it as the fight goes, as a Wipe moves the account away from the boss.</summary>
-    public void SeeBoss(Monster? boss)
+    /// <summary>
+    /// Notes the boss's HP while this account is in the boss's map, alive or dead. Call it as the
+    /// fight goes; a Wipe notes it once more as it ends the Attempt, before the retreat leaves the map.
+    /// </summary>
+    public void SeeBoss()
     {
+        if (!string.Equals(Bot.Map.Name, _map, StringComparison.OrdinalIgnoreCase))
+            return;
+        Monster? boss = Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && _isBoss(m));
         if (boss == null || boss.MaxHP <= 0)
             return;
 
@@ -76,10 +89,15 @@ public class UltraAttempt
 
     /// <summary>
     /// Ends the Attempt with <paramref name="outcome"/> and reports it. Only the first call reports,
-    /// so the stop and cleanup paths can call it with <see cref="Stopped"/> unconditionally.
+    /// so the stop and cleanup paths can call it with <see cref="Outcome.Stopped"/> unconditionally.
     /// </summary>
-    public void End(string outcome)
+    public void End(Outcome outcome)
     {
+        if (outcome == Outcome.Wipe)
+        {
+            try { SeeBoss(); } catch { }
+        }
+
         object report;
         lock (_lock)
         {
@@ -87,7 +105,7 @@ public class UltraAttempt
                 return;
             _ended = true;
 
-            if (outcome == Kill)
+            if (outcome == Outcome.Kill)
                 _bossHp = 0;
 
             report = new
@@ -98,7 +116,12 @@ public class UltraAttempt
                 role = _role,
                 startedAt = _startedAt.ToString("o"),
                 endedAt = DateTime.UtcNow.ToString("o"),
-                outcome,
+                outcome = outcome switch
+                {
+                    Outcome.Kill => "kill",
+                    Outcome.Wipe => "wipe",
+                    _ => "stopped",
+                },
                 bossHp = _bossHp,
                 bossMaxHp = _bossMaxHp,
                 deaths = _deaths.Select(atSec => new { atSec }).ToArray(),

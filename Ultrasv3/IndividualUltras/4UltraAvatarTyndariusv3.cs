@@ -161,7 +161,7 @@ public class UltraAvatarTyndariusv3
         finally
         {
             // An Attempt still open here ended without a kill or a Wipe.
-            _attempt?.End(UltraAttempt.Stopped);
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
             _wipeCts.Cancel();
@@ -172,7 +172,7 @@ public class UltraAvatarTyndariusv3
 
     private bool StopTauntEvent(Exception? e)
     {
-        _attempt?.End(UltraAttempt.Stopped);
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
         _tauntCts.Cancel();
         return true;
     }
@@ -248,9 +248,9 @@ public class UltraAvatarTyndariusv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Tyndarius);
         // The wipe monitor cancels this token the moment the whole party is dead.
-        using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Wipe));
+        using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
         _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
 
@@ -259,15 +259,15 @@ public class UltraAvatarTyndariusv3
             if (!Bot.Player.Alive)
             {
                 // Death is signaled by the background wipe monitor
-                // Wait for respawn and keep fighting
-                Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
+                // Wait for respawn and keep fighting, still noting the boss's HP
+                Bot.Wait.ForTrue(() => Bot.Player.Alive, attempt.SeeBoss, 20);
                 continue;
             }
 
-            attempt.SeeBoss(Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && m.MapID == Tyndarius));
+            attempt.SeeBoss();
 
             if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Kill);
+                attempt.End(UltraAttempt.Outcome.Kill);
 
             if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {

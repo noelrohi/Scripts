@@ -299,8 +299,17 @@ Same classes, Roles and Loadouts as `default`, without potions, except:
 |---|---|---|---|
 | Lord of Order | Hits Tyndarius | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; no potions; Scroll of Enrage | at 6 s of every 12 s |
 
+**`ke-lr-ap-loo-orbs`** (`ke-lr-ap-loo-loop` with the guide's orb taunts). Both orbs put Melting on the
+whole party every 6 s, and it stacks. Same as `ke-lr-ap-loo-loop`, except:
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; no potions; Scroll of Enrage | whenever the right orb is up |
+
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | ke-lr-ap-loo-loop | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt (a 2nd cut short) | first death at 13.9 s, then the whole party | Tyndarius stayed taunted throughout, yet the party died: both orbs' Melting stacked (cast at 6.6 s and 12.6 s). The left orb barely took damage; the right one was at about half. |
+| 2026-10-05 | default | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 5 Attempts | first deaths at 14, 15.9, 13.8, 23.4, 16 s, then the whole party | After `4d22e513b` (ArchPaladin seals and holds its ultimate; Loadouts apply with DisableAutoEnhance on). No potions but King's Echo's. Tyndarius got no lower than 84%. |
 | 2026-10-05 | default | alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order | stopped | 5 Attempts, about 7 min | first death each Attempt at 12–15 s (once 25 s), then the whole party | Five Wipes, stopped. Only King's Echo drank potions (`c48931b4f`); the earlier win had Body Tonic on all four, so the lost max HP is the likely cause. Tyndarius got no lower than 68%. |
 
 ### Ultra Nulgath

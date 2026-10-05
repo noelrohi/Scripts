@@ -1,6 +1,6 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default without potions, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt.
+description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default without potions, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -31,6 +31,7 @@ public class UltraAvatarTyndariusv3
     // Roles: what each class of the chosen Comp does in the fight.
     private const string RightOrbKiller = "RightOrbKiller";       // hits the right orb while it is up, otherwise Tyndarius
     private const string LeftOrbTaunter = "LeftOrbTaunter";       // taunts the left orb while it is up, otherwise hits Tyndarius
+    private const string RightOrbTaunter = "RightOrbTaunter";     // taunts and kills the right orb, then the left orb, then Tyndarius
     private const string TyndariusTaunter = "TyndariusTaunter";   // stays on Tyndarius, so its taunts land on Tyndarius
     private const string TyndariusAttacker = "TyndariusAttacker"; // stays on Tyndarius
 
@@ -115,6 +116,69 @@ public class UltraAvatarTyndariusv3
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = LeftOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
+                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = TyndariusTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TyndariusAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 6),
+            }),
+        // ke-lr-ap-loo-loop with the guide's orb taunts: both orbs put Melting on the whole party every 6 s and
+        // it stacks, so King's Echo taunts the right orb as Legion Revenant taunts the left, and kills it first.
+        new("ke-lr-ap-loo-orbs",
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = RightOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Healer,
+                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the right orb is up"),
             },
             new UltraCompEntry
             {
@@ -335,6 +399,18 @@ public class UltraAvatarTyndariusv3
             {
                 case RightOrbKiller:
                     AttackTarget(IsAlive(RightOrb) ? RightOrb : Tyndarius);
+                    break;
+
+                case RightOrbTaunter:
+                    // Each orb's Melting stacks on the whole party; a taunted orb's goes to its taunter.
+                    if (IsAlive(RightOrb))
+                    {
+                        AttackTarget(RightOrb);
+                        if (Bot.Player.Target?.MapID == RightOrb)
+                            Engine.Cast(5);
+                    }
+                    else
+                        AttackTarget(IsAlive(LeftOrb) ? LeftOrb : Tyndarius);
                     break;
 
                 case LeftOrbTaunter:

@@ -65,7 +65,6 @@ public class UltraAvatarTyndariusv3
                     Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
                     // Body Tonic for the HP: it dies at its base HP taunting the left orb.
-                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
@@ -80,7 +79,6 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Cape = new[] { CapeSpecial.Absolution },
                     Helm = new[] { HelmSpecial.Forge },
-                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(12, atSec: 0),
@@ -94,7 +92,6 @@ public class UltraAvatarTyndariusv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
-                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir", UltraPotions.HonorOrMalice },
                 },
                 Taunt = UltraTaunt.Never,
             }),

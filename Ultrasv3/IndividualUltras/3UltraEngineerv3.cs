@@ -204,6 +204,7 @@ public class UltraEngineerv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir", UltraPotions.HonorOrMalice },
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,

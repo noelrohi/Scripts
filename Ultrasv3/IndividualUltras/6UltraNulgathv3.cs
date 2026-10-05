@@ -234,26 +234,13 @@ public class UltraNulgathv3
     /// </summary>
     private bool Prep()
     {
-        UltraComp? comp = UltraComp.Read(Boss, Comps);
-        if (comp == null)
+        if (UltraComp.Prep(Boss, Comps, "UltraNulgath-v3", Ultra, 4, "ultra_nulgath_class-v3.sync") is not { } prep)
             return false;
-        _comp = comp;
-        _party = UltraPartyLayout.Read(Boss);
-
-        UltraGeneral.EquipWarriorClass();
-        Bot.Sleep(2000);
-
-        C.Logger($"[UltraNulgath-v3] Equipping the {_comp.Name} Comp's classes for army size 4.");
-        UltraCompEntry? entry = _comp.EquipClass(_party, Ultra, 4, "ultra_nulgath_class-v3.sync");
-        if (entry == null)
-            return false;
-        _entry = entry;
+        (_comp, _party, _entry) = prep;
 
         // A Blade hitter needs a fast loop to catch each new Blade; the whole party ticks with it,
         // as in the Attempt that beat Nulgath.
         _tickMs = _comp.Entries.Any(e => e.Role == BladeHitter) ? 100 : 500;
-
-        _entry.Loadout.Enhance();
         return true;
     }
 
@@ -276,18 +263,7 @@ public class UltraNulgathv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        // Buying potion reagents can swap to a farm class; the Comp's class goes back on.
-        _party.EnsureClass();
-        _entry.Loadout.Stock();
-        _party.EnsureClass();
-
-        C.Join("Whitemap");
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
-
-        _entry.Loadout.Use();
-
-        _party.EnsureClass();
-        Engine.Join(map);
+        UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
         var (bestCell, bestPad) = Engine.ChooseBestCell(boss);

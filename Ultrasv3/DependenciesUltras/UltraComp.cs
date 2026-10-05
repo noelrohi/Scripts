@@ -12,6 +12,8 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 
 using System;
 using System.Collections.Generic;
@@ -82,6 +84,50 @@ public class UltraComp
 
         C.Logger($"[Comp:{boss}] {comp.Name}: {string.Join("; ", comp.Entries.Select(e => $"{e.Class} as {e.Role}"))}.");
         return comp;
+    }
+
+    /// <summary>
+    /// A boss script's Prep: reads the boss's Comp and Party Layout, equips this account's class from
+    /// the Comp and enhances it as its Loadout says. Returns null after stopping the bot.
+    /// </summary>
+    public static (UltraComp Comp, UltraPartyLayout Party, UltraCompEntry Entry)? Prep(
+        string boss, IEnumerable<UltraComp> comps, string logTag, CoreUltrav3 ultra, int armySize, string classSyncFileName)
+    {
+        UltraComp? comp = Read(boss, comps);
+        if (comp == null)
+            return null;
+        UltraPartyLayout party = UltraPartyLayout.Read(boss);
+
+        UltraGeneral.EquipWarriorClass();
+        Bot.Sleep(2000);
+
+        C.Logger($"[{logTag}] Equipping the {comp.Name} Comp's classes for army size {armySize}.");
+        UltraCompEntry? entry = comp.EquipClass(party, ultra, armySize, classSyncFileName);
+        if (entry == null)
+            return null;
+
+        entry.Loadout.Enhance();
+        return (comp, party, entry);
+    }
+
+    /// <summary>
+    /// Readies this account for an Attempt: stocks <paramref name="entry"/>'s Loadout, waits for the
+    /// party on Whitemap, uses the Loadout and joins <paramref name="map"/>. Buying potion reagents can
+    /// swap to a farm class, so the Comp's class goes back on after stocking and before joining.
+    /// </summary>
+    public static void ReadyForAttempt(UltraPartyLayout party, UltraCompEntry entry, int armySize, string waitSyncFileName, string map)
+    {
+        party.EnsureClass();
+        entry.Loadout.Stock();
+        party.EnsureClass();
+
+        C.Join("Whitemap");
+        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFileName, useSkill: false);
+
+        entry.Loadout.Use();
+
+        party.EnsureClass();
+        Engine.Join(map);
     }
 
     /// <summary>

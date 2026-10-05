@@ -154,7 +154,8 @@ public class UltraEzrajalv3
                 Taunt = UltraTaunt.Never,
             }),
 
-        // The guide's lock trick, without Vainglory capes. Legion Revenant needs the guide's minimum HP.
+        // The guide's lock trick, without Vainglory capes. Legion Revenant needs the guide's minimum HP: Prep raises
+        // it with gear, and its Loadout leaves a cape on Vainglory or a helm on Pneuma, which other Comps use, as they are.
         new("ke-lr-ap-loo",
             new UltraCompEntry
             {
@@ -181,6 +182,7 @@ public class UltraEzrajalv3
                     Cape = new[] { CapeSpecial.Lament },
                     Helm = new[] { HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
+                    KeepVaingloryAndPneuma = true,
                 },
                 Taunt = UltraTaunt.Never,
                 MinMaxHealth = 3175,

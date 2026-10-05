@@ -121,8 +121,8 @@ public class UltraComp
         if (!taunt.IsTimed)
             return DateTime.UtcNow;
 
-        UltraCompEntry keeper = Entries.Where(e => e.Taunt.IsTimed).OrderBy(e => e.Taunt.AtSec).First();
-        DateTime fightStart = entry == keeper
+        UltraCompEntry fightTimeWriter = Entries.Where(e => e.Taunt.IsTimed).OrderBy(e => e.Taunt.AtSec).First();
+        DateTime fightStart = entry == fightTimeWriter
             ? UltraAsync.SetFightTime(C, fightTimeSyncPath)
             : UltraAsync.GetFightTime(ultra, C, fightTimeSyncPath);
 
@@ -188,7 +188,10 @@ public class UltraLoadout
     /// <summary>Click the equipped potion again during the fight (<see cref="ActivatePotion"/>). False: the potions are drunk only before each Attempt.</summary>
     public bool ClickPotionInFight { get; init; } = true;
 
-    /// <summary>The scroll equipped in the consumable slot after the potions, e.g. Scroll of Enrage. Null: none.</summary>
+    public const string ScrollOfEnrage = "Scroll of Enrage";
+    public const string ScrollOfDecay = "Scroll of Decay";
+
+    /// <summary>The scroll equipped in the consumable slot after the potions, e.g. <see cref="ScrollOfEnrage"/>. Null: none.</summary>
     public string? Scroll { get; init; }
 
     public void Enhance()
@@ -217,10 +220,10 @@ public class UltraLoadout
         {
             case null:
                 break;
-            case "Scroll of Enrage":
+            case ScrollOfEnrage:
                 Scrolls.GetScrollOfEnrage();
                 break;
-            case "Scroll of Decay":
+            case ScrollOfDecay:
                 Scrolls.GetScrollOfDecay();
                 break;
             default:
@@ -330,23 +333,23 @@ public class UltraTaunt
 
     /// <summary>Taunts at <paramref name="atSec"/> of every <paramref name="cycleSec"/>, optionally not while this class has <paramref name="skipWhileAura"/>.</summary>
     public static UltraTaunt Every(int cycleSec, int atSec, string? skipWhileAura = null) =>
-        new(true, atSec, cycleSec, skipWhileAura,
+        new(true, cycleSec, atSec, skipWhileAura,
             $"at {atSec} s of every {cycleSec} s{(skipWhileAura == null ? "" : $", not while it has {skipWhileAura}")}");
 
     /// <summary>The Role carries the taunts; <paramref name="when"/> says when, for people reading the Comp.</summary>
     public static UltraTaunt ByRole(string when) => new(false, 0, 0, null, when);
 
     public bool IsTimed { get; }
-    public int AtSec { get; }
     public int CycleSec { get; }
+    public int AtSec { get; }
     public string? SkipWhileAura { get; }
     private readonly string _description;
 
-    private UltraTaunt(bool isTimed, int atSec, int cycleSec, string? skipWhileAura, string description)
+    private UltraTaunt(bool isTimed, int cycleSec, int atSec, string? skipWhileAura, string description)
     {
         IsTimed = isTimed;
-        AtSec = atSec;
         CycleSec = cycleSec;
+        AtSec = atSec;
         SkipWhileAura = skipWhileAura;
         _description = description;
     }

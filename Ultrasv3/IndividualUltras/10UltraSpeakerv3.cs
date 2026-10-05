@@ -38,8 +38,6 @@ public class UltraSpeakerv3
     // Verus DoomKnight's Decay, which removes Scintillation.
     private const string TruthTaunter3 = "TruthTaunter3";
 
-    private const string ScrollOfEnrage = "Scroll of Enrage";
-
     /// <summary>The Speaker's Comps. The DoAllUltras "Ultra Speaker comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
     {
@@ -53,7 +51,7 @@ public class UltraSpeakerv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Lacerate },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on every \"You shall listen.\""),
             },
@@ -66,7 +64,7 @@ public class UltraSpeakerv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 3rd, 6th, 9th... \"I will make you see the truth.\""),
             },
@@ -80,7 +78,7 @@ public class UltraSpeakerv3
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Cape = new[] { CapeSpecial.Absolution },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 1st, 4th, 7th... \"I will make you see the truth.\""),
             },
@@ -94,7 +92,7 @@ public class UltraSpeakerv3
                     Weapon = new[] { WeaponSpecial.Praxis },
                     Cape = new[] { CapeSpecial.Penitence },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
             }),
@@ -108,7 +106,7 @@ public class UltraSpeakerv3
 
     private UltraPartyLayout _party = null!;
     private UltraComp _comp = null!;
-    private UltraCompEntry? _entry;
+    private UltraCompEntry _entry = null!; // null until Prep; the chat listeners can run before it
     private UltraAttempt? _attempt;
 
     // Chat-listener state
@@ -228,7 +226,7 @@ public class UltraSpeakerv3
 
         // Buying potion reagents can swap to a farm class; the Comp's class goes back on.
         _party.EnsureClass();
-        _entry!.Loadout.Stock();
+        _entry.Loadout.Stock();
         _party.EnsureClass();
 
         C.Join("Whitemap");

@@ -36,8 +36,6 @@ public class UltraNulgathv3
     private const string BladeTaunter = "BladeTaunter";       // hits the Blade, and Nulgath around its own taunt
     private const string BladeAttacker = "BladeAttacker";     // hits the Blade while it is up, otherwise Nulgath
 
-    private const string ScrollOfEnrage = "Scroll of Enrage";
-
     /// <summary>Nulgath's Comps. The DoAllUltras "Ultra Nulgath comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
     {
@@ -54,7 +52,7 @@ public class UltraNulgathv3
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Valiance },
                     Cape = new[] { CapeSpecial.Absolution },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(15, atSec: 0, skipWhileAura: "Contract of Despair"),
             },
@@ -68,7 +66,7 @@ public class UltraNulgathv3
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Cape = new[] { CapeSpecial.Absolution },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(15, atSec: 5, skipWhileAura: "Contract of Despair"),
             },
@@ -83,7 +81,7 @@ public class UltraNulgathv3
                     Cape = new[] { CapeSpecial.Lament },
                     Helm = new[] { HelmSpecial.Forge },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(15, atSec: 10, skipWhileAura: "Contract of Despair"),
             },
@@ -127,14 +125,14 @@ public class UltraNulgathv3
             {
                 Class = "Legion Revenant",
                 Role = NulgathTaunter,
-                Loadout = new UltraLoadout { Scroll = ScrollOfEnrage },
+                Loadout = new UltraLoadout { Scroll = UltraLoadout.ScrollOfEnrage },
                 Taunt = UltraTaunt.Every(10, atSec: 0),
             },
             new UltraCompEntry
             {
                 Class = "ArchPaladin",
                 Role = NulgathTaunter,
-                Loadout = new UltraLoadout { Scroll = ScrollOfEnrage },
+                Loadout = new UltraLoadout { Scroll = UltraLoadout.ScrollOfEnrage },
                 Taunt = UltraTaunt.Every(10, atSec: 5),
             },
             new UltraCompEntry

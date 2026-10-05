@@ -34,8 +34,6 @@ public class UltraAvatarTyndariusv3
     private const string TyndariusTaunter = "TyndariusTaunter";   // stays on Tyndarius, so its taunts land on Tyndarius
     private const string TyndariusAttacker = "TyndariusAttacker"; // stays on Tyndarius
 
-    private const string ScrollOfEnrage = "Scroll of Enrage";
-
     /// <summary>Tyndarius's Comps. The DoAllUltras "Ultra Avatar Tyndarius comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
     {
@@ -68,7 +66,7 @@ public class UltraAvatarTyndariusv3
                     Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
                     // Body Tonic for the HP: it dies at its base HP taunting the left orb.
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
             },
@@ -83,7 +81,7 @@ public class UltraAvatarTyndariusv3
                     Cape = new[] { CapeSpecial.Absolution },
                     Helm = new[] { HelmSpecial.Forge },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(12, atSec: 0),
             },

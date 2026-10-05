@@ -1,6 +1,6 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default without potions, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius. ke-lr-ap-loo-burst: ke-lr-ap-loo-orbs with Lord of Order on the right orb, turning to Tyndarius only to taunt.
+description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius. ke-lr-ap-loo-burst: ke-lr-ap-loo-orbs with Lord of Order on the right orb, turning to Tyndarius only to taunt.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -53,7 +53,7 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
-                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir", UltraPotions.HonorOrMalice },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
@@ -64,12 +64,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Wizard,
-                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
-                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
-                    // Body Tonic for the HP: it dies at its base HP taunting the left orb.
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -81,10 +79,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Valiance },
-                    Cape = new[] { CapeSpecial.Absolution },
-                    Helm = new[] { HelmSpecial.Forge },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -96,15 +94,16 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusAttacker,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
             }),
         // default with the guide's loop taunt: a taunt's Focus holds Tyndarius for 6 s, so the Lord of Order
-        // taunts at 6 s of the ArchPaladin's 12 s cycle and Tyndarius is never left untaunted. No potions.
+        // taunts at 6 s of the ArchPaladin's 12 s cycle and Tyndarius is never left untaunted.
         new("ke-lr-ap-loo-loop",
             new UltraCompEntry
             {
@@ -116,6 +115,7 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
@@ -126,11 +126,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Wizard,
-                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
-                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -142,10 +141,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Valiance },
-                    Cape = new[] { CapeSpecial.Absolution },
-                    Helm = new[] { HelmSpecial.Forge },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -157,9 +156,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusAttacker,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -178,6 +178,7 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -189,11 +190,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Wizard,
-                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
-                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -205,10 +205,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Valiance },
-                    Cape = new[] { CapeSpecial.Absolution },
-                    Helm = new[] { HelmSpecial.Forge },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -220,9 +220,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusAttacker,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -241,6 +242,7 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -252,11 +254,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Wizard,
-                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
-                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -268,10 +269,10 @@ public class UltraAvatarTyndariusv3
                 Role = TyndariusTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Valiance },
-                    Cape = new[] { CapeSpecial.Absolution },
-                    Helm = new[] { HelmSpecial.Forge },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -283,9 +284,10 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbBurster,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -305,6 +307,7 @@ public class UltraAvatarTyndariusv3
                     Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
@@ -316,10 +319,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbHitter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Wizard,
+                    Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
-                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -331,10 +334,10 @@ public class UltraAvatarTyndariusv3
                 Role = LeftOrbHitter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Valiance },
-                    Cape = new[] { CapeSpecial.Absolution },
-                    Helm = new[] { HelmSpecial.Forge },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     Scroll = UltraLoadout.ScrollOfEnrage,
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -346,9 +349,10 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbHitter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Fighter,
-                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },

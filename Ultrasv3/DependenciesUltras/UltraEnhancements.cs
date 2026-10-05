@@ -141,65 +141,6 @@ public class UltraEnhancements
         }
     }
 
-    /// <summary>
-    /// Tyndarius roles: King's Echo kills the right orb, Legion Revenant taunts the left orb,
-    /// ArchPaladin taunts Tyndarius, Lord of Order hits Tyndarius. KE, AP and LoO keep the
-    /// enhancements of the run that beat the boss with this layout; the Legion Revenant
-    /// trades its damage weapon special for Health Vamp because the left orb kept killing it.
-    /// </summary>
-    public void ApplyTyndarius()
-    {
-        string className = Bot.Player?.CurrentClass?.Name ?? string.Empty;
-        if (string.IsNullOrEmpty(className))
-            return;
-
-        C.Logger($"[UltraEnhancements] Tyndarius enhancing for: {className}");
-
-        switch (className)
-        {
-            case "King's Echo":
-                Adv.EnhanceEquipped(
-                    type: EnhancementType.Healer,
-                    hSpecial: HelmSpecial.Examen,
-                    wSpecial: Adv.uElysium() ? WeaponSpecial.Elysium : WeaponSpecial.Mana_Vamp,
-                    cSpecial: CapeSpecial.Lament
-                );
-                break;
-
-            case "Legion Revenant":
-                // Left-orb taunter: Penitence cape and Arcana's Concerto weapon.
-                Adv.EnhanceEquipped(
-                    type: EnhancementType.Wizard,
-                    hSpecial: Adv.uPneuma() ? HelmSpecial.Pneuma : HelmSpecial.None,
-                    wSpecial: Adv.uArcanasConcerto() ? WeaponSpecial.Arcanas_Concerto : WeaponSpecial.Health_Vamp,
-                    cSpecial: Adv.uPenitence() ? CapeSpecial.Penitence : CapeSpecial.Vainglory
-                );
-                break;
-
-            case "ArchPaladin":
-                Adv.EnhanceEquipped(
-                    type: EnhancementType.Fighter,
-                    hSpecial: HelmSpecial.Forge,
-                    wSpecial: WeaponSpecial.Valiance,
-                    cSpecial: CapeSpecial.Absolution
-                );
-                break;
-
-            case "Lord of Order":
-                Adv.EnhanceEquipped(
-                    type: EnhancementType.Fighter,
-                    wSpecial: Adv.uArcanasConcerto() ? WeaponSpecial.Arcanas_Concerto : WeaponSpecial.Awe_Blast,
-                    cSpecial: CapeSpecial.Absolution
-                );
-                break;
-
-            default:
-                C.Logger($"[UltraEnhancements] No preset for '{className}', using SmartEnhance.");
-                Adv.SmartEnhance(className);
-                break;
-        }
-    }
-
     public void ApplyDage()
     {
         string className = Bot.Player?.CurrentClass?.Name ?? string.Empty;

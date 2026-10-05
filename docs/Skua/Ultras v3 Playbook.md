@@ -291,6 +291,14 @@ killing it.
 One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
 `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
+**`ke-lr-ap-loo-loop`** (`default` with the guide's loop taunt and no potions). A taunt's Focus holds
+Tyndarius for only 6 s, and `default`'s 12 s taunt left him free from 6 s to 12 s, when the party died.
+Same classes, Roles and Loadouts as `default`, without potions, except:
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Hits Tyndarius | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; no potions; Scroll of Enrage | at 6 s of every 12 s |
+
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
 | 2026-10-05 | default | alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order | stopped | 5 Attempts, about 7 min | first death each Attempt at 12–15 s (once 25 s), then the whole party | Five Wipes, stopped. Only King's Echo drank potions (`c48931b4f`); the earlier win had Body Tonic on all four, so the lost max HP is the likely cause. Tyndarius got no lower than 68%. |

@@ -298,9 +298,10 @@ public class UltraEzrajalv3
     }
 
     /// <summary>
-    /// Readies a bait weapon: a weapon other than the Loadout's, enhanced with the Loadout's enhancement
-    /// and Mana Vamp. Without one (no spare weapon, Awe enhancements locked, or the enhancing failed)
-    /// this account skips the lock trick.
+    /// Readies a bait weapon without overwriting any weapon's enhancement: a spare weapon (not the
+    /// Loadout's) already on Mana Vamp, used as it is; else a spare weapon with no enhancement, enhanced
+    /// with the Loadout's enhancement and Mana Vamp. Without either, or when the unenhanced one can't get
+    /// Mana Vamp (Awe enhancements locked, or the enhancing failed), this account skips the lock trick.
     /// </summary>
     private void PrepareBait()
     {
@@ -312,50 +313,61 @@ public class UltraEzrajalv3
             C.Logger($"[Lock] {who} has no weapon equipped; it skips the lock trick.", "Warning");
             return;
         }
-        if (!Adv.uAwe())
-        {
-            C.Logger($"[Lock] {who} hasn't unlocked Awe enhancements, so it can't put Mana Vamp on a bait weapon; it skips the lock trick.", "Warning");
-            return;
-        }
 
-        string? bait = PickBaitWeapon(_mainWeapon);
+        InventoryItem? bait = PickBaitWeapon(_mainWeapon);
         if (bait == null)
         {
-            C.Logger($"[Lock] {who} has no spare weapon in its inventory or bank for the Mana Vamp bait; it skips the lock trick.", "Warning");
+            C.Logger($"[Lock] {who} has no spare weapon on Mana Vamp and no unenhanced spare weapon in its inventory or bank, " +
+                "and won't overwrite another weapon's enhancement; it skips the lock trick.", "Warning");
             return;
         }
 
-        C.Equip(bait);
-        if (Bot.Inventory.IsEquipped(bait))
+        if (IsManaVamp(bait))
+        {
+            _baitWeapon = bait.Name;
+            C.Logger($"[Lock] {who} baits Ezrajal's lock with {bait.Name}, already on Mana Vamp, then fights with {_mainWeapon}.");
+            return;
+        }
+
+        if (!Adv.uAwe())
+        {
+            C.Logger($"[Lock] {who} hasn't unlocked Awe enhancements, so it can't put Mana Vamp on the unenhanced {bait.Name}; it skips the lock trick.", "Warning");
+            return;
+        }
+
+        C.Equip(bait.Name);
+        if (Bot.Inventory.IsEquipped(bait.Name))
             _entry.Loadout.EnhanceWeapon(WeaponSpecial.Mana_Vamp);
-        bool manaVamp = EquippedWeapon() is { } w && w.Name == bait && w.ProcID == (int)WeaponSpecial.Mana_Vamp;
+        bool manaVamp = EquippedWeapon() is { } w && w.Name == bait.Name && IsManaVamp(w);
         C.Equip(_mainWeapon);
         if (!manaVamp)
         {
-            C.Logger($"[Lock] {who} couldn't equip {bait} with Mana Vamp; it skips the lock trick.", "Warning");
+            C.Logger($"[Lock] {who} couldn't put Mana Vamp on the unenhanced {bait.Name}; it skips the lock trick.", "Warning");
             return;
         }
 
-        _baitWeapon = bait;
-        C.Logger($"[Lock] {who} baits Ezrajal's lock with {bait} (Mana Vamp), then fights with {_mainWeapon}.");
+        _baitWeapon = bait.Name;
+        C.Logger($"[Lock] {who} put Mana Vamp on the unenhanced {bait.Name} and baits Ezrajal's lock with it, then fights with {_mainWeapon}.");
     }
 
     /// <summary>
-    /// A spare enhanceable weapon, from the inventory before the bank: one already on Mana Vamp costs
-    /// nothing, one without a weapon special loses nothing, else any. Unbanks it. Null when there is none.
+    /// A spare weapon for the bait, from the inventory before the bank: one already on Mana Vamp, else one
+    /// with no enhancement. Never one carrying another enhancement. Unbanks it. Null when there is none.
     /// </summary>
-    private static string? PickBaitWeapon(string mainWeapon)
+    private static InventoryItem? PickBaitWeapon(string mainWeapon)
     {
         bool Spare(InventoryItem i) =>
             i != null && i.ItemGroup == "Weapon" && !i.Equipped && Adv.WeaponCatagories.Contains(i.Category)
-            && !i.Name.Equals(mainWeapon, StringComparison.OrdinalIgnoreCase);
+            && !i.Name.Equals(mainWeapon, StringComparison.OrdinalIgnoreCase)
+            && (Bot.Player.IsMember || !i.Upgrade);
 
-        InventoryItem? pick = Bot.Inventory.Items.Where(Spare)
-            .Concat(Bot.Bank.Items.Where(Spare))
-            .OrderBy(i => i.ProcID == (int)WeaponSpecial.Mana_Vamp ? 0 : i.ProcID == 0 ? 1 : 2)
-            .FirstOrDefault();
-        return pick != null && C.CheckInventory(pick.Name) ? pick.Name : null;
+        InventoryItem[] spares = Bot.Inventory.Items.Where(Spare).Concat(Bot.Bank.Items.Where(Spare)).ToArray();
+        InventoryItem? pick = spares.FirstOrDefault(IsManaVamp) ?? spares.FirstOrDefault(i => i.EnhancementLevel == 0);
+        return pick != null && C.CheckInventory(pick.Name) ? pick : null;
     }
+
+    private static bool IsManaVamp(InventoryItem weapon) =>
+        weapon.EnhancementLevel > 0 && weapon.ProcID == (int)WeaponSpecial.Mana_Vamp;
 
     private static InventoryItem? EquippedWeapon() =>
         Bot.Inventory.Items.FirstOrDefault(i => i != null && i.Equipped && i.ItemGroup == "Weapon");

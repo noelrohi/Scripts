@@ -64,14 +64,18 @@ public class UltraPartyLayout
     /// </summary>
     public static UltraPartyLayout Read(string boss)
     {
-        string raw = ReadRaw(OptionName(boss));
+        string raw = ReadOption(OptionName(boss));
         UltraPartyLayout layout = new(boss, Parse(boss, raw));
         if (layout.IsSet)
             C.Logger($"[PartyLayout:{boss}] {string.Join("; ", layout.ClassByUser.Select(kv => $"{kv.Key}={kv.Value}"))}");
         return layout;
     }
 
-    private static string ReadRaw(string optionName)
+    /// <summary>
+    /// Reads a DoAllUltras option: from the running script's options if it has the option
+    /// (DoAllUltras), otherwise from the saved DoAllUltras options. "" when unset.
+    /// </summary>
+    public static string ReadOption(string optionName)
     {
         if (Bot.Config?.Options.Any(o => o.Name == optionName) == true)
             return Bot.Config!.Get<string>(optionName) ?? string.Empty;

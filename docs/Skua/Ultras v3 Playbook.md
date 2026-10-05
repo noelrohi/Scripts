@@ -338,6 +338,8 @@ except:
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | loo-sc-ap-ke | alt1=King's Echo; alt2=ArchPaladin; alt3=StoneCrusher; alt4=Lord of Order | kill | 91 s | none | Second Attempt. The first lost no one before 23.6 s (StoneCrusher's heals) and had the right orb at 8k when it wiped. |
+| 2026-10-05 | loo-sc-ap-ke | alt1=King's Echo; alt2=ArchPaladin; alt3=StoneCrusher; alt4=Lord of Order | wipe | 29 s | StoneCrusher @ 23.6, King's Echo @ 25.6, Lord of Order @ 29.5, ArchPaladin @ 29.6 | Both orbs untaunted at 12.4 s and the right one at 18.5 s: Melting on everyone. |
 | 2026-10-05 | ke-lr-ap-loo-loop | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt | first death at 12.1 s, then the whole party | After `a3a510e32` (the guide's Lucky gear for all four; King's Echo drinks Fate Tonic and Potent Malevolence Elixir). The right orb was at 146k at 15 s (299k before), still alive for the 12.7 s Melting. |
 | 2026-10-05 | ke-lr-ap-loo-loop | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 3 Attempts | first deaths at 11.4, 15.6, 13.1 s, then the whole party | After `64be70b03` (King's Echo on Lucky / Ravenous / Examen / Vainglory). The untaunted right orb's Melting hit all four at 6.3 and 12.2 s; at 14 s the orbs were still at 299k (right) and 547k (left). |
 | 2026-10-05 | ke-lr-ap-loo-burst | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 2 Attempts | first deaths at 23.6 s, then 9.8 s | After `b24929245` (King's Echo in Lucky / Ravenous gear). Closest yet: the orbs got down to 27k (right) and 119k (left) by 26 s, but at 12.4 s both were untaunted and Melting hit all four. Out of tries. |
@@ -429,7 +431,8 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 Each of these won its first Attempt:
 
 ```
-Tyndarius layout: alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order
+Tyndarius comp:   loo-sc-ap-ke
+Tyndarius layout: alt1=King's Echo; alt2=ArchPaladin; alt3=StoneCrusher; alt4=Lord of Order
 Nulgath comp:     dot-lr-ap-loo
 Nulgath layout:   alt1=Dragon of Time; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order
 ```

@@ -100,7 +100,7 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 The `Ultra Avatar Tyndarius comp` option picks one; blank runs `default`. The ArchPaladin's
 taunts count from the fight start it shares.
 
-**`default`** (won first try with the layout under [Recommended layouts](#recommended-layouts)):
+**`default`** (won its first Attempt with the layout under [Recommended layouts](#recommended-layouts)):
 
 | Class | Role | Loadout | Taunts |
 |---|---|---|---|
@@ -182,7 +182,7 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 ## Recommended layouts
 
-These two won first try:
+Each of these won its first Attempt:
 
 ```
 Tyndarius layout: alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order

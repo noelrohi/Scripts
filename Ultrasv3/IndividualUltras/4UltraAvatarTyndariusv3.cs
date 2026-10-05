@@ -39,7 +39,7 @@ public class UltraAvatarTyndariusv3
     /// <summary>Tyndarius's Comps. The DoAllUltras "Ultra Avatar Tyndarius comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
     {
-        // Won first try with a layout. The ArchPaladin taunted every 12 s in the v2 layout that beat the boss.
+        // Won its first Attempt with a layout. The ArchPaladin taunted every 12 s in the v2 layout that beat the boss.
         new(UltraComp.Default,
             new UltraCompEntry
             {
@@ -179,7 +179,7 @@ public class UltraAvatarTyndariusv3
 
     /// <summary>
     /// Picks the Comp, equips this account's class from it once and enhances it as its Loadout says.
-    /// Retries after a wipe keep the class and Role.
+    /// The Attempts after a Wipe keep the class and Role.
     /// </summary>
     private bool Prep()
     {

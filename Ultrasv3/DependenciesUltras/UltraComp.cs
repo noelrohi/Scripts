@@ -154,7 +154,8 @@ public class UltraCompEntry
 }
 
 /// <summary>
-/// What one class in a Comp brings besides the class itself: enhancements, potions and scroll.
+/// A class's Loadout in a Comp: its enhancements, potions and scroll. The class itself, also part
+/// of the Loadout, is the entry's <see cref="UltraCompEntry.Class"/>.
 /// Applied before the fight: <see cref="Enhance"/> once, then <see cref="Stock"/> and <see cref="Use"/>
 /// before each Attempt.
 /// </summary>

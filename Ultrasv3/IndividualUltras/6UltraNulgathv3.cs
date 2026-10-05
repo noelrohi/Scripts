@@ -232,7 +232,7 @@ public class UltraNulgathv3
 
     /// <summary>
     /// Picks the Comp, equips this account's class from it once and enhances it as its Loadout says.
-    /// Retries after a wipe keep the class and Role.
+    /// The Attempts after a Wipe keep the class and Role.
     /// </summary>
     private bool Prep()
     {
@@ -252,7 +252,7 @@ public class UltraNulgathv3
         _entry = entry;
 
         // A Blade hitter needs a fast loop to catch each new Blade; the whole party ticks with it,
-        // as in the run that beat Nulgath.
+        // as in the Attempt that beat Nulgath.
         _tickMs = _comp.Entries.Any(e => e.Role == BladeHitter) ? 100 : 500;
 
         _entry.Loadout.Enhance();

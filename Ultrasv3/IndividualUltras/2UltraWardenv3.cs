@@ -1,6 +1,6 @@
 /*
 name: UltraWardenv3
-description: Ultra Warden v3 — runs the Comp picked by the DoAllUltras "Ultra Warden comp" option. default: Verus DoomKnight and Lord of Order taunt Warden 5s apart on a 10s cycle, King's Echo and StoneCrusher hit him; loo-lr-sc-csh: when Warden goes berserk, Legion Revenant taunts him and Lord of Order casts its 5th skill on him, then spams its heal.
+description: Ultra Warden v3 — runs the Comp picked by the DoAllUltras "Ultra Warden comp" option. default: Verus DoomKnight and Lord of Order taunt Warden 5s apart on a 10s cycle, King's Echo and StoneCrusher hit him; loo-lr-sc-csh: when Warden goes berserk, Legion Revenant taunts him and Lord of Order casts its 5th skill on him, then spams its heal; loo-lr-vdk-ke: the same, and Lord of Order keeps its 5th skill off cooldown from 30% of Warden's HP for the berserk.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -35,6 +35,8 @@ public class UltraWardenv3
     // The berserk Roles act on Warden's "goes berserk" message, and otherwise hit Warden.
     private const string BerserkTaunter = "BerserkTaunter"; // taunts Warden
     private const string BerserkHealer = "BerserkHealer";   // casts its 5th skill (Cast(4)) on Warden to negate his damage, then spams its heal (Cast(2))
+    // BerserkHealer that also keeps its 5th skill off cooldown from HoldOrderFromPercent of Warden's HP until the cue.
+    private const string BerserkHealerHoldingOrder = "BerserkHealerHoldingOrder";
 
     /// <summary>Warden's Comps. The DoAllUltras "Ultra Warden comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
@@ -159,6 +161,66 @@ public class UltraWardenv3
                 },
                 Taunt = UltraTaunt.Never,
             }),
+
+        // loo-lr-sc-csh with Verus DoomKnight and King's Echo hitting Warden, and Order held for the berserk.
+        new("loo-lr-vdk-ke",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = BerserkHealerHoldingOrder,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = BerserkTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Pneuma },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole($"when Warden says \"{BerserkCue}\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Verus DoomKnight",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            }),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;
@@ -180,6 +242,8 @@ public class UltraWardenv3
     private const int OrderSkill = 4;
     private const int HealSkill = 2;
     private const int OrderTryMs = 6000; // how long to keep trying Order while it is on cooldown
+    // Where BerserkHealerHoldingOrder starts holding Order: the berserk came at about 22% of Warden's HP.
+    private const double HoldOrderFromPercent = 30;
 
     private CancellationTokenSource _tauntCts = new();
     private UltraPartyLayout _party = null!;
@@ -188,6 +252,8 @@ public class UltraWardenv3
     private UltraAttempt? _attempt;
     private volatile bool _inFight;
     private DateTime _lastBerserkAt = DateTime.MinValue;
+    // This Warden's berserk has had its Order; a Warden back above HoldOrderFromPercent (the next fight) hasn't.
+    private volatile bool _berserkHadOrder;
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -213,7 +279,7 @@ public class UltraWardenv3
             if (!Prep())
                 return;
 
-            if (_entry.Role is BerserkTaunter or BerserkHealer)
+            if (_entry.Role is BerserkTaunter or BerserkHealer or BerserkHealerHoldingOrder)
                 Bot.Events.ExtensionPacketReceived += BerserkListener;
 
             Fight();
@@ -223,6 +289,7 @@ public class UltraWardenv3
             // An Attempt still open here ended without a kill. Warden has no Wipe detection.
             _attempt?.End(UltraAttempt.Outcome.Stopped);
             _inFight = false;
+            Engine.LordOfOrderHoldsOrder = false;
             Bot.Events.ExtensionPacketReceived -= BerserkListener;
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
@@ -302,6 +369,9 @@ public class UltraWardenv3
 
             attempt.SeeBoss();
 
+            if (_entry.Role == BerserkHealerHoldingOrder)
+                HoldOrderNearBerserk();
+
             if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
                 attempt.End(UltraAttempt.Outcome.Kill);
 
@@ -359,7 +429,7 @@ public class UltraWardenv3
             CancellationToken token = _tauntCts.Token;
             if (_entry.Role == BerserkTaunter)
                 _ = Task.Run(() => TauntWarden(token));
-            else if (_entry.Role == BerserkHealer)
+            else if (_entry.Role is BerserkHealer or BerserkHealerHoldingOrder)
                 _ = Task.Run(() => NegateThenHeal(token));
         }
         catch { }
@@ -376,10 +446,32 @@ public class UltraWardenv3
     }
 
     /// <summary>
-    /// Casts Order on Warden as soon as it is ready, then casts the heal whenever it is ready
-    /// until Warden dies or the fight ends.
+    /// Holds Order (the Lord of Order rotation stops casting it) while Warden is at or below
+    /// <see cref="HoldOrderFromPercent"/> of his HP and his berserk hasn't had its Order yet.
     /// </summary>
-    private static void NegateThenHeal(CancellationToken token)
+    private void HoldOrderNearBerserk()
+    {
+        var warden = Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && m.MapID == Warden);
+        if (warden == null || warden.MaxHP <= 0 || warden.HP <= 0)
+            return;
+
+        double hpPercent = 100.0 * warden.HP / warden.MaxHP;
+        if (hpPercent > HoldOrderFromPercent)
+            _berserkHadOrder = false;
+
+        bool hold = hpPercent <= HoldOrderFromPercent && !_berserkHadOrder;
+        if (hold == Engine.LordOfOrderHoldsOrder)
+            return;
+        Engine.LordOfOrderHoldsOrder = hold;
+        if (hold)
+            C.Logger($"[Berserk] Warden at {hpPercent:0}% HP: holding Order for his berserk.");
+    }
+
+    /// <summary>
+    /// Casts Order on Warden as soon as it is ready, then casts the heal whenever it is ready
+    /// until Warden dies or the fight ends. Releases a held Order once it is cast or given up on.
+    /// </summary>
+    private void NegateThenHeal(CancellationToken token)
     {
         DateTime giveUp = DateTime.UtcNow.AddMilliseconds(OrderTryMs);
         bool order = false;
@@ -393,9 +485,11 @@ public class UltraWardenv3
             if (!order)
                 Thread.Sleep(100);
         }
+        _berserkHadOrder = true;
+        Engine.LordOfOrderHoldsOrder = false;
         C.Logger(order
-            ? "[Berserk] BerserkHealer cast Order on Warden; spamming its heal."
-            : $"[Berserk] BerserkHealer could not cast Order on Warden within {OrderTryMs / 1000} s; spamming its heal.");
+            ? $"[Berserk] {_entry.Role} cast Order on Warden; spamming its heal."
+            : $"[Berserk] {_entry.Role} could not cast Order on Warden within {OrderTryMs / 1000} s; spamming its heal.");
 
         while (!token.IsCancellationRequested && !Bot.ShouldExit && WardenAlive())
         {

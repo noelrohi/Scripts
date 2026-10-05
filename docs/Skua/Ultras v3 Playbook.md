@@ -32,7 +32,8 @@ not skipped and the party does not refight for it.
 
 A Comp is a boss's named strategy: its 4 classes, each class's Loadout (enhancements,
 potions, scroll) and Role, and when each class taunts. Bosses with Comps (so far Ultra
-Avatar Tyndarius, Ultra Nulgath and Ultra Speaker) have a `<Boss> comp` option in
+Ezrajal, Ultra Warden, Ultra Engineer, Ultra Avatar Tyndarius, Ultra Nulgath and Ultra
+Speaker) have a `<Boss> comp` option in
 `DoAllUltras`, next to `<Boss> layout`. Set it to a Comp's name; leave it blank to run the
 boss's `default` Comp. An unknown name stops the bot and lists the boss's Comps. Like the
 layout, a single boss script reads the saved option.
@@ -46,8 +47,8 @@ fallback ("else"), the first one unlocked is used.
 Each Attempt, from engaging the boss to its kill, a Wipe or the bot stopping, ends with an
 `ultra.attempt` Script Report on every account: the boss, Comp, class and Role, the start
 and end, the outcome (`kill`, `wipe` or `stopped`), the boss's HP at the end, and that
-account's deaths in seconds since the start. Ultra Speaker has no Wipe detection, so its
-Attempts end in `kill` or `stopped`.
+account's deaths in seconds since the start. Ultra Ezrajal, Ultra Warden, Ultra Engineer and
+Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or `stopped`.
 
 ## Setting the party layout
 
@@ -64,9 +65,8 @@ alt1=Dragon of Time; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order
   the boss map. Buying potion reagents can swap to a farm class; the role class goes back on.
 - Names and classes are case-insensitive. `,` also works as a separator.
 - Every account in the party must be listed, and its class must be one of the boss's role
-  classes (any class for Ezrajal and Engineer). For a boss with Comps, every class in the
-  layout must be one of the chosen Comp's 4 classes. If not, the bot stops and says what's
-  wrong.
+  classes. For a boss with Comps, every class in the layout must be one of the chosen Comp's
+  4 classes. If not, the bot stops and says what's wrong.
 - Leave a layout blank to keep the automatic assignment: the accounts share which role
   classes they own and the script hands the roles out (for a boss with Comps, the chosen
   Comp's classes).
@@ -81,9 +81,9 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 
 | Boss | Roles (default class) |
 |---|---|
-| Ezrajal | 4 × DPS (Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo). Any class works with a layout. Everyone stops attacking during Counter Attack. |
-| Warden | Taunter 1 (Verus DoomKnight), Taunter 2 (Lord of Order), DPS (King's Echo), DPS (StoneCrusher). Taunters alternate every 5 s. |
-| Engineer | 4 × DPS (Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo), drones first. Any class works with a layout. |
+| Ezrajal | Two Comps, see below. |
+| Warden | Two Comps, see below. |
+| Engineer | Two Comps, see below. |
 | Tyndarius | One Comp, see below. |
 | Drakath | Taunters 1–3 (ArchPaladin, Lord of Order, Shaman), 4 s apart, DPS (StoneCrusher). |
 | Nulgath | Three Comps, see below. |
@@ -92,6 +92,119 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 | Dage | Taunter 1 (Verus DoomKnight), Taunter 2 (ArchPaladin), Decay (Lord of Order, Scroll of Decay on Legionnaire), DPS (King's Echo). |
 | Speaker | One Comp, see below. |
 | Gramiel | Crystal taunters: left T1 (StoneCrusher), right T1 (ArchPaladin), left T2 (Lord of Order), right T2 (ArchFiend); all four taunt Gramiel in turn. |
+
+### Ultra Ezrajal
+
+#### Comps
+
+The `Ultra Ezrajal comp` option picks one; blank runs `default`. Everyone hits Ezrajal and
+stops attacking for about 6 s whenever he has Counter Attack. No one taunts.
+
+**`default`**:
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Verus DoomKnight | Hits Ezrajal | Fighter; Lacerate weapon, Lament cape, Forge helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| StoneCrusher | Hits Ezrajal | Fighter; Valiance weapon, Absolution cape, Anima helm; Body Tonic, Unstable Divine Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| Lord of Order | Hits Ezrajal | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; Body Tonic, Unstable Divine Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| King's Echo | Hits Ezrajal | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+
+**`loo-lr-ap-csh`** (the Recommended Group of the community "Simplified bosses guide";
+the guide asks for at least 3175 HP):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Hits Ezrajal | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Hits Ezrajal | Wizard; Arcana's Concerto weapon, Lament cape, no helm special, even with DisableAutoEnhance on; no potions; no scroll | never |
+| ArchPaladin | Hits Ezrajal | Lucky; Praxis weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Chrono ShadowHunter | Hits Ezrajal | Lucky; Valiance weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+The guide's Lock trick is not played. Ezrajal locks a player's weapon special for 45 s (a
+"Skill Locked" aura naming it); the guide hits him with a Mana Vamp weapon until that is
+locked, then swaps to the real weapon and restarts the fight together. The script fights on
+the weapon above throughout.
+
+#### Results
+
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
+`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+
+| Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
+|---|---|---|---|---|---|---|
+
+### Ultra Warden
+
+#### Comps
+
+The `Ultra Warden comp` option picks one; blank runs `default`. Everyone stays on Warden.
+
+**`default`**:
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Verus DoomKnight | Taunts Warden | Fighter; Lacerate weapon, Lament cape, Forge helm; Body Tonic, Potent Destruction Elixir; Scroll of Enrage | at 0 s of every 10 s |
+| Lord of Order | Taunts Warden | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; Body Tonic, Unstable Divine Elixir; Scroll of Enrage | at 5 s of every 10 s |
+| King's Echo | Hits Warden | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| StoneCrusher | Hits Warden | Fighter; Valiance weapon, Absolution cape, Anima helm; Body Tonic, Unstable Divine Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+
+The taunts count from the fight start the Verus DoomKnight shares.
+
+**`loo-lr-sc-csh`** (the Recommended Group of the community "Simplified bosses guide", with
+Forge helms):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Berserk healer: when Warden goes berserk, casts its 5th skill (Order) on him to negate his damage, then its heal whenever it is ready until he dies; otherwise hits Warden | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Berserk taunter: taunts Warden when he goes berserk; otherwise hits him | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; Scroll of Enrage | when Warden goes berserk |
+| StoneCrusher | Hits Warden | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Chrono ShadowHunter | Hits Warden | Lucky; Valiance weapon, Vainglory cape, Examen else Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+Warden going berserk is his server message "Ultra Warden goes berserk!!  Kill it quickly!!",
+seen at about a fifth of his HP. The two berserk Roles act on it, in any case. Until then no
+one taunts.
+
+#### Results
+
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
+`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+
+| Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
+|---|---|---|---|---|---|---|
+
+### Ultra Engineer
+
+#### Comps
+
+The `Ultra Engineer comp` option picks one; blank runs `default`. Engineer can't be hit while
+a Drone is up, so everyone kills the Defense Drone, then the Attack Drone, then Engineer. No
+one taunts.
+
+**`default`**:
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Verus DoomKnight | Drone killer | Fighter; Lacerate weapon, Lament cape, Forge helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| StoneCrusher | Drone killer | Fighter; Valiance weapon, Absolution cape, Anima helm; Body Tonic, Unstable Divine Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| Lord of Order | Drone killer | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; Body Tonic, Unstable Divine Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| King's Echo | Drone killer | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+
+**`loo-lr-sc-csh`** (the Recommended Group of the community "Simplified bosses guide",
+without Forge helms):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Casts its 5th skill (Order) on each new Attack Drone to debuff it, then plays drone killer | Lucky; Awe Blast weapon, Penitence cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Drone killer | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| StoneCrusher | Drone killer | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Chrono ShadowHunter | Drone killer | Lucky; Valiance weapon, Vainglory cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+#### Results
+
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
+`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+
+| Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
+|---|---|---|---|---|---|---|
 
 ### Ultra Avatar Tyndarius
 

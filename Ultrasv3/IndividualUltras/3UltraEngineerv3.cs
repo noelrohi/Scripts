@@ -1,6 +1,6 @@
 /*
 name: UltraEngineerv3
-description: Ultra Engineer v3 — runs the Comp picked by the DoAllUltras "Ultra Engineer comp" option. Everyone kills the Defense Drone, then the Attack Drone, then Engineer. default: Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo; loo-lr-sc-csh: Lord of Order first casts its 5th skill on each new Attack Drone.
+description: Ultra Engineer v3 — runs the Comp picked by the DoAllUltras "Ultra Engineer comp" option. Everyone kills the Defense Drone, then the Attack Drone, then Engineer. default: Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo; loo-lr-sc-csh: Lord of Order first casts its 5th skill on each new Attack Drone; loo-lr-sc-ke: Lord of Order, Legion Revenant, StoneCrusher, King's Echo, fighting as default does.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -143,6 +143,65 @@ public class UltraEngineerv3
                 {
                     Enhancement = EnhancementType.Lucky,
                     Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            }),
+
+        // default's fight (every class a DroneKiller) with Legion Revenant and the guide's Loadouts, without Forge helms.
+        new("loo-lr-sc-ke",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = DroneKiller,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = DroneKiller,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Pneuma },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = DroneKiller,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = DroneKiller,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
                     Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     EnhanceWhenAutoEnhanceIsOff = true,

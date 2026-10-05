@@ -3292,6 +3292,13 @@ public class CoreEnginev3
         if (Cast(4))
             return;
     }
+
+    /// <summary>
+    /// While true, the Lord of Order rotation doesn't cast Order (Cast(4)), so a boss script can keep
+    /// it off cooldown for a cue and cast it itself; Cast(4) still casts it. The script that sets it clears it.
+    /// </summary>
+    public volatile bool LordOfOrderHoldsOrder;
+
     void LordOfOrderClass()
     {
         if (NotUltraDage() && NotKolr() && NotAstral() && (IsHealthLow(80) || IsArmyHealthLow(80) || Left("Resurgence", 2, true)))
@@ -3322,7 +3329,7 @@ public class CoreEnginev3
             if (Cast(1))
                 return;
 
-        if (Cast(4))
+        if (!LordOfOrderHoldsOrder && Cast(4))
             return;
     }
 

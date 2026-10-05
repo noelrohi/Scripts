@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Items;
 using Skua.Core.Options;
 
 /// <summary>
@@ -88,7 +89,8 @@ public class UltraComp
 
     /// <summary>
     /// A boss script's Prep: reads the boss's Comp and Party Layout, equips this account's class from
-    /// the Comp and enhances it as its Loadout says. Returns null after stopping the bot.
+    /// the Comp, enhances it as its Loadout says and raises its max HP to the entry's
+    /// <see cref="UltraCompEntry.MinMaxHealth"/>. Returns null after stopping the bot.
     /// </summary>
     public static (UltraComp Comp, UltraPartyLayout Party, UltraCompEntry Entry)? Prep(
         string boss, IEnumerable<UltraComp> comps, string logTag, CoreUltrav3 ultra, int armySize, string classSyncFileName)
@@ -107,14 +109,36 @@ public class UltraComp
             return null;
 
         entry.Loadout.Enhance();
+        RaiseMaxHealth(boss, entry);
         return (comp, party, entry);
+    }
+
+    /// <summary>
+    /// When the class has less max HP than <paramref name="entry"/>'s <see cref="UltraCompEntry.MinMaxHealth"/>,
+    /// raises it with gear (<see cref="UltraLoadout.RaiseMaxHealth"/>), and warns with what it tried when it stays short.
+    /// </summary>
+    private static void RaiseMaxHealth(string boss, UltraCompEntry entry)
+    {
+        int min = entry.MinMaxHealth;
+        int before = Bot.Player.MaxHealth;
+        if (min <= 0 || before >= min)
+            return;
+
+        C.Logger($"[Comp:{boss}] {entry.Class} has {before} max HP, under the {min} the {entry.Role} needs: raising it with gear.");
+        List<string> tried = entry.Loadout.RaiseMaxHealth(min);
+        string what = tried.Count > 0 ? string.Join("; ", tried) : "nothing: no gear to equip or enhance";
+        int after = Bot.Player.MaxHealth;
+        if (after >= min)
+            C.Logger($"[Comp:{boss}] {entry.Class} has {after} max HP now. {what}.");
+        else
+            C.Logger($"[Comp:{boss}] {entry.Class} still has {after} max HP (was {before}), under the {min} the {entry.Role} needs. Tried: {what}. Expect it to die; raise it with gear.", "Warning");
     }
 
     /// <summary>
     /// Readies this account for an Attempt: stocks <paramref name="entry"/>'s Loadout, waits for the
     /// party on Whitemap, uses the Loadout and joins <paramref name="map"/>. Buying potion reagents can
     /// swap to a farm class, so the Comp's class goes back on after stocking and before joining.
-    /// Warns when the class has less max HP than the entry's <see cref="UltraCompEntry.MinMaxHealth"/>.
+    /// Warns when the class still has less max HP than the entry's <see cref="UltraCompEntry.MinMaxHealth"/>.
     /// </summary>
     public static void ReadyForAttempt(UltraPartyLayout party, UltraCompEntry entry, int armySize, string waitSyncFileName, string map)
     {
@@ -201,7 +225,10 @@ public class UltraCompEntry
 
     public UltraTaunt Taunt { get; init; } = UltraTaunt.Never;
 
-    /// <summary>The max HP the class needs, e.g. a guide's minimum; less is warned about before each Attempt. 0: none.</summary>
+    /// <summary>
+    /// The max HP the class needs, e.g. a guide's minimum. 0: none. Prep raises max HP to it with gear
+    /// (<see cref="UltraLoadout.RaiseMaxHealth"/>); still less is warned about then and before each Attempt.
+    /// </summary>
     public int MinMaxHealth { get; init; }
 }
 
@@ -246,6 +273,12 @@ public class UltraLoadout
     /// <summary>The scroll equipped in the consumable slot after the potions, e.g. <see cref="ScrollOfEnrage"/>. Null: none.</summary>
     public string? Scroll { get; init; }
 
+    /// <summary>
+    /// Never overwrite a cape on Vainglory or a helm on Pneuma, which other Comps use: <see cref="Enhance"/>
+    /// and <see cref="EnhanceWeapon"/> put the Loadout's cape or helm enhancement on another cape or helm instead.
+    /// </summary>
+    public bool KeepVaingloryAndPneuma { get; init; }
+
     public void Enhance()
     {
         if (Enhancement == null)
@@ -254,13 +287,15 @@ public class UltraLoadout
             return;
         }
 
-        Adv.EnhanceEquipped(
-            Enhancement.Value,
-            Pick(Cape, CapeUnlocked, CapeSpecial.None),
-            Pick(Helm, HelmUnlocked, HelmSpecial.None),
-            Pick(Weapon, WeaponUnlocked, WeaponSpecial.None),
-            EnhanceWhenAutoEnhanceIsOff
-        );
+        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
+        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
+        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        if (KeepVaingloryAndPneuma)
+        {
+            SpareVaingloryOrPneuma(Slot.Cape, cape, helm, weapon, CapeUnlocked(cape));
+            SpareVaingloryOrPneuma(Slot.Helm, cape, helm, weapon, HelmUnlocked(helm));
+        }
+        EnhanceEquipped(cape, helm, weapon, KeepVaingloryAndPneuma);
     }
 
     /// <summary>
@@ -272,13 +307,226 @@ public class UltraLoadout
         if (Enhancement == null)
             return;
 
-        Adv.EnhanceEquipped(
-            Enhancement.Value,
+        EnhanceEquipped(
             Pick(Cape, CapeUnlocked, CapeSpecial.None),
             Pick(Helm, HelmUnlocked, HelmSpecial.None),
             special,
-            EnhanceWhenAutoEnhanceIsOff
+            KeepVaingloryAndPneuma
         );
+    }
+
+    /// <summary>
+    /// Raises max HP to <paramref name="minMaxHealth"/> with the Loadout's enhancement, one gear slot at a
+    /// time (class, helm, cape, weapon: the ones enhancements put stats on), the emptiest first: no item,
+    /// unenhanced, under full level, then another enhancement. A slot whose item already has the Loadout's
+    /// enhancement at full level is left alone. Otherwise it equips an item from the inventory or bank that
+    /// already has it, else enhances a spare, unenhanced ones first. A special that isn't unlocked can't be put
+    /// on, so that slot gets the plain enhancement. Never touches a cape on Vainglory or a helm on Pneuma, which
+    /// other Comps use. Checks max HP after each change, puts the old item back when it fell, and stops once
+    /// it's met. Returns what it did, for the log.
+    /// </summary>
+    public List<string> RaiseMaxHealth(int minMaxHealth)
+    {
+        List<string> done = new();
+        if (Enhancement == null)
+        {
+            done.Add("nothing: the class keeps its own gear");
+            return done;
+        }
+
+        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
+        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
+        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        CapeSpecial capeOn = PickUnlocked(Cape, CapeUnlocked, CapeSpecial.None);
+        HelmSpecial helmOn = PickUnlocked(Helm, HelmUnlocked, HelmSpecial.None);
+        WeaponSpecial weaponOn = PickUnlocked(Weapon, WeaponCanGoOn, WeaponSpecial.None);
+
+        Slot[] slots = { Slot.Class, Slot.Helm, Slot.Cape, Slot.Weapon };
+        foreach (Slot slot in slots.OrderBy(Need).ToArray())
+        {
+            int before = Bot.Player.MaxHealth;
+            if (before >= minMaxHealth || Bot.ShouldExit)
+                break;
+
+            // The slot being raised gets what can go on it; the others what Enhance gave them.
+            CapeSpecial c = slot == Slot.Cape ? capeOn : cape;
+            HelmSpecial h = slot == Slot.Helm ? helmOn : helm;
+            WeaponSpecial w = slot == Slot.Weapon ? weaponOn : weapon;
+            InventoryItem? old = Equipped(slot);
+            if (old != null && Has(old, c, h, w))
+                continue;
+
+            string? change = Refit(slot, c, h, w);
+            if (change == null)
+            {
+                done.Add($"{slot}: {(old == null ? "none" : $"{old.Name} ({Describe(old)})")}, no other to equip or enhance");
+                continue;
+            }
+
+            Bot.Wait.ForTrue(() => Bot.Player.MaxHealth != before, 10);
+            int after = Bot.Player.MaxHealth;
+            if (after < before && old != null && Wear(old))
+            {
+                done.Add($"{change}, but max HP fell {before} to {after}: {old.Name} back on");
+                continue;
+            }
+            done.Add($"{change}: max HP {before} to {after}");
+        }
+        return done;
+    }
+
+    private enum Slot { Class, Helm, Cape, Weapon }
+
+    /// <summary>Enhances the equipped gear; <paramref name="keep"/>: an equipped Vainglory cape or Pneuma helm keeps its special.</summary>
+    private void EnhanceEquipped(CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon, bool keep)
+    {
+        if (keep && Equipped(Slot.Cape) is { } c && IsVaingloryOrPneuma(c))
+            cape = CapeSpecial.Vainglory;
+        if (keep && Equipped(Slot.Helm) is { } h && IsVaingloryOrPneuma(h))
+            helm = HelmSpecial.Pneuma;
+        Adv.EnhanceEquipped(Enhancement!.Value, cape, helm, weapon, EnhanceWhenAutoEnhanceIsOff);
+    }
+
+    /// <summary>
+    /// When the equipped cape or helm is on Vainglory or Pneuma and the Loadout would put another enhancement
+    /// on it, puts that enhancement on another cape or helm (<see cref="Refit"/>); without one, keeps it as it is.
+    /// </summary>
+    private void SpareVaingloryOrPneuma(Slot slot, CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon, bool unlocked)
+    {
+        if (Equipped(slot) is not { } kept || !IsVaingloryOrPneuma(kept) || kept.EnhancementPatternID == Pattern(slot, cape, helm)
+            || !unlocked || !CanEnhance)
+            return;
+
+        string? change = Refit(slot, cape, helm, weapon);
+        C.Logger(change != null
+            ? $"[Loadout] Keeps {kept.Name} on {Describe(kept)} for other Comps: {change}."
+            : $"[Loadout] Keeps {kept.Name} on {Describe(kept)} for other Comps, with no other {slot.ToString().ToLower()} to enhance.");
+    }
+
+    /// <summary>
+    /// Puts the enhancement <paramref name="cape"/>, <paramref name="helm"/> and <paramref name="weapon"/> name
+    /// for <paramref name="slot"/> on: equips an owned item that already has it at full level, else equips a spare
+    /// that isn't on Vainglory or Pneuma (unenhanced first, then the equipped one, then plain enhancements, lowest
+    /// first) and enhances it, putting the old item back when that fails. Returns what it did, or null when it had
+    /// nothing to try.
+    /// </summary>
+    private string? Refit(Slot slot, CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon)
+    {
+        InventoryItem? old = Equipped(slot);
+        List<InventoryItem> owned = Owned(slot);
+
+        InventoryItem? ready = owned.FirstOrDefault(i => !i.Equipped && Has(i, cape, helm, weapon));
+        if (ready != null && Wear(ready))
+            return $"equipped {ready.Name}, already {Describe(ready)}";
+
+        if (!CanEnhance)
+            return null;
+        InventoryItem? spare = owned.Where(i => !IsVaingloryOrPneuma(i))
+            .OrderBy(i => i.EnhancementLevel == 0 ? 0 : i.Equipped ? 1 : HasSpecial(i) ? 3 : 2)
+            .ThenBy(i => !i.Equipped)
+            .ThenBy(i => i.EnhancementLevel)
+            .FirstOrDefault();
+        if (spare == null)
+            return null;
+        string was = Describe(spare);
+        if (!Wear(spare))
+            return $"couldn't equip {spare.Name}";
+
+        EnhanceEquipped(cape, helm, weapon, keep: true);
+        if (Equipped(slot) is { } now && Has(now, cape, helm, weapon))
+            return $"enhanced {now.Name} ({was}) to {Describe(now)}";
+        if (old != null && old.ID != spare.ID)
+            Wear(old);
+        return $"couldn't enhance {spare.Name} ({was}){(old != null && old.ID != spare.ID ? $", {old.Name} back on" : "")}";
+    }
+
+    private bool CanEnhance =>
+        EnhanceWhenAutoEnhanceIsOff || !(C.CBOBool("DisableAutoEnhance", out bool off) && off);
+
+    /// <summary>The enhancement pattern the Loadout puts on a cape or helm: its special, else the enhancement type.</summary>
+    private int Pattern(Slot slot, CapeSpecial cape, HelmSpecial helm) => slot switch
+    {
+        Slot.Cape when cape != CapeSpecial.None => (int)cape,
+        Slot.Helm when helm != HelmSpecial.None => (int)helm,
+        _ => (int)Enhancement!.Value,
+    };
+
+    /// <summary>Whether <paramref name="item"/> has the Loadout's enhancement and the special for its slot at full level, as CoreAdvanced checks it.</summary>
+    private bool Has(InventoryItem item, CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon)
+    {
+        if (Enhancement is not { } type || item.EnhancementLevel <= 0 || item.EnhancementLevel != Bot.Player.Level)
+            return false;
+        int pattern = item.EnhancementPatternID;
+        if (item.Category == ItemCategory.Cape)
+            return pattern == Pattern(Slot.Cape, cape, helm);
+        if (item.Category == ItemCategory.Helm)
+            return pattern == Pattern(Slot.Helm, cape, helm);
+        if (item.Category == ItemCategory.Class || weapon == WeaponSpecial.None)
+            return pattern == (int)type;
+        if ((int)weapon <= 6)
+            return pattern == (int)type && item.ProcID == (int)weapon;
+        return item.ProcID == (int)weapon;
+    }
+
+    private static bool IsVaingloryOrPneuma(InventoryItem item) =>
+        item.EnhancementLevel > 0
+        && ((item.Category == ItemCategory.Cape && item.EnhancementPatternID == (int)CapeSpecial.Vainglory)
+            || (item.Category == ItemCategory.Helm && item.EnhancementPatternID == (int)HelmSpecial.Pneuma));
+
+    private static bool HasSpecial(InventoryItem item) =>
+        item.ProcID != 0 || !Enum.IsDefined(typeof(EnhancementType), item.EnhancementPatternID);
+
+    private static bool InSlot(InventoryItem item, Slot slot) => slot switch
+    {
+        Slot.Class => item.Category == ItemCategory.Class,
+        Slot.Helm => item.Category == ItemCategory.Helm,
+        Slot.Cape => item.Category == ItemCategory.Cape,
+        _ => Adv.WeaponCatagories.Contains(item.Category),
+    };
+
+    private static InventoryItem? Equipped(Slot slot) =>
+        Bot.Inventory.Items.FirstOrDefault(i => i != null && i.Equipped && InSlot(i, slot));
+
+    /// <summary>The items for <paramref name="slot"/> this account can wear, inventory before bank. The class: only the equipped one.</summary>
+    private static List<InventoryItem> Owned(Slot slot)
+    {
+        if (slot == Slot.Class)
+            return Equipped(slot) is { } cls ? new List<InventoryItem> { cls } : new List<InventoryItem>();
+        return Bot.Inventory.Items.Concat(Bot.Bank.Items)
+            .Where(i => i != null && InSlot(i, slot) && (Bot.Player.IsMember || !i.Upgrade))
+            .ToList();
+    }
+
+    /// <summary>Emptiest slot first: no item, unenhanced, under full level, then another enhancement.</summary>
+    private static int Need(Slot slot) => Equipped(slot) switch
+    {
+        null => 0,
+        { EnhancementLevel: 0 } => 1,
+        { } i when i.EnhancementLevel < Bot.Player.Level => 2,
+        _ => 3,
+    };
+
+    /// <summary>Equips <paramref name="item"/>, unbanking it first. Whether it's on.</summary>
+    private static bool Wear(InventoryItem item)
+    {
+        if (!item.Equipped)
+            C.Equip(item.ID);
+        return Bot.Inventory.IsEquipped(item.ID);
+    }
+
+    private static string Describe(InventoryItem item)
+    {
+        if (item.EnhancementLevel <= 0)
+            return "unenhanced";
+        int pattern = item.EnhancementPatternID;
+        string name = Enum.IsDefined(typeof(EnhancementType), pattern) ? ((EnhancementType)pattern).ToString()
+            : pattern == 10 ? "Forge"
+            : item.Category == ItemCategory.Cape && Enum.IsDefined(typeof(CapeSpecial), pattern) ? ((CapeSpecial)pattern).ToString()
+            : item.Category == ItemCategory.Helm && Enum.IsDefined(typeof(HelmSpecial), pattern) ? ((HelmSpecial)pattern).ToString()
+            : $"pattern {pattern}";
+        if (item.ProcID != 0 && Enum.IsDefined(typeof(WeaponSpecial), item.ProcID))
+            name += $"/{(WeaponSpecial)item.ProcID}";
+        return $"{name} level {item.EnhancementLevel}";
     }
 
     /// <summary>Buys the potions and gets the scroll. Either can swap the class: put it back afterwards.</summary>
@@ -353,6 +601,14 @@ public class UltraLoadout
         }
         return choices.Length == 0 ? none : choices[^1];
     }
+
+    /// <summary>The first choice that's unlocked, else <paramref name="none"/>: unlike <see cref="Pick"/>, never a locked one.</summary>
+    private static T PickUnlocked<T>(T[] choices, Func<T, bool> unlocked, T none) =>
+        choices.Where(unlocked).DefaultIfEmpty(none).First();
+
+    /// <summary>Whether CoreAdvanced can put <paramref name="s"/> on a weapon: Awe specials need Awe enhancements.</summary>
+    private static bool WeaponCanGoOn(WeaponSpecial s) =>
+        WeaponUnlocked(s) && (s == WeaponSpecial.Forge || (int)s > 6 || Adv.uAwe());
 
     private static bool WeaponUnlocked(WeaponSpecial s) => s switch
     {

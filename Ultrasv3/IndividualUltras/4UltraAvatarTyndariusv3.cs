@@ -49,9 +49,9 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbKiller,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Healer,
-                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
-                    Cape = new[] { CapeSpecial.Lament },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir", UltraPotions.HonorOrMalice },
                     EnhanceWhenAutoEnhanceIsOff = true,
@@ -112,9 +112,9 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbKiller,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Healer,
-                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
-                    Cape = new[] { CapeSpecial.Lament },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     EnhanceWhenAutoEnhanceIsOff = true,
                 },
@@ -174,9 +174,9 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbTaunter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Healer,
-                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
-                    Cape = new[] { CapeSpecial.Lament },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
@@ -238,8 +238,8 @@ public class UltraAvatarTyndariusv3
                 Loadout = new UltraLoadout
                 {
                     Enhancement = EnhancementType.Lucky,
-                    Weapon = new[] { WeaponSpecial.Ravenous, WeaponSpecial.Elysium },
-                    Cape = new[] { CapeSpecial.Vainglory, CapeSpecial.Lament },
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,
@@ -301,9 +301,9 @@ public class UltraAvatarTyndariusv3
                 Role = RightOrbHitter,
                 Loadout = new UltraLoadout
                 {
-                    Enhancement = EnhancementType.Healer,
-                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
-                    Cape = new[] { CapeSpecial.Lament },
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
                     Helm = new[] { HelmSpecial.Examen },
                     EnhanceWhenAutoEnhanceIsOff = true,
                     Scroll = UltraLoadout.ScrollOfEnrage,

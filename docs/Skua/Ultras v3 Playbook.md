@@ -278,7 +278,7 @@ taunts count from the fight start it shares.
 
 | Class | Role | Loadout | Taunts |
 |---|---|---|---|
-| King's Echo | Hits the right orb while it is up, otherwise Tyndarius | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
+| King's Echo | Hits the right orb while it is up, otherwise Tyndarius | Lucky; Ravenous weapon, Vainglory cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
 | Legion Revenant | Taunts the left orb while it is up, otherwise hits Tyndarius | Wizard; Arcana's Concerto else Health Vamp weapon, Penitence else Vainglory cape, Pneuma else no helm special; no potions; Scroll of Enrage | whenever the left orb is up |
 | ArchPaladin | Taunts Tyndarius; skills 1 to 3 only, never its ultimate, which breaks Righteous Seal | Fighter; Valiance weapon, Absolution cape, Forge helm; no potions; Scroll of Enrage | at 0 s of every 12 s, Righteous Seal up first |
 | Lord of Order | Hits Tyndarius | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; no potions; no scroll | never |
@@ -304,7 +304,7 @@ whole party every 6 s, and it stacks. Same as `ke-lr-ap-loo-loop`, except:
 
 | Class | Role | Loadout | Taunts |
 |---|---|---|---|
-| King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; no potions; Scroll of Enrage | whenever the right orb is up |
+| King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Lucky; Ravenous weapon, Vainglory cape, Examen helm; no potions; Scroll of Enrage | whenever the right orb is up |
 
 **`ke-lr-ap-loo-orbpairs`** (all four scrolls on the orbs). Each orb puts Melting on the whole party about
 every 6 s unless it's taunted, when only its taunter gets it. A taunt lasts 6 s and a scroll takes about 12 s
@@ -325,7 +325,7 @@ except:
 | Class | Role | Taunts |
 |---|---|---|
 | Lord of Order | Hits the right orb, then the left orb, then Tyndarius; turns to Tyndarius for its taunt's presses | at 6 s of every 12 s, on Tyndarius |
-| King's Echo | as `ke-lr-ap-loo-orbs` | Lucky; Ravenous else Elysium weapon, Vainglory else Lament cape, Examen helm; no potions; Scroll of Enrage |
+| King's Echo | as `ke-lr-ap-loo-orbs` | Lucky; Ravenous weapon, Vainglory cape, Examen helm; no potions; Scroll of Enrage |
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|

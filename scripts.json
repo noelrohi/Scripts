@@ -28249,8 +28249,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs",
-    "size": 23164,
-    "sha256": "7f5155e14ca7c340403af2954b9e0853eba5da689b570c2baf43242d54aad5ae",
+    "size": 24109,
+    "sha256": "130d475e4553413ee0917f016eda4cc1dc88deaa69f0e30a7722da5e64003c27",
     "fileName": "1UltraEzrajalv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs"
   },
@@ -28532,8 +28532,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
-    "size": 18271,
-    "sha256": "04c58f215233b6ccc5182a8b0574d32764028a25b1f746cdfe7c879d1e6f6c22",
+    "size": 31514,
+    "sha256": "37812bac60c5e9d2012c9416741da0e48cbc872817b9b2b94c1dfaafa4a6373d",
     "fileName": "UltraComp.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
   },

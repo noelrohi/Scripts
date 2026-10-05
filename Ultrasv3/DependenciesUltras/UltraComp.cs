@@ -184,6 +184,9 @@ public class UltraLoadout
     /// <summary>Equipped and drunk in order before each Attempt. Empty: no potions.</summary>
     public string[] Potions { get; init; } = Array.Empty<string>();
 
+    /// <summary>Click the equipped potion again during the fight (<see cref="ActivatePotion"/>). False: the potions are drunk only before each Attempt.</summary>
+    public bool ClickPotionInFight { get; init; } = true;
+
     /// <summary>The scroll equipped in the consumable slot after the potions, e.g. Scroll of Enrage. Null: none.</summary>
     public string? Scroll { get; init; }
 
@@ -239,10 +242,10 @@ public class UltraLoadout
             C.Logger($"[Loadout] {Scroll} is not equipped, this class cannot taunt.", "Warning");
     }
 
-    /// <summary>Clicks an equipped clickable potion during the fight, when the Loadout has potions.</summary>
+    /// <summary>Clicks an equipped clickable potion during the fight, when the Loadout has potions and clicks them in the fight.</summary>
     public void ActivatePotion()
     {
-        if (Potions.Length > 0)
+        if (ClickPotionInFight && Potions.Length > 0)
             Pots.ActivateEquippedPotion();
     }
 

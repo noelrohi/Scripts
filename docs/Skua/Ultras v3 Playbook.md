@@ -38,7 +38,9 @@ boss's `default` Comp. An unknown name stops the bot and lists the boss's Comps.
 layout, a single boss script reads the saved option.
 
 Each class's Loadout is applied before the fight: the enhancements once, the potions bought,
-equipped and drunk before each Attempt, then the scroll equipped. Where a special lists a
+equipped and drunk before each Attempt, then the scroll equipped. During the fight an equipped
+clickable potion, such as Potent Honor Potion, is clicked again whenever it is ready, unless
+the Loadout says the potions are drunk before the fight only. Where a special lists a
 fallback ("else"), the first one unlocked is used.
 
 Each Attempt, from engaging the boss to its kill, a Wipe or the bot stopping, ends with an
@@ -129,7 +131,7 @@ start the earliest taunter shares.
 
 | Class | Role | Loadout | Taunts |
 |---|---|---|---|
-| Dragon of Time | Hits each new Overfiend Blade for about 1.5 s, otherwise Nulgath | Wizard; Elysium weapon, Vainglory cape, Pneuma helm, even with DisableAutoEnhance on; Unstable Malevolence Elixir, Sage Tonic, Potent Honor Potion; no scroll | never |
+| Dragon of Time | Hits each new Overfiend Blade for about 1.5 s, otherwise Nulgath | Wizard; Elysium weapon, Vainglory cape, Pneuma helm, even with DisableAutoEnhance on; Unstable Malevolence Elixir, Sage Tonic, Potent Honor Potion, drunk before the fight only; no scroll | never |
 | Legion Revenant | Taunts Nulgath | own gear; no potions; Scroll of Enrage | at 0 s of every 10 s |
 | ArchPaladin | Taunts Nulgath | own gear; no potions; Scroll of Enrage | at 5 s of every 10 s |
 | Lord of Order | Hits Nulgath | own gear; no potions; no scroll | never |

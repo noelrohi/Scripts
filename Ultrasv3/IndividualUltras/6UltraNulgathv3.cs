@@ -118,6 +118,8 @@ public class UltraNulgathv3
                     EnhanceWhenAutoEnhanceIsOff = true,
                     // The potion buyer can't make Unstable Malevolence Elixir: keep some on hand.
                     Potions = new[] { "Unstable Malevolence Elixir", "Sage Tonic", "Potent Honor Potion" },
+                    // Drunk before the fight only, as when this Comp beat Nulgath.
+                    ClickPotionInFight = false,
                 },
                 Taunt = UltraTaunt.Never,
             },

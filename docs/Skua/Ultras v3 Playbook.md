@@ -300,41 +300,8 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 | ArchPaladin | Taunts Tyndarius; skills 1 to 3 only | Lucky; Praxis else Valiance weapon, Lament else plain cape, Forge else plain helm; no potions; Scroll of Enrage | at 0 s of every 12 s, Righteous Seal up first |
 | King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Lucky; Ravenous weapon, Vainglory cape, Examen helm; Fate Tonic, Potent Malevolence Elixir; Scroll of Enrage | whenever the right orb is up |
 
-**`ke-lr-ap-loo-loop`** (`default` with the guide's loop taunt). A taunt's Focus holds
-Tyndarius for only 6 s, and `default`'s 12 s taunt left him free from 6 s to 12 s, when the party died.
-Same classes, Roles and Loadouts as `default`, except:
-
-| Class | Role | Loadout | Taunts |
-|---|---|---|---|
-| Lord of Order | Hits Tyndarius | Lucky; Awe Blast weapon, Absolution cape, Forge else plain helm; no potions; Scroll of Enrage | at 6 s of every 12 s |
-
-**`ke-lr-ap-loo-orbs`** (`ke-lr-ap-loo-loop` with the guide's orb taunts). Both orbs put Melting on the
-whole party every 6 s, and it stacks. Same as `ke-lr-ap-loo-loop`, except:
-
-| Class | Role | Loadout | Taunts |
-|---|---|---|---|
-| King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Lucky; Ravenous weapon, Vainglory cape, Examen helm; Fate Tonic, Potent Malevolence Elixir; Scroll of Enrage | whenever the right orb is up |
-
-**`ke-lr-ap-loo-orbpairs`** (all four scrolls on the orbs). Each orb puts Melting on the whole party about
-every 6 s unless it's taunted, when only its taunter gets it. A taunt lasts 6 s and a scroll takes about 12 s
-to come back, so two taunters share each orb, 6 s apart. Nobody taunts Tyndarius. Loadouts as
-`ke-lr-ap-loo-orbs`.
-
-| Class | Role | Taunts |
-|---|---|---|
-| King's Echo | Hits the right orb, then the left orb, then Tyndarius | at 0 s of every 12 s, on its target |
-| Legion Revenant | Hits the left orb, then the right orb, then Tyndarius | at 0 s of every 12 s, on its target |
-| ArchPaladin | Hits the left orb, then the right orb, then Tyndarius; skills 1 to 3 only | at 6 s of every 12 s, on its target, Righteous Seal up first |
-| Lord of Order | Hits the right orb, then the left orb, then Tyndarius | at 6 s of every 12 s, on its target |
-
-**`ke-lr-ap-loo-burst`** (`ke-lr-ap-loo-orbs` with more damage on the right orb). Untaunted, Tyndarius killed
-the party in about 10 s, and one taunter per orb covers only every other Melting. Same as `ke-lr-ap-loo-orbs`,
-except:
-
-| Class | Role | Taunts |
-|---|---|---|
-| Lord of Order | Hits the right orb, then the left orb, then Tyndarius; turns to Tyndarius for its taunt's presses | at 6 s of every 12 s, on Tyndarius |
-| King's Echo | as `ke-lr-ap-loo-orbs` | Lucky; Ravenous weapon, Vainglory cape, Examen helm; Fate Tonic, Potent Malevolence Elixir; Scroll of Enrage |
+`ke-lr-ap-loo-loop`, `ke-lr-ap-loo-orbs`, `ke-lr-ap-loo-orbpairs` and `ke-lr-ap-loo-burst` were test Comps on the way to
+`loo-sc-ap-ke` and are removed; their rows stay below as the record of what didn't work.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|

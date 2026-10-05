@@ -114,6 +114,7 @@ public class UltraComp
     /// Readies this account for an Attempt: stocks <paramref name="entry"/>'s Loadout, waits for the
     /// party on Whitemap, uses the Loadout and joins <paramref name="map"/>. Buying potion reagents can
     /// swap to a farm class, so the Comp's class goes back on after stocking and before joining.
+    /// Warns when the class has less max HP than the entry's <see cref="UltraCompEntry.MinMaxHealth"/>.
     /// </summary>
     public static void ReadyForAttempt(UltraPartyLayout party, UltraCompEntry entry, int armySize, string waitSyncFileName, string map)
     {
@@ -127,6 +128,8 @@ public class UltraComp
         entry.Loadout.Use();
 
         party.EnsureClass();
+        if (entry.MinMaxHealth > 0 && Bot.Player.MaxHealth < entry.MinMaxHealth)
+            C.Logger($"[Comp:{party.Boss}] {entry.Class} has {Bot.Player.MaxHealth} max HP, under the {entry.MinMaxHealth} the {entry.Role} needs: expect it to die. Raise it with gear.", "Warning");
         Engine.Join(map);
     }
 
@@ -197,6 +200,9 @@ public class UltraCompEntry
     public UltraLoadout Loadout { get; init; } = new();
 
     public UltraTaunt Taunt { get; init; } = UltraTaunt.Never;
+
+    /// <summary>The max HP the class needs, e.g. a guide's minimum; less is warned about before each Attempt. 0: none.</summary>
+    public int MinMaxHealth { get; init; }
 }
 
 /// <summary>
@@ -253,6 +259,24 @@ public class UltraLoadout
             Pick(Cape, CapeUnlocked, CapeSpecial.None),
             Pick(Helm, HelmUnlocked, HelmSpecial.None),
             Pick(Weapon, WeaponUnlocked, WeaponSpecial.None),
+            EnhanceWhenAutoEnhanceIsOff
+        );
+    }
+
+    /// <summary>
+    /// Enhances the equipped weapon with the Loadout's enhancement and <paramref name="special"/> instead of
+    /// the Loadout's weapon special, e.g. a bait weapon. The rest stays as <see cref="Enhance"/> left it.
+    /// </summary>
+    public void EnhanceWeapon(WeaponSpecial special)
+    {
+        if (Enhancement == null)
+            return;
+
+        Adv.EnhanceEquipped(
+            Enhancement.Value,
+            Pick(Cape, CapeUnlocked, CapeSpecial.None),
+            Pick(Helm, HelmUnlocked, HelmSpecial.None),
+            special,
             EnhanceWhenAutoEnhanceIsOff
         );
     }

@@ -170,6 +170,7 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | loo-lr-sc-csh | alt1=Chrono ShadowHunter; alt2=Lord of Order; alt3=Legion Revenant; alt4=StoneCrusher | kill | 103 s (alt2, alt3); 234 s (alt1, alt4) | BerserkTaunter @ 6.9, BerserkTaunter @ 91, WardenAttacker @ 100.5, WardenAttacker @ 102.7 | The berserk cue came at about 85 s. The BerserkHealer cast Order 5 s after it; the BerserkTaunter died 6 s after it, and both WardenAttackers died as Warden died, so they fought a second Warden; at its berserk the BerserkHealer could not cast Order within 6 s. Suggest: cast Order at once on the cue (or just before the berserk HP), and potions for the WardenAttackers. |
 
 ### Ultra Engineer
 

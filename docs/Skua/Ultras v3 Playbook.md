@@ -325,9 +325,11 @@ except:
 | Class | Role | Taunts |
 |---|---|---|
 | Lord of Order | Hits the right orb, then the left orb, then Tyndarius; turns to Tyndarius for its taunt's presses | at 6 s of every 12 s, on Tyndarius |
+| King's Echo | as `ke-lr-ap-loo-orbs` | Lucky; Ravenous else Elysium weapon, Vainglory else Lament cape, Examen helm; no potions; Scroll of Enrage |
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | ke-lr-ap-loo-burst | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt (a 2nd cut short) | ArchPaladin 2.1 s, Legion Revenant 4.6 s, Lord of Order 11.8 s, King's Echo 23.8 s | King's Echo still on Healer gear: the right orb only got to 100k by 26 s, the left one barely moved. |
 | 2026-10-05 | ke-lr-ap-loo-orbpairs | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt (a 2nd cut short) | Lord of Order 9.7 s, ArchPaladin 10.8 s, Legion Revenant 11.1 s, King's Echo 27.7 s | Furthest yet: the orbs got down to 97k (left) and 33k (right). Untaunted, Tyndarius killed three by 11 s, so their 6 s taunts never came and Melting got through. |
 | 2026-10-05 | ke-lr-ap-loo-orbs | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt | first death at 13.7 s, then the whole party | At 6.5 s both orbs were taunted and Melting hit only their taunters; their taunts ran out at 9–10 s and the scrolls weren't back, so at 12.7 s Melting hit all four. |
 | 2026-10-05 | ke-lr-ap-loo-loop | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt (a 2nd cut short) | first death at 13.9 s, then the whole party | Tyndarius stayed taunted throughout, yet the party died: both orbs' Melting stacked (cast at 6.6 s and 12.6 s). The left orb barely took damage; the right one was at about half. |

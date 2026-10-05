@@ -81,9 +81,9 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 
 | Boss | Roles (default class) |
 |---|---|
-| Ezrajal | Two Comps, see below. |
-| Warden | Two Comps, see below. |
-| Engineer | Two Comps, see below. |
+| Ezrajal | Three Comps, see below. |
+| Warden | Five Comps, see below. |
+| Engineer | Three Comps, see below. |
 | Tyndarius | One Comp, see below. |
 | Drakath | Taunters 1–3 (ArchPaladin, Lord of Order, Shaman), 4 s apart, DPS (StoneCrusher). |
 | Nulgath | Three Comps, see below. |
@@ -119,10 +119,32 @@ the guide asks for at least 3175 HP):
 | ArchPaladin | Hits Ezrajal | Lucky; Praxis weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
 | Chrono ShadowHunter | Hits Ezrajal | Lucky; Valiance weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
 
-The guide's Lock trick is not played. Ezrajal locks a player's weapon special for 45 s (a
-"Skill Locked" aura naming it); the guide hits him with a Mana Vamp weapon until that is
-locked, then swaps to the real weapon and restarts the fight together. The script fights on
-the weapon above throughout.
+The guide's Lock trick is not played in this Comp (`ke-lr-ap-loo` plays it). Ezrajal locks a
+player's weapon special for 45 s (a "Skill Locked" aura naming it); the guide hits him with a
+Mana Vamp weapon until that is locked, then swaps to the real weapon and restarts the fight
+together. The script fights on the weapon above throughout.
+
+**`ke-lr-ap-loo`** (the guide's Lock trick, without Vainglory capes):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| King's Echo | Lock baiter, then hits Ezrajal | Lucky; Ravenous weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Lock baiter, then hits Ezrajal; needs at least 3175 max HP | Wizard; Arcana's Concerto weapon, Lament cape, no helm special, even with DisableAutoEnhance on; no potions; no scroll | never |
+| ArchPaladin | Lock baiter, then hits Ezrajal | Lucky; Praxis weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Lord of Order | Lock baiter, then hits Ezrajal | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+The Lock trick, played by each account:
+
+1. Before the first Attempt, it picks a bait weapon: a spare weapon from its inventory, else
+   its bank (one already on Mana Vamp first, then one without a weapon special, then any), and
+   enhances it with its Loadout's enhancement and Mana Vamp. Without a spare weapon or Awe
+   enhancements it logs that and skips the trick, but still waits with the party in step 3.
+2. In the fight, with its class skills off, it hits Ezrajal on auto attacks with the bait until
+   his "Skill Locked" aura on it names Mana Vampire, for up to 20 s.
+3. It steps out of Ezrajal's cell, puts its Loadout weapon back on and waits until all four
+   have done so, then all four go back in and fight on their skills.
+
+A Legion Revenant under 3175 max HP is warned about before each Attempt.
 
 #### Results
 
@@ -163,6 +185,30 @@ Warden going berserk is his server message "Ultra Warden goes berserk!!  Kill it
 seen at about a fifth of his HP. The two berserk Roles act on it, in any case. Until then no
 one taunts.
 
+**`loo-lr-vdk-ke`** (`loo-lr-sc-csh`'s berserk Roles, with Verus DoomKnight and King's Echo
+hitting Warden, and Order held for the berserk):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Berserk healer holding Order: from 30% of Warden's HP its rotation stops casting its 5th skill (Order), so Order is ready for the berserk; then as the berserk healer above | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Berserk taunter: taunts Warden when he goes berserk; otherwise hits him | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; Scroll of Enrage | when Warden goes berserk |
+| Verus DoomKnight | Hits Warden | Lucky; Ravenous weapon, Vainglory cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| King's Echo | Hits Warden | Lucky; Ravenous weapon, Vainglory cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+The Lord of Order casts Order again in its rotation once it has cast it on the berserk, or
+given up after 6 s. A Warden back above 30% (a new fight) gets Order held again.
+
+**`ke-lr-ap-loo`** and **`ke-lr-sc-loo`** (two variants of one Comp, differing in the third
+class; `loo-lr-vdk-ke`'s Lord of Order, and Legion Revenant keeping Warden taunted):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| King's Echo | Hits Warden | Lucky; Ravenous weapon, Vainglory cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Taunt spammer: taunts Warden whenever its scroll is ready, the whole fight | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; Scroll of Enrage | whenever its scroll is ready |
+| ArchPaladin (`ke-lr-ap-loo`) | Hits Warden | Lucky; Praxis weapon, Lament cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| StoneCrusher (`ke-lr-sc-loo`) | Hits Warden | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Lord of Order | Berserk healer holding Order, as in `loo-lr-vdk-ke` | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
 #### Results
 
 One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
@@ -198,6 +244,16 @@ without Forge helms):
 | Legion Revenant | Drone killer | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; no scroll | never |
 | StoneCrusher | Drone killer | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; no potions; no scroll | never |
 | Chrono ShadowHunter | Drone killer | Lucky; Valiance weapon, Vainglory cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+
+**`loo-lr-sc-ke`** (`default`'s fight with Legion Revenant, and the guide's Loadouts without
+Forge helms):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Drone killer | Lucky; Awe Blast weapon, Penitence cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| Legion Revenant | Drone killer | Wizard; Ravenous weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| StoneCrusher | Drone killer | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; no potions; no scroll | never |
+| King's Echo | Drone killer | Lucky; Ravenous weapon, Vainglory cape, Examen helm, even with DisableAutoEnhance on; no potions; no scroll | never |
 
 #### Results
 

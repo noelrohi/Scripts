@@ -306,8 +306,21 @@ whole party every 6 s, and it stacks. Same as `ke-lr-ap-loo-loop`, except:
 |---|---|---|---|
 | King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; no potions; Scroll of Enrage | whenever the right orb is up |
 
+**`ke-lr-ap-loo-orbpairs`** (all four scrolls on the orbs). Each orb puts Melting on the whole party about
+every 6 s unless it's taunted, when only its taunter gets it. A taunt lasts 6 s and a scroll takes about 12 s
+to come back, so two taunters share each orb, 6 s apart. Nobody taunts Tyndarius. Loadouts as
+`ke-lr-ap-loo-orbs`.
+
+| Class | Role | Taunts |
+|---|---|---|
+| King's Echo | Hits the right orb, then the left orb, then Tyndarius | at 0 s of every 12 s, on its target |
+| Legion Revenant | Hits the left orb, then the right orb, then Tyndarius | at 0 s of every 12 s, on its target |
+| ArchPaladin | Hits the left orb, then the right orb, then Tyndarius; skills 1 to 3 only | at 6 s of every 12 s, on its target, Righteous Seal up first |
+| Lord of Order | Hits the right orb, then the left orb, then Tyndarius | at 6 s of every 12 s, on its target |
+
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | ke-lr-ap-loo-orbs | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt | first death at 13.7 s, then the whole party | At 6.5 s both orbs were taunted and Melting hit only their taunters; their taunts ran out at 9–10 s and the scrolls weren't back, so at 12.7 s Melting hit all four. |
 | 2026-10-05 | ke-lr-ap-loo-loop | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 1 Attempt (a 2nd cut short) | first death at 13.9 s, then the whole party | Tyndarius stayed taunted throughout, yet the party died: both orbs' Melting stacked (cast at 6.6 s and 12.6 s). The left orb barely took damage; the right one was at about half. |
 | 2026-10-05 | default | alt1=King's Echo; alt2=ArchPaladin; alt3=Legion Revenant; alt4=Lord of Order | stopped | 5 Attempts | first deaths at 14, 15.9, 13.8, 23.4, 16 s, then the whole party | After `4d22e513b` (ArchPaladin seals and holds its ultimate; Loadouts apply with DisableAutoEnhance on). No potions but King's Echo's. Tyndarius got no lower than 84%. |
 | 2026-10-05 | default | alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order | stopped | 5 Attempts, about 7 min | first death each Attempt at 12–15 s (once 25 s), then the whole party | Five Wipes, stopped. Only King's Echo drank potions (`c48931b4f`); the earlier win had Body Tonic on all four, so the lost max HP is the likely cause. Tyndarius got no lower than 68%. |

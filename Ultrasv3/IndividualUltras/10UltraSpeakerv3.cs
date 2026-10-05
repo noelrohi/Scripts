@@ -34,10 +34,9 @@ public class UltraSpeakerv3
     private const string ListenTaunter = "ListenTaunter"; // taunts on every "You shall listen."
     private const string TruthTaunter1 = "TruthTaunter1"; // taunts on the 3rd, 6th, 9th... "I will make you see the truth."
     private const string TruthTaunter2 = "TruthTaunter2"; // on the 1st, 4th, 7th...
-    private const string TruthTaunter3 = "TruthTaunter3"; // on the 2nd, 5th, 8th...
-
-    // Its 4th skill, Decay, removes Scintillation: it casts it on "All stand equal beneath the eyes of the Eternal."
-    private const string DecayClass = "Verus DoomKnight";
+    // On the 2nd, 5th, 8th..., and casts its 4th skill on "All stand equal beneath the eyes of the Eternal.":
+    // Verus DoomKnight's Decay, which removes Scintillation.
+    private const string TruthTaunter3 = "TruthTaunter3";
 
     private const string ScrollOfEnrage = "Scroll of Enrage";
 
@@ -439,7 +438,7 @@ public class UltraSpeakerv3
                             equalizeCount++;
                             C.Logger($"[UltraSpeaker-v3] Detected 'All stand equal beneath the eyes of the Eternal.' (count {equalizeCount})");
 
-                            // Fire Decay for VDK (removes Scintillation)
+                            // The Role that casts its 4th skill now (removes Scintillation)
                             _ = DecayAsync();
 
                             // Check auras synchronously before spawning background task
@@ -531,7 +530,7 @@ public class UltraSpeakerv3
 
     private async Task DecayAsync()
     {
-        if (Bot.Player.CurrentClass?.Name != DecayClass || !Bot.Player.Alive)
+        if (_entry?.Role != TruthTaunter3 || !Bot.Player.Alive)
             return;
 
         for (int i = 0; i < 60; i++)

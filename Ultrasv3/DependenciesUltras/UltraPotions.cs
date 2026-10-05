@@ -157,64 +157,6 @@ public class UltraPotions
             };
         }
 
-        if (context.Equals("Speaker", StringComparison.OrdinalIgnoreCase))
-        {
-            if (HasAssignedClass("ArchPaladin"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("StoneCrusher"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Unstable Divine Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Lord of Order"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Unstable Divine Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Verus DoomKnight"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Void Highlord"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("King's Echo"))
-                return new[]
-                {
-                    "Fate Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            return new[]
-            {
-                "Body Tonic",
-                "Potent Destruction Elixir",
-                GetHonorOrMalicePotion()
-            };
-        }
-
         if (HasAssignedClass("ArchPaladin"))
             return new[]
             {

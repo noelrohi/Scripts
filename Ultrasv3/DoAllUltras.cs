@@ -60,7 +60,8 @@ public class DoAllUltras
         UltraPartyLayout.Option("UltraDrago", "Ultra Drago", "Lord of Order, Verus DoomKnight (taunters), StoneCrusher, King's Echo"),
         UltraPartyLayout.Option("UltraDarkon", "Ultra Darkon", "Verus DoomKnight, Lord of Order (taunters), StoneCrusher, King's Echo"),
         UltraPartyLayout.Option("UltraDage", "Ultra Dage", "Verus DoomKnight, ArchPaladin (taunters), Lord of Order (decay), King's Echo"),
-        UltraPartyLayout.Option("UltraSpeaker", "Ultra Speaker", "ArchPaladin, Lord of Order, StoneCrusher, Verus DoomKnight"),
+        UltraPartyLayout.Option(UltraSpeakerv3.Boss, "Ultra Speaker", "those of the chosen Ultra Speaker comp"),
+        UltraComp.Option(UltraSpeakerv3.Boss, "Ultra Speaker", UltraSpeakerv3.Comps),
         UltraPartyLayout.Option("UltraGramiel", "Ultra Gramiel", "StoneCrusher, ArchPaladin, Lord of Order, ArchFiend"),
         CoreBots.Instance.SkipOptions,
     };

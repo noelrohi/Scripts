@@ -1,6 +1,6 @@
 /*
 name: UltraWardenv3
-description: Ultra Warden v3 — runs the Comp picked by the DoAllUltras "Ultra Warden comp" option. default: Verus DoomKnight and Lord of Order taunt Warden 5s apart on a 10s cycle, King's Echo and StoneCrusher hit him; loo-lr-sc-csh: when Warden goes berserk, Legion Revenant taunts him and Lord of Order casts its 5th skill on him, then spams its heal; loo-lr-vdk-ke: the same, and Lord of Order keeps its 5th skill off cooldown from 30% of Warden's HP for the berserk.
+description: Ultra Warden v3 — runs the Comp picked by the DoAllUltras "Ultra Warden comp" option. default: Verus DoomKnight and Lord of Order taunt Warden 5s apart on a 10s cycle, King's Echo and StoneCrusher hit him; loo-lr-sc-csh: when Warden goes berserk, Legion Revenant taunts him and Lord of Order casts its 5th skill on him, then spams its heal; loo-lr-vdk-ke: the same, and Lord of Order keeps its 5th skill off cooldown from 30% of Warden's HP for the berserk; ke-lr-ap-loo and ke-lr-sc-loo: that Lord of Order, and Legion Revenant taunts Warden whenever its scroll is ready.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -37,6 +37,7 @@ public class UltraWardenv3
     private const string BerserkHealer = "BerserkHealer";   // casts its 5th skill (Cast(4)) on Warden to negate his damage, then spams its heal (Cast(2))
     // BerserkHealer that also keeps its 5th skill off cooldown from HoldOrderFromPercent of Warden's HP until the cue.
     private const string BerserkHealerHoldingOrder = "BerserkHealerHoldingOrder";
+    private const string TauntSpammer = "TauntSpammer"; // taunts Warden whenever its scroll is ready, the whole fight
 
     /// <summary>Warden's Comps. The DoAllUltras "Ultra Warden comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
@@ -221,6 +222,126 @@ public class UltraWardenv3
                 },
                 Taunt = UltraTaunt.Never,
             }),
+
+        // Legion Revenant keeps Warden taunted all fight; loo-lr-vdk-ke's Lord of Order handles the berserk.
+        // Two variants of the third class, to see which is faster.
+        new("ke-lr-ap-loo",
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = TauntSpammer,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Pneuma },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever its scroll is ready"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = BerserkHealerHoldingOrder,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            }),
+
+        new("ke-lr-sc-loo",
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = TauntSpammer,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Pneuma },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever its scroll is ready"),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = WardenAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = BerserkHealerHoldingOrder,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            }),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;
@@ -241,6 +362,7 @@ public class UltraWardenv3
     // the guide's skill 5 is Order, which debuffs its target; Resurgence heals the party.
     private const int OrderSkill = 4;
     private const int HealSkill = 2;
+    private const int ScrollSlot = 5; // the consumable slot, where the Loadout equips the scroll
     private const int OrderTryMs = 6000; // how long to keep trying Order while it is on cooldown
     // Where BerserkHealerHoldingOrder starts holding Order: the berserk came at about 22% of Warden's HP.
     private const double HoldOrderFromPercent = 30;
@@ -354,6 +476,11 @@ public class UltraWardenv3
 
         _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
         _inFight = true;
+        if (_entry.Role == TauntSpammer)
+        {
+            CancellationToken token = _tauntCts.Token;
+            _ = Task.Run(() => SpamTaunts(token));
+        }
 
         while (!Bot.ShouldExit)
         {
@@ -433,6 +560,18 @@ public class UltraWardenv3
                 _ = Task.Run(() => NegateThenHeal(token));
         }
         catch { }
+    }
+
+    /// <summary>Presses the scroll on Warden whenever it is ready, until the fight ends.</summary>
+    private static void SpamTaunts(CancellationToken token)
+    {
+        C.Logger("[Taunt] TauntSpammer taunts Warden whenever its scroll is ready.");
+        while (!token.IsCancellationRequested && !Bot.ShouldExit)
+        {
+            if (Bot.Player.Alive && Bot.Player.Target?.MapID == Warden && Engine.Cast(ScrollSlot))
+                C.Logger("[Taunt] TauntSpammer taunted Warden.");
+            Thread.Sleep(100);
+        }
     }
 
     /// <summary>Presses the scroll on Warden.</summary>

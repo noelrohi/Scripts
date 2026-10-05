@@ -153,6 +153,8 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | ke-lr-ap-loo | alt1=King's Echo; alt2=Lord of Order; alt3=Legion Revenant; alt4=ArchPaladin | kill | 41 s | none | Rerun after `01a0ec853`, on an already turned-in daily: all four LockBaiters got their bait's Mana Vamp locked, three on a spare enhanced for it. The LockBaiter on Legion Revenant had 2,970 max HP, under the 3,175 its entry asks for (Lament not unlocked), and still took no deaths. |
+| 2026-10-05 | ke-lr-ap-loo | alt1=King's Echo; alt2=Lord of Order; alt3=Legion Revenant; alt4=ArchPaladin | kill | 36 s | none | Only alt1 baited the lock (a spare already on Mana Vamp). The other three skipped it: the game won't equip an unenhanced weapon, so their spares never got Mana Vamp (fixed in `01a0ec853`). |
 
 ### Ultra Warden
 

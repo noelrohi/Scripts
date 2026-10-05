@@ -10,6 +10,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/PrerequisitesChecker.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraComp.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 //cs_include Scripts/Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs
@@ -46,13 +47,15 @@ public class DoAllUltras
     public List<IOption> Options = new()
     {
         new Option<bool>("UsePrerequisitesChecker", "Use Prerequisites Checker", "Enable to run the prerequisites checker before starting ultras. Disable to skip.", true),
-        // Party layouts: who plays what, per boss. Also read when a single v3 boss script runs.
+        // Party layouts: who plays what, per boss, and Comps: which strategy runs, for the bosses that have them.
+        // Also read when a single v3 boss script runs.
         UltraPartyLayout.Option("UltraEzrajal", "Ultra Ezrajal", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
         UltraPartyLayout.Option("UltraWarden", "Ultra Warden", "Verus DoomKnight, Lord of Order (taunters), King's Echo, StoneCrusher"),
         UltraPartyLayout.Option("UltraEngineer", "Ultra Engineer", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
         UltraPartyLayout.Option("UltraAvatarTyndarius", "Ultra Avatar Tyndarius", "King's Echo, Legion Revenant, ArchPaladin, Lord of Order"),
         UltraPartyLayout.Option("ChampionDrakath", "Champion Drakath", "ArchPaladin, Lord of Order, Shaman (taunters), StoneCrusher"),
-        UltraPartyLayout.Option("UltraNulgath", "Ultra Nulgath", "Dragon of Time, Legion Revenant, ArchPaladin, Lord of Order; or Lord of Order, StoneCrusher, Verus DoomKnight, King's Echo"),
+        UltraPartyLayout.Option(UltraNulgathv3.Boss, "Ultra Nulgath", "those of the chosen Ultra Nulgath comp"),
+        UltraComp.Option(UltraNulgathv3.Boss, "Ultra Nulgath", UltraNulgathv3.Comps),
         UltraPartyLayout.Option("UltraDrago", "Ultra Drago", "Lord of Order, Verus DoomKnight (taunters), StoneCrusher, King's Echo"),
         UltraPartyLayout.Option("UltraDarkon", "Ultra Darkon", "Verus DoomKnight, Lord of Order (taunters), StoneCrusher, King's Echo"),
         UltraPartyLayout.Option("UltraDage", "Ultra Dage", "Verus DoomKnight, ArchPaladin (taunters), Lord of Order (decay), King's Echo"),

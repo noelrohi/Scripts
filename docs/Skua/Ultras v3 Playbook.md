@@ -393,6 +393,15 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
 
+### Ultra Drago
+
+No Comps yet: the script's fixed roles (Lord of Order and Verus DoomKnight taunt, StoneCrusher and King's
+Echo hit), with the Party Layout picking the accounts. Only the DPS drink potions.
+
+| Date | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths | Note |
+|---|---|---|---|---|---|
+| 2026-10-05 | alt1=King's Echo; alt2=StoneCrusher; alt3=Verus DoomKnight; alt4=Lord of Order | kill | 83 s | King's Echo and Lord of Order, 3 each, respawned | First try. |
+
 ## Recommended layouts
 
 Each of these won its first Attempt:

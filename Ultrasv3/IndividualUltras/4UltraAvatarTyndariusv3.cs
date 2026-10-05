@@ -1,6 +1,6 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default without potions, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius.
+description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default without potions, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius. ke-lr-ap-loo-burst: ke-lr-ap-loo-orbs with Lord of Order on the right orb, turning to Tyndarius only to taunt.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -34,6 +34,7 @@ public class UltraAvatarTyndariusv3
     private const string RightOrbTaunter = "RightOrbTaunter";     // taunts and kills the right orb, then the left orb, then Tyndarius
     private const string LeftOrbHitter = "LeftOrbHitter";         // the left orb, then the right orb, then Tyndarius; its timed taunts land on its target
     private const string RightOrbHitter = "RightOrbHitter";       // the right orb, then the left orb, then Tyndarius; its timed taunts land on its target
+    private const string RightOrbBurster = "RightOrbBurster";     // the right orb, then the left orb, then Tyndarius, but on Tyndarius while it taunts him
     private const string TyndariusTaunter = "TyndariusTaunter";   // stays on Tyndarius, so its taunts land on Tyndarius
     private const string TyndariusAttacker = "TyndariusAttacker"; // stays on Tyndarius
 
@@ -226,6 +227,69 @@ public class UltraAvatarTyndariusv3
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(12, atSec: 6),
+            }),
+        // ke-lr-ap-loo-orbs with the Lord of Order on the right orb: it turns to Tyndarius only for its loop taunt,
+        // so the right orb dies before its second Melting, which would hit the whole party.
+        new("ke-lr-ap-loo-burst",
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = RightOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Healer,
+                    Weapon = new[] { WeaponSpecial.Elysium, WeaponSpecial.Mana_Vamp },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Examen },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the right orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = LeftOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    // Health Vamp without Arcana's Concerto: the left orb kept killing it.
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
+                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = TyndariusTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = RightOrbBurster,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 6, beforeTaunt: OnTyndariusForTaunt, beforeTauntDescription: "turned to Tyndarius"),
             }),
         // Each orb puts Melting on the whole party every ~6 s unless it's taunted, when only its taunter gets it.
         // A taunt lasts 6 s and a scroll takes ~12 s to come back, so two taunters share each orb, 6 s apart,
@@ -466,6 +530,13 @@ public class UltraAvatarTyndariusv3
                     AttackTarget(IsAlive(RightOrb) ? RightOrb : Tyndarius);
                     break;
 
+                case RightOrbBurster:
+                    if (DateTime.UtcNow < _onTyndariusUntil)
+                        AttackTarget(Tyndarius);
+                    else
+                        AttackTarget(IsAlive(RightOrb) ? RightOrb : IsAlive(LeftOrb) ? LeftOrb : Tyndarius);
+                    break;
+
                 case LeftOrbHitter:
                     AttackTarget(IsAlive(LeftOrb) ? LeftOrb : IsAlive(RightOrb) ? RightOrb : Tyndarius);
                     break;
@@ -520,6 +591,17 @@ public class UltraAvatarTyndariusv3
         // If retreat is still in progress (background), wait for it
         if (_wipeCts.IsCancellationRequested)
             _retreatComplete.WaitOne(TimeSpan.FromSeconds(120));
+    }
+
+    // RightOrbBurster: until when it stays on Tyndarius, so its taunt's presses all land on him.
+    private static DateTime _onTyndariusUntil = DateTime.MinValue;
+
+    /// <summary>Turns to Tyndarius for the taunt's presses (about 3 s), waiting up to 1.5 s for him to be the target.</summary>
+    private static void OnTyndariusForTaunt()
+    {
+        _onTyndariusUntil = DateTime.UtcNow.AddSeconds(3.5);
+        Bot.Combat.Attack(Tyndarius);
+        Bot.Wait.ForTrue(() => Bot.Player.Target?.MapID == Tyndarius, 6);
     }
 
     /// <summary>Puts Righteous Seal (ArchPaladin's skill 4, Cast(3)) up before a taunt, waiting up to 1.5 s for it.</summary>

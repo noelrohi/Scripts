@@ -349,6 +349,11 @@ public class UltraPotions
     /// Buys each potion in <paramref name="potions"/> up to <paramref name="desiredQuant"/>.
     /// An empty list buys nothing.
     /// </summary>
+    // A potion is restocked only when an account is down to this many; one Attempt drinks one of each.
+    private const int RestockAt = 2;
+    // Below this much gold the buyer would farm gold for Gold Vouchers (50 at a time), so it buys nothing.
+    private const int MinGoldToBuy = 6_000_000;
+
     public void EnsurePotions(string[] potions, int desiredQuant = 10)
     {
         potions = Resolve(potions);
@@ -368,7 +373,7 @@ public class UltraPotions
                 continue;
             }
 
-            if (current < desiredQuant)
+            if (current <= RestockAt)
             {
                 int needed = desiredQuant - current;
 
@@ -381,6 +386,12 @@ public class UltraPotions
         if (missing.Count == 0)
         {
             Core.Logger("All recommended potions already stocked.");
+            return;
+        }
+
+        if (Bot.Player.Gold < MinGoldToBuy)
+        {
+            Core.Logger($"Only {Bot.Player.Gold:N0} gold: not farming gold for {string.Join(", ", missing)}; fighting with what is in stock.", "Warning");
             return;
         }
 

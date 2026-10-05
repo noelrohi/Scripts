@@ -1,17 +1,18 @@
 /*
 name: UltraSpeakerv3
-description: Ultra First Speaker v3 — chat-driven taunt system with position management and stasis handling.
+description: Ultra First Speaker v3 — runs the Comp picked by the DoAllUltras "Ultra Speaker comp" option. default: chat-driven taunts (ArchPaladin on the listen phase, Lord of Order, StoneCrusher and Verus DoomKnight in turn on the truth phase) with position management and stasis handling.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreUltrav3.cs
-//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraEnhancements.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraComp.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAttempt.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 
@@ -25,33 +26,88 @@ using Skua.Core.Interfaces;
 
 public class UltraSpeakerv3
 {
+    // The DoAllUltras boss key: the Comp and layout options are UltraSpeakerComp and UltraSpeakerLayout.
+    public const string Boss = "UltraSpeaker";
+
+    // Roles: what each class of the chosen Comp does in the fight. Everyone hits the Speaker;
+    // the Roles differ in which chat line they taunt on.
+    private const string ListenTaunter = "ListenTaunter"; // taunts on every "You shall listen."
+    private const string TruthTaunter1 = "TruthTaunter1"; // taunts on the 3rd, 6th, 9th... "I will make you see the truth."
+    private const string TruthTaunter2 = "TruthTaunter2"; // on the 1st, 4th, 7th...
+    // On the 2nd, 5th, 8th..., and casts its 4th skill on "All stand equal beneath the eyes of the Eternal.":
+    // Verus DoomKnight's Decay, which removes Scintillation.
+    private const string TruthTaunter3 = "TruthTaunter3";
+
+    /// <summary>The Speaker's Comps. The DoAllUltras "Ultra Speaker comp" option picks one; blank runs default.</summary>
+    public static readonly UltraComp[] Comps =
+    {
+        new(UltraComp.Default,
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = ListenTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on every \"You shall listen.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TruthTaunter1,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 3rd, 6th, 9th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = TruthTaunter2,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 1st, 4th, 7th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Verus DoomKnight",
+                Role = TruthTaunter3,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Praxis },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
+            }),
+    };
+
     private static IScriptInterface Bot => IScriptInterface.Instance;
     private static CoreBots C => CoreBots.Instance;
     private static CoreEnginev3 Engine => CoreEnginev3.Instance;
     private static CoreUltrav3 Ultra => _Ultra ??= new CoreUltrav3();
     private static CoreUltrav3 _Ultra;
-    private static UltraEnhancements Enh => _Enh ??= new UltraEnhancements();
-    private static UltraEnhancements _Enh;
-    private static UltraPotions Pots => _Pots ??= new UltraPotions();
-    private static UltraPotions _Pots;
-    private static GetScrolls Scrolls => _Scrolls ??= new GetScrolls();
-    private static GetScrolls _Scrolls;
-
-    // Chat-driven taunt roles — 1 ListenTaunter, 3 TruthTaunters
-    private const string ListenTaunterClass = "ArchPaladin";
-    private const string TruthTaunter1Class = "Lord of Order";
-    private const string TruthTaunter2Class = "StoneCrusher";
-    private const string TruthTaunter3Class = "Verus DoomKnight";
-
-    private static readonly string[][] UltraClassesByRole =
-    {
-        new[] { ListenTaunterClass },
-        new[] { TruthTaunter1Class },
-        new[] { TruthTaunter2Class },
-        new[] { TruthTaunter3Class }
-    };
 
     private UltraPartyLayout _party = null!;
+    private UltraComp _comp = null!;
+    private UltraCompEntry _entry = null!; // null until Prep; the chat listeners can run before it
+    private UltraAttempt? _attempt;
 
     // Chat-listener state
     private int truthTauntTurn;
@@ -77,7 +133,6 @@ public class UltraSpeakerv3
     public void RunBoss()
     {
         C.SetOptions(true);
-        _party = UltraPartyLayout.Read("UltraSpeaker");
         _fbsMuteFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Skua", "fbs_mute.sync"
@@ -87,13 +142,17 @@ public class UltraSpeakerv3
 
         Bot.Events.ExtensionPacketReceived += SpeakerMessageListener;
         Bot.Flash.FlashCall += SpeakerFlashListener;
+        Bot.Events.ScriptStopping += StopAttemptEvent;
         try
         {
-            Prep();
-            Fight();
+            if (Prep())
+                Fight();
         }
         finally
         {
+            // An Attempt still open here ended without a kill. The Speaker has no Wipe detection.
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
+            Bot.Events.ScriptStopping -= StopAttemptEvent;
             Bot.Events.ExtensionPacketReceived -= SpeakerMessageListener;
             Bot.Flash.FlashCall -= SpeakerFlashListener;
             try { if (File.Exists(_fbsMuteFile)) File.Delete(_fbsMuteFile); } catch { }
@@ -102,85 +161,31 @@ public class UltraSpeakerv3
         }
     }
 
-    private bool IsTaunter()
+    private bool StopAttemptEvent(Exception? e)
     {
-        string? className = Bot.Player.CurrentClass?.Name;
-        return className == ListenTaunterClass || className == TruthTaunter1Class || className == TruthTaunter2Class || className == TruthTaunter3Class;
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
+        return true;
     }
 
-    private bool IsListenTaunter()
+    private bool IsListenTaunter() => _entry?.Role == ListenTaunter;
+
+    private int MyTruthIndex() => _entry?.Role switch
     {
-        return Bot.Player.CurrentClass?.Name == ListenTaunterClass;
-    }
+        TruthTaunter1 => 0,
+        TruthTaunter2 => 1,
+        TruthTaunter3 => 2,
+        _ => -1
+    };
 
-    private bool IsTruthTaunter1()
+    private int MyListenIndex() => IsListenTaunter() ? 0 : -1;
+
+    /// <summary>Picks the Comp, equips this account's class from it and enhances it as its Loadout says.</summary>
+    private bool Prep()
     {
-        return Bot.Player.CurrentClass?.Name == TruthTaunter1Class;
-    }
-
-    private bool IsTruthTaunter2()
-    {
-        return Bot.Player.CurrentClass?.Name == TruthTaunter2Class;
-    }
-
-    private bool IsTruthTaunter3()
-    {
-        return Bot.Player.CurrentClass?.Name == TruthTaunter3Class;
-    }
-
-    private int MyTruthIndex()
-    {
-        string? className = Bot.Player.CurrentClass?.Name;
-        if (className == TruthTaunter1Class) return 0;
-        if (className == TruthTaunter2Class) return 1;
-        if (className == TruthTaunter3Class) return 2;
-        return -1;
-    }
-
-    private int MyListenIndex()
-    {
-        return Bot.Player.CurrentClass?.Name == ListenTaunterClass ? 0 : -1;
-    }
-
-    private int MyRoleIndex()
-    {
-        string? className = Bot.Player.CurrentClass?.Name;
-        if (className == ListenTaunterClass) return 0;
-        if (className == TruthTaunter1Class) return 1;
-        if (className == TruthTaunter2Class) return 2;
-        if (className == TruthTaunter3Class) return 3;
-        return -1;
-    }
-
-    private void EquipPresetClasses()
-    {
-        int armySize = 4;
-        bool allowDuplicates = armySize > UltraClassesByRole.Length;
-
-        C.Logger($"[UltraSpeaker-v3] Equipping role-based ultra classes for army size {armySize}.");
-        string[][] classSlots = new string[armySize][];
-
-        for (int i = 0; i < armySize; i++)
-        {
-            classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
-        }
-
-        _party.EquipClass(Ultra, classSlots, armySize, "ultra_speaker_class-v3.sync", allowDuplicates);
-    }
-
-    private void Prep()
-    {
-        UltraGeneral.EquipWarriorClass();
-        Bot.Sleep(2000);
-        EquipPresetClasses();
-        Bot.Sleep(2000);
-        _party.EnsureClass();
-
-        Enh.ApplySpeaker();
-
-        string[] roleNames = { "ListenTaunter", "TruthTaunter1", "TruthTaunter2", "TruthTaunter3" };
-        int roleIdx = MyRoleIndex();
-        C.Logger($"[UltraSpeaker-v3] Role: {(roleIdx >= 0 ? roleNames[roleIdx] : "Unknown")}");
+        if (UltraComp.Prep(Boss, Comps, "UltraSpeaker-v3", Ultra, 4, "ultra_speaker_class-v3.sync") is not { } prep)
+            return false;
+        (_comp, _party, _entry) = prep;
+        return true;
     }
 
     private void Fight()
@@ -206,24 +211,7 @@ public class UltraSpeakerv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(ListenTurnSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        bool skipThird = IsTaunter();
-        Pots.EnsureRecommendedPotions(skipThird: skipThird, context: "Speaker");
-        Scrolls.GetScrollOfEnrage();
-
-        _party.EnsureClass();
-        C.Join("Whitemap");
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
-
-        Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false, context: "Speaker");
-
-        if (skipThird)
-        {
-            C.Logger("[UltraSpeaker-v3] Taunter detected, equipping Scroll of Enrage.");
-            Engine.EquipEnrage();
-        }
-
-        _party.EnsureClass();
-        Engine.Join(map);
+        UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
@@ -239,6 +227,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss);
 
         while (!Bot.ShouldExit)
         {
@@ -247,7 +236,8 @@ public class UltraSpeakerv3
 
             if (Bot.Player?.Alive != true)
             {
-                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, 20);
+                // The boss's HP is still noted while dead.
+                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, attempt.SeeBoss, 20);
                 // Just respawned — re-sync truth taunt turn counter from sync file
                 try
                 {
@@ -306,6 +296,11 @@ public class UltraSpeakerv3
                 _positioned = true;
             }
 
+            attempt.SeeBoss();
+
+            if (Bot.Inventory.Contains(bossDefeatedTemp, 1))
+                attempt.End(UltraAttempt.Outcome.Kill);
+
             if (Ultra.CheckArmyProgressBool(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {
                 C.Logger("The First Speaker defeated. Finishing quest.");
@@ -318,7 +313,7 @@ public class UltraSpeakerv3
             }
 
             Bot.Combat.Attack(boss);
-            Pots.ActivateEquippedPotion();
+            _entry.Loadout.ActivatePotion();
 
             Bot.Sleep(500);
         }
@@ -417,7 +412,7 @@ public class UltraSpeakerv3
                             equalizeCount++;
                             C.Logger($"[UltraSpeaker-v3] Detected 'All stand equal beneath the eyes of the Eternal.' (count {equalizeCount})");
 
-                            // Fire Decay for VDK (removes Scintillation)
+                            // The Role that casts its 4th skill now (removes Scintillation)
                             _ = DecayAsync();
 
                             // Check auras synchronously before spawning background task
@@ -509,7 +504,7 @@ public class UltraSpeakerv3
 
     private async Task DecayAsync()
     {
-        if (Bot.Player.CurrentClass?.Name != "Verus DoomKnight" || !Bot.Player.Alive)
+        if (_entry?.Role != TruthTaunter3 || !Bot.Player.Alive)
             return;
 
         for (int i = 0; i < 60; i++)

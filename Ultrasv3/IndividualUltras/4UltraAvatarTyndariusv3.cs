@@ -1,11 +1,10 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius on a timer, Lord of Order hits Tyndarius.
+description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. loo-sc-ap-ke: the guide's Recommended Group; King's Echo and StoneCrusher taunt an orb each, ArchPaladin and Lord of Order loop-taunt Tyndarius.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreUltrav3.cs
-//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraEnhancements.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
@@ -14,6 +13,8 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraDeath.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraComp.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAttempt.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 
@@ -24,41 +25,157 @@ using Skua.Core.Interfaces;
 
 public class UltraAvatarTyndariusv3
 {
+    // The DoAllUltras boss key: the Comp and layout options are UltraAvatarTyndariusComp and UltraAvatarTyndariusLayout.
+    public const string Boss = "UltraAvatarTyndarius";
+
+    // Roles: what each class of the chosen Comp does in the fight.
+    private const string RightOrbKiller = "RightOrbKiller";       // hits the right orb while it is up, otherwise Tyndarius
+    private const string LeftOrbTaunter = "LeftOrbTaunter";       // taunts the left orb while it is up, otherwise hits Tyndarius
+    private const string RightOrbTaunter = "RightOrbTaunter";     // taunts and kills the right orb, then the left orb, then Tyndarius
+    private const string TyndariusTaunter = "TyndariusTaunter";   // stays on Tyndarius, so its taunts land on Tyndarius
+    private const string TyndariusAttacker = "TyndariusAttacker"; // stays on Tyndarius
+
+    /// <summary>Tyndarius's Comps. The DoAllUltras "Ultra Avatar Tyndarius comp" option picks one; blank runs default.</summary>
+    public static readonly UltraComp[] Comps =
+    {
+        // Won its first Attempt with a layout. The ArchPaladin taunted every 12 s in the v2 layout that beat the boss.
+        new(UltraComp.Default,
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = RightOrbKiller,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = LeftOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Health_Vamp },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = TyndariusTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TyndariusAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                },
+                Taunt = UltraTaunt.Never,
+            }),
+        // The guide's Recommended Group, with King's Echo in its DPS / Support slot and the guide's gear for each.
+        // King's Echo and StoneCrusher each taunt an orb (the guide's "DPS and Legion Revenant"); ArchPaladin and
+        // Lord of Order loop-taunt Tyndarius, 6 s apart.
+        new("loo-sc-ap-ke",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TyndariusAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 6),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = LeftOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = TyndariusTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = RightOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the right orb is up"),
+            }),
+    };
+
     private static IScriptInterface Bot => IScriptInterface.Instance;
     private static CoreBots C => CoreBots.Instance;
     private static CoreEnginev3 Engine => CoreEnginev3.Instance;
     private static CoreUltrav3 Ultra => _Ultra ??= new CoreUltrav3();
     private static CoreUltrav3 _Ultra;
-    private static UltraEnhancements Enh => _Enh ??= new UltraEnhancements();
-    private static UltraEnhancements _Enh;
-    private static UltraPotions Pots => _Pots ??= new UltraPotions();
-    private static UltraPotions _Pots;
-    private static GetScrolls Scrolls => _Scrolls ??= new GetScrolls();
-    private static GetScrolls _Scrolls;
 
     // Monster MapIDs in ultratyndarius, cell Boss.
     private const int LeftOrb = 1;
     private const int Tyndarius = 2;
     private const int RightOrb = 3;
-
-    // One class per role. The class an account ends up on (from the party layout,
-    // or the class sync without one) IS its role for the whole run.
-    private const string RightOrbKiller = "King's Echo";
-    private const string LeftOrbTaunter = "Legion Revenant";
-    private const string TyndariusTaunter = "ArchPaladin";
-    private const string TyndariusAttacker = "Lord of Order";
-
-    private static readonly string[][] UltraClassesByRole =
-    {
-        new[] { RightOrbKiller },
-        new[] { LeftOrbTaunter },
-        new[] { TyndariusTaunter },
-        new[] { TyndariusAttacker }
-    };
-
-    // Seconds between Tyndarius taunts. The ArchPaladin taunted every 12s in
-    // the v2 layout that beat the boss.
-    private const int TyndariusTauntIntervalSec = 12;
 
     private CancellationTokenSource _tauntCts = new();
     private CancellationTokenSource _wipeCts = new();
@@ -66,7 +183,9 @@ public class UltraAvatarTyndariusv3
     private UltraDeath.RetryCounter _deathRetries = new();
     private const int MaxDeathRetries = 10;
     private UltraPartyLayout _party = null!;
-    private string _roleClass = "";
+    private UltraComp _comp = null!;
+    private UltraCompEntry _entry = null!;
+    private UltraAttempt? _attempt;
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -81,7 +200,7 @@ public class UltraAvatarTyndariusv3
         try
         {
             Engine.Boot();
-            if (!FixRole())
+            if (!Prep())
                 return;
 
             while (_deathRetries.Value < MaxDeathRetries && !Bot.ShouldExit)
@@ -105,53 +224,35 @@ public class UltraAvatarTyndariusv3
         }
         finally
         {
+            // An Attempt still open here ended without a kill or a Wipe.
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
             _wipeCts.Cancel();
             Engine.DisableSkills();
+            Engine.ArchPaladinHoldsUltimate = false;
             C.SetOptions(false);
         }
     }
 
     private bool StopTauntEvent(Exception? e)
     {
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
         _tauntCts.Cancel();
         return true;
     }
 
-    private bool IsTaunter() => _roleClass == LeftOrbTaunter || _roleClass == TyndariusTaunter;
-
     /// <summary>
-    /// Equips this account's class once (party layout, else the class sync) and fixes its
-    /// role from the class it equipped. Retries after a wipe keep the role; nothing re-runs it.
+    /// Picks the Comp, equips this account's class from it once and enhances it as its Loadout says.
+    /// The Attempts after a Wipe keep the class and Role.
     /// </summary>
-    private bool FixRole()
+    private bool Prep()
     {
-        _party = UltraPartyLayout.Read("UltraAvatarTyndarius");
-
-        UltraGeneral.EquipWarriorClass();
-        Bot.Sleep(2000);
-
-        C.Logger("[UltraAvatarTyndarius-v3] Assigning role classes for army size 4.");
-        string assigned = _party.EquipClass(Ultra, UltraClassesByRole, 4, "ultra_tyndarius_class-v3.sync");
-        if (string.IsNullOrEmpty(assigned) || !_party.EnsureClass())
+        if (UltraComp.Prep(Boss, Comps, "UltraAvatarTyndarius-v3", Ultra, 4, "ultra_tyndarius_class-v3.sync") is not { } prep)
             return false;
-
-        string? className = Bot.Player.CurrentClass?.Name;
-        _roleClass = UltraClassesByRole.Select(r => r[0]).First(r => r.Equals(className, StringComparison.OrdinalIgnoreCase));
-        C.Logger($"[UltraAvatarTyndarius-v3] Role fixed: {RoleName()} ({_roleClass})");
-
-        Enh.ApplyTyndarius();
+        (_comp, _party, _entry) = prep;
         return true;
     }
-
-    private string RoleName() => _roleClass switch
-    {
-        RightOrbKiller => "RightOrbKiller",
-        LeftOrbTaunter => "LeftOrbTaunter",
-        TyndariusTaunter => "TyndariusTaunter",
-        _ => "TyndariusAttacker"
-    };
 
     private void Fight()
     {
@@ -172,29 +273,7 @@ public class UltraAvatarTyndariusv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        // Potions are picked from the equipped class, so it has to be the role's class.
-        bool skipThird = IsTaunter();
-        _party.EnsureClass();
-        Pots.EnsureRecommendedPotions(skipThird: skipThird);
-        if (IsTaunter())
-            Scrolls.GetScrollOfEnrage();
-        _party.EnsureClass();
-
-        C.Join("Whitemap");
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
-
-        Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false);
-
-        if (IsTaunter())
-        {
-            C.Logger("[UltraAvatarTyndarius-v3] Taunter, equipping Scroll of Enrage.");
-            Engine.EquipEnrage();
-            if (!Bot.Inventory.IsEquipped("Scroll of Enrage"))
-                C.Logger("[UltraAvatarTyndarius-v3] Scroll of Enrage is not equipped, this taunter cannot taunt.", "Warning");
-        }
-
-        _party.EnsureClass();
-        Engine.Join(map);
+        UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
         var (bestCell, bestPad) = Engine.ChooseBestCell(boss);
@@ -210,21 +289,28 @@ public class UltraAvatarTyndariusv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        if (_roleClass == TyndariusTaunter)
-        {
-            DateTime fightStartTime = UltraAsync.SetFightTime(C, Ultra.ResolveSyncPath(fightTimeSyncFile));
-            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 0, 1, pulseIntervalSec: TyndariusTauntIntervalSec, cancellationToken: _tauntCts.Token);
-        }
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Tyndarius);
+        // The wipe monitor cancels this token the moment the whole party is dead.
+        using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
+
+        // The ArchPaladin's ultimate breaks Righteous Seal ("Broken Seal" for 25 s), so it plays skills 1 to 3 only.
+        Engine.ArchPaladinHoldsUltimate = _entry.Class == "ArchPaladin";
+        _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
 
         while (!Bot.ShouldExit && !_wipeCts.IsCancellationRequested)
         {
             if (!Bot.Player.Alive)
             {
                 // Death is signaled by the background wipe monitor
-                // Wait for respawn and keep fighting
-                Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
+                // Wait for respawn and keep fighting, still noting the boss's HP
+                Bot.Wait.ForTrue(() => Bot.Player.Alive, attempt.SeeBoss, 20);
                 continue;
             }
+
+            attempt.SeeBoss();
+
+            if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
+                attempt.End(UltraAttempt.Outcome.Kill);
 
             if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {
@@ -248,10 +334,22 @@ public class UltraAvatarTyndariusv3
                 continue;
             }
 
-            switch (_roleClass)
+            switch (_entry.Role)
             {
                 case RightOrbKiller:
                     AttackTarget(IsAlive(RightOrb) ? RightOrb : Tyndarius);
+                    break;
+
+                case RightOrbTaunter:
+                    // Each orb's Melting stacks on the whole party; a taunted orb's goes to its taunter.
+                    if (IsAlive(RightOrb))
+                    {
+                        AttackTarget(RightOrb);
+                        if (Bot.Player.Target?.MapID == RightOrb)
+                            Engine.Cast(5);
+                    }
+                    else
+                        AttackTarget(IsAlive(LeftOrb) ? LeftOrb : Tyndarius);
                     break;
 
                 case LeftOrbTaunter:
@@ -277,7 +375,7 @@ public class UltraAvatarTyndariusv3
             }
 
             // No-op for the taunters: their consumable slot holds the scroll.
-            Pots.ActivateEquippedPotion();
+            _entry.Loadout.ActivatePotion();
 
             Bot.Sleep(250);
         }
@@ -288,6 +386,15 @@ public class UltraAvatarTyndariusv3
         // If retreat is still in progress (background), wait for it
         if (_wipeCts.IsCancellationRequested)
             _retreatComplete.WaitOne(TimeSpan.FromSeconds(120));
+    }
+
+    /// <summary>Puts Righteous Seal (ArchPaladin's skill 4, Cast(3)) up before a taunt, waiting up to 1.5 s for it.</summary>
+    private static void SealUp()
+    {
+        if (Engine.HasAura("Righteous Seal"))
+            return;
+        Engine.Cast(3);
+        Bot.Wait.ForTrue(() => Engine.HasAura("Righteous Seal"), 6);
     }
 
     private static bool IsAlive(int mapId) =>

@@ -53,12 +53,21 @@ public class UltraPotions
 
     #region Presets
 
+    /// <summary>
+    /// Stands for <see cref="GetHonorOrMalicePotion"/> in a potion list: Potent Malice Potion
+    /// when more than 30 are owned, otherwise Potent Honor Potion.
+    /// </summary>
+    public const string HonorOrMalice = "Potent Honor or Malice Potion";
+
     private string GetHonorOrMalicePotion()
     {
         if (Bot.Inventory.GetQuantity("Potent Malice Potion") > 30)
             return "Potent Malice Potion";
         return "Potent Honor Potion";
     }
+
+    private string[] Resolve(string[] potions) =>
+        potions.Select(p => p == HonorOrMalice ? GetHonorOrMalicePotion() : p).ToArray();
 
     public string[] GetRecommendedPotions(string context = "")
     {
@@ -70,20 +79,6 @@ public class UltraPotions
                 "Potent Destruction Elixir",
                 GetHonorOrMalicePotion()
             };
-        }
-
-        // Nulgath party roles: only the Dragon of Time drinks; the taunters and Lord of Order use none.
-        if (context.Equals("NulgathParty", StringComparison.OrdinalIgnoreCase))
-        {
-            if (HasAssignedClass("Dragon of Time"))
-                return new[]
-                {
-                    "Unstable Malevolence Elixir",
-                    "Sage Tonic",
-                    "Potent Honor Potion"
-                };
-
-            return Array.Empty<string>();
         }
 
         if (context.Equals("Kolr", StringComparison.OrdinalIgnoreCase))
@@ -158,64 +153,6 @@ public class UltraPotions
             {
                 Ultra.GetBestTonicPotion(),
                 Ultra.GetBestElixirPotion(),
-                GetHonorOrMalicePotion()
-            };
-        }
-
-        if (context.Equals("Speaker", StringComparison.OrdinalIgnoreCase))
-        {
-            if (HasAssignedClass("ArchPaladin"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("StoneCrusher"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Unstable Divine Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Lord of Order"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Unstable Divine Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Verus DoomKnight"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("Void Highlord"))
-                return new[]
-                {
-                    "Body Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            if (HasAssignedClass("King's Echo"))
-                return new[]
-                {
-                    "Fate Tonic",
-                    "Potent Destruction Elixir",
-                    GetHonorOrMalicePotion()
-                };
-
-            return new[]
-            {
-                "Body Tonic",
-                "Potent Destruction Elixir",
                 GetHonorOrMalicePotion()
             };
         }
@@ -344,9 +281,18 @@ public class UltraPotions
             potions = potions[..2];
 
         if (ensureStock)
-            EnsurePotions(desiredQuant, skipThird, context);
+            EnsurePotions(potions, desiredQuant);
 
-        foreach (string potion in potions)
+        UsePotions(potions);
+    }
+
+    /// <summary>
+    /// Equips and drinks each potion in <paramref name="potions"/>, logging any it can't equip by name.
+    /// An empty list drinks nothing.
+    /// </summary>
+    public void UsePotions(string[] potions)
+    {
+        foreach (string potion in Resolve(potions))
         {
             Core.Logger($"Equipping {potion}...");
 
@@ -393,11 +339,26 @@ public class UltraPotions
     {
         string[] potions = GetRecommendedPotions(context);
 
-        if (potions.Length == 0)
-            return;
-
         if (skipThird && potions.Length >= 3)
             potions = potions[..2];
+
+        EnsurePotions(potions, desiredQuant);
+    }
+
+    /// <summary>
+    /// Buys each potion in <paramref name="potions"/> up to <paramref name="desiredQuant"/>.
+    /// An empty list buys nothing.
+    /// </summary>
+    // A potion is restocked only when an account is down to this many; one Attempt drinks one of each.
+    private const int RestockAt = 2;
+    // Below this much gold the buyer would farm gold for Gold Vouchers (50 at a time), so it buys nothing.
+    private const int MinGoldToBuy = 6_000_000;
+
+    public void EnsurePotions(string[] potions, int desiredQuant = 10)
+    {
+        potions = Resolve(potions);
+        if (potions.Length == 0)
+            return;
 
         List<string> missing = new();
 
@@ -412,7 +373,7 @@ public class UltraPotions
                 continue;
             }
 
-            if (current < desiredQuant)
+            if (current <= RestockAt)
             {
                 int needed = desiredQuant - current;
 
@@ -425,6 +386,12 @@ public class UltraPotions
         if (missing.Count == 0)
         {
             Core.Logger("All recommended potions already stocked.");
+            return;
+        }
+
+        if (Bot.Player.Gold < MinGoldToBuy)
+        {
+            Core.Logger($"Only {Bot.Player.Gold:N0} gold: not farming gold for {string.Join(", ", missing)}; fighting with what is in stock.", "Warning");
             return;
         }
 

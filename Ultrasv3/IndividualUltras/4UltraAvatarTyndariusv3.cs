@@ -50,6 +50,7 @@ public class UltraAvatarTyndariusv3
                     Cape = new[] { CapeSpecial.Lament },
                     Helm = new[] { HelmSpecial.Examen },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir", UltraPotions.HonorOrMalice },
+                    EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
             },
@@ -66,6 +67,7 @@ public class UltraAvatarTyndariusv3
                     Helm = new[] { HelmSpecial.Pneuma, HelmSpecial.None },
                     // Body Tonic for the HP: it dies at its base HP taunting the left orb.
                     Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
             },
@@ -80,8 +82,9 @@ public class UltraAvatarTyndariusv3
                     Cape = new[] { CapeSpecial.Absolution },
                     Helm = new[] { HelmSpecial.Forge },
                     Scroll = UltraLoadout.ScrollOfEnrage,
+                    EnhanceWhenAutoEnhanceIsOff = true,
                 },
-                Taunt = UltraTaunt.Every(12, atSec: 0),
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
             },
             new UltraCompEntry
             {
@@ -92,6 +95,7 @@ public class UltraAvatarTyndariusv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Arcanas_Concerto, WeaponSpecial.Awe_Blast },
                     Cape = new[] { CapeSpecial.Absolution },
+                    EnhanceWhenAutoEnhanceIsOff = true,
                 },
                 Taunt = UltraTaunt.Never,
             }),
@@ -161,6 +165,7 @@ public class UltraAvatarTyndariusv3
             _tauntCts.Cancel();
             _wipeCts.Cancel();
             Engine.DisableSkills();
+            Engine.ArchPaladinHoldsUltimate = false;
             C.SetOptions(false);
         }
     }
@@ -223,6 +228,8 @@ public class UltraAvatarTyndariusv3
         // The wipe monitor cancels this token the moment the whole party is dead.
         using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
+        // The ArchPaladin's ultimate breaks Righteous Seal ("Broken Seal" for 25 s), so it plays skills 1 to 3 only.
+        Engine.ArchPaladinHoldsUltimate = _entry.Role == TyndariusTaunter;
         _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
 
         while (!Bot.ShouldExit && !_wipeCts.IsCancellationRequested)
@@ -302,6 +309,15 @@ public class UltraAvatarTyndariusv3
         // If retreat is still in progress (background), wait for it
         if (_wipeCts.IsCancellationRequested)
             _retreatComplete.WaitOne(TimeSpan.FromSeconds(120));
+    }
+
+    /// <summary>Puts Righteous Seal (ArchPaladin's skill 4, Cast(3)) up before a taunt, waiting up to 1.5 s for it.</summary>
+    private static void SealUp()
+    {
+        if (Engine.HasAura("Righteous Seal"))
+            return;
+        Engine.Cast(3);
+        Bot.Wait.ForTrue(() => Engine.HasAura("Righteous Seal"), 6);
     }
 
     private static bool IsAlive(int mapId) =>

@@ -28237,8 +28237,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs",
-    "size": 13022,
-    "sha256": "d646744cd48781c3e4827fcb692e391a8177f25518a05fbed5109e8492912d15",
+    "size": 13890,
+    "sha256": "ea42890231295183c4131a4591db747358a3790ccee7365e03be8e70a5a61a9a",
     "fileName": "4UltraAvatarTyndariusv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs"
   },
@@ -28532,8 +28532,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
-    "size": 32317,
-    "sha256": "dc98564fbaf2758edf2a31eab157a293e69eedd8f0ba95ff4ca3d4c9a68e20f2",
+    "size": 33111,
+    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
     "fileName": "UltraComp.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
   },
@@ -28607,8 +28607,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/CoreEnginev3.cs",
-    "size": 118771,
-    "sha256": "d01aaf50d9a01d18e8b21d39974356de836dab73a6395dea23548b8929b4eab7",
+    "size": 119070,
+    "sha256": "9f38c9a15f32f4fdb68624c1b27600eb52bafe4712cf5a35dd54de97f1b589da",
     "fileName": "CoreEnginev3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/CoreEnginev3.cs"
   },

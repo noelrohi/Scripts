@@ -280,7 +280,7 @@ taunts count from the fight start it shares.
 |---|---|---|---|
 | King's Echo | Hits the right orb while it is up, otherwise Tyndarius | Healer; Elysium else Mana Vamp weapon, Lament cape, Examen helm; Body Tonic, Potent Destruction Elixir, Potent Malice Potion (if more than 30) else Potent Honor Potion; no scroll | never |
 | Legion Revenant | Taunts the left orb while it is up, otherwise hits Tyndarius | Wizard; Arcana's Concerto else Health Vamp weapon, Penitence else Vainglory cape, Pneuma else no helm special; no potions; Scroll of Enrage | whenever the left orb is up |
-| ArchPaladin | Taunts Tyndarius | Fighter; Valiance weapon, Absolution cape, Forge helm; no potions; Scroll of Enrage | at 0 s of every 12 s |
+| ArchPaladin | Taunts Tyndarius; skills 1 to 3 only, never its ultimate, which breaks Righteous Seal | Fighter; Valiance weapon, Absolution cape, Forge helm; no potions; Scroll of Enrage | at 0 s of every 12 s, Righteous Seal up first |
 | Lord of Order | Hits Tyndarius | Fighter; Arcana's Concerto else Awe Blast weapon, Absolution cape; no potions; no scroll | never |
 
 The Legion Revenant takes Health Vamp without Arcana's Concerto because the left orb kept

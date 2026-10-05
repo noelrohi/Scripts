@@ -201,8 +201,16 @@ public class UltraComp
 
         // The taunt loop fires on pulses: every pulse whose number modulo the count is the index.
         int pulseSec = Gcd(taunt.AtSec, taunt.CycleSec);
+        // The taunt loop asks whether to skip right before each taunt, so BeforeTaunt runs there too.
         string? aura = taunt.SkipWhileAura;
-        Func<bool>? skip = aura == null ? null : () => Engine.HasAura(aura, true);
+        Action? before = taunt.BeforeTaunt;
+        Func<bool>? skip = aura == null && before == null ? null : () =>
+        {
+            if (aura != null && Engine.HasAura(aura, true))
+                return true;
+            before?.Invoke();
+            return false;
+        };
         UltraAsync.StartTauntLoop(Bot, C, Engine, fightStart, taunt.AtSec / pulseSec, taunt.CycleSec / pulseSec, skip, pulseSec, cancellationToken);
         return fightStart;
     }
@@ -667,10 +675,16 @@ public class UltraTaunt
 {
     public static readonly UltraTaunt Never = new(false, 0, 0, null, "never");
 
-    /// <summary>Taunts at <paramref name="atSec"/> of every <paramref name="cycleSec"/>, optionally not while this class has <paramref name="skipWhileAura"/>.</summary>
-    public static UltraTaunt Every(int cycleSec, int atSec, string? skipWhileAura = null) =>
+    /// <summary>
+    /// Taunts at <paramref name="atSec"/> of every <paramref name="cycleSec"/>, optionally not while this class has
+    /// <paramref name="skipWhileAura"/>. <paramref name="beforeTaunt"/> runs right before each taunt, e.g. a buff
+    /// that must be up when the taunt lands; <paramref name="beforeTauntDescription"/> says what it does.
+    /// </summary>
+    public static UltraTaunt Every(int cycleSec, int atSec, string? skipWhileAura = null, Action? beforeTaunt = null, string? beforeTauntDescription = null) =>
         new(true, cycleSec, atSec, skipWhileAura,
-            $"at {atSec} s of every {cycleSec} s{(skipWhileAura == null ? "" : $", not while it has {skipWhileAura}")}");
+            $"at {atSec} s of every {cycleSec} s{(skipWhileAura == null ? "" : $", not while it has {skipWhileAura}")}"
+            + (beforeTauntDescription == null ? "" : $", {beforeTauntDescription} first"),
+            beforeTaunt);
 
     /// <summary>The Role carries the taunts; <paramref name="when"/> says when, for people reading the Comp.</summary>
     public static UltraTaunt ByRole(string when) => new(false, 0, 0, null, when);
@@ -679,14 +693,16 @@ public class UltraTaunt
     public int CycleSec { get; }
     public int AtSec { get; }
     public string? SkipWhileAura { get; }
+    public Action? BeforeTaunt { get; }
     private readonly string _description;
 
-    private UltraTaunt(bool isTimed, int cycleSec, int atSec, string? skipWhileAura, string description)
+    private UltraTaunt(bool isTimed, int cycleSec, int atSec, string? skipWhileAura, string description, Action? beforeTaunt = null)
     {
         IsTimed = isTimed;
         CycleSec = cycleSec;
         AtSec = atSec;
         SkipWhileAura = skipWhileAura;
+        BeforeTaunt = beforeTaunt;
         _description = description;
     }
 

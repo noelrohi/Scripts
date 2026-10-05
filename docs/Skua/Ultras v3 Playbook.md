@@ -206,6 +206,7 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | loo-lr-sc-csh | alt1=Chrono ShadowHunter; alt2=Lord of Order; alt3=Legion Revenant; alt4=StoneCrusher | stopped | 116–123 s | DroneKiller @ 44.9, AttackDroneDebuffer @ 45.6, DroneKiller @ 53.6, then 13 more (AttackDroneDebuffer ×5, DroneKiller ×8) | Stopped by the developer: the party never got past the drones and Engineer stayed at full HP (1,000,000). The Lord of Order and Legion Revenant died about every 12 s. Developer suggests King's Echo over Chrono ShadowHunter. |
 
 ### Ultra Avatar Tyndarius
 

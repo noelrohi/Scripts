@@ -28196,7 +28196,7 @@
   },
   {
     "name": "UltraWardenv3",
-    "description": "Ultra Warden v3 — timer-based 2-taunter rotation with army synchronization.",
+    "description": "Ultra Warden v3 — runs the Comp picked by the DoAllUltras \"Ultra Warden comp\" option. default: Verus DoomKnight and Lord of Order taunt Warden 5s apart on a 10s cycle, King's Echo and StoneCrusher hit him; loo-lr-sc-csh: when Warden goes berserk, Legion Revenant taunts him and Lord of Order casts its 5th skill on him, then spams its heal; loo-lr-vdk-ke: the same, and Lord of Order keeps its 5th skill off cooldown from 30% of Warden's HP for the berserk; ke-lr-ap-loo and ke-lr-sc-loo: that Lord of Order, and Legion Revenant taunts Warden whenever its scroll is ready.",
     "tags": [
       "null"
     ],
@@ -28220,7 +28220,7 @@
   },
   {
     "name": "UltraSpeakerv3",
-    "description": "Ultra First Speaker v3 — chat-driven taunt system with position management and stasis handling.",
+    "description": "Ultra First Speaker v3 — runs the Comp picked by the DoAllUltras \"Ultra Speaker comp\" option. default: chat-driven taunts (ArchPaladin on the listen phase, Lord of Order, StoneCrusher and Verus DoomKnight in turn on the truth phase) with position management and stasis handling.",
     "tags": [
       "null"
     ],
@@ -28232,7 +28232,7 @@
   },
   {
     "name": "UltraAvatarTyndariusv3",
-    "description": "Ultra Avatar Tyndarius v3 — King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius on a timer, Lord of Order hits Tyndarius.",
+    "description": "Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras \"Ultra Avatar Tyndarius comp\" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. loo-sc-ap-ke: the guide's Recommended Group; King's Echo and StoneCrusher taunt an orb each, ArchPaladin and Lord of Order loop-taunt Tyndarius.",
     "tags": [
       "null"
     ],
@@ -28244,7 +28244,7 @@
   },
   {
     "name": "UltraEzrajalv3",
-    "description": "Ultra Ezrajal v3 — handles Counter Attack windows with army sync. Uses synced class equip and no-taunt fight flow.",
+    "description": "Ultra Ezrajal v3 — runs the Comp picked by the DoAllUltras \"Ultra Ezrajal comp\" option. Everyone hits Ezrajal and stops attacking during Counter Attack. default: Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo; loo-lr-ap-csh: Lord of Order, Legion Revenant, ArchPaladin, Chrono ShadowHunter; ke-lr-ap-loo: King's Echo, Legion Revenant, ArchPaladin, Lord of Order, who first get Ezrajal to lock a Mana Vamp bait weapon, then restart the fight together on their real weapons.",
     "tags": [
       "null"
     ],
@@ -28268,7 +28268,7 @@
   },
   {
     "name": "UltraEngineerv3",
-    "description": "Ultra Engineer v3 — prioritizes drones with KillWithPriority and army sync. Uses synced class equip and no-taunt fight flow.",
+    "description": "Ultra Engineer v3 — runs the Comp picked by the DoAllUltras \"Ultra Engineer comp\" option. Everyone kills the Defense Drone, then the Attack Drone, then Engineer. default: Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo; loo-lr-sc-csh: Lord of Order first casts its 5th skill on each new Attack Drone; loo-lr-sc-ke: Lord of Order, Legion Revenant, StoneCrusher, King's Echo, fighting as default does.",
     "tags": [
       "null"
     ],
@@ -28280,7 +28280,7 @@
   },
   {
     "name": "UltraNulgathv3",
-    "description": "Ultra Nulgath v3 — default 3 taunters + 1 Blade attacker; with a party layout of Dragon of Time / Legion Revenant / ArchPaladin / Lord of Order, the DoT hits each new Overfiend Blade then Nulgath while LR and AP taunt Nulgath on a 10s cycle.",
+    "description": "Ultra Nulgath v3 — runs the Comp picked by the DoAllUltras \"Ultra Nulgath comp\" option. default: 3 taunters + 1 Blade attacker; dot-lr-ap-loo: the Dragon of Time hits each new Overfiend Blade then Nulgath while Legion Revenant and ArchPaladin taunt Nulgath on a 10s cycle; loo-lr-sc-dot: Lord of Order and Legion Revenant take turns taunting Nulgath on his \"Behold the power of the Abyss!\" line.",
     "tags": [
       "null"
     ],
@@ -28471,6 +28471,18 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/GetPotions.cs"
   },
   {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraAttempt.cs",
+    "size": 5066,
+    "sha256": "fd08e687aee3a5694d703d64b9578171521fac3ad25265ef9f787ea437edeca1",
+    "fileName": "UltraAttempt.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAttempt.cs"
+  },
+  {
     "name": "UltraEnhancements",
     "description": "Centralised enhancement presets for all Ultra boss scripts.",
     "tags": [
@@ -28524,30 +28536,6 @@
     "sha256": "975d70866f30957262139de9f477481fe51a9bc8b215eedcd86a7a74ca4bc495",
     "fileName": "UltraPartyLayout.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs"
-  },
-  {
-    "name": "null",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
-    "size": 33111,
-    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
-    "fileName": "UltraComp.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
-  },
-  {
-    "name": "null",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Ultrasv3/DependenciesUltras/UltraAttempt.cs",
-    "size": 5066,
-    "sha256": "fd08e687aee3a5694d703d64b9578171521fac3ad25265ef9f787ea437edeca1",
-    "fileName": "UltraAttempt.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAttempt.cs"
   },
   {
     "name": "UltraPulse",
@@ -28626,6 +28614,18 @@
     "sha256": "c30e21d97cb6df219a20a03ed045ba2fb82ce426b29a3434ab6380f84df1f155",
     "fileName": "UltraAsync.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAsync.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
+    "size": 33111,
+    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
+    "fileName": "UltraComp.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
   },
   {
     "name": "UltraCounterAttack",

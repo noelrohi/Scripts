@@ -12,6 +12,8 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 
 using System;
 using System.Collections.Generic;
@@ -85,6 +87,50 @@ public class UltraComp
     }
 
     /// <summary>
+    /// A boss script's Prep: reads the boss's Comp and Party Layout, equips this account's class from
+    /// the Comp and enhances it as its Loadout says. Returns null after stopping the bot.
+    /// </summary>
+    public static (UltraComp Comp, UltraPartyLayout Party, UltraCompEntry Entry)? Prep(
+        string boss, IEnumerable<UltraComp> comps, string logTag, CoreUltrav3 ultra, int armySize, string classSyncFileName)
+    {
+        UltraComp? comp = Read(boss, comps);
+        if (comp == null)
+            return null;
+        UltraPartyLayout party = UltraPartyLayout.Read(boss);
+
+        UltraGeneral.EquipWarriorClass();
+        Bot.Sleep(2000);
+
+        C.Logger($"[{logTag}] Equipping the {comp.Name} Comp's classes for army size {armySize}.");
+        UltraCompEntry? entry = comp.EquipClass(party, ultra, armySize, classSyncFileName);
+        if (entry == null)
+            return null;
+
+        entry.Loadout.Enhance();
+        return (comp, party, entry);
+    }
+
+    /// <summary>
+    /// Readies this account for an Attempt: stocks <paramref name="entry"/>'s Loadout, waits for the
+    /// party on Whitemap, uses the Loadout and joins <paramref name="map"/>. Buying potion reagents can
+    /// swap to a farm class, so the Comp's class goes back on after stocking and before joining.
+    /// </summary>
+    public static void ReadyForAttempt(UltraPartyLayout party, UltraCompEntry entry, int armySize, string waitSyncFileName, string map)
+    {
+        party.EnsureClass();
+        entry.Loadout.Stock();
+        party.EnsureClass();
+
+        C.Join("Whitemap");
+        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFileName, useSkill: false);
+
+        entry.Loadout.Use();
+
+        party.EnsureClass();
+        Engine.Join(map);
+    }
+
+    /// <summary>
     /// Equips this account's class from this Comp and returns its entry, or returns null after
     /// stopping the bot. The Party Layout may name only this Comp's classes; a blank layout
     /// hands out this Comp's classes automatically from what the accounts own.
@@ -121,8 +167,8 @@ public class UltraComp
         if (!taunt.IsTimed)
             return DateTime.UtcNow;
 
-        UltraCompEntry keeper = Entries.Where(e => e.Taunt.IsTimed).OrderBy(e => e.Taunt.AtSec).First();
-        DateTime fightStart = entry == keeper
+        UltraCompEntry fightTimeWriter = Entries.Where(e => e.Taunt.IsTimed).OrderBy(e => e.Taunt.AtSec).First();
+        DateTime fightStart = entry == fightTimeWriter
             ? UltraAsync.SetFightTime(C, fightTimeSyncPath)
             : UltraAsync.GetFightTime(ultra, C, fightTimeSyncPath);
 
@@ -154,7 +200,8 @@ public class UltraCompEntry
 }
 
 /// <summary>
-/// What one class in a Comp brings besides the class itself: enhancements, potions and scroll.
+/// A class's Loadout in a Comp: its enhancements, potions and scroll. The class itself, also part
+/// of the Loadout, is the entry's <see cref="UltraCompEntry.Class"/>.
 /// Applied before the fight: <see cref="Enhance"/> once, then <see cref="Stock"/> and <see cref="Use"/>
 /// before each Attempt.
 /// </summary>
@@ -184,7 +231,13 @@ public class UltraLoadout
     /// <summary>Equipped and drunk in order before each Attempt. Empty: no potions.</summary>
     public string[] Potions { get; init; } = Array.Empty<string>();
 
-    /// <summary>The scroll equipped in the consumable slot after the potions, e.g. Scroll of Enrage. Null: none.</summary>
+    /// <summary>Click the equipped potion again during the fight (<see cref="ActivatePotion"/>). False: the potions are drunk only before each Attempt.</summary>
+    public bool ClickPotionInFight { get; init; } = true;
+
+    public const string ScrollOfEnrage = "Scroll of Enrage";
+    public const string ScrollOfDecay = "Scroll of Decay";
+
+    /// <summary>The scroll equipped in the consumable slot after the potions, e.g. <see cref="ScrollOfEnrage"/>. Null: none.</summary>
     public string? Scroll { get; init; }
 
     public void Enhance()
@@ -213,10 +266,10 @@ public class UltraLoadout
         {
             case null:
                 break;
-            case "Scroll of Enrage":
+            case ScrollOfEnrage:
                 Scrolls.GetScrollOfEnrage();
                 break;
-            case "Scroll of Decay":
+            case ScrollOfDecay:
                 Scrolls.GetScrollOfDecay();
                 break;
             default:
@@ -239,10 +292,10 @@ public class UltraLoadout
             C.Logger($"[Loadout] {Scroll} is not equipped, this class cannot taunt.", "Warning");
     }
 
-    /// <summary>Clicks an equipped clickable potion during the fight, when the Loadout has potions.</summary>
+    /// <summary>Clicks an equipped clickable potion during the fight, when the Loadout has potions and clicks them in the fight.</summary>
     public void ActivatePotion()
     {
-        if (Potions.Length > 0)
+        if (ClickPotionInFight && Potions.Length > 0)
             Pots.ActivateEquippedPotion();
     }
 
@@ -326,23 +379,23 @@ public class UltraTaunt
 
     /// <summary>Taunts at <paramref name="atSec"/> of every <paramref name="cycleSec"/>, optionally not while this class has <paramref name="skipWhileAura"/>.</summary>
     public static UltraTaunt Every(int cycleSec, int atSec, string? skipWhileAura = null) =>
-        new(true, atSec, cycleSec, skipWhileAura,
+        new(true, cycleSec, atSec, skipWhileAura,
             $"at {atSec} s of every {cycleSec} s{(skipWhileAura == null ? "" : $", not while it has {skipWhileAura}")}");
 
     /// <summary>The Role carries the taunts; <paramref name="when"/> says when, for people reading the Comp.</summary>
     public static UltraTaunt ByRole(string when) => new(false, 0, 0, null, when);
 
     public bool IsTimed { get; }
-    public int AtSec { get; }
     public int CycleSec { get; }
+    public int AtSec { get; }
     public string? SkipWhileAura { get; }
     private readonly string _description;
 
-    private UltraTaunt(bool isTimed, int atSec, int cycleSec, string? skipWhileAura, string description)
+    private UltraTaunt(bool isTimed, int cycleSec, int atSec, string? skipWhileAura, string description)
     {
         IsTimed = isTimed;
-        AtSec = atSec;
         CycleSec = cycleSec;
+        AtSec = atSec;
         SkipWhileAura = skipWhileAura;
         _description = description;
     }

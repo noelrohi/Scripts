@@ -34,12 +34,9 @@ public class UltraSpeakerv3
     private const string ListenTaunter = "ListenTaunter"; // taunts on every "You shall listen."
     private const string TruthTaunter1 = "TruthTaunter1"; // taunts on the 3rd, 6th, 9th... "I will make you see the truth."
     private const string TruthTaunter2 = "TruthTaunter2"; // on the 1st, 4th, 7th...
-    private const string TruthTaunter3 = "TruthTaunter3"; // on the 2nd, 5th, 8th...
-
-    // Its 4th skill, Decay, removes Scintillation: it casts it on "All stand equal beneath the eyes of the Eternal."
-    private const string DecayClass = "Verus DoomKnight";
-
-    private const string ScrollOfEnrage = "Scroll of Enrage";
+    // On the 2nd, 5th, 8th..., and casts its 4th skill on "All stand equal beneath the eyes of the Eternal.":
+    // Verus DoomKnight's Decay, which removes Scintillation.
+    private const string TruthTaunter3 = "TruthTaunter3";
 
     /// <summary>The Speaker's Comps. The DoAllUltras "Ultra Speaker comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
@@ -54,7 +51,7 @@ public class UltraSpeakerv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Lacerate },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on every \"You shall listen.\""),
             },
@@ -67,7 +64,7 @@ public class UltraSpeakerv3
                     Enhancement = EnhancementType.Fighter,
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 3rd, 6th, 9th... \"I will make you see the truth.\""),
             },
@@ -81,7 +78,7 @@ public class UltraSpeakerv3
                     Weapon = new[] { WeaponSpecial.Valiance },
                     Cape = new[] { CapeSpecial.Absolution },
                     Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 1st, 4th, 7th... \"I will make you see the truth.\""),
             },
@@ -95,7 +92,7 @@ public class UltraSpeakerv3
                     Weapon = new[] { WeaponSpecial.Praxis },
                     Cape = new[] { CapeSpecial.Penitence },
                     Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
-                    Scroll = ScrollOfEnrage,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
             }),
@@ -109,7 +106,7 @@ public class UltraSpeakerv3
 
     private UltraPartyLayout _party = null!;
     private UltraComp _comp = null!;
-    private UltraCompEntry? _entry;
+    private UltraCompEntry _entry = null!; // null until Prep; the chat listeners can run before it
     private UltraAttempt? _attempt;
 
     // Chat-listener state
@@ -154,7 +151,7 @@ public class UltraSpeakerv3
         finally
         {
             // An Attempt still open here ended without a kill. The Speaker has no Wipe detection.
-            _attempt?.End(UltraAttempt.Stopped);
+            _attempt?.End(UltraAttempt.Outcome.Stopped);
             Bot.Events.ScriptStopping -= StopAttemptEvent;
             Bot.Events.ExtensionPacketReceived -= SpeakerMessageListener;
             Bot.Flash.FlashCall -= SpeakerFlashListener;
@@ -166,7 +163,7 @@ public class UltraSpeakerv3
 
     private bool StopAttemptEvent(Exception? e)
     {
-        _attempt?.End(UltraAttempt.Stopped);
+        _attempt?.End(UltraAttempt.Outcome.Stopped);
         return true;
     }
 
@@ -185,22 +182,9 @@ public class UltraSpeakerv3
     /// <summary>Picks the Comp, equips this account's class from it and enhances it as its Loadout says.</summary>
     private bool Prep()
     {
-        UltraComp? comp = UltraComp.Read(Boss, Comps);
-        if (comp == null)
+        if (UltraComp.Prep(Boss, Comps, "UltraSpeaker-v3", Ultra, 4, "ultra_speaker_class-v3.sync") is not { } prep)
             return false;
-        _comp = comp;
-        _party = UltraPartyLayout.Read(Boss);
-
-        UltraGeneral.EquipWarriorClass();
-        Bot.Sleep(2000);
-
-        C.Logger($"[UltraSpeaker-v3] Equipping the {_comp.Name} Comp's classes for army size 4.");
-        UltraCompEntry? entry = _comp.EquipClass(_party, Ultra, 4, "ultra_speaker_class-v3.sync");
-        if (entry == null)
-            return false;
-        _entry = entry;
-
-        _entry.Loadout.Enhance();
+        (_comp, _party, _entry) = prep;
         return true;
     }
 
@@ -227,18 +211,7 @@ public class UltraSpeakerv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(ListenTurnSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        // Buying potion reagents can swap to a farm class; the Comp's class goes back on.
-        _party.EnsureClass();
-        _entry!.Loadout.Stock();
-        _party.EnsureClass();
-
-        C.Join("Whitemap");
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
-
-        _entry.Loadout.Use();
-
-        _party.EnsureClass();
-        Engine.Join(map);
+        UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
@@ -254,7 +227,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss);
 
         while (!Bot.ShouldExit)
         {
@@ -263,7 +236,8 @@ public class UltraSpeakerv3
 
             if (Bot.Player?.Alive != true)
             {
-                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, 20);
+                // The boss's HP is still noted while dead.
+                Bot.Wait.ForTrue(() => Bot.Player?.Alive == true, attempt.SeeBoss, 20);
                 // Just respawned — re-sync truth taunt turn counter from sync file
                 try
                 {
@@ -322,10 +296,10 @@ public class UltraSpeakerv3
                 _positioned = true;
             }
 
-            attempt.SeeBoss(Bot.Monsters.MapMonsters.FirstOrDefault(m => m != null && m.Name == boss));
+            attempt.SeeBoss();
 
             if (Bot.Inventory.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Kill);
+                attempt.End(UltraAttempt.Outcome.Kill);
 
             if (Ultra.CheckArmyProgressBool(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile))
             {
@@ -438,7 +412,7 @@ public class UltraSpeakerv3
                             equalizeCount++;
                             C.Logger($"[UltraSpeaker-v3] Detected 'All stand equal beneath the eyes of the Eternal.' (count {equalizeCount})");
 
-                            // Fire Decay for VDK (removes Scintillation)
+                            // The Role that casts its 4th skill now (removes Scintillation)
                             _ = DecayAsync();
 
                             // Check auras synchronously before spawning background task
@@ -530,7 +504,7 @@ public class UltraSpeakerv3
 
     private async Task DecayAsync()
     {
-        if (Bot.Player.CurrentClass?.Name != DecayClass || !Bot.Player.Alive)
+        if (_entry?.Role != TruthTaunter3 || !Bot.Player.Alive)
             return;
 
         for (int i = 0; i < 60; i++)

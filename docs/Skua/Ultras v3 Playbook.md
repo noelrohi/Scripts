@@ -138,8 +138,8 @@ fight start the earliest taunter shares.
 
 The potion buyer can't make Unstable Malevolence Elixir; keep some on the Dragon of Time.
 
-**`loo-lr-sc-dot`** (the Recommended Group of the community "Simplified bosses guide"; not
-yet tested):
+**`loo-lr-sc-dot`** (the Recommended Group of the community "Simplified bosses guide";
+killed Nulgath in about 63 s on its first Attempt):
 
 | Class | Role | Loadout | Taunts |
 |---|---|---|---|
@@ -169,6 +169,7 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | loo-lr-sc-dot | alt1=Dragon of Time; alt2=Lord of Order; alt3=Legion Revenant; alt4=StoneCrusher | kill | 63 s | CueTaunter @ 51.5 | The cue line came every 15 s (4 cues) and the Legion Revenant taunted on each. The Lord of Order never saw a Focus aura on Nulgath, so every re-taunt came from the 5 s fallback after the cue. Suggest: find the aura a Scroll of Enrage taunt really shows, or make the 5 s timing explicit. The Legion Revenant died mid-taunt at 51.5 s; no Wipe. |
 
 ### Ultra Speaker
 

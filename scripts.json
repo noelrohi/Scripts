@@ -3782,8 +3782,8 @@
       "null"
     ],
     "path": "Ultrasv3/DoAllUltras.cs",
-    "size": 11509,
-    "sha256": "8087d502782b0c55a85d995f663471c092e68a5e66901a196ac6a246247f6ac7",
+    "size": 11830,
+    "sha256": "d037198810774f00109bfee03a13bbc43a5c3013d014e368851859a241a9ddb2",
     "fileName": "DoAllUltras.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DoAllUltras.cs"
   },
@@ -28225,8 +28225,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs",
-    "size": 19863,
-    "sha256": "048f6469d96e2d5ae7bb0de9306189fbd0b12ad4538fb828d8dc3410b40a25f7",
+    "size": 21204,
+    "sha256": "2e2b5fe7244c2ad21404046cb79701673aa881736f73294451db50bb983bbc03",
     "fileName": "10UltraSpeakerv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs"
   },
@@ -28237,8 +28237,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs",
-    "size": 11586,
-    "sha256": "d53ec62030da9b50c1a4dfe4381e1c67681906a0cf593b06d48ab5700fd15b33",
+    "size": 13296,
+    "sha256": "2507fd105343bc159bf8226bf061e1aa6439b4336d1e494f575b835323ac4379",
     "fileName": "4UltraAvatarTyndariusv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs"
   },
@@ -28285,8 +28285,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/6UltraNulgathv3.cs",
-    "size": 17683,
-    "sha256": "5e9d50cadc9ea2c8a74c880311351049a7cdca981b7d3c89598f986b3da8fbff",
+    "size": 27718,
+    "sha256": "da6d622d4659910156cf70a52272f91a0d13501a8d6cc828e7fdaf93f84b9a79",
     "fileName": "6UltraNulgathv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/6UltraNulgathv3.cs"
   },
@@ -28478,8 +28478,8 @@
       "enhancements"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraEnhancements.cs",
-    "size": 26725,
-    "sha256": "bb5adc13468f0e3bfc6b4c9182bf939164a819878725e8486d888574c0286f46",
+    "size": 18098,
+    "sha256": "29c29efd7b0193274d44f8e35049951622e0f74a16fbd51bbed77c358c15c1b8",
     "fileName": "UltraEnhancements.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraEnhancements.cs"
   },
@@ -28520,10 +28520,34 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraPartyLayout.cs",
-    "size": 7536,
-    "sha256": "ac801e96a41e2895c1fbc8fa4e9a3eb914e68b8d3a970771feeb467c90f00489",
+    "size": 7493,
+    "sha256": "975d70866f30957262139de9f477481fe51a9bc8b215eedcd86a7a74ca4bc495",
     "fileName": "UltraPartyLayout.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
+    "size": 17094,
+    "sha256": "6ab3705aeaed978099277ce8a9c041086ab66feeac3887fb561e143916f9ca0d",
+    "fileName": "UltraComp.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraAttempt.cs",
+    "size": 5066,
+    "sha256": "fd08e687aee3a5694d703d64b9578171521fac3ad25265ef9f787ea437edeca1",
+    "fileName": "UltraAttempt.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAttempt.cs"
   },
   {
     "name": "UltraPulse",
@@ -28547,8 +28571,8 @@
       "potions"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraPotions.cs",
-    "size": 14178,
-    "sha256": "c5b8172fd9e1f94295f5dba8e93f593efa72c8beed5898e33fe6284572ee57aa",
+    "size": 12963,
+    "sha256": "949a2e6f8854dfdaa29fac773d1075c9e8d19ccde0cbc6192bd24e69ed037d5e",
     "fileName": "UltraPotions.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPotions.cs"
   },

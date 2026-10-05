@@ -49,9 +49,12 @@ public class DoAllUltras
         new Option<bool>("UsePrerequisitesChecker", "Use Prerequisites Checker", "Enable to run the prerequisites checker before starting ultras. Disable to skip.", true),
         // Party layouts: who plays what, per boss, and Comps: which strategy runs, for the bosses that have them.
         // Also read when a single v3 boss script runs.
-        UltraPartyLayout.Option("UltraEzrajal", "Ultra Ezrajal", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
-        UltraPartyLayout.Option("UltraWarden", "Ultra Warden", "Verus DoomKnight, Lord of Order (taunters), King's Echo, StoneCrusher"),
-        UltraPartyLayout.Option("UltraEngineer", "Ultra Engineer", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
+        UltraPartyLayout.Option(UltraEzrajalv3.Boss, "Ultra Ezrajal", "those of the chosen Ultra Ezrajal comp"),
+        UltraComp.Option(UltraEzrajalv3.Boss, "Ultra Ezrajal", UltraEzrajalv3.Comps),
+        UltraPartyLayout.Option(UltraWardenv3.Boss, "Ultra Warden", "those of the chosen Ultra Warden comp"),
+        UltraComp.Option(UltraWardenv3.Boss, "Ultra Warden", UltraWardenv3.Comps),
+        UltraPartyLayout.Option(UltraEngineerv3.Boss, "Ultra Engineer", "those of the chosen Ultra Engineer comp"),
+        UltraComp.Option(UltraEngineerv3.Boss, "Ultra Engineer", UltraEngineerv3.Comps),
         UltraPartyLayout.Option(UltraAvatarTyndariusv3.Boss, "Ultra Avatar Tyndarius", "those of the chosen Ultra Avatar Tyndarius comp"),
         UltraComp.Option(UltraAvatarTyndariusv3.Boss, "Ultra Avatar Tyndarius", UltraAvatarTyndariusv3.Comps),
         UltraPartyLayout.Option("ChampionDrakath", "Champion Drakath", "ArchPaladin, Lord of Order, Shaman (taunters), StoneCrusher"),

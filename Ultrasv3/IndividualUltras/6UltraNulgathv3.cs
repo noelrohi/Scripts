@@ -1,6 +1,6 @@
 /*
 name: UltraNulgathv3
-description: Ultra Nulgath v3 — runs the Comp picked by the DoAllUltras "Ultra Nulgath comp" option. default: 3 taunters + 1 Blade attacker; dot-lr-ap-loo: the Dragon of Time hits each new Overfiend Blade then Nulgath while Legion Revenant and ArchPaladin taunt Nulgath on a 10s cycle.
+description: Ultra Nulgath v3 — runs the Comp picked by the DoAllUltras "Ultra Nulgath comp" option. default: 3 taunters + 1 Blade attacker; dot-lr-ap-loo: the Dragon of Time hits each new Overfiend Blade then Nulgath while Legion Revenant and ArchPaladin taunt Nulgath on a 10s cycle; loo-lr-sc-dot: Lord of Order and Legion Revenant take turns taunting Nulgath on his "Behold the power of the Abyss!" line.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -19,10 +19,14 @@ tags: null
 //cs_include Scripts/CoreAdvanced.cs
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Auras;
 
 public class UltraNulgathv3
 {
@@ -35,6 +39,29 @@ public class UltraNulgathv3
     private const string NulgathAttacker = "NulgathAttacker"; // stays on Nulgath
     private const string BladeTaunter = "BladeTaunter";       // hits the Blade, and Nulgath around its own taunt
     private const string BladeAttacker = "BladeAttacker";     // hits the Blade while it is up, otherwise Nulgath
+    // The cue taunter and the lead taunter take turns on Nulgath; both stay on Nulgath.
+    private const string CueTaunter = "CueTaunter";           // taunts on every "Behold the power of the Abyss!"
+    private const string LeadTaunter = "LeadTaunter";         // taunts about 1.5 s into the fight, then each time the cue taunter's taunt ends
+
+    // The Dragon of Time of dot-lr-ap-loo, as loo-lr-sc-dot plays it too.
+    private static readonly UltraCompEntry BladeHittingDragonOfTime = new()
+    {
+        Class = "Dragon of Time",
+        Role = BladeHitter,
+        Loadout = new UltraLoadout
+        {
+            Enhancement = EnhancementType.Wizard,
+            Weapon = new[] { WeaponSpecial.Elysium },
+            Cape = new[] { CapeSpecial.Vainglory },
+            Helm = new[] { HelmSpecial.Pneuma },
+            EnhanceWhenAutoEnhanceIsOff = true,
+            // The potion buyer can't make Unstable Malevolence Elixir: keep some on hand.
+            Potions = new[] { "Unstable Malevolence Elixir", "Sage Tonic", "Potent Honor Potion" },
+            // Drunk before the fight only, as when this Comp beat Nulgath.
+            ClickPotionInFight = false,
+        },
+        Taunt = UltraTaunt.Never,
+    };
 
     /// <summary>Nulgath's Comps. The DoAllUltras "Ultra Nulgath comp" option picks one; blank runs default.</summary>
     public static readonly UltraComp[] Comps =
@@ -103,24 +130,7 @@ public class UltraNulgathv3
         // Beat Nulgath in about 2.5 minutes with no deaths. Only the Dragon of Time is enhanced
         // and drinks; the others keep their own gear.
         new("dot-lr-ap-loo",
-            new UltraCompEntry
-            {
-                Class = "Dragon of Time",
-                Role = BladeHitter,
-                Loadout = new UltraLoadout
-                {
-                    Enhancement = EnhancementType.Wizard,
-                    Weapon = new[] { WeaponSpecial.Elysium },
-                    Cape = new[] { CapeSpecial.Vainglory },
-                    Helm = new[] { HelmSpecial.Pneuma },
-                    EnhanceWhenAutoEnhanceIsOff = true,
-                    // The potion buyer can't make Unstable Malevolence Elixir: keep some on hand.
-                    Potions = new[] { "Unstable Malevolence Elixir", "Sage Tonic", "Potent Honor Potion" },
-                    // Drunk before the fight only, as when this Comp beat Nulgath.
-                    ClickPotionInFight = false,
-                },
-                Taunt = UltraTaunt.Never,
-            },
+            BladeHittingDragonOfTime,
             new UltraCompEntry
             {
                 Class = "Legion Revenant",
@@ -141,6 +151,57 @@ public class UltraNulgathv3
                 Role = NulgathAttacker,
                 Taunt = UltraTaunt.Never,
             }),
+
+        // The Recommended Group of the community "Simplified bosses guide": two taunters take
+        // turns on Nulgath, cued by his chat line rather than a timer.
+        new("loo-lr-sc-dot",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = LeadTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("about 1.5 s into the fight, never at 0 s; then each time the cue taunter's taunt on Nulgath ends"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = CueTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto },
+                    Cape = new[] { CapeSpecial.Lament },
+                    Helm = new[] { HelmSpecial.Pneuma },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on every \"Behold the power of the Abyss!\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = NulgathAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Potions = new[] { "Sage Tonic", "Potent Honor Potion" },
+                    ClickPotionInFight = false,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            BladeHittingDragonOfTime),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;
@@ -156,6 +217,21 @@ public class UltraNulgathv3
 
     // How long the Blade hitter stays on each new Blade before going back to Nulgath.
     private const int BladeHitMs = 1500;
+
+    // The cue and lead taunters. Nulgath's line is matched case-insensitively, without its "!".
+    private const string TauntCue = "Behold the power of the Abyss";
+    private const int LeadFirstTauntMs = 1500;  // the fight must not start with a taunt
+    // A taunt puts Focus on Nulgath. The lead taunter follows the cue taunter's Focus; if none
+    // shows up this long after the cue, it taunts then: about one Focus after the cue taunt.
+    private const int CueFocusWaitMs = 5000;
+    private const int FocusEndWaitMs = 15000;    // longest wait for a seen Focus to end
+    private readonly object _cueLock = new();
+    private int _cues;                            // cues seen this Attempt
+    private DateTime _lastCueAt;
+    private Aura? _focusAtCue;                    // Nulgath's Focus when the last cue came, for the lead taunter
+    private volatile bool _inFight;
+    private CancellationToken _fightToken;
+    private int _pressing;
 
     private CancellationTokenSource _tauntCts = new();
     private CancellationTokenSource _wipeCts = new();
@@ -189,6 +265,9 @@ public class UltraNulgathv3
             if (!Prep())
                 return;
 
+            if (_entry.Role is CueTaunter or LeadTaunter)
+                Bot.Events.ExtensionPacketReceived += NulgathChatListener;
+
             while (_deathRetries.Value < MaxDeathRetries && !Bot.ShouldExit)
             {
                 Engine.Boot();
@@ -212,6 +291,8 @@ public class UltraNulgathv3
         {
             // An Attempt still open here ended without a kill or a Wipe.
             _attempt?.End(UltraAttempt.Outcome.Stopped);
+            _inFight = false;
+            Bot.Events.ExtensionPacketReceived -= NulgathChatListener;
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
             _wipeCts.Cancel();
@@ -284,6 +365,7 @@ public class UltraNulgathv3
         using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
         DateTime fightStart = _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
+        StartCueTaunts(fightStart);
 
         bool bladeHit = false;
 
@@ -358,7 +440,8 @@ public class UltraNulgathv3
                     break;
 
                 default:
-                    // NulgathTaunter, NulgathAttacker: the taunt loop presses the scroll on whatever is targeted.
+                    // NulgathTaunter, NulgathAttacker, CueTaunter, LeadTaunter: the taunts press the
+                    // scroll on whatever is targeted.
                     AttackNulgath();
                     break;
             }
@@ -369,6 +452,7 @@ public class UltraNulgathv3
         }
 
         // The taunt loop must not keep pressing during a retreat.
+        _inFight = false;
         _tauntCts.Cancel();
 
         // If retreat is still in progress (background), wait for it
@@ -408,4 +492,186 @@ public class UltraNulgathv3
             sinceTaunt += taunt.CycleSec;
         return sinceTaunt >= taunt.CycleSec - 1 || sinceTaunt <= 3;
     }
+
+    /// <summary>
+    /// Arms the cue and lead taunters for this Attempt: the chat listener acts on Nulgath's cue
+    /// from now on, and the lead taunter starts its loop.
+    /// </summary>
+    private void StartCueTaunts(DateTime fightStart)
+    {
+        lock (_cueLock)
+        {
+            _cues = 0;
+            _lastCueAt = DateTime.MinValue;
+            _focusAtCue = null;
+        }
+        _fightToken = _tauntCts.Token;
+        _inFight = true;
+
+        if (_entry.Role != LeadTaunter)
+            return;
+        CancellationToken token = _tauntCts.Token;
+        new Thread(() => LeadTauntLoop(fightStart, token)) { IsBackground = true }.Start();
+    }
+
+    /// <summary>Nulgath's chat lines arrive as the messages of a "ct" packet's anims, as the Speaker's do.</summary>
+    private void NulgathChatListener(dynamic packet)
+    {
+        try
+        {
+            if (!_inFight)
+                return;
+
+            string type = packet["params"].type;
+            if (type is not "json")
+                return;
+
+            dynamic data = packet["params"].dataObj;
+            if (data.cmd.ToString() != "ct" || data.anims is null)
+                return;
+
+            foreach (dynamic anim in data.anims)
+            {
+                if (anim is null || anim.msg is null)
+                    continue;
+
+                if (((string)anim.msg).Contains(TauntCue, StringComparison.OrdinalIgnoreCase))
+                {
+                    OnTauntCue();
+                    return;
+                }
+            }
+        }
+        catch { }
+    }
+
+    private void OnTauntCue()
+    {
+        int cue;
+        lock (_cueLock)
+        {
+            // One line can come in more than one packet.
+            DateTime now = DateTime.UtcNow;
+            if (now - _lastCueAt < TimeSpan.FromSeconds(2))
+                return;
+            _focusAtCue = _entry.Role == LeadTaunter ? NulgathFocus() : null;
+            _lastCueAt = now;
+            cue = ++_cues;
+        }
+        C.Logger($"[Taunt] Nulgath: \"{TauntCue}!\" (cue {cue}).");
+
+        if (_entry.Role == CueTaunter)
+        {
+            CancellationToken token = _fightToken;
+            _ = Task.Run(() => TauntNulgath($"cue {cue}", token));
+        }
+    }
+
+    /// <summary>
+    /// Taunts about 1.5 s into the fight, then each time the cue taunter's taunt on Nulgath ends.
+    /// It sees the other account's taunt only as Focus on Nulgath.
+    /// </summary>
+    private void LeadTauntLoop(DateTime fightStart, CancellationToken token)
+    {
+        int firstMs = (int)(fightStart.AddMilliseconds(LeadFirstTauntMs) - DateTime.UtcNow).TotalMilliseconds;
+        if (!Pause(firstMs, token))
+            return;
+        TauntNulgath($"{LeadFirstTauntMs / 1000.0:F1} s into the fight", token);
+
+        int followed = 0;
+        while (!Bot.ShouldExit && !token.IsCancellationRequested)
+        {
+            int cue;
+            DateTime cueAt;
+            Aura? focusAtCue;
+            lock (_cueLock)
+                (cue, cueAt, focusAtCue) = (_cues, _lastCueAt, _focusAtCue);
+
+            if (cue == followed)
+            {
+                if (!Pause(100, token))
+                    return;
+                continue;
+            }
+            followed = cue;
+
+            string why = AwaitCueTauntEnd(cue, cueAt, focusAtCue, token);
+            if (token.IsCancellationRequested)
+                return;
+            // A newer cue came meanwhile: follow that taunt instead.
+            if (Volatile.Read(ref _cues) != followed)
+                continue;
+            TauntNulgath(why, token);
+        }
+    }
+
+    /// <summary>
+    /// Waits until the Focus the cue taunter put on Nulgath ends, and says what it saw. Its Focus is
+    /// one Nulgath didn't have at the cue. Without one <see cref="CueFocusWaitMs"/> after the cue, it
+    /// returns then.
+    /// </summary>
+    private string AwaitCueTauntEnd(int cue, DateTime cueAt, Aura? focusAtCue, CancellationToken token)
+    {
+        Aura? cueFocus = null;
+        while (DateTime.UtcNow - cueAt < TimeSpan.FromMilliseconds(CueFocusWaitMs))
+        {
+            Aura? focus = NulgathFocus();
+            if (focus != null && (focusAtCue == null || focus.UnixTimeStamp != focusAtCue.UnixTimeStamp))
+            {
+                cueFocus = focus;
+                break;
+            }
+            if (!Pause(100, token))
+                return "stopped";
+        }
+        if (cueFocus == null)
+            return $"no new Focus on Nulgath {CueFocusWaitMs / 1000} s after cue {cue}";
+
+        double seenSec = (DateTime.UtcNow - cueAt).TotalSeconds;
+        DateTime giveUp = DateTime.UtcNow.AddMilliseconds(FocusEndWaitMs);
+        while (NulgathFocus() != null && DateTime.UtcNow < giveUp)
+        {
+            if (!Pause(100, token))
+                return "stopped";
+        }
+        string ended = DateTime.UtcNow < giveUp ? "ended" : $"still up after {FocusEndWaitMs / 1000} s";
+        return $"cue {cue}'s Focus (seen {seenSec:F1} s after the cue, lasts {cueFocus.Duration} s) {ended} {(DateTime.UtcNow - cueAt).TotalSeconds:F1} s after the cue";
+    }
+
+    /// <summary>Presses the scroll on Nulgath, unless this account is dead or already pressing.</summary>
+    private void TauntNulgath(string why, CancellationToken token)
+    {
+        if (Interlocked.Exchange(ref _pressing, 1) == 1)
+            return;
+        try
+        {
+            if (!Bot.Player.Alive || token.IsCancellationRequested)
+                return;
+            AttackNulgath();
+            C.Logger($"[Taunt] {_entry.Role} taunts Nulgath: {why}.");
+            UltraAsync.TauntPresses(Bot, C, Engine, token);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _pressing, 0);
+        }
+    }
+
+    /// <summary>Nulgath's Focus aura as this client sees it, whoever Nulgath is targeted by. Null when he has none.</summary>
+    private static Aura? NulgathFocus()
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<List<Aura>>(Bot.Target.GetMonsterAura(Nulgath))
+                ?.FirstOrDefault(a => a?.Name?.Equals("Focus", StringComparison.OrdinalIgnoreCase) == true);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Sleeps <paramref name="ms"/>; false when <paramref name="token"/> was cancelled.</summary>
+    private static bool Pause(int ms, CancellationToken token) =>
+        !token.WaitHandle.WaitOne(Math.Max(0, ms)) && !Bot.ShouldExit;
 }

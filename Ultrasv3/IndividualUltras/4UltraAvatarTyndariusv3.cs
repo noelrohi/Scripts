@@ -1,6 +1,6 @@
 /*
 name: UltraAvatarTyndariusv3
-description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius. ke-lr-ap-loo-burst: ke-lr-ap-loo-orbs with Lord of Order on the right orb, turning to Tyndarius only to taunt.
+description: Ultra Avatar Tyndarius v3 — runs the Comp picked by the DoAllUltras "Ultra Avatar Tyndarius comp" option. default: King's Echo kills the right orb, Legion Revenant taunts the left orb, ArchPaladin taunts Tyndarius every 12s, Lord of Order hits Tyndarius. ke-lr-ap-loo-loop: default, and Lord of Order also taunts Tyndarius 6 s after each ArchPaladin taunt. ke-lr-ap-loo-orbs: ke-lr-ap-loo-loop, and King's Echo taunts the right orb. ke-lr-ap-loo-orbpairs: two taunters per orb, 6 s apart, and nobody taunts Tyndarius. ke-lr-ap-loo-burst: ke-lr-ap-loo-orbs with Lord of Order on the right orb, turning to Tyndarius only to taunt. loo-sc-ap-ke: the guide's Recommended Group; King's Echo and StoneCrusher taunt an orb each, ArchPaladin and Lord of Order loop-taunt Tyndarius.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -357,6 +357,71 @@ public class UltraAvatarTyndariusv3
                     Scroll = UltraLoadout.ScrollOfEnrage,
                 },
                 Taunt = UltraTaunt.Every(12, atSec: 6),
+            }),
+        // The guide's Recommended Group, with King's Echo in its DPS / Support slot and the guide's gear for each.
+        // King's Echo and StoneCrusher each taunt an orb (the guide's "DPS and Legion Revenant"); ArchPaladin and
+        // Lord of Order loop-taunt Tyndarius, 6 s apart.
+        new("loo-sc-ap-ke",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TyndariusAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence, CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 6),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = LeftOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the left orb is up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = TyndariusTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Praxis, WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Lament, CapeSpecial.None },
+                    Helm = new[] { HelmSpecial.Forge, HelmSpecial.None },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.Every(12, atSec: 0, beforeTaunt: SealUp, beforeTauntDescription: "Righteous Seal up"),
+            },
+            new UltraCompEntry
+            {
+                Class = "King's Echo",
+                Role = RightOrbTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Ravenous },
+                    Cape = new[] { CapeSpecial.Vainglory },
+                    Helm = new[] { HelmSpecial.Examen },
+                    Potions = new[] { "Fate Tonic", "Potent Malevolence Elixir" },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("whenever the right orb is up"),
             }),
     };
 

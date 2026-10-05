@@ -291,6 +291,15 @@ killing it.
 One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
 `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
+**`loo-sc-ap-ke`** (the guide's Recommended Group, King's Echo in its DPS / Support slot):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Hits Tyndarius | Lucky; Awe Blast weapon, Penitence else Absolution cape, Forge else plain helm; no potions; Scroll of Enrage | at 6 s of every 12 s |
+| StoneCrusher | Taunts the left orb while it is up, otherwise hits Tyndarius | Fighter; Lacerate weapon, Absolution cape, Anima helm; no potions; Scroll of Enrage | whenever the left orb is up |
+| ArchPaladin | Taunts Tyndarius; skills 1 to 3 only | Lucky; Praxis else Valiance weapon, Lament else plain cape, Forge else plain helm; no potions; Scroll of Enrage | at 0 s of every 12 s, Righteous Seal up first |
+| King's Echo | Taunts and hits the right orb while it is up, then the left orb, then Tyndarius | Lucky; Ravenous weapon, Vainglory cape, Examen helm; Fate Tonic, Potent Malevolence Elixir; Scroll of Enrage | whenever the right orb is up |
+
 **`ke-lr-ap-loo-loop`** (`default` with the guide's loop taunt). A taunt's Focus holds
 Tyndarius for only 6 s, and `default`'s 12 s taunt left him free from 6 s to 12 s, when the party died.
 Same classes, Roles and Loadouts as `default`, except:

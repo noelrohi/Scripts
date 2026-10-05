@@ -53,12 +53,21 @@ public class UltraPotions
 
     #region Presets
 
+    /// <summary>
+    /// Stands for <see cref="GetHonorOrMalicePotion"/> in a potion list: Potent Malice Potion
+    /// when more than 30 are owned, otherwise Potent Honor Potion.
+    /// </summary>
+    public const string HonorOrMalice = "Potent Honor or Malice Potion";
+
     private string GetHonorOrMalicePotion()
     {
         if (Bot.Inventory.GetQuantity("Potent Malice Potion") > 30)
             return "Potent Malice Potion";
         return "Potent Honor Potion";
     }
+
+    private string[] Resolve(string[] potions) =>
+        potions.Select(p => p == HonorOrMalice ? GetHonorOrMalicePotion() : p).ToArray();
 
     public string[] GetRecommendedPotions(string context = "")
     {
@@ -344,9 +353,18 @@ public class UltraPotions
             potions = potions[..2];
 
         if (ensureStock)
-            EnsurePotions(desiredQuant, skipThird, context);
+            EnsurePotions(potions, desiredQuant);
 
-        foreach (string potion in potions)
+        UsePotions(potions);
+    }
+
+    /// <summary>
+    /// Equips and drinks each potion in <paramref name="potions"/>, logging any it can't equip by name.
+    /// An empty list drinks nothing.
+    /// </summary>
+    public void UsePotions(string[] potions)
+    {
+        foreach (string potion in Resolve(potions))
         {
             Core.Logger($"Equipping {potion}...");
 
@@ -393,11 +411,21 @@ public class UltraPotions
     {
         string[] potions = GetRecommendedPotions(context);
 
-        if (potions.Length == 0)
-            return;
-
         if (skipThird && potions.Length >= 3)
             potions = potions[..2];
+
+        EnsurePotions(potions, desiredQuant);
+    }
+
+    /// <summary>
+    /// Buys each potion in <paramref name="potions"/> up to <paramref name="desiredQuant"/>.
+    /// An empty list buys nothing.
+    /// </summary>
+    public void EnsurePotions(string[] potions, int desiredQuant = 10)
+    {
+        potions = Resolve(potions);
+        if (potions.Length == 0)
+            return;
 
         List<string> missing = new();
 

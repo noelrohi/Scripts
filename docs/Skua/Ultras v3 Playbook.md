@@ -86,7 +86,7 @@ Default classes are what the automatic assignment hands out. Taunters equip Scro
 | Engineer | 4 × DPS (Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo), drones first. Any class works with a layout. |
 | Tyndarius | One Comp, see below. |
 | Drakath | Taunters 1–3 (ArchPaladin, Lord of Order, Shaman), 4 s apart, DPS (StoneCrusher). |
-| Nulgath | Two Comps, see below. |
+| Nulgath | Three Comps, see below. |
 | Drago | Taunter 1 and Taunter 2 (Lord of Order, Verus DoomKnight) hit the right summon and taunt the left one, 2 × DPS (StoneCrusher, King's Echo). |
 | Darkon | Taunter 1 (Verus DoomKnight), Taunter 2 (Lord of Order), 2 × DPS (StoneCrusher, King's Echo). |
 | Dage | Taunter 1 (Verus DoomKnight), Taunter 2 (ArchPaladin), Decay (Lord of Order, Scroll of Decay on Legionnaire), DPS (King's Echo). |
@@ -124,8 +124,8 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 #### Comps
 
-The `Ultra Nulgath comp` option picks one; blank runs `default`. Taunts count from the fight
-start the earliest taunter shares.
+The `Ultra Nulgath comp` option picks one; blank runs `default`. Timed taunts count from the
+fight start the earliest taunter shares.
 
 **`dot-lr-ap-loo`** (recommended; beat Nulgath in about 2.5 minutes with no deaths):
 
@@ -137,6 +137,21 @@ start the earliest taunter shares.
 | Lord of Order | Hits Nulgath | own gear; no potions; no scroll | never |
 
 The potion buyer can't make Unstable Malevolence Elixir; keep some on the Dragon of Time.
+
+**`loo-lr-sc-dot`** (the Recommended Group of the community "Simplified bosses guide"; not
+yet tested):
+
+| Class | Role | Loadout | Taunts |
+|---|---|---|---|
+| Lord of Order | Lead taunter: taunts Nulgath | Lucky; Awe Blast weapon, Penitence cape, Forge helm, even with DisableAutoEnhance on; no potions; Scroll of Enrage | about 1.5 s into the fight, never at 0 s; then each time the cue taunter's taunt on Nulgath ends |
+| Legion Revenant | Cue taunter: taunts Nulgath | Wizard; Arcana's Concerto weapon, Lament cape, Pneuma helm, even with DisableAutoEnhance on; no potions; Scroll of Enrage | on every "Behold the power of the Abyss!" |
+| StoneCrusher | Hits Nulgath | Fighter; Lacerate weapon, Absolution cape, Anima helm, even with DisableAutoEnhance on; Sage Tonic, Potent Honor Potion, drunk before the fight only; no scroll | never |
+| Dragon of Time | Hits each new Overfiend Blade for about 1.5 s, otherwise Nulgath | as in `dot-lr-ap-loo` | never |
+
+The two taunters follow Nulgath, not a timer. The cue taunter taunts when Nulgath says a line
+containing "Behold the power of the Abyss", in any case. The lead taunter sees that taunt as a
+new Focus aura on Nulgath and taunts again once the Focus is gone. If no new Focus shows up
+within 5 s of the line, it taunts then.
 
 **`default`** (it wiped repeatedly in testing; prefer `dot-lr-ap-loo`):
 

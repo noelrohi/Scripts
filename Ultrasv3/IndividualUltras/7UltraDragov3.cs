@@ -164,17 +164,20 @@ public class UltraDragov3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        bool skipThird = IsTaunter();
-        Pots.EnsureRecommendedPotions(skipThird: skipThird);
+        // Only the DPS drink potions; the taunters' consumable slot holds the Scroll of Enrage.
+        bool taunter = IsTaunter();
+        if (!taunter)
+            Pots.EnsureRecommendedPotions();
         Scrolls.GetScrollOfEnrage();
 
         _party.EnsureClass();
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
-        Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false);
+        if (!taunter)
+            Pots.UseRecommendedPotions(ensureStock: false);
 
-        if (skipThird)
+        if (taunter)
         {
             C.Logger("[UltraDrago-v3] Taunter detected, equipping Scroll of Enrage.");
             Engine.EquipEnrage();

@@ -337,12 +337,8 @@ public class UltraEzrajalv3
             return;
         }
 
-        C.Equip(bait.Name);
-        if (Bot.Inventory.IsEquipped(bait.Name))
-            _entry.Loadout.EnhanceWeapon(WeaponSpecial.Mana_Vamp);
-        bool manaVamp = EquippedWeapon() is { } w && w.Name == bait.Name && IsManaVamp(w);
-        C.Equip(_mainWeapon);
-        if (!manaVamp)
+        // The game won't equip an unenhanced weapon, so it's enhanced where it lies.
+        if (!_entry.Loadout.EnhanceSpareWeapon(bait.Name, WeaponSpecial.Mana_Vamp))
         {
             C.Logger($"[Lock] {who} couldn't put Mana Vamp on the unenhanced {bait.Name}; it skips the lock trick.", "Warning");
             return;

@@ -299,20 +299,17 @@ public class UltraLoadout
     }
 
     /// <summary>
-    /// Enhances the equipped weapon with the Loadout's enhancement and <paramref name="special"/> instead of
-    /// the Loadout's weapon special, e.g. a bait weapon. The rest stays as <see cref="Enhance"/> left it.
+    /// Enhances <paramref name="weapon"/>, a weapon that isn't equipped, with the Loadout's enhancement and
+    /// <paramref name="special"/>, e.g. a bait weapon, leaving the equipped gear as it is. Whether it has them now.
     /// </summary>
-    public void EnhanceWeapon(WeaponSpecial special)
+    public bool EnhanceSpareWeapon(string weapon, WeaponSpecial special)
     {
-        if (Enhancement == null)
-            return;
+        if (Enhancement == null || !CanEnhance)
+            return false;
 
-        EnhanceEquipped(
-            Pick(Cape, CapeUnlocked, CapeSpecial.None),
-            Pick(Helm, HelmUnlocked, HelmSpecial.None),
-            special,
-            KeepVaingloryAndPneuma
-        );
+        EnhanceInInventory(weapon, CapeSpecial.None, HelmSpecial.None, special);
+        return Bot.Inventory.Items.FirstOrDefault(i => i != null && i.Name == weapon) is { } w
+            && Has(w, CapeSpecial.None, HelmSpecial.None, special);
     }
 
     /// <summary>
@@ -429,6 +426,8 @@ public class UltraLoadout
         if (spare == null)
             return null;
         string was = Describe(spare);
+        if (spare.EnhancementLevel == 0 && !spare.Equipped)
+            EnhanceInInventory(spare.Name, cape, helm, weapon);
         if (!Wear(spare))
             return $"couldn't equip {spare.Name}";
 
@@ -438,6 +437,17 @@ public class UltraLoadout
         if (old != null && old.ID != spare.ID)
             Wear(old);
         return $"couldn't enhance {spare.Name} ({was}){(old != null && old.ID != spare.ID ? $", {old.Name} back on" : "")}";
+    }
+
+    /// <summary>
+    /// Enhances an item that isn't equipped, unbanking it first. The game won't equip an unenhanced item,
+    /// so a spare has to be enhanced where it lies before it can go on. CoreAdvanced.EnhanceItem always
+    /// follows the CoreBots option DisableAutoEnhance, even with <see cref="EnhanceWhenAutoEnhanceIsOff"/>.
+    /// </summary>
+    private void EnhanceInInventory(string item, CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon)
+    {
+        if (C.CheckInventory(item))
+            Adv.EnhanceItem(item, Enhancement!.Value, cape, helm, weapon);
     }
 
     private bool CanEnhance =>

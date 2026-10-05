@@ -115,10 +115,6 @@ public class UltraPartyLayout
         return classByUser;
     }
 
-    /// <summary>True when every class in the layout is one of <paramref name="classes"/>.</summary>
-    public bool Uses(IEnumerable<string> classes) =>
-        IsSet && ClassByUser.Values.All(cls => classes.Contains(cls, StringComparer.OrdinalIgnoreCase));
-
     /// <summary>
     /// Equips this account's class and returns it, or returns "" after stopping the bot.
     /// With a layout: the class the layout names for this login, which must be one of

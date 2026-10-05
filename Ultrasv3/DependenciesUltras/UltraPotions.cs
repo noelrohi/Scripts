@@ -81,20 +81,6 @@ public class UltraPotions
             };
         }
 
-        // Nulgath party roles: only the Dragon of Time drinks; the taunters and Lord of Order use none.
-        if (context.Equals("NulgathParty", StringComparison.OrdinalIgnoreCase))
-        {
-            if (HasAssignedClass("Dragon of Time"))
-                return new[]
-                {
-                    "Unstable Malevolence Elixir",
-                    "Sage Tonic",
-                    "Potent Honor Potion"
-                };
-
-            return Array.Empty<string>();
-        }
-
         if (context.Equals("Kolr", StringComparison.OrdinalIgnoreCase))
         {
             if (HasAssignedClass("Lord of Order"))

@@ -3782,8 +3782,8 @@
       "null"
     ],
     "path": "Ultrasv3/DoAllUltras.cs",
-    "size": 8686,
-    "sha256": "5d28a80f435882adf61120b33f416ae52be51c10feddf481ded52266bfe3e6a0",
+    "size": 11509,
+    "sha256": "8087d502782b0c55a85d995f663471c092e68a5e66901a196ac6a246247f6ac7",
     "fileName": "DoAllUltras.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DoAllUltras.cs"
   },
@@ -28189,8 +28189,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/11UltraGramielv3.cs",
-    "size": 19608,
-    "sha256": "c351532ac2754dd9ab312453267684d51723846dc04a3f20b7f3030f5eeac4a1",
+    "size": 19845,
+    "sha256": "746321b62ea5e9f04bf145ff211149f3a590a296e6349896284e657a4d5bd0f3",
     "fileName": "11UltraGramielv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/11UltraGramielv3.cs"
   },
@@ -28201,8 +28201,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/2UltraWardenv3.cs",
-    "size": 8359,
-    "sha256": "09650ed92a6355f2c2883f5fd78a2524d61e7ad98ec7cbbc8d2585dfc95440fe",
+    "size": 8595,
+    "sha256": "0d97ea02839c7aaef16be1e0b8715e34c591ea5c287d4252796e972079a5cdb0",
     "fileName": "2UltraWardenv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/2UltraWardenv3.cs"
   },
@@ -28213,8 +28213,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/7UltraDragov3.cs",
-    "size": 11812,
-    "sha256": "0217aeb1478e94e461fd41a28288e3e1f5a99226b6a65842a02edfdf9547a6d0",
+    "size": 12047,
+    "sha256": "c0805a5512b5b6fd85e6cf4ec49fad3b56fd2b323397845a4beeb91981072f81",
     "fileName": "7UltraDragov3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/7UltraDragov3.cs"
   },
@@ -28225,8 +28225,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs",
-    "size": 19626,
-    "sha256": "f1ece5c5b17b8373e5d99871ea8d960244e58da75f11812da93cadf7341d0f36",
+    "size": 19863,
+    "sha256": "048f6469d96e2d5ae7bb0de9306189fbd0b12ad4538fb828d8dc3410b40a25f7",
     "fileName": "10UltraSpeakerv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs"
   },
@@ -28237,8 +28237,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs",
-    "size": 12300,
-    "sha256": "63fbc9117419704e2f8386442a594aa669c6e0f9eeef9dda2cf7828a4a96306d",
+    "size": 11586,
+    "sha256": "d53ec62030da9b50c1a4dfe4381e1c67681906a0cf593b06d48ab5700fd15b33",
     "fileName": "4UltraAvatarTyndariusv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/4UltraAvatarTyndariusv3.cs"
   },
@@ -28249,8 +28249,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs",
-    "size": 6281,
-    "sha256": "912eb510c918ffffb66221e122fc509bbc21eb92ab77e4ccadfeb306339fae1f",
+    "size": 6534,
+    "sha256": "b9d2cf17c3caf1408517e249fe85e5c4c7edfcc335c7014445331d678f973261",
     "fileName": "1UltraEzrajalv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs"
   },
@@ -28261,8 +28261,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/9UltraDagev3.cs",
-    "size": 10954,
-    "sha256": "bc3f3f3ef82c06e6c15af2db15401779da79beb94e92240cc6eed0730446443c",
+    "size": 11188,
+    "sha256": "add101d9b7d13723ce1c9f12fa63718eeb45904a47a57f2f627b0fbdc5f9d26c",
     "fileName": "9UltraDagev3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/9UltraDagev3.cs"
   },
@@ -28273,20 +28273,20 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/3UltraEngineerv3.cs",
-    "size": 5952,
-    "sha256": "683c226a42c9d075d1e25a3c1bb907fc2fe872eb2331537da05b04371ebb025b",
+    "size": 6206,
+    "sha256": "a18bb5feaab621918ed32babf1550dbc0b60e9c9a91195b74c15fab3707baf23",
     "fileName": "3UltraEngineerv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/3UltraEngineerv3.cs"
   },
   {
     "name": "UltraNulgathv3",
-    "description": "Ultra Nulgath v3 — 3 taunters + 1 DPSAttackBlade with pulse-driven taunt and army sync.",
+    "description": "Ultra Nulgath v3 — default 3 taunters + 1 Blade attacker; with a party layout of Dragon of Time / Legion Revenant / ArchPaladin / Lord of Order, the DoT hits each new Overfiend Blade then Nulgath while LR and AP taunt Nulgath on a 10s cycle.",
     "tags": [
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/6UltraNulgathv3.cs",
-    "size": 11042,
-    "sha256": "b4a61d517adbd92f860632f3dd8cf3f76f944e915a6b1a0e47956e564b6aba01",
+    "size": 17683,
+    "sha256": "5e9d50cadc9ea2c8a74c880311351049a7cdca981b7d3c89598f986b3da8fbff",
     "fileName": "6UltraNulgathv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/6UltraNulgathv3.cs"
   },
@@ -28297,8 +28297,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/5ChampionDrakathv3.cs",
-    "size": 8755,
-    "sha256": "7398ccf597f6d27a30c068c560c5ee9abaa0b4fde8c6ddfa6eb722aeea03199c",
+    "size": 8995,
+    "sha256": "756e65daa50cf88d5b5069d42ee799e3a1c63d1c05fba208357f6e4b817d147c",
     "fileName": "5ChampionDrakathv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/5ChampionDrakathv3.cs"
   },
@@ -28309,8 +28309,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/8UltraDarkonv3.cs",
-    "size": 9712,
-    "sha256": "20eff6309e3810d70fe5ed7eec6c7e6e45c97cf86f1b020c0344848fe76a9c8d",
+    "size": 9948,
+    "sha256": "9ddf362aca320e7aa34b882a23d40315cab15c8a02ec4d548568134106c7a7ae",
     "fileName": "8UltraDarkonv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/8UltraDarkonv3.cs"
   },
@@ -28478,8 +28478,8 @@
       "enhancements"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraEnhancements.cs",
-    "size": 25516,
-    "sha256": "0f73ee62546a18851a91690850255a85e4e4364fdfd25fc258f1d2918881dcc4",
+    "size": 26725,
+    "sha256": "bb5adc13468f0e3bfc6b4c9182bf939164a819878725e8486d888574c0286f46",
     "fileName": "UltraEnhancements.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraEnhancements.cs"
   },
@@ -28514,6 +28514,18 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraDeath.cs"
   },
   {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraPartyLayout.cs",
+    "size": 7536,
+    "sha256": "ac801e96a41e2895c1fbc8fa4e9a3eb914e68b8d3a970771feeb467c90f00489",
+    "fileName": "UltraPartyLayout.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs"
+  },
+  {
     "name": "UltraPulse",
     "description": "5-second wall-clock pulse generator for Ultra taunt systems.",
     "tags": [
@@ -28535,8 +28547,8 @@
       "potions"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraPotions.cs",
-    "size": 13223,
-    "sha256": "f2795fd44f263894a7e06105fc214f7e245f0430c1194d70726be7065f0c7672",
+    "size": 14178,
+    "sha256": "c5b8172fd9e1f94295f5dba8e93f593efa72c8beed5898e33fe6284572ee57aa",
     "fileName": "UltraPotions.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPotions.cs"
   },
@@ -28624,8 +28636,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraGeneral.cs",
-    "size": 28030,
-    "sha256": "d3befe14aa26b04373fbb328ccd62a05386fb38e671b12c19127ffb0bd7ee42e",
+    "size": 28601,
+    "sha256": "1b2eedfb01f6efd42be9c56f5ed1a84a32666684e0569e38fb8dfdafaf8ab949",
     "fileName": "UltraGeneral.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraGeneral.cs"
   },

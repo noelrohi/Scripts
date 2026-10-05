@@ -293,6 +293,7 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-05 | default | alt1=King's Echo; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order | stopped | 5 Attempts, about 7 min | first death each Attempt at 12–15 s (once 25 s), then the whole party | Five Wipes, stopped. Only King's Echo drank potions (`c48931b4f`); the earlier win had Body Tonic on all four, so the lost max HP is the likely cause. Tyndarius got no lower than 68%. |
 
 ### Ultra Nulgath
 

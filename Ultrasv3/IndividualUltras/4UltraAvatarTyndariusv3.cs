@@ -13,6 +13,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraDeath.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 
@@ -40,8 +41,8 @@ public class UltraAvatarTyndariusv3
     private const int Tyndarius = 2;
     private const int RightOrb = 3;
 
-    // One class per role. The class an account ends up on after the single
-    // class sync IS its role for the whole run.
+    // One class per role. The class an account ends up on (from the party layout,
+    // or the class sync without one) IS its role for the whole run.
     private const string RightOrbKiller = "King's Echo";
     private const string LeftOrbTaunter = "Legion Revenant";
     private const string TyndariusTaunter = "ArchPaladin";
@@ -64,6 +65,7 @@ public class UltraAvatarTyndariusv3
     private ManualResetEvent _retreatComplete = new(false);
     private UltraDeath.RetryCounter _deathRetries = new();
     private const int MaxDeathRetries = 10;
+    private UltraPartyLayout _party = null!;
     private string _roleClass = "";
 
     public void ScriptMain(IScriptInterface bot)
@@ -120,27 +122,22 @@ public class UltraAvatarTyndariusv3
     private bool IsTaunter() => _roleClass == LeftOrbTaunter || _roleClass == TyndariusTaunter;
 
     /// <summary>
-    /// Runs the class sync once and fixes this account's role from the class it equipped.
-    /// Retries after a wipe keep the role; nothing re-runs the sync.
+    /// Equips this account's class once (party layout, else the class sync) and fixes its
+    /// role from the class it equipped. Retries after a wipe keep the role; nothing re-runs it.
     /// </summary>
     private bool FixRole()
     {
+        _party = UltraPartyLayout.Read("UltraAvatarTyndarius");
+
         UltraGeneral.EquipWarriorClass();
         Bot.Sleep(2000);
 
         C.Logger("[UltraAvatarTyndarius-v3] Assigning role classes for army size 4.");
-        string assigned = UltraCustomClassSync.CustomClassSync(Ultra, Bot, UltraClassesByRole, 4, "ultra_tyndarius_class-v3.sync");
-        if (string.IsNullOrEmpty(assigned))
+        string assigned = _party.EquipClass(Ultra, UltraClassesByRole, 4, "ultra_tyndarius_class-v3.sync");
+        if (string.IsNullOrEmpty(assigned) || !_party.EnsureClass())
             return false;
 
-        Bot.Wait.ForTrue(() => IsOnClass(assigned), 20);
         string? className = Bot.Player.CurrentClass?.Name;
-        if (!IsOnClass(assigned))
-        {
-            C.Logger($"[UltraAvatarTyndarius-v3] Assigned {assigned} but {className ?? "no class"} is equipped.", "Error", messageBox: true, stopBot: true);
-            return false;
-        }
-
         _roleClass = UltraClassesByRole.Select(r => r[0]).First(r => r.Equals(className, StringComparison.OrdinalIgnoreCase));
         C.Logger($"[UltraAvatarTyndarius-v3] Role fixed: {RoleName()} ({_roleClass})");
 
@@ -155,23 +152,6 @@ public class UltraAvatarTyndariusv3
         TyndariusTaunter => "TyndariusTaunter",
         _ => "TyndariusAttacker"
     };
-
-    private static bool IsOnClass(string className) =>
-        string.Equals(Bot.Player.CurrentClass?.Name, className, StringComparison.OrdinalIgnoreCase);
-
-    /// <summary>
-    /// Puts the role's class back on if something swapped it, e.g. potion-reagent
-    /// rep farming equipping the account's CBO Farm class. Never picks a new class.
-    /// </summary>
-    private void EnsureRoleClass()
-    {
-        if (IsOnClass(_roleClass))
-            return;
-
-        C.Logger($"[UltraAvatarTyndarius-v3] Class drifted to {Bot.Player.CurrentClass?.Name ?? "none"}, re-equipping {_roleClass}.");
-        C.Equip(_roleClass);
-        Bot.Wait.ForTrue(() => IsOnClass(_roleClass), 20);
-    }
 
     private void Fight()
     {
@@ -194,11 +174,11 @@ public class UltraAvatarTyndariusv3
 
         // Potions are picked from the equipped class, so it has to be the role's class.
         bool skipThird = IsTaunter();
-        EnsureRoleClass();
+        _party.EnsureClass();
         Pots.EnsureRecommendedPotions(skipThird: skipThird);
         if (IsTaunter())
             Scrolls.GetScrollOfEnrage();
-        EnsureRoleClass();
+        _party.EnsureClass();
 
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
@@ -213,6 +193,7 @@ public class UltraAvatarTyndariusv3
                 C.Logger("[UltraAvatarTyndarius-v3] Scroll of Enrage is not equipped, this taunter cannot taunt.", "Warning");
         }
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 

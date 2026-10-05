@@ -72,6 +72,20 @@ public class UltraPotions
             };
         }
 
+        // Nulgath party roles: only the Dragon of Time drinks; the taunters and Lord of Order use none.
+        if (context.Equals("NulgathParty", StringComparison.OrdinalIgnoreCase))
+        {
+            if (HasAssignedClass("Dragon of Time"))
+                return new[]
+                {
+                    "Unstable Malevolence Elixir",
+                    "Sage Tonic",
+                    "Potent Honor Potion"
+                };
+
+            return Array.Empty<string>();
+        }
+
         if (context.Equals("Kolr", StringComparison.OrdinalIgnoreCase))
         {
             if (HasAssignedClass("Lord of Order"))
@@ -369,6 +383,12 @@ public class UltraPotions
 
     #region Potion Purchase
 
+    // Potions PotionBuyerv2 has no recipe for: used when owned, never bought.
+    private static readonly HashSet<string> NotBuyable = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Unstable Malevolence Elixir"
+    };
+
     public void EnsurePotions(int desiredQuant = 10, bool skipThird = false, string context = "")
     {
         string[] potions = GetRecommendedPotions(context);
@@ -384,6 +404,13 @@ public class UltraPotions
         foreach (string potion in potions)
         {
             int current = Bot.Inventory.GetQuantity(potion);
+
+            if (NotBuyable.Contains(potion))
+            {
+                if (current < 1)
+                    Core.Logger($"No {potion} and the potion buyer can't make it; get it yourself.");
+                continue;
+            }
 
             if (current < desiredQuant)
             {

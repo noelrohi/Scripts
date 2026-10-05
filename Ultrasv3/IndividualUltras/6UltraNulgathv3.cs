@@ -1,6 +1,6 @@
 /*
 name: UltraNulgathv3
-description: Ultra Nulgath v3 — 3 taunters + 1 DPSAttackBlade with pulse-driven taunt and army sync.
+description: Ultra Nulgath v3 — default 3 taunters + 1 Blade attacker; with a party layout of Dragon of Time / Legion Revenant / ArchPaladin / Lord of Order, the DoT hits each new Overfiend Blade then Nulgath while LR and AP taunt Nulgath on a 10s cycle.
 tags: null
 */
 //cs_include Scripts/Ultrasv3/DependenciesUltras/CoreEnginev3.cs
@@ -12,6 +12,8 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraDeath.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 
@@ -36,6 +38,11 @@ public class UltraNulgathv3
     private static GetScrolls _Scrolls;
     private static string _fbsMuteFile = "";
 
+    // Monster MapIDs in ultranulgath.
+    private const int Blade = 1;
+    private const int Nulgath = 2;
+
+    // Default role set, used when no party layout is set.
     private const string Taunter1 = "Lord of Order";
     private const string Taunter2 = "StoneCrusher";
     private const string Taunter3AttackBlade = "Verus DoomKnight";
@@ -49,8 +56,34 @@ public class UltraNulgathv3
         new[] { DPSAttackBlade }
     };
 
+    // Party role set, used when the layout names only these classes. It beat Nulgath
+    // first try with no deaths: the Dragon of Time hits each new Overfiend Blade briefly
+    // and otherwise Nulgath, Legion Revenant and ArchPaladin taunt Nulgath 5s apart on a
+    // 10s cycle, Lord of Order hits Nulgath.
+    private const string BladeHitter = "Dragon of Time";
+    private const string FirstTaunter = "Legion Revenant";
+    private const string SecondTaunter = "ArchPaladin";
+    private const string NulgathAttacker = "Lord of Order";
+
+    private static readonly string[][] PartyClassesByRole =
+    {
+        new[] { BladeHitter },
+        new[] { FirstTaunter },
+        new[] { SecondTaunter },
+        new[] { NulgathAttacker }
+    };
+
+    // How long the Dragon of Time stays on each new Blade before going back to Nulgath.
+    private const int BladeHitMs = 1500;
+
     private CancellationTokenSource _tauntCts = new();
+    private CancellationTokenSource _wipeCts = new();
+    private ManualResetEvent _retreatComplete = new(false);
+    private UltraDeath.RetryCounter _deathRetries = new();
+    private const int MaxDeathRetries = 10;
     private DateTime fightStartTime = DateTime.MinValue;
+    private UltraPartyLayout _party = null!;
+    private bool _partyRoles;
     private string _role = "";
 
     public void ScriptMain(IScriptInterface bot)
@@ -67,20 +100,37 @@ public class UltraNulgathv3
             "Skua", "fbs_mute.sync"
         );
         try { File.WriteAllText(_fbsMuteFile, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()); } catch { }
-        Engine.Boot();
-        _tauntCts = new();
-        Bot.Events.ScriptStopping -= StopTauntEvent;
-        Bot.Events.ScriptStopping += StopTauntEvent;
 
         try
         {
-            Prep();
-            Fight();
+            Engine.Boot();
+            if (!Prep())
+                return;
+
+            while (_deathRetries.Value < MaxDeathRetries && !Bot.ShouldExit)
+            {
+                Engine.Boot();
+                _tauntCts?.Cancel();
+                _tauntCts = new();
+                _wipeCts = new();
+                _retreatComplete.Reset();
+                Bot.Events.ScriptStopping -= StopTauntEvent;
+                Bot.Events.ScriptStopping += StopTauntEvent;
+
+                // Start background wipe monitor (also handles individual death signaling)
+                UltraDeath.StartWipeMonitor(
+                    C, 4, _wipeCts, _retreatComplete,
+                    () => UltraDeath.PerformRetreat(C, 4, MaxDeathRetries, _deathRetries, "UltraNulgathRetreat.sync")
+                );
+
+                Fight();
+            }
         }
         finally
         {
             Bot.Events.ScriptStopping -= StopTauntEvent;
             _tauntCts.Cancel();
+            _wipeCts.Cancel();
             try { if (File.Exists(_fbsMuteFile)) File.Delete(_fbsMuteFile); } catch { }
             Engine.DisableSkills();
             C.SetOptions(false);
@@ -93,41 +143,59 @@ public class UltraNulgathv3
         return true;
     }
 
-    private bool IsTaunter() => _role != "DPSAttackBlade";
+    private bool IsTaunter() => _partyRoles
+        ? _role == "FirstTaunter" || _role == "SecondTaunter"
+        : _role != "DPSAttackBlade";
 
-    private void EquipPresetClasses()
+    /// <summary>
+    /// Equips this account's class once and fixes its role from the class it ended up on.
+    /// Retries after a wipe keep the role.
+    /// </summary>
+    private bool Prep()
     {
-        int armySize = 4;
-        bool allowDuplicates = true;
-
-        C.Logger($"[UltraNulgath-v3] Equipping role-based ultra classes for army size {armySize}.");
-        string[][] classSlots = new string[armySize][];
-
-        for (int i = 0; i < armySize; i++)
+        _party = UltraPartyLayout.Read("UltraNulgath");
+        _partyRoles = _party.Uses(PartyClassesByRole.SelectMany(r => r));
+        if (_party.IsSet && !_partyRoles && !_party.Uses(UltraClassesByRole.SelectMany(r => r)))
         {
-            classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
+            C.Logger("[UltraNulgath-v3] The layout mixes role sets. Use either Dragon of Time / Legion Revenant / ArchPaladin / Lord of Order, " +
+                "or Lord of Order / StoneCrusher / Verus DoomKnight / King's Echo.", "Error", messageBox: true, stopBot: true);
+            return false;
         }
 
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_nulgath_class-v3.sync", allowDuplicates);
-    }
-
-    private void Prep()
-    {
         UltraGeneral.EquipWarriorClass();
         Bot.Sleep(2000);
-        EquipPresetClasses();
-        Bot.Sleep(2000);
 
-        // Determine role based on equipped class
-        string? className = Bot.Player.CurrentClass?.Name;
-        if (className == Taunter1) _role = "Taunter1";
-        else if (className == Taunter2) _role = "Taunter2";
-        else if (className == Taunter3AttackBlade) _role = "Taunter3AttackBlade";
-        else _role = "DPSAttackBlade";
+        C.Logger($"[UltraNulgath-v3] Equipping {(_partyRoles ? "party" : "default")} role classes for army size 4.");
+        string assigned = _partyRoles
+            ? _party.EquipClass(Ultra, PartyClassesByRole, 4, "ultra_nulgath_class-v3.sync")
+            : _party.EquipClass(Ultra, UltraClassesByRole, 4, "ultra_nulgath_class-v3.sync", allowDuplicates: true);
+        if (string.IsNullOrEmpty(assigned) || !_party.EnsureClass())
+            return false;
 
-        Enh.ApplyNulgath();
+        string className = Bot.Player.CurrentClass?.Name ?? string.Empty;
+        _role = _partyRoles
+            ? className switch
+            {
+                BladeHitter => "BladeHitter",
+                FirstTaunter => "FirstTaunter",
+                SecondTaunter => "SecondTaunter",
+                _ => "NulgathAttacker"
+            }
+            : className switch
+            {
+                Taunter1 => "Taunter1",
+                Taunter2 => "Taunter2",
+                Taunter3AttackBlade => "Taunter3AttackBlade",
+                _ => "DPSAttackBlade"
+            };
+
+        if (_partyRoles)
+            Enh.ApplyNulgathParty();
+        else
+            Enh.ApplyNulgath();
 
         C.Logger($"[UltraNulgath-v3] Role: {_role} ({className})");
+        return true;
     }
 
     private void Fight()
@@ -149,25 +217,34 @@ public class UltraNulgathv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
-        bool skipThird = IsTaunter();
-        Pots.EnsureRecommendedPotions(skipThird: skipThird);
-        Scrolls.GetScrollOfEnrage();
+        // Potions are picked from the equipped class, so it has to be the role's class.
+        // Party roles: only the Dragon of Time drinks.
+        string potionContext = _partyRoles ? "NulgathParty" : "";
+        bool skipThird = !_partyRoles && IsTaunter();
+        _party.EnsureClass();
+        Pots.EnsureRecommendedPotions(skipThird: skipThird, context: potionContext);
+        if (!_partyRoles || IsTaunter())
+            Scrolls.GetScrollOfEnrage();
+        _party.EnsureClass();
 
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
-        Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false);
+        Pots.UseRecommendedPotions(skipThird: skipThird, ensureStock: false, context: potionContext);
 
-        if (skipThird)
+        if (IsTaunter())
         {
             C.Logger("[UltraNulgath-v3] Taunter detected, equipping Scroll of Enrage.");
             Engine.EquipEnrage();
+            if (!Bot.Inventory.IsEquipped("Scroll of Enrage"))
+                C.Logger("[UltraNulgath-v3] Scroll of Enrage is not equipped, this taunter cannot taunt.", "Warning");
         }
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 
-        Engine.ChooseBestCell(boss);
+        var (bestCell, bestPad) = Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
         Bot.Sleep(2000);
 
@@ -203,14 +280,31 @@ public class UltraNulgathv3
             fightStartTime = UltraAsync.GetFightTime(Ultra, C, fightTimeSyncPath);
             UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 2, 3, shouldSkipTaunt, cancellationToken: _tauntCts.Token);
         }
+        else if (_role == "FirstTaunter")
+        {
+            // Taunts at 0s of every 10s cycle.
+            C.Logger("[UltraNulgath-v3] FirstTaunter (Primary) — setting fight start time.");
+            fightStartTime = UltraAsync.SetFightTime(C, fightTimeSyncPath);
+            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 0, 2, cancellationToken: _tauntCts.Token);
+        }
+        else if (_role == "SecondTaunter")
+        {
+            // Taunts at 5s of every 10s cycle.
+            C.Logger("[UltraNulgath-v3] SecondTaunter — reading fight start time.");
+            fightStartTime = UltraAsync.GetFightTime(Ultra, C, fightTimeSyncPath);
+            UltraAsync.StartTauntLoop(Bot, C, Engine, fightStartTime, 1, 2, cancellationToken: _tauntCts.Token);
+        }
 
-        while (!Bot.ShouldExit)
+        bool bladeHit = false;
+
+        while (!Bot.ShouldExit && !_wipeCts.IsCancellationRequested)
         {
             // Refresh mute file so FBS plugin stays muted during the fight
             try { File.WriteAllText(_fbsMuteFile, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()); } catch { }
 
             if (!Bot.Player.Alive)
             {
+                // Death is signaled by the background wipe monitor
                 Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
                 continue;
             }
@@ -225,14 +319,47 @@ public class UltraNulgathv3
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
                 Bot.Sleep(3000);
+                _deathRetries.Value = MaxDeathRetries;
                 break;
             }
 
+            // Back to the fight if a respawn landed somewhere else.
+            if (!string.IsNullOrEmpty(bestCell) && Bot.Player.Cell != bestCell)
+            {
+                C.Jump(bestCell, bestPad ?? "Left");
+                Bot.Wait.ForCellChange(bestCell);
+                continue;
+            }
+
             // ── Dynamic targeting ──
+            if (_role == "BladeHitter")
+            {
+                // A short hit on each new Blade, then back to Nulgath.
+                bool bladeUp = Bot.Monsters.MapMonsters.Any(m => m != null && m.MapID == Blade && m.HP > 0);
+                if (!bladeUp)
+                    bladeHit = false;
+
+                if (bladeUp && !bladeHit)
+                {
+                    Bot.Combat.Attack(Blade);
+                    Bot.Sleep(BladeHitMs);
+                    bladeHit = true;
+                    Bot.Combat.Attack(Nulgath);
+                }
+                else if (Bot.Player.Target?.MapID != Nulgath)
+                    Bot.Combat.Attack(Nulgath);
+            }
+            else if (_partyRoles)
+            {
+                // FirstTaunter, SecondTaunter, NulgathAttacker — always on Nulgath; the taunt
+                // loop presses the scroll on whatever is targeted.
+                if (Bot.Player.Target?.MapID != Nulgath)
+                    Bot.Combat.Attack(Nulgath);
+            }
             // Taunter1/Taunter2: always attack Nulgath; DPSAttackBlade: attack Blade
             // Taunter3: attack Blade normally, switch to Nulgath during taunt pulse;
             //           if Blade is dead, fall back to Nulgath
-            if (_role == "Taunter3AttackBlade" && !shouldSkipTaunt())
+            else if (_role == "Taunter3AttackBlade" && !shouldSkipTaunt())
             {
                 double elapsed = (DateTime.UtcNow - fightStartTime).TotalSeconds;
                 double timeInCycle = elapsed % 15;
@@ -242,34 +369,34 @@ public class UltraNulgathv3
 
                 if (targetNulgath)
                 {
-                    if (Bot.Player.Target?.MapID != 2)
-                        Bot.Combat.Attack(2);
+                    if (Bot.Player.Target?.MapID != Nulgath)
+                        Bot.Combat.Attack(Nulgath);
                 }
                 else
                 {
-                    // Attack Blade (MapID 1) if alive, else fall back to Nulgath (MapID 2)
-                    if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == 1 && x.HP > 0))
+                    // Attack Blade if alive, else fall back to Nulgath
+                    if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == Blade && x.HP > 0))
                     {
-                        if (Bot.Player.Target?.MapID != 1)
-                            Bot.Combat.Attack(1);
+                        if (Bot.Player.Target?.MapID != Blade)
+                            Bot.Combat.Attack(Blade);
                     }
-                    else if (Bot.Player.Target?.MapID != 2)
+                    else if (Bot.Player.Target?.MapID != Nulgath)
                     {
-                        Bot.Combat.Attack(2);
+                        Bot.Combat.Attack(Nulgath);
                     }
                 }
             }
             else if (_role == "DPSAttackBlade")
             {
-                // DPSAttackBlade — attack Blade (MapID 1) if alive, else Nulgath (MapID 2)
-                if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == 1 && x.HP > 0))
+                // DPSAttackBlade — attack Blade if alive, else Nulgath
+                if (Bot.Monsters.CurrentAvailableMonsters.Any(x => x != null && x.MapID == Blade && x.HP > 0))
                 {
-                    if (Bot.Player.Target?.MapID != 1)
-                        Bot.Combat.Attack(1);
+                    if (Bot.Player.Target?.MapID != Blade)
+                        Bot.Combat.Attack(Blade);
                 }
-                else if (Bot.Player.Target?.MapID != 2)
+                else if (Bot.Player.Target?.MapID != Nulgath)
                 {
-                    Bot.Combat.Attack(2);
+                    Bot.Combat.Attack(Nulgath);
                 }
             }
             else
@@ -279,9 +406,18 @@ public class UltraNulgathv3
                     Bot.Combat.Attack(boss);
             }
 
-            Pots.ActivateEquippedPotion();
+            // Party taunters and Lord of Order use no potions.
+            if (!_partyRoles || _role == "BladeHitter")
+                Pots.ActivateEquippedPotion();
 
-            Bot.Sleep(500);
+            Bot.Sleep(_partyRoles ? 100 : 500);
         }
+
+        // The taunt loop must not keep pressing during a retreat.
+        _tauntCts.Cancel();
+
+        // If retreat is still in progress (background), wait for it
+        if (_wipeCts.IsCancellationRequested)
+            _retreatComplete.WaitOne(TimeSpan.FromSeconds(120));
     }
 }

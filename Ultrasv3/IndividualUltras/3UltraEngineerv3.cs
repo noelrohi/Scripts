@@ -9,6 +9,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
@@ -44,6 +45,8 @@ public class UltraEngineerv3
         new[] { Dps4 }
     };
 
+    private UltraPartyLayout _party = null!;
+
     public void ScriptMain(IScriptInterface bot)
     {
         RunBoss();
@@ -53,6 +56,7 @@ public class UltraEngineerv3
     public void RunBoss()
     {
         C.SetOptions(true);
+        _party = UltraPartyLayout.Read("UltraEngineer");
         _fbsMuteFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Skua", "fbs_mute.sync"
@@ -88,7 +92,7 @@ public class UltraEngineerv3
                 : UltraClassesByRole[0];
         }
 
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_engineer_class-v3.sync", allowDuplicates);
+        _party.EquipClass(Ultra, classSlots, armySize, "ultra_engineer_class-v3.sync", allowDuplicates, anyClass: true);
     }
 
     private void Prep()
@@ -97,6 +101,7 @@ public class UltraEngineerv3
         Bot.Sleep(2000);
         EquipPresetClasses();
         Bot.Sleep(2000);
+        _party.EnsureClass();
 
         Enh.Apply();
     }
@@ -122,11 +127,13 @@ public class UltraEngineerv3
 
         Pots.EnsureRecommendedPotions(skipThird: false);
 
+        _party.EnsureClass();
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
         Pots.UseRecommendedPotions(skipThird: false, ensureStock: false);
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 

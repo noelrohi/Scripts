@@ -33,4 +33,5 @@
     <ul>
         <p>Yet to be made, click <a href="https://github.com/BrenoHenrike/Skua">here</a> to go to the source code</p>
     </ul>
-</details>
+</details><br>
+<a href="Ultras v3 Playbook">Ultras v3 Playbook</a>

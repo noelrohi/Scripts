@@ -706,6 +706,21 @@ public class UltraGeneral
         return quest.Once && bot.Quests.HasBeenCompleted(questId);
     }
 
+    /// <summary>
+    /// True only when the quest was turned in this period: its daily ("id") or weekly ("iw")
+    /// completion flag is set. A quest that is merely ready to turn in is not done.
+    /// </summary>
+    public static bool IsQuestDoneThisPeriod(IScriptInterface bot, int questId)
+    {
+        if (bot == null || questId <= 0)
+            return false;
+
+        Quest? quest = bot.Quests.EnsureLoad(questId);
+        return quest != null
+            && (quest.Field == "id" || quest.Field == "iw")
+            && bot.Quests.IsDailyComplete(quest);
+    }
+
     #region New
     public static bool ArmyWipeHelperWithTaunters(
         CoreUltrav3 ultra,

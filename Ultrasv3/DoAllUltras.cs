@@ -9,6 +9,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraQueue.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/PrerequisitesChecker.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreAdvanced.cs
 //cs_include Scripts/Ultrasv3/IndividualUltras/1UltraEzrajalv3.cs
@@ -45,6 +46,18 @@ public class DoAllUltras
     public List<IOption> Options = new()
     {
         new Option<bool>("UsePrerequisitesChecker", "Use Prerequisites Checker", "Enable to run the prerequisites checker before starting ultras. Disable to skip.", true),
+        // Party layouts: who plays what, per boss. Also read when a single v3 boss script runs.
+        UltraPartyLayout.Option("UltraEzrajal", "Ultra Ezrajal", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
+        UltraPartyLayout.Option("UltraWarden", "Ultra Warden", "Verus DoomKnight, Lord of Order (taunters), King's Echo, StoneCrusher"),
+        UltraPartyLayout.Option("UltraEngineer", "Ultra Engineer", "any (default Verus DoomKnight, StoneCrusher, Lord of Order, King's Echo)"),
+        UltraPartyLayout.Option("UltraAvatarTyndarius", "Ultra Avatar Tyndarius", "King's Echo, Legion Revenant, ArchPaladin, Lord of Order"),
+        UltraPartyLayout.Option("ChampionDrakath", "Champion Drakath", "ArchPaladin, Lord of Order, Shaman (taunters), StoneCrusher"),
+        UltraPartyLayout.Option("UltraNulgath", "Ultra Nulgath", "Dragon of Time, Legion Revenant, ArchPaladin, Lord of Order; or Lord of Order, StoneCrusher, Verus DoomKnight, King's Echo"),
+        UltraPartyLayout.Option("UltraDrago", "Ultra Drago", "Lord of Order, Verus DoomKnight (taunters), StoneCrusher, King's Echo"),
+        UltraPartyLayout.Option("UltraDarkon", "Ultra Darkon", "Verus DoomKnight, Lord of Order (taunters), StoneCrusher, King's Echo"),
+        UltraPartyLayout.Option("UltraDage", "Ultra Dage", "Verus DoomKnight, ArchPaladin (taunters), Lord of Order (decay), King's Echo"),
+        UltraPartyLayout.Option("UltraSpeaker", "Ultra Speaker", "ArchPaladin, Lord of Order, StoneCrusher, Verus DoomKnight"),
+        UltraPartyLayout.Option("UltraGramiel", "Ultra Gramiel", "StoneCrusher, ArchPaladin, Lord of Order, ArchFiend"),
         CoreBots.Instance.SkipOptions,
     };
 
@@ -139,28 +152,42 @@ public class DoAllUltras
     private IEnumerable<string> GetSharedBossQueue(IEnumerable<string> bosses)
         => UltraQueue.GetSharedBossQueue(Ultra, Bot, C, bosses, BossSyncFile, BossParticipantSyncFile, IsBossComplete);
 
+    /// <summary>
+    /// A boss is done only when its quest was turned in this period (daily or weekly flag).
+    /// An account that has the defeat item but no turn-in retries the turn-in here instead
+    /// of being skipped.
+    /// </summary>
     private bool IsBossComplete(string boss)
     {
-        (int id, string name) = boss switch
+        (int id, string name, string defeatItem) = boss switch
         {
-            "UltraEzrajal" => (8152, "Ultra Ezrajal"),
-            "UltraWarden" => (8153, "Ultra Warden"),
-            "UltraEngineer" => (8154, "Ultra Engineer"),
-            "UltraAvatarTyndarius" => (8245, "Ultra Avatar Tyndarius"),
-            "ChampionDrakath" => (8300, "Champion Drakath"),
-            "UltraNulgath" => (8692, "Nulgath the Archfiend"),
-            "UltraDrago" => (8397, "King Drago"),
-            "UltraDarkon" => (8746, "Darkon the Conductor"),
-            "UltraDage" => (8547, "Dage the Dark Lord"),
-            "UltraSpeaker" => (9173, "The First Speaker"),
-            "UltraGramiel" => (10301, "Gramiel the Graceful"),
-            _ => (0, string.Empty),
+            "UltraEzrajal" => (8152, "Ultra Ezrajal", "Ultra Ezrajal Defeated"),
+            "UltraWarden" => (8153, "Ultra Warden", "Ultra Warden Defeated"),
+            "UltraEngineer" => (8154, "Ultra Engineer", "Ultra Engineer Defeated"),
+            "UltraAvatarTyndarius" => (8245, "Ultra Avatar Tyndarius", "Ultra Avatar Tyndarius Defeated"),
+            "ChampionDrakath" => (8300, "Champion Drakath", "Champion Drakath Defeated"),
+            "UltraNulgath" => (8692, "Nulgath the Archfiend", "Nulgath the Archfiend Defeated?"),
+            "UltraDrago" => (8397, "King Drago", "Drago Dethroned"),
+            "UltraDarkon" => (8746, "Darkon the Conductor", "Darkon the Conductor Defeated"),
+            "UltraDage" => (8547, "Dage the Dark Lord", "Dage the Dark Lord Defeated"),
+            "UltraSpeaker" => (9173, "The First Speaker", "The First Speaker Silenced"),
+            "UltraGramiel" => (10301, "Gramiel the Graceful", "Gramiel the Graceful Vanquished"),
+            _ => (0, string.Empty, string.Empty),
         };
 
         if (id == 0)
             return false;
 
-        bool complete = UltraGeneral.IsQuestComplete(Bot, id);
+        bool complete = UltraGeneral.IsQuestDoneThisPeriod(Bot, id);
+        if (!complete && Bot.TempInv.Contains(defeatItem))
+        {
+            C.Logger($"{name} [{id}] has {defeatItem} but was not turned in. Retrying the turn-in.", "Warning");
+            UltraGeneral.EnsureAcceptOnce(Bot, id);
+            UltraGeneral.CompleteQuest(Bot, id);
+            Bot.Wait.ForTrue(() => UltraGeneral.IsQuestDoneThisPeriod(Bot, id), 10);
+            complete = UltraGeneral.IsQuestDoneThisPeriod(Bot, id);
+        }
+
         LogBossQuestStatus(name, id, complete);
         return complete;
     }
@@ -175,7 +202,8 @@ public class DoAllUltras
 
         C.Logger(
             $"{name} [{questId}] complete={complete} " +
-            $"daily={Bot.Quests.IsDailyComplete(questId)} " +
+            $"field={quest?.Field} " +
+            $"periodDone={Bot.Quests.IsDailyComplete(questId)} " +
             $"progress={Bot.Quests.IsInProgress(questId)} " +
             $"active={active} " +
             $"everCompleted={Bot.Quests.HasBeenCompleted(questId)} " +

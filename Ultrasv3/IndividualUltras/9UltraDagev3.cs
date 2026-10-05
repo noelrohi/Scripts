@@ -9,6 +9,7 @@ tags: null
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPotions.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraGeneral.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/GetScrolls.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraAsync.cs
@@ -51,6 +52,8 @@ public class UltraDagev3
         new[] { Dps1 }
     };
 
+    private UltraPartyLayout _party = null!;
+
     private CancellationTokenSource _tauntCts = new();
     private DateTime fightStartTime = DateTime.MinValue;
 
@@ -63,6 +66,7 @@ public class UltraDagev3
     public void RunBoss()
     {
         C.SetOptions(true);
+        _party = UltraPartyLayout.Read("UltraDage");
         _fbsMuteFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Skua", "fbs_mute.sync"
@@ -127,7 +131,7 @@ public class UltraDagev3
             classSlots[i] = i < UltraClassesByRole.Length ? UltraClassesByRole[i] : UltraClassesByRole[0];
         }
 
-        UltraCustomClassSync.CustomClassSync(Ultra, Bot, classSlots, armySize, "ultra_dage_class-v3.sync", allowDuplicates);
+        _party.EquipClass(Ultra, classSlots, armySize, "ultra_dage_class-v3.sync", allowDuplicates);
     }
 
     private void Prep()
@@ -140,6 +144,7 @@ public class UltraDagev3
         Bot.Sleep(2000);
         EquipPresetClasses();
         Bot.Sleep(2000);
+        _party.EnsureClass();
 
         Enh.ApplyDage();
 
@@ -171,6 +176,7 @@ public class UltraDagev3
         Scrolls.GetScrollOfEnrage();
         Scrolls.GetScrollOfDecay();
 
+        _party.EnsureClass();
         C.Join("Whitemap");
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: false);
 
@@ -189,6 +195,7 @@ public class UltraDagev3
             Engine.EquipDecay();
         }
 
+        _party.EnsureClass();
         Engine.Join(map);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
 

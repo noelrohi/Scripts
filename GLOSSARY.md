@@ -11,7 +11,7 @@ A hard boss fought by a party of 4 accounts, whose quest can be completed once a
 _Avoid_: raid, ultra boss fight
 
 **Comp**:
-The strategy for one Ultra, independent of accounts: its 4 classes, each class's Loadout and Taunt Rules. The developer designs Comps; agents don't.
+A named strategy for one Ultra: its 4 classes, each class's Loadout, and when each class taunts. The developer designs Comps; agents don't.
 _Avoid_: team, group, setup, build
 
 **Party Layout**:
@@ -25,10 +25,6 @@ _Avoid_: kit, build, gear set
 **Role**:
 The job a class has in a Comp, such as taunting the left orb or hitting the boss.
 _Avoid_: slot, position
-
-**Taunt Rule**:
-When a class in a Comp taunts: on a timer, on a boss chat line, or after the boss loses some HP.
-_Avoid_: taunt timing, rotation
 
 ### Testing
 

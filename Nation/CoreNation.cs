@@ -40,6 +40,12 @@ public class CoreNation
     public string CragName => "Crag &amp; Bamboozle";
 
     /// <summary>
+    /// Whether the player owns Crag and Bamboozle (4845). Checked by ID, since clients disagree
+    /// on whether its name keeps the HTML-escaped ampersand of <see cref="CragName"/>.
+    /// </summary>
+    public bool HasCrag => Core.CheckInventory(4845);
+
+    /// <summary>
     /// All principal drops from Nulgath
     /// </summary>
     public string[] bagDrops =
@@ -962,8 +968,6 @@ public class CoreNation
 
         List<int> quests = [2857];
 
-        if (item != Uni(13) && Core.CheckInventory(38261))
-            quests.Add(9542);
 
         if (Core.CheckInventory("Drudgen the Assistant"))
             quests.Add(870);
@@ -983,6 +987,8 @@ public class CoreNation
             drops.Add(ReturnItem);
 
         drops.AddRange(Core.QuestRewards(9542));
+        if (Core.CheckInventory(38261))
+            drops.AddRange(BonusDealUnis);
         drops.AddRange(SuppliesRewards);
 
         if (sellMemVoucher)
@@ -1019,7 +1025,7 @@ public class CoreNation
             if (rewardItem == null)
                 continue;
 
-            if (!UltraAlteon && !HydraChallenge && (Core.CheckInventory(CragName) || hasOBoNPet))
+            if (!UltraAlteon && !HydraChallenge && (HasCrag || hasOBoNPet))
             {
                 BambloozevsDrudgen(rewardItem.Name, rewardItem.MaxStack, KeepVoucher, AssistantDuring, ReturnItem, true);
                 continue;
@@ -1037,6 +1043,7 @@ public class CoreNation
                 SellVoucherOfNulgath(sellMemVoucher, null);
                 AssistantDuringSupplies(AssistantDuring);
                 DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+                DoSwindlesBonusDeal(rewardItem.Name);
                 HandleVoucherConversions(rewardItem.Name);
             }
         }
@@ -1074,7 +1081,7 @@ public class CoreNation
 
     private void FarmSingleSupply(string item, int quant, bool UltraAlteon, bool HydraChallenge, bool KeepVoucher, bool AssistantDuring, string? ReturnItem, bool returnPolicyDuringSupplies, bool VoucherItemDuring)
     {
-        if (!UltraAlteon && !HydraChallenge && (Core.CheckInventory(CragName) || hasOBoNPet))
+        if (!UltraAlteon && !HydraChallenge && (HasCrag || hasOBoNPet))
         {
             BambloozevsDrudgen(item, quant, KeepVoucher, AssistantDuring, ReturnItem, true);
             return;
@@ -1092,6 +1099,7 @@ public class CoreNation
             SellVoucherOfNulgath(sellMemVoucher, item);
             AssistantDuringSupplies(AssistantDuring);
             DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+            DoSwindlesBonusDeal(item);
 
             if (VoucherItemDuring)
                 HandleVoucherConversions(item);
@@ -1146,6 +1154,10 @@ public class CoreNation
         if (!sellMemVoucher || sellMemVoucher && item == "Voucher of Nulgath")
             return;
 
+        // At the gold cap a sale earns nothing, so keep the Voucher.
+        if (Bot.Player.Gold >= 100_000_000)
+            return;
+
         if (Core.CheckInventory("Voucher of Nulgath"))
         {
             Core.Jump("Enter", "Spawn");
@@ -1156,7 +1168,10 @@ public class CoreNation
     public void AssistantDuringSupplies(bool assistDuring = true)
     {
         if (!assistDuring)
+        {
+            AssistantWhenDiamondsLow();
             return;
+        }
 
         if (Bot.Player.Gold >= 100_000)
         {
@@ -1167,11 +1182,55 @@ public class CoreNation
             Core.EnsureCompleteMulti(2859, quantityToBuy);
         }
     }
+
     /// <summary>
-    /// Completes the "Swindle's Return Area" quest (ID 7551),
-    /// prioritizing a specific reward or the first non-maxed one.
+    /// While Diamonds of Nulgath are under 500, spends gold on The Assistant (2859): each turn-in
+    /// gives 1 Unidentified 10 and a 50% chance of 3 Diamonds. A batch is at most 250, and no
+    /// bigger than the room left in the Uni 10 stack, so none of its Uni 10 is lost to the cap.
     /// </summary>
-    void DoSwindlesReturnArea(bool returnPolicyActive, string? item = null)
+    public void AssistantWhenDiamondsLow()
+    {
+        if (Bot.Player.Gold < 100_000 || Core.CheckInventory("Diamond of Nulgath", 500))
+            return;
+
+        CragsThirst();
+        int quantityToBuy = (int)Math.Min(
+            Math.Min(Bot.Player.Gold / 100_000M, 250),
+            1000 - Bot.Inventory.GetQuantity(Uni(10))
+        );
+        if (quantityToBuy <= 0)
+            return;
+
+        Core.Logger($"Diamonds under 500: {quantityToBuy} turn-ins of The Assistant for {quantityToBuy * 100_000:N0} gold");
+        Core.Jump("Enter", "Spawn");
+        Core.EnsureAccept(2859);
+        Core.BuyItem("yulgar", 41, "War-Torn Memorabilia", quantityToBuy);
+        Core.EnsureCompleteMulti(2859, quantityToBuy);
+    }
+    /// <summary>
+    /// The reward to take from Swindle's Return Policy (7551) or Bonus Deal (9542). 70 Diamonds of
+    /// Nulgath outvalue 4 Blood Gems or 12 Dark Crystal Shards at Contract Exchange's prices, so
+    /// <paramref name="diamondsFirst"/> takes those until Diamonds are full, then <paramref name="item"/>,
+    /// then, without an item, the first reward not maxed. Null when none of those has room.
+    /// </summary>
+    ItemBase? SwindleReward(Quest quest, string? item, bool diamondsFirst)
+    {
+        ItemBase? Pick(string? name) =>
+            name == null
+                ? null
+                : quest.Rewards.FirstOrDefault(r => r.Name == name && !Core.CheckInventory(r.ID, r.MaxStack));
+
+        return (diamondsFirst ? Pick("Diamond of Nulgath") : null)
+            ?? Pick(item)
+            ?? (item == null
+                ? quest.Rewards.FirstOrDefault(r => r.ID != 57446 && !Core.CheckInventory(r.ID, r.MaxStack))
+                : null);
+    }
+
+    /// <summary>
+    /// Completes the "Swindle's Return Area" quest (ID 7551), taking the reward <see cref="SwindleReward"/> picks.
+    /// </summary>
+    void DoSwindlesReturnArea(bool returnPolicyActive, string? item = null, bool diamondsFirst = true)
     {
         if (!returnPolicyActive)
             return;
@@ -1186,36 +1245,18 @@ public class CoreNation
             return;
         }
 
-        // Early exit: check if preferred item is already maxed
-        if (item != null)
-        {
-            ItemBase? preferred = quest.Rewards.FirstOrDefault(r => r.Name == item);
-            if (preferred == null)
-            {
-                Core.DebugLogger(this, $"Preferred item '{item}' not found in quest rewards");
-                return;
-            }
+        ItemBase? reward = SwindleReward(quest, item, diamondsFirst);
 
-            if (Core.CheckInventory(preferred.ID, preferred.MaxStack))
-            {
-                Core.DebugLogger(this, $"Preferred item '{item}' is already maxed ({Bot.Inventory.GetQuantity(preferred.Name)}/{preferred.MaxStack}) - skipping quest");
-                return;
-            }
-        }
-        // Early exit: check if all rewards are already maxed
-        else if (quest.Rewards.All(r => Core.CheckInventory(r.ID, r.MaxStack)))
+        // Nothing worth taking: keep the Unidentified items for later, unless Receipts of Swindle still have room.
+        if (reward == null && (item != null || Core.CheckInventory(57446, 100)))
         {
-            Core.DebugLogger(this, "All quest rewards are already maxed - skipping quest");
+            Core.DebugLogger(this, $"No reward of quest 7551 has room for '{item ?? "any"}' - skipping quest");
             return;
         }
 
         Core.EnsureAccept(7551);
         Core.ResetQuest(7551);
         Core.DarkMakaiItem("Dark Makai Rune");
-
-        ItemBase? reward = item != null
-            ? quest.Rewards.FirstOrDefault(r => r.ID != 57446 && r.Name == item)
-            : quest.Rewards.FirstOrDefault(r => r.ID != 57446 && !Core.CheckInventory(r.ID, r.MaxStack));
 
         if (!Bot.Quests.CanCompleteFullCheck(7551))
         {
@@ -1233,9 +1274,32 @@ public class CoreNation
         }
 
         // Complete without a selected reward; Receipt of Swindle is guaranteed.
-        // EnsureComplete automaticly uses the first reward id avaible( if hno reward id is provided), else -1.
-        // and we need to use the Core varient as it has teh safety nets.. but.quest. ensurecomplete does not. ( not all of them atleast) 
         Core.EnsureComplete(7551, -1);
+    }
+
+    /// <summary>
+    /// Unidentified items Swindle's Bonus Deal (9542) takes.
+    /// </summary>
+    public string[] BonusDealUnis => new[] { Uni(32), Uni(14), Uni(15), Uni(17), Uni(18) };
+
+    /// <summary>
+    /// Completes Swindle's Bonus Deal (9542), which needs Swindle Bilk's To Go Hut, taking the reward
+    /// <see cref="SwindleReward"/> picks. Done by hand rather than registered, since a registered quest
+    /// always takes its first reward, 1 Unidentified 13.
+    /// </summary>
+    void DoSwindlesBonusDeal(string? item = null)
+    {
+        if (!Core.CheckInventory(38261) || !Core.CheckInventory(BonusDealUnis))
+            return;
+
+        Quest? quest = Core.InitializeWithRetries(() => Bot.Quests.EnsureLoad(9542));
+        ItemBase? reward = quest == null ? null : SwindleReward(quest, item, true);
+        if (reward == null)
+            return;
+
+        Core.EnsureAccept(9542);
+        Core.EnsureComplete(9542, reward.ID);
+        Bot.Wait.ForQuestComplete(9542);
     }
 
     /// <summary>
@@ -1322,7 +1386,7 @@ public class CoreNation
         // Register the "Swindles Return Policy" quest if specified
         if (returnPolicyDuringSupplies && Reward != SwindlesReturnReward.None)
         {
-            DoSwindlesReturnArea(returnPolicyDuringSupplies, Reward.ToString().Replace("_", ""));
+            DoSwindlesReturnArea(returnPolicyDuringSupplies, Reward.ToString().Replace("_", ""), diamondsFirst: false);
         }
 
         if (item == null)
@@ -1351,7 +1415,8 @@ public class CoreNation
 
                     DoSwindlesReturnArea(
                         returnPolicyDuringSupplies,
-                        Reward.ToString().Replace("_", "")
+                        Reward.ToString().Replace("_", ""),
+                        diamondsFirst: false
                     );
 
                     if (
@@ -1406,7 +1471,8 @@ public class CoreNation
 
                 DoSwindlesReturnArea(
                     returnPolicyDuringSupplies,
-                    Reward.ToString().Replace("_", "")
+                    Reward.ToString().Replace("_", ""),
+                    diamondsFirst: false
                 );
 
                 if (
@@ -1571,7 +1637,7 @@ public class CoreNation
         ];
 
         // 609 - Bamboozle vs Drudgen
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             QuestToRegister.AddRange(new[] { 609 });
 
         if (hasOBoNPet)
@@ -1581,9 +1647,9 @@ public class CoreNation
             QuestToRegister.Add(Core.CheckInventory(4809) ? 599 : 2561);
         }
 
-        // 9542 - Swindle's Bonus Deal - Swindle Bilk's To Go Hut
+        // 9542 - Swindle's Bonus Deal - Swindle Bilk's To Go Hut, done by hand in the loop
         if (Core.CheckInventory(38261))
-            QuestToRegister.Add(9542);
+            Core.AddDrop(BonusDealUnis);
 
         QuestToRegister = [.. QuestToRegister.Distinct()];
 
@@ -1604,8 +1670,8 @@ public class CoreNation
             Bot.Sleep(500);
             // Do Swindles Return Policy if enabled
             // 7551 - Swindle's Return Policy
-            if (ReturnItem != null)
-                DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+            DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem ?? item);
+            DoSwindlesBonusDeal(ReturnItem ?? item);
 
             Bot.Sleep(500);
         Retry:
@@ -1831,16 +1897,16 @@ public class CoreNation
     {
         if (
             (!Core.CheckInventory("Diamond of Nulgath", 15) && !farmDiamond)
-            || !Core.CheckInventory(CragName)
+            || !HasCrag
             || Core.CheckInventory(Uni(13), 13)
         )
             return;
 
         Core.AddDrop("Diamond of Nulgath");
-        // Core.DebugLogger(this);
+        AssistantWhenDiamondsLow();
 
         if (farmDiamond)
-            if (hasOBoNPet || Core.CheckInventory(CragName))
+            if (hasOBoNPet || HasCrag)
                 BambloozevsDrudgen("Diamond of Nulgath", 15);
         // Core.DebugLogger(this);
 
@@ -1893,7 +1959,7 @@ public class CoreNation
         while (!Bot.ShouldExit && !Core.CheckInventory(reward, quant))
         {
             if (farmUni13 && !Core.CheckInventory(Uni(13)))
-                FarmUni13(3);
+                FarmUni13(3, reward);
             Core.ResetQuest(870);
             Core.KillMonster("tercessuinotlim", "m4", "Top", "Shadow of Nulgath", log: false);
             Core.EnsureComplete(870, (int)rewardEnum);
@@ -2018,7 +2084,8 @@ public class CoreNation
     /// Farms Unidentified 13 with the best method available
     /// </summary>
     /// <param name="quant">Desired quantity, 13 = max stack</param>
-    public void FarmUni13(int quant = 13)
+    /// <param name="returnItem">Reward to take from Swindle's Return Policy while farming Supplies.</param>
+    public void FarmUni13(int quant = 13, string? returnItem = null)
     {
         if (Core.CheckInventory(Uni(13), quant))
             return;
@@ -2027,12 +2094,12 @@ public class CoreNation
         quant = quant > 13 ? 13 : quant;
 
         // Core.DebugLogger(this);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             while (!Bot.ShouldExit && !Core.CheckInventory(Uni(13), quant))
                 DiamondExchange();
         NewWorldsNewOpportunities(Uni(13), quant); //1minute turning  = 1x guaranteed
         VoidKnightSwordQuest(Uni(13), quant);
-        Supplies(Uni(13), quant);
+        Supplies(Uni(13), quant, ReturnItem: returnItem);
     }
 
     /// <summary>
@@ -2045,7 +2112,7 @@ public class CoreNation
             return;
 
         Core.AddDrop("Unidentified 10");
-        if (hasOBoNPet || Core.CheckInventory(CragName))
+        if (hasOBoNPet || HasCrag)
             BambloozevsDrudgen("Unidentified 10", quant);
         DirtyDeedsDoneDirtCheap(quant);
     }
@@ -2062,7 +2129,7 @@ public class CoreNation
         Core.AddDrop("Dark Crystal Shard");
         FarmContractExchage("Dark Crystal Shard", quant);
         NewWorldsNewOpportunities("Dark Crystal Shard", quant); //1minute turning  = 1x guaranteed
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Dark Crystal Shard", quant, ReturnItem: "Dark Crystal Shard"); //xx:xx time turnin = 10% chance
         VoidKnightSwordQuest("Dark Crystal Shard", quant);
         Supplies("Dark Crystal Shard", quant, ReturnItem: "Dark Crystal Shard"); //xx:xx time turnin = 10% chance
@@ -2081,10 +2148,10 @@ public class CoreNation
         Core.AddDrop("Diamond of Nulgath");
 
         // This Quest is more of an additive Bonus whislt doing supplies
-        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && Core.CheckInventory(CragName) && Core.CheckInventory(Uni(10), 100))
+        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && HasCrag && Core.CheckInventory(Uni(10), Uni10Floor + 100))
             CragsThirst(quant);
 
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Diamond of Nulgath", quant, ReturnItem: "Diamond of Nulgath");
 
         VoidKnightSwordQuest("Diamond of Nulgath", quant);
@@ -2118,7 +2185,7 @@ public class CoreNation
 
         Core.AddDrop("Gem of Nulgath");
         FarmContractExchage("Gem of Nulgath", quant);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Gem of Nulgath", quant, ReturnItem: "Gem of Nulgath");
         VoidKnightSwordQuest("Gem of Nulgath", quant);
         Supplies("Gem of Nulgath", quant, ReturnItem: "Gem of Nulgath");
@@ -2150,7 +2217,7 @@ public class CoreNation
 
         Core.AddDrop("Tainted Gem");
         FarmContractExchage("Tainted Gem", quant);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Tainted Gem", quant, ReturnItem: "Tainted Gem");
         ForgeTaintedGems(quant);
         Supplies("Tainted Gem", quant, ReturnItem: "Tainted Gem");
@@ -2302,7 +2369,7 @@ public class CoreNation
     /// <param name="TotemQuant">Number of Totems of Nulgath to farm (0 = skip).</param>
     public void Deal(int GemQuant = 0, int TotemQuant = 0)
     {
-        if (!Core.CheckInventory(CragName))
+        if (!HasCrag)
         {
             Core.Logger($"Missing {CragName} cannot continue");
             return;
@@ -2394,18 +2461,27 @@ public class CoreNation
         Core.CancelRegisteredQuests();
     }
 
+    /// <summary>
+    /// Unidentified 10 that Crag's Thirst leaves alone: enough for the Totems' Refreshing Deals
+    /// (30 each), since every Wheel of Chance spin and Assistant turn-in refills Uni 10 anyway.
+    /// </summary>
+    public const int Uni10Floor = 800;
+
+    /// <summary>
+    /// Turns Unidentified 10 above <see cref="Uni10Floor"/> into Diamonds of Nulgath (100 → 50).
+    /// </summary>
     public void CragsThirst(int quant = 1000)
     {
         if (
-            !Core.CheckInventory(CragName)
+            !HasCrag
             || Core.CheckInventory("Diamond of Nulgath", quant)
-            || !Core.CheckInventory(Uni(10), 100)
+            || !Core.CheckInventory(Uni(10), Uni10Floor + 100)
         )
             return;
 
         Bot.Log("Doing crags thirst");
 
-        while (!Bot.ShouldExit && Core.CheckInventory(Uni(10), 100) && !Core.CheckInventory("Diamond of Nulgath", quant))
+        while (!Bot.ShouldExit && Core.CheckInventory(Uni(10), Uni10Floor + 100) && !Core.CheckInventory("Diamond of Nulgath", quant))
         {
             Core.ResetQuest(600);
             Core.EnsureAccept(600);
@@ -3010,7 +3086,7 @@ public class CoreNation
 
         Core.AddDrop(member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)");
         Core.Logger($"KeepVoucher set to {KeepVoucher}");
-        if (hasOBoNPet || Core.CheckInventory(CragName))
+        if (hasOBoNPet || HasCrag)
             BambloozevsDrudgen(
                 member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)",
                 KeepVoucher: KeepVoucher

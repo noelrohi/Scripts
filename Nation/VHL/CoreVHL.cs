@@ -271,7 +271,7 @@ public class CoreVHL
         if (
             !Bot.Config!.Get<bool>("SparrowMethod")
             || !Core.IsMember
-            || !Core.CheckInventory(Nation.CragName)
+            || !Nation.HasCrag
             || Core.CheckInventory("Elders' Blood", EldersBloodQuant)
         )
             return;

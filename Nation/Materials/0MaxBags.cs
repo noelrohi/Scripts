@@ -32,10 +32,11 @@ public class MaxItems
     {
         Core.AddDrop(Nation.bagDrops[..9]);
 
+        // Totems first: The Refreshing Deal spends 2 Blood Gems a turn-in, which FarmBloodGem then refills.
+        Nation.FarmTotemofNulgath();
         Nation.FarmBloodGem();
         Nation.FarmDarkCrystalShard();
         Nation.FarmDiamondofNulgath();
-        Nation.FarmTotemofNulgath();
         Nation.FarmGemofNulgath();
         Nation.FarmTaintedGem();
         Nation.FarmUni10();

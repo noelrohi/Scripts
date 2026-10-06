@@ -56,7 +56,7 @@ public class ThePoisonousDeal
 
     public void Deal(int TaintedQuant, int ShardQuant)
     {
-        if (!Core.CheckInventory(Nation.CragName))
+        if (!Nation.HasCrag)
         {
             Core.Logger($"{Nation.CragName} missing. stopping");
             return;

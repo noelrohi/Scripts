@@ -331,7 +331,7 @@ public class PrimeFiendShard
             Core.EnsureAccept(9559);
 
             // If cragname owned do this order
-            if (Core.CheckInventory(Nation.CragName))
+            if (Nation.HasCrag)
             {
                 Core.Logger("Prefarming max diamonds for BG and U13 excahnges");
                 Nation.FarmDiamondofNulgath(1000);

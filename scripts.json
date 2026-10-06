@@ -1877,8 +1877,8 @@
       "null"
     ],
     "path": "Nation/AssistingCragAndBamboozle[Mem].cs",
-    "size": 5971,
-    "sha256": "de14528ac857f9b14a5fc1cab6ef18f09590b6ae948340ea44285f4995809912",
+    "size": 5949,
+    "sha256": "23ca08f42d4d9c4824fc0ab526debed8d736e2e373f4f988973d19c875de191c",
     "fileName": "AssistingCragAndBamboozle[Mem].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/AssistingCragAndBamboozle[Mem].cs"
   },
@@ -1933,8 +1933,8 @@
       "null"
     ],
     "path": "Nation/CoreNation.cs",
-    "size": 116728,
-    "sha256": "f2ffd680e007c35a440dfdcb7d23f09697a2ef3bc0d0f326f7325884fa4fe163",
+    "size": 116978,
+    "sha256": "907e29d7a735e25013c1d0b0892d6632d7eaf2f80462145d9a1b43f2bd7f919b",
     "fileName": "CoreNation.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/CoreNation.cs"
   },
@@ -22466,8 +22466,8 @@
       "null"
     ],
     "path": "Nation/VHL/CoreVHL.cs",
-    "size": 9599,
-    "sha256": "8ce271db48c168307965ab612cebc8a376c0ae838cc21db172ba38c51e6da66a",
+    "size": 9577,
+    "sha256": "c867be0d233eed347f724799c0e6cb0e4be4ff62f094128411894a41317b85f7",
     "fileName": "CoreVHL.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/VHL/CoreVHL.cs"
   },
@@ -23759,8 +23759,8 @@
       "void chasm"
     ],
     "path": "Nation/Various/PrimeFiendShard.cs",
-    "size": 14311,
-    "sha256": "757421a0d60df3c3340d65e389c2fd6048f61e0bf2cdb1afbd9bafe269da26ba",
+    "size": 14289,
+    "sha256": "a2413975d24f870c62c6481b854d2061b608a3f10900041bfb2cf9db63b0c24f",
     "fileName": "PrimeFiendShard.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/Various/PrimeFiendShard.cs"
   },
@@ -23841,8 +23841,8 @@
       "claymore"
     ],
     "path": "Nation/Various/ThePoisonousDeal.cs",
-    "size": 3149,
-    "sha256": "4d4ee70e37d3ff91c7f7fe6243d58f93405f3fb5cbe67c70937de8ac2ea24623",
+    "size": 3127,
+    "sha256": "6c4f355dbd3a79bb27dfe6b8224898ec014b5a2cfe1b91f1a609e1e4c27d7db3",
     "fileName": "ThePoisonousDeal.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/Various/ThePoisonousDeal.cs"
   },

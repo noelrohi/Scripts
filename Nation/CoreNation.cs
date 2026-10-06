@@ -40,6 +40,12 @@ public class CoreNation
     public string CragName => "Crag &amp; Bamboozle";
 
     /// <summary>
+    /// Whether the player owns Crag and Bamboozle (4845). Checked by ID, since clients disagree
+    /// on whether its name keeps the HTML-escaped ampersand of <see cref="CragName"/>.
+    /// </summary>
+    public bool HasCrag => Core.CheckInventory(4845);
+
+    /// <summary>
     /// All principal drops from Nulgath
     /// </summary>
     public string[] bagDrops =
@@ -1019,7 +1025,7 @@ public class CoreNation
             if (rewardItem == null)
                 continue;
 
-            if (!UltraAlteon && !HydraChallenge && (Core.CheckInventory(CragName) || hasOBoNPet))
+            if (!UltraAlteon && !HydraChallenge && (HasCrag || hasOBoNPet))
             {
                 BambloozevsDrudgen(rewardItem.Name, rewardItem.MaxStack, KeepVoucher, AssistantDuring, ReturnItem, true);
                 continue;
@@ -1074,7 +1080,7 @@ public class CoreNation
 
     private void FarmSingleSupply(string item, int quant, bool UltraAlteon, bool HydraChallenge, bool KeepVoucher, bool AssistantDuring, string? ReturnItem, bool returnPolicyDuringSupplies, bool VoucherItemDuring)
     {
-        if (!UltraAlteon && !HydraChallenge && (Core.CheckInventory(CragName) || hasOBoNPet))
+        if (!UltraAlteon && !HydraChallenge && (HasCrag || hasOBoNPet))
         {
             BambloozevsDrudgen(item, quant, KeepVoucher, AssistantDuring, ReturnItem, true);
             return;
@@ -1144,6 +1150,10 @@ public class CoreNation
     public void SellVoucherOfNulgath(bool sellMemVoucher = true, string? item = null)
     {
         if (!sellMemVoucher || sellMemVoucher && item == "Voucher of Nulgath")
+            return;
+
+        // At the gold cap a sale earns nothing, so keep the Voucher.
+        if (Bot.Player.Gold >= 100_000_000)
             return;
 
         if (Core.CheckInventory("Voucher of Nulgath"))
@@ -1571,7 +1581,7 @@ public class CoreNation
         ];
 
         // 609 - Bamboozle vs Drudgen
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             QuestToRegister.AddRange(new[] { 609 });
 
         if (hasOBoNPet)
@@ -1831,7 +1841,7 @@ public class CoreNation
     {
         if (
             (!Core.CheckInventory("Diamond of Nulgath", 15) && !farmDiamond)
-            || !Core.CheckInventory(CragName)
+            || !HasCrag
             || Core.CheckInventory(Uni(13), 13)
         )
             return;
@@ -1840,7 +1850,7 @@ public class CoreNation
         // Core.DebugLogger(this);
 
         if (farmDiamond)
-            if (hasOBoNPet || Core.CheckInventory(CragName))
+            if (hasOBoNPet || HasCrag)
                 BambloozevsDrudgen("Diamond of Nulgath", 15);
         // Core.DebugLogger(this);
 
@@ -1893,7 +1903,7 @@ public class CoreNation
         while (!Bot.ShouldExit && !Core.CheckInventory(reward, quant))
         {
             if (farmUni13 && !Core.CheckInventory(Uni(13)))
-                FarmUni13(3);
+                FarmUni13(3, reward);
             Core.ResetQuest(870);
             Core.KillMonster("tercessuinotlim", "m4", "Top", "Shadow of Nulgath", log: false);
             Core.EnsureComplete(870, (int)rewardEnum);
@@ -2018,7 +2028,8 @@ public class CoreNation
     /// Farms Unidentified 13 with the best method available
     /// </summary>
     /// <param name="quant">Desired quantity, 13 = max stack</param>
-    public void FarmUni13(int quant = 13)
+    /// <param name="returnItem">Reward to take from Swindle's Return Policy while farming Supplies.</param>
+    public void FarmUni13(int quant = 13, string? returnItem = null)
     {
         if (Core.CheckInventory(Uni(13), quant))
             return;
@@ -2027,12 +2038,12 @@ public class CoreNation
         quant = quant > 13 ? 13 : quant;
 
         // Core.DebugLogger(this);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             while (!Bot.ShouldExit && !Core.CheckInventory(Uni(13), quant))
                 DiamondExchange();
         NewWorldsNewOpportunities(Uni(13), quant); //1minute turning  = 1x guaranteed
         VoidKnightSwordQuest(Uni(13), quant);
-        Supplies(Uni(13), quant);
+        Supplies(Uni(13), quant, ReturnItem: returnItem);
     }
 
     /// <summary>
@@ -2045,7 +2056,7 @@ public class CoreNation
             return;
 
         Core.AddDrop("Unidentified 10");
-        if (hasOBoNPet || Core.CheckInventory(CragName))
+        if (hasOBoNPet || HasCrag)
             BambloozevsDrudgen("Unidentified 10", quant);
         DirtyDeedsDoneDirtCheap(quant);
     }
@@ -2062,7 +2073,7 @@ public class CoreNation
         Core.AddDrop("Dark Crystal Shard");
         FarmContractExchage("Dark Crystal Shard", quant);
         NewWorldsNewOpportunities("Dark Crystal Shard", quant); //1minute turning  = 1x guaranteed
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Dark Crystal Shard", quant, ReturnItem: "Dark Crystal Shard"); //xx:xx time turnin = 10% chance
         VoidKnightSwordQuest("Dark Crystal Shard", quant);
         Supplies("Dark Crystal Shard", quant, ReturnItem: "Dark Crystal Shard"); //xx:xx time turnin = 10% chance
@@ -2081,10 +2092,10 @@ public class CoreNation
         Core.AddDrop("Diamond of Nulgath");
 
         // This Quest is more of an additive Bonus whislt doing supplies
-        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && Core.CheckInventory(CragName) && Core.CheckInventory(Uni(10), 100))
+        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && HasCrag && Core.CheckInventory(Uni(10), 100))
             CragsThirst(quant);
 
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Diamond of Nulgath", quant, ReturnItem: "Diamond of Nulgath");
 
         VoidKnightSwordQuest("Diamond of Nulgath", quant);
@@ -2118,7 +2129,7 @@ public class CoreNation
 
         Core.AddDrop("Gem of Nulgath");
         FarmContractExchage("Gem of Nulgath", quant);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Gem of Nulgath", quant, ReturnItem: "Gem of Nulgath");
         VoidKnightSwordQuest("Gem of Nulgath", quant);
         Supplies("Gem of Nulgath", quant, ReturnItem: "Gem of Nulgath");
@@ -2150,7 +2161,7 @@ public class CoreNation
 
         Core.AddDrop("Tainted Gem");
         FarmContractExchage("Tainted Gem", quant);
-        if (Core.CheckInventory(CragName))
+        if (HasCrag)
             Supplies("Tainted Gem", quant, ReturnItem: "Tainted Gem");
         ForgeTaintedGems(quant);
         Supplies("Tainted Gem", quant, ReturnItem: "Tainted Gem");
@@ -2302,7 +2313,7 @@ public class CoreNation
     /// <param name="TotemQuant">Number of Totems of Nulgath to farm (0 = skip).</param>
     public void Deal(int GemQuant = 0, int TotemQuant = 0)
     {
-        if (!Core.CheckInventory(CragName))
+        if (!HasCrag)
         {
             Core.Logger($"Missing {CragName} cannot continue");
             return;
@@ -2397,7 +2408,7 @@ public class CoreNation
     public void CragsThirst(int quant = 1000)
     {
         if (
-            !Core.CheckInventory(CragName)
+            !HasCrag
             || Core.CheckInventory("Diamond of Nulgath", quant)
             || !Core.CheckInventory(Uni(10), 100)
         )
@@ -3010,7 +3021,7 @@ public class CoreNation
 
         Core.AddDrop(member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)");
         Core.Logger($"KeepVoucher set to {KeepVoucher}");
-        if (hasOBoNPet || Core.CheckInventory(CragName))
+        if (hasOBoNPet || HasCrag)
             BambloozevsDrudgen(
                 member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)",
                 KeepVoucher: KeepVoucher

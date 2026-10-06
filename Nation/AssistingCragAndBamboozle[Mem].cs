@@ -89,7 +89,7 @@ public class AssistingCragAndBamboozle
     public void AssistingCandB(Rewards reward = Rewards.Get_whats_not_maxed)
     {
         if (!Core.IsMember ||
-            !Core.CheckInventory(Nation.CragName) ||
+            !Nation.HasCrag ||
             (!Core.CheckInventory("Sparrow's Blood") &&
              !Daily.CheckDailyv2(803, true, true, "Sparrow's Blood")))
             return;

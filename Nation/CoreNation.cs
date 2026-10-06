@@ -968,8 +968,6 @@ public class CoreNation
 
         List<int> quests = [2857];
 
-        if (item != Uni(13) && Core.CheckInventory(38261))
-            quests.Add(9542);
 
         if (Core.CheckInventory("Drudgen the Assistant"))
             quests.Add(870);
@@ -989,6 +987,8 @@ public class CoreNation
             drops.Add(ReturnItem);
 
         drops.AddRange(Core.QuestRewards(9542));
+        if (Core.CheckInventory(38261))
+            drops.AddRange(BonusDealUnis);
         drops.AddRange(SuppliesRewards);
 
         if (sellMemVoucher)
@@ -1043,6 +1043,7 @@ public class CoreNation
                 SellVoucherOfNulgath(sellMemVoucher, null);
                 AssistantDuringSupplies(AssistantDuring);
                 DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+                DoSwindlesBonusDeal(rewardItem.Name);
                 HandleVoucherConversions(rewardItem.Name);
             }
         }
@@ -1098,6 +1099,7 @@ public class CoreNation
             SellVoucherOfNulgath(sellMemVoucher, item);
             AssistantDuringSupplies(AssistantDuring);
             DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+            DoSwindlesBonusDeal(item);
 
             if (VoucherItemDuring)
                 HandleVoucherConversions(item);
@@ -1206,10 +1208,29 @@ public class CoreNation
         Core.EnsureCompleteMulti(2859, quantityToBuy);
     }
     /// <summary>
-    /// Completes the "Swindle's Return Area" quest (ID 7551),
-    /// prioritizing a specific reward or the first non-maxed one.
+    /// The reward to take from Swindle's Return Policy (7551) or Bonus Deal (9542). 70 Diamonds of
+    /// Nulgath outvalue 4 Blood Gems or 12 Dark Crystal Shards at Contract Exchange's prices, so
+    /// <paramref name="diamondsFirst"/> takes those until Diamonds are full, then <paramref name="item"/>,
+    /// then, without an item, the first reward not maxed. Null when none of those has room.
     /// </summary>
-    void DoSwindlesReturnArea(bool returnPolicyActive, string? item = null)
+    ItemBase? SwindleReward(Quest quest, string? item, bool diamondsFirst)
+    {
+        ItemBase? Pick(string? name) =>
+            name == null
+                ? null
+                : quest.Rewards.FirstOrDefault(r => r.Name == name && !Core.CheckInventory(r.ID, r.MaxStack));
+
+        return (diamondsFirst ? Pick("Diamond of Nulgath") : null)
+            ?? Pick(item)
+            ?? (item == null
+                ? quest.Rewards.FirstOrDefault(r => r.ID != 57446 && !Core.CheckInventory(r.ID, r.MaxStack))
+                : null);
+    }
+
+    /// <summary>
+    /// Completes the "Swindle's Return Area" quest (ID 7551), taking the reward <see cref="SwindleReward"/> picks.
+    /// </summary>
+    void DoSwindlesReturnArea(bool returnPolicyActive, string? item = null, bool diamondsFirst = true)
     {
         if (!returnPolicyActive)
             return;
@@ -1224,36 +1245,18 @@ public class CoreNation
             return;
         }
 
-        // Early exit: check if preferred item is already maxed
-        if (item != null)
-        {
-            ItemBase? preferred = quest.Rewards.FirstOrDefault(r => r.Name == item);
-            if (preferred == null)
-            {
-                Core.DebugLogger(this, $"Preferred item '{item}' not found in quest rewards");
-                return;
-            }
+        ItemBase? reward = SwindleReward(quest, item, diamondsFirst);
 
-            if (Core.CheckInventory(preferred.ID, preferred.MaxStack))
-            {
-                Core.DebugLogger(this, $"Preferred item '{item}' is already maxed ({Bot.Inventory.GetQuantity(preferred.Name)}/{preferred.MaxStack}) - skipping quest");
-                return;
-            }
-        }
-        // Early exit: check if all rewards are already maxed
-        else if (quest.Rewards.All(r => Core.CheckInventory(r.ID, r.MaxStack)))
+        // Nothing worth taking: keep the Unidentified items for later, unless Receipts of Swindle still have room.
+        if (reward == null && (item != null || Core.CheckInventory(57446, 100)))
         {
-            Core.DebugLogger(this, "All quest rewards are already maxed - skipping quest");
+            Core.DebugLogger(this, $"No reward of quest 7551 has room for '{item ?? "any"}' - skipping quest");
             return;
         }
 
         Core.EnsureAccept(7551);
         Core.ResetQuest(7551);
         Core.DarkMakaiItem("Dark Makai Rune");
-
-        ItemBase? reward = item != null
-            ? quest.Rewards.FirstOrDefault(r => r.ID != 57446 && r.Name == item)
-            : quest.Rewards.FirstOrDefault(r => r.ID != 57446 && !Core.CheckInventory(r.ID, r.MaxStack));
 
         if (!Bot.Quests.CanCompleteFullCheck(7551))
         {
@@ -1271,9 +1274,32 @@ public class CoreNation
         }
 
         // Complete without a selected reward; Receipt of Swindle is guaranteed.
-        // EnsureComplete automaticly uses the first reward id avaible( if hno reward id is provided), else -1.
-        // and we need to use the Core varient as it has teh safety nets.. but.quest. ensurecomplete does not. ( not all of them atleast) 
         Core.EnsureComplete(7551, -1);
+    }
+
+    /// <summary>
+    /// Unidentified items Swindle's Bonus Deal (9542) takes.
+    /// </summary>
+    public string[] BonusDealUnis => new[] { Uni(32), Uni(14), Uni(15), Uni(17), Uni(18) };
+
+    /// <summary>
+    /// Completes Swindle's Bonus Deal (9542), which needs Swindle Bilk's To Go Hut, taking the reward
+    /// <see cref="SwindleReward"/> picks. Done by hand rather than registered, since a registered quest
+    /// always takes its first reward, 1 Unidentified 13.
+    /// </summary>
+    void DoSwindlesBonusDeal(string? item = null)
+    {
+        if (!Core.CheckInventory(38261) || !Core.CheckInventory(BonusDealUnis))
+            return;
+
+        Quest? quest = Core.InitializeWithRetries(() => Bot.Quests.EnsureLoad(9542));
+        ItemBase? reward = quest == null ? null : SwindleReward(quest, item, true);
+        if (reward == null)
+            return;
+
+        Core.EnsureAccept(9542);
+        Core.EnsureComplete(9542, reward.ID);
+        Bot.Wait.ForQuestComplete(9542);
     }
 
     /// <summary>
@@ -1360,7 +1386,7 @@ public class CoreNation
         // Register the "Swindles Return Policy" quest if specified
         if (returnPolicyDuringSupplies && Reward != SwindlesReturnReward.None)
         {
-            DoSwindlesReturnArea(returnPolicyDuringSupplies, Reward.ToString().Replace("_", ""));
+            DoSwindlesReturnArea(returnPolicyDuringSupplies, Reward.ToString().Replace("_", ""), diamondsFirst: false);
         }
 
         if (item == null)
@@ -1389,7 +1415,8 @@ public class CoreNation
 
                     DoSwindlesReturnArea(
                         returnPolicyDuringSupplies,
-                        Reward.ToString().Replace("_", "")
+                        Reward.ToString().Replace("_", ""),
+                        diamondsFirst: false
                     );
 
                     if (
@@ -1444,7 +1471,8 @@ public class CoreNation
 
                 DoSwindlesReturnArea(
                     returnPolicyDuringSupplies,
-                    Reward.ToString().Replace("_", "")
+                    Reward.ToString().Replace("_", ""),
+                    diamondsFirst: false
                 );
 
                 if (
@@ -1619,9 +1647,9 @@ public class CoreNation
             QuestToRegister.Add(Core.CheckInventory(4809) ? 599 : 2561);
         }
 
-        // 9542 - Swindle's Bonus Deal - Swindle Bilk's To Go Hut
+        // 9542 - Swindle's Bonus Deal - Swindle Bilk's To Go Hut, done by hand in the loop
         if (Core.CheckInventory(38261))
-            QuestToRegister.Add(9542);
+            Core.AddDrop(BonusDealUnis);
 
         QuestToRegister = [.. QuestToRegister.Distinct()];
 
@@ -1642,8 +1670,8 @@ public class CoreNation
             Bot.Sleep(500);
             // Do Swindles Return Policy if enabled
             // 7551 - Swindle's Return Policy
-            if (ReturnItem != null)
-                DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem);
+            DoSwindlesReturnArea(returnPolicyDuringSupplies, ReturnItem ?? item);
+            DoSwindlesBonusDeal(ReturnItem ?? item);
 
             Bot.Sleep(500);
         Retry:

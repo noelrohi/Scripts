@@ -1166,7 +1166,10 @@ public class CoreNation
     public void AssistantDuringSupplies(bool assistDuring = true)
     {
         if (!assistDuring)
+        {
+            AssistantWhenDiamondsLow();
             return;
+        }
 
         if (Bot.Player.Gold >= 100_000)
         {
@@ -1176,6 +1179,31 @@ public class CoreNation
             Core.BuyItem("yulgar", 41, "War-Torn Memorabilia", quantityToBuy);
             Core.EnsureCompleteMulti(2859, quantityToBuy);
         }
+    }
+
+    /// <summary>
+    /// While Diamonds of Nulgath are under 500, spends gold on The Assistant (2859): each turn-in
+    /// gives 1 Unidentified 10 and a 50% chance of 3 Diamonds. A batch is at most 250, and no
+    /// bigger than the room left in the Uni 10 stack, so none of its Uni 10 is lost to the cap.
+    /// </summary>
+    public void AssistantWhenDiamondsLow()
+    {
+        if (Bot.Player.Gold < 100_000 || Core.CheckInventory("Diamond of Nulgath", 500))
+            return;
+
+        CragsThirst();
+        int quantityToBuy = (int)Math.Min(
+            Math.Min(Bot.Player.Gold / 100_000M, 250),
+            1000 - Bot.Inventory.GetQuantity(Uni(10))
+        );
+        if (quantityToBuy <= 0)
+            return;
+
+        Core.Logger($"Diamonds under 500: {quantityToBuy} turn-ins of The Assistant for {quantityToBuy * 100_000:N0} gold");
+        Core.Jump("Enter", "Spawn");
+        Core.EnsureAccept(2859);
+        Core.BuyItem("yulgar", 41, "War-Torn Memorabilia", quantityToBuy);
+        Core.EnsureCompleteMulti(2859, quantityToBuy);
     }
     /// <summary>
     /// Completes the "Swindle's Return Area" quest (ID 7551),
@@ -1847,7 +1875,7 @@ public class CoreNation
             return;
 
         Core.AddDrop("Diamond of Nulgath");
-        // Core.DebugLogger(this);
+        AssistantWhenDiamondsLow();
 
         if (farmDiamond)
             if (hasOBoNPet || HasCrag)
@@ -2092,7 +2120,7 @@ public class CoreNation
         Core.AddDrop("Diamond of Nulgath");
 
         // This Quest is more of an additive Bonus whislt doing supplies
-        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && HasCrag && Core.CheckInventory(Uni(10), 100))
+        while (!Bot.ShouldExit && !Core.CheckInventory("Diamond of Nulgath", quant) && HasCrag && Core.CheckInventory(Uni(10), Uni10Floor + 100))
             CragsThirst(quant);
 
         if (HasCrag)
@@ -2405,18 +2433,27 @@ public class CoreNation
         Core.CancelRegisteredQuests();
     }
 
+    /// <summary>
+    /// Unidentified 10 that Crag's Thirst leaves alone: enough for the Totems' Refreshing Deals
+    /// (30 each), since every Wheel of Chance spin and Assistant turn-in refills Uni 10 anyway.
+    /// </summary>
+    public const int Uni10Floor = 800;
+
+    /// <summary>
+    /// Turns Unidentified 10 above <see cref="Uni10Floor"/> into Diamonds of Nulgath (100 → 50).
+    /// </summary>
     public void CragsThirst(int quant = 1000)
     {
         if (
             !HasCrag
             || Core.CheckInventory("Diamond of Nulgath", quant)
-            || !Core.CheckInventory(Uni(10), 100)
+            || !Core.CheckInventory(Uni(10), Uni10Floor + 100)
         )
             return;
 
         Bot.Log("Doing crags thirst");
 
-        while (!Bot.ShouldExit && Core.CheckInventory(Uni(10), 100) && !Core.CheckInventory("Diamond of Nulgath", quant))
+        while (!Bot.ShouldExit && Core.CheckInventory(Uni(10), Uni10Floor + 100) && !Core.CheckInventory("Diamond of Nulgath", quant))
         {
             Core.ResetQuest(600);
             Core.EnsureAccept(600);

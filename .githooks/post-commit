@@ -1,0 +1,7 @@
+#!/bin/sh
+# After `git commit <path>`, syncs the entries pre-commit synced in the commit into the real index.
+
+synced=$(git rev-parse --git-path scripts-json-synced)
+[ -f "$synced" ] || exit 0
+xargs -0 python3 Tools/ForDevelopers/scripts_json.py sync < "$synced"
+rm "$synced"

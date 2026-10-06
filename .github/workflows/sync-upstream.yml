@@ -46,7 +46,7 @@ jobs:
           if ! git merge --no-edit upstream/Skua; then
             conflicts=$(git diff --name-only --diff-filter=U)
             # scripts.json is generated on every push, and upstream's CoreBots entry
-            # conflicts with ours whenever upstream edits CoreBots.cs. Take upstream's.
+            # conflicts with ours whenever upstream edits CoreBots.cs. Take upstream's; the sync below fixes it.
             if [ "$conflicts" = scripts.json ]; then
               git checkout --theirs scripts.json
               git add scripts.json
@@ -64,6 +64,12 @@ jobs:
             report "Merging auqw/Scripts@$upstream succeeded, but the macOS patches in CoreBots.cs are no longer intact, so nothing was pushed." \
               "Expected three \`// skua-macos:\` lines, \`#if !MACOS\` right above \`using System.Windows.Forms;\`, and the \`OperatingSystem.IsWindows()\` early return."
           fi
+
+          # Upstream's entries hash upstream's CoreBots.cs, and a GITHUB_TOKEN push starts no
+          # workflow to regenerate scripts.json, so the merge brings its own entries up to date.
+          python3 Tools/ForDevelopers/scripts_json.py sync --all \
+            || report "Merging auqw/Scripts@$upstream succeeded, but resyncing scripts.json failed, so nothing was pushed; see the run log." ""
+          git diff --cached --quiet || git commit -m 'scripts.json: entries for the merged Scripts'
 
           # GitHub refuses a GITHUB_TOKEN push that changes workflow files.
           if ! git diff --quiet ORIG_HEAD HEAD -- .github/workflows; then
@@ -92,6 +98,7 @@ jobs:
           git merge upstream/Skua
           # Resolve, keeping the macOS patches: \`git grep skua-macos\` shows three lines in CoreBots.cs.
           # For scripts.json, take upstream's: git checkout --theirs scripts.json
+          # After the merge commit, commit the fix that \`python3 Tools/ForDevelopers/scripts_json.py check\` prints.
           git push origin Skua   # a plain push, never --force
           \`\`\`
 

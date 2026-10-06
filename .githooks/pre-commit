@@ -1,0 +1,16 @@
+#!/bin/sh
+# Rewrites the scripts.json entries of the staged .cs files, so Skua serves the committed versions.
+# Install once per clone: git config core.hooksPath .githooks
+
+synced=$(git rev-parse --git-path scripts-json-synced)
+rm -f "$synced"
+git diff --cached --quiet -- '*.cs' && exit 0
+git diff --cached --name-only --no-renames -z -- '*.cs' > "$synced"
+xargs -0 python3 Tools/ForDevelopers/scripts_json.py sync < "$synced" || exit 1
+
+# `git commit <path>` commits a temporary index and leaves the real one, locked until then, with
+# the old scripts.json; post-commit repeats the sync there. Other commits commit the real index.
+index=$(unset GIT_INDEX_FILE; git rev-parse --git-path index)
+if [ "$GIT_INDEX_FILE" -ef "$index" ] || [ "$GIT_INDEX_FILE" -ef "$index.lock" ]; then
+  rm "$synced"
+fi

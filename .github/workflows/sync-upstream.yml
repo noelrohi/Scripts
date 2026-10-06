@@ -67,7 +67,8 @@ jobs:
 
           # Upstream's entries hash upstream's CoreBots.cs, and a GITHUB_TOKEN push starts no
           # workflow to regenerate scripts.json, so the merge brings its own entries up to date.
-          python3 Tools/ForDevelopers/scripts_json.py sync --all
+          python3 Tools/ForDevelopers/scripts_json.py sync --all \
+            || report "Merging auqw/Scripts@$upstream succeeded, but resyncing scripts.json failed, so nothing was pushed; see the run log." ""
           git diff --cached --quiet || git commit -m 'scripts.json: entries for the merged Scripts'
 
           # GitHub refuses a GITHUB_TOKEN push that changes workflow files.
@@ -97,7 +98,7 @@ jobs:
           git merge upstream/Skua
           # Resolve, keeping the macOS patches: \`git grep skua-macos\` shows three lines in CoreBots.cs.
           # For scripts.json, take upstream's: git checkout --theirs scripts.json
-          # Then, after the merge commit: python3 Tools/ForDevelopers/scripts_json.py sync --all && git commit -m 'scripts.json: entries for the merged Scripts'
+          # After the merge commit, commit the fix that \`python3 Tools/ForDevelopers/scripts_json.py check\` prints.
           git push origin Skua   # a plain push, never --force
           \`\`\`
 

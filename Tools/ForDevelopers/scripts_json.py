@@ -8,10 +8,11 @@ index, i.e. what the commit will hold, not the working tree.
   scripts_json.py sync PATH...   rewrite the entries of these Scripts, in the index and the
                                  working tree; a deleted Script, or one without a header,
                                  loses its entry
-  scripts_json.py sync --all     the same for every Script
+  scripts_json.py sync --all     the same for every Script, and drop entries of missing files;
+                                 this repairs a stale scripts.json
   scripts_json.py check          fail when an entry is stale, or a Script has none
 
-The pre-commit hook in .githooks runs `sync` on the staged .cs files.
+The hooks in .githooks run `sync` on the staged .cs files; scripts_json_test.sh tests them.
 """
 import hashlib
 import json
@@ -96,14 +97,12 @@ def expected(paths=None):
 
 
 def update(entries, wanted):
-    """Rewrites the entries in place; a new entry goes at the end, like a new file would."""
-    index = {e["path"]: i for i, e in enumerate(entries)}
-    for path, new in wanted.items():
-        if path in index:
-            entries[index[path]] = new
-        elif new is not None:
-            entries.append(new)
-    return [e for e in entries if e is not None]
+    """entries with each wanted path's entry replaced, or dropped when None; new entries go at
+    the end, like a new file would."""
+    known = {e["path"] for e in entries}
+    result = [wanted.get(e["path"], e) for e in entries]
+    result += [new for path, new in wanted.items() if path not in known]
+    return [e for e in result if e is not None]
 
 
 def dump(entries):
@@ -111,15 +110,17 @@ def dump(entries):
     return (json.dumps(entries, indent=2, ensure_ascii=False) + "\n").encode()
 
 
-def sync(paths):
-    if paths == ["--all"]:
-        staged = expected()
-        known = json.loads(git("show", ":" + SCRIPTS_JSON))
-        wanted = {e["path"]: None for e in known} | staged
+def staged_entries():
+    return json.loads(git("show", ":" + SCRIPTS_JSON))
+
+
+def sync(paths=(), all=False):
+    staged_json = staged_entries()
+    if all:
+        wanted = {e["path"]: None for e in staged_json} | expected()
     else:
         wanted = expected(paths)
 
-    staged_json = json.loads(git("show", ":" + SCRIPTS_JSON))
     blob = git("hash-object", "-w", "--stdin", stdin=dump(update(staged_json, wanted))).decode().strip()
     git("update-index", "--cacheinfo", f"100644,{blob},{SCRIPTS_JSON}")
 
@@ -131,7 +132,7 @@ def sync(paths):
 
 
 def check():
-    known = {e["path"]: e for e in json.loads(git("show", ":" + SCRIPTS_JSON))}
+    known = {e["path"]: e for e in staged_entries()}
     wanted = expected()
     problems = []
     for path, new in sorted(wanted.items()):
@@ -157,10 +158,12 @@ def check():
 if __name__ == "__main__":
     command, args = (sys.argv[1], sys.argv[2:]) if len(sys.argv) > 1 else ("", [])
     top = git("rev-parse", "--show-toplevel").decode().strip()
-    args = [a if a == "--all" else os.path.relpath(a, top).replace(os.sep, "/") for a in args]
+    paths = [os.path.relpath(a, top).replace(os.sep, "/") for a in args]
     os.chdir(top)
-    if command == "sync" and args:
-        sync(args)
+    if command == "sync" and args == ["--all"]:
+        sync(all=True)
+    elif command == "sync" and args and "--all" not in args:
+        sync(paths)
     elif command == "check" and not args:
         sys.exit(check())
     else:

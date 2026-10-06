@@ -1,6 +1,5 @@
 # Fails when a scripts.json entry's size, hash or header fields don't match its Script,
-# or a Script with a /* header has no entry. Fix with:
-#   python3 Tools/ForDevelopers/scripts_json.py sync --all
+# or a Script with a /* header has no entry; the failure prints the fix.
 name: scripts.json
 
 on:
@@ -14,3 +13,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 Tools/ForDevelopers/scripts_json.py check
+      - run: sh Tools/ForDevelopers/scripts_json_test.sh

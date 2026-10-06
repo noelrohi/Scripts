@@ -1,0 +1,6 @@
+#!/bin/sh
+# Rewrites the scripts.json entries of the staged .cs files, so Skua serves the committed versions.
+# Install once per clone: git config core.hooksPath .githooks
+
+git diff --cached --quiet -- '*.cs' && exit 0
+git diff --cached --name-only --no-renames -z -- '*.cs' | xargs -0 python3 Tools/ForDevelopers/scripts_json.py sync

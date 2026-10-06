@@ -3084,6 +3084,9 @@ public class CoreNation
         )
             return;
 
+        if (!member && BuyVoucherNonMem())
+            return;
+
         Core.AddDrop(member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)");
         Core.Logger($"KeepVoucher set to {KeepVoucher}");
         if (hasOBoNPet || HasCrag)
@@ -3097,6 +3100,20 @@ public class CoreNation
             member ? "Voucher of Nulgath" : "Voucher of Nulgath (non-mem)",
             KeepVoucher: KeepVoucher
         );
+    }
+
+    /// <summary>
+    /// Buys a Voucher of Nulgath (non-mem) at Swindle's Ripoff Emporium for 100 Unidentified 10 and 1,000,000 gold, when both are at
+    /// hand: much quicker than its 3% drop from the quests.
+    /// </summary>
+    /// <returns>Whether the Voucher is in the inventory now.</returns>
+    public bool BuyVoucherNonMem()
+    {
+        if (Bot.Player.Gold < 1_000_000 || !Core.CheckInventory("Unidentified 10", 100))
+            return false;
+
+        Core.BuyItem("tercessuinotlim", 1951, "Voucher of Nulgath (non-mem)");
+        return Core.CheckInventory("Voucher of Nulgath (non-mem)");
     }
 
     /// <summary>

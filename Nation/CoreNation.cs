@@ -2127,6 +2127,7 @@ public class CoreNation
             return;
 
         Core.AddDrop("Dark Crystal Shard");
+        PoisonousDeal(0, quant);
         FarmContractExchage("Dark Crystal Shard", quant);
         NewWorldsNewOpportunities("Dark Crystal Shard", quant); //1minute turning  = 1x guaranteed
         if (HasCrag)
@@ -2216,6 +2217,7 @@ public class CoreNation
             return;
 
         Core.AddDrop("Tainted Gem");
+        PoisonousDeal(quant, 0);
         FarmContractExchage("Tainted Gem", quant);
         if (HasCrag)
             Supplies("Tainted Gem", quant, ReturnItem: "Tainted Gem");
@@ -2398,6 +2400,41 @@ public class CoreNation
 
         FarmItem("Gem of Nulgath", GemQuant, 6136);
         FarmItem("Totem of Nulgath", TotemQuant, 5357);
+    }
+
+    /// <summary>
+    /// Farms Tainted Gems and/or Dark Crystal Shards via The Poisonous Deal (Quest 4776): 65 Tainted Gems or 25 Dark Crystal Shards a
+    /// turn-in, against Contract Exchange's 8 or 4. It needs CragName and the Tainted Claymore, and does nothing without them.
+    /// </summary>
+    /// <param name="TaintedQuant">Number of Tainted Gems to farm (0 = skip).</param>
+    /// <param name="ShardQuant">Number of Dark Crystal Shards to farm (0 = skip).</param>
+    public void PoisonousDeal(int TaintedQuant = 0, int ShardQuant = 0)
+    {
+        if (!HasCrag || !Core.CheckInventory("Tainted Claymore"))
+            return;
+
+        DragonSlayerReward(); // required
+        Core.AddDrop("Tainted Gem", "Dark Crystal Shard");
+
+        void FarmItem(string itemName, int quant, int rewardID)
+        {
+            if (quant <= 0)
+                return;
+
+            Core.FarmingLogger(itemName, quant);
+            while (!Bot.ShouldExit && !Core.CheckInventory(itemName, quant))
+            {
+                Core.EnsureAccept(4776);
+                Supplies("Unidentified 3", ReturnItem: "Blood Gem of the Archfiend");
+                FarmBloodGem(2);
+                FarmUni10(30);
+                Core.EnsureComplete(4776, rewardID);
+                Bot.Wait.ForPickup(itemName);
+            }
+        }
+
+        FarmItem("Tainted Gem", TaintedQuant, 4769);
+        FarmItem("Dark Crystal Shard", ShardQuant, 4770);
     }
 
     /// <summary>

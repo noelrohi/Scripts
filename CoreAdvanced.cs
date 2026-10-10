@@ -1547,7 +1547,12 @@ public class CoreAdvanced
 
             foreach (dynamic a in data.a)
             {
-                // aura+ lists its auras in "auras"; some aura- packets carry a single "aura".
+                // React only to arrivals (aura+, aura++); aura- and aura-- report an aura leaving.
+                string? auraCmd = a?.cmd?.ToString();
+                if (auraCmd != "aura+" && auraCmd != "aura++")
+                    continue;
+
+                // Arrivals list their auras in "auras"; some carry a single "aura".
                 string? auraName = null;
                 foreach (dynamic aura in a?.auras ?? (a?.aura != null ? new[] { a.aura } : Array.Empty<dynamic>()))
                 {

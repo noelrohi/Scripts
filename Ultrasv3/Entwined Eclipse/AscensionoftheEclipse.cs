@@ -11,6 +11,7 @@ tags: greatblade, entwined, eclipse, ascend, ascendeclipse, army, taunt, test
 //cs_include Scripts/Army/CoreArmyLite.cs
 using Newtonsoft.Json;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Auras;
 using Skua.Core.Options;
 using Skua.Core.Models.Quests;
 using System;
@@ -534,6 +535,7 @@ public class AscendEclipseTest
         Core.Logger("[r3 Focus] No all-Solstice opener; using split target with HP balance guard.");
 
         Bot.Flash.FlashCall += Listener;
+        using AuraStackWatch auraWatch = new(Bot, OnAuraStacks);
         try
         {
             while (!Bot.ShouldExit)
@@ -801,56 +803,63 @@ public class AscendEclipseTest
                     }
                 }
 
-                if ((!sunTriggered || !moonTriggered) && data["a"] != null)
-                {
-                    foreach (var a in data.a)
-                    {
-                        if (a == null || a!["cmd"]?.ToString() != "aura+" || a!["auras"] == null)
-                            continue;
-
-                        foreach (var aura in a!["auras"])
-                        {
-                            if (aura?.msgOn == null || !(bool)aura!.isNew)
-                                continue;
-
-                            string msg = (string)aura!.msgOn;
-
-                            if (msg.IndexOf("The Sun Converges", StringComparison.OrdinalIgnoreCase) >= 0)
-                                sunTriggered = true;
-
-                            if (msg.IndexOf("The Moon Converges", StringComparison.OrdinalIgnoreCase) >= 0)
-                                moonTriggered = true;
-                        }
-                    }
-                }
-
-                long now = Environment.TickCount64;
-
-                if (sunTriggered && now - lastSunTriggerAt > 1500)
-                {
-                    lastSunTriggerAt = now;
-                    sunCycle++;
-                    sunNeedsEnrage = true;
-                    sunHandledThisCycle = false;
-
-                    int assignedSunSlot = sunCycle % 2 == 1 ? 2 : 3;
-                    Core.Logger($"[Sun Taunt] 'The Sun Converges' detected. Sun cycle #{sunCycle}; assigned to player{assignedSunSlot}.");
-                }
-
-                if (moonTriggered && now - lastMoonTriggerAt > 1500)
-                {
-                    lastMoonTriggerAt = now;
-                    moonCycle++;
-                    moonNeedsEnrage = true;
-                    moonHandledThisCycle = false;
-
-                    int assignedMoonSlot = moonCycle % 2 == 1 ? 1 : 4;
-                    Core.Logger($"[Moon Taunt] 'The Moon Converges' detected. Moon cycle #{moonCycle}; assigned to player{assignedMoonSlot}.");
-                }
+                Converge(sunTriggered, moonTriggered);
             }
             catch
             {
                 // Ignore malformed combat packets.
+            }
+        }
+
+        // A convergence aura, named in its message, newly on this player or on the boss being fought.
+        void OnAuraStacks(string aura, int oldStacks, int newStacks, SubjectType subject)
+        {
+            if (newStacks <= oldStacks)
+                return;
+
+            List<Aura> auras = subject == SubjectType.Self ? Bot.Self.Auras : Bot.Target.Auras;
+            bool sunTriggered = false;
+            bool moonTriggered = false;
+            foreach (Aura a in auras)
+            {
+                if (a.Name != aura || a.MsgOn == null)
+                    continue;
+
+                if (a.MsgOn.IndexOf("The Sun Converges", StringComparison.OrdinalIgnoreCase) >= 0)
+                    sunTriggered = true;
+
+                if (a.MsgOn.IndexOf("The Moon Converges", StringComparison.OrdinalIgnoreCase) >= 0)
+                    moonTriggered = true;
+            }
+
+            Converge(sunTriggered, moonTriggered);
+        }
+
+        // The message and the aura can both announce one convergence; each side counts once per 1.5 s.
+        void Converge(bool sunTriggered, bool moonTriggered)
+        {
+            long now = Environment.TickCount64;
+
+            if (sunTriggered && now - lastSunTriggerAt > 1500)
+            {
+                lastSunTriggerAt = now;
+                sunCycle++;
+                sunNeedsEnrage = true;
+                sunHandledThisCycle = false;
+
+                int assignedSunSlot = sunCycle % 2 == 1 ? 2 : 3;
+                Core.Logger($"[Sun Taunt] 'The Sun Converges' detected. Sun cycle #{sunCycle}; assigned to player{assignedSunSlot}.");
+            }
+
+            if (moonTriggered && now - lastMoonTriggerAt > 1500)
+            {
+                lastMoonTriggerAt = now;
+                moonCycle++;
+                moonNeedsEnrage = true;
+                moonHandledThisCycle = false;
+
+                int assignedMoonSlot = moonCycle % 2 == 1 ? 1 : 4;
+                Core.Logger($"[Moon Taunt] 'The Moon Converges' detected. Moon cycle #{moonCycle}; assigned to player{assignedMoonSlot}.");
             }
         }
     }
@@ -1087,8 +1096,10 @@ public class AscendEclipseTest
         DateTimeOffset tauntTime = DateTimeOffset.MinValue;
         long noTargetSince = 0;
         bool fightSpawnSet = false;
+        long lastEnrageAt = 0;
 
         Bot.Flash.FlashCall += Listener;
+        using AuraStackWatch auraWatch = new(Bot, OnAuraStacks, monster);
         try
         {
             while (!Bot.ShouldExit)
@@ -1186,21 +1197,29 @@ public class AscendEclipseTest
                         if (a?.msg != null && ((string)a!.msg).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0)
                         { triggered = true; break; }
 
-                if (!triggered && data!["a"] != null)
-                    foreach (var a in data!.a)
-                        if (a != null && a!["cmd"]?.ToString() == "aura+" && a!["auras"] != null)
-                            foreach (var aura in a!["auras"])
-                                if (aura?.msgOn != null &&
-                                    ((string)aura!.msgOn).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0 &&
-                                    (bool)aura!.isNew)
-                                { triggered = true; break; }
-
-                if (!triggered) return;
-                needsEnrage = true; usedEnrage = false;
-                if (tauntOffsetSeconds > 0) tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
-                Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+                if (triggered) Enrage();
             }
             catch { }
+        }
+
+        // The boss's message and its aura can both announce one enrage; count it once.
+        void Enrage()
+        {
+            long now = Environment.TickCount64;
+            if (now - lastEnrageAt < 1500) return;
+            lastEnrageAt = now;
+            needsEnrage = true; usedEnrage = false;
+            if (tauntOffsetSeconds > 0) tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
+            Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+        }
+
+        // An aura announcing the enrage in its message, newly on this player or on the boss.
+        void OnAuraStacks(string aura, int oldStacks, int newStacks, SubjectType subject)
+        {
+            if (newStacks <= oldStacks) return;
+            List<Aura> auras = subject == SubjectType.Self ? Bot.Self.Auras : Bot.Target.Auras;
+            if (auras.Any(a => a.Name == aura && a.MsgOn?.Contains(enrageMessage, StringComparison.OrdinalIgnoreCase) == true))
+                Enrage();
         }
     }
 

@@ -20,6 +20,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Auras;
 using Skua.Core.Models.Items;
 
 public class UltraEzrajalv3
@@ -228,7 +229,7 @@ public class UltraEzrajalv3
     private const int Ezrajal = 1;
 
     // The lock trick. Ezrajal locks one thing of a player's for 45 s with a "Skill Locked" aura whose
-    // val and msgOn name it, e.g. val "Mana Vampire", msgOn "@Mana Vampire has been locked!".
+    // msgOn names it, e.g. "@Mana Vampire has been locked!".
     private const string SkillLocked = "Skill Locked";
     private const string ManaVampLock = "Mana Vamp";
     private const int LockTimeoutSec = 20; // stop baiting after this, locked or not, so the lock still has most of its 45 s
@@ -274,7 +275,6 @@ public class UltraEzrajalv3
         {
             // An Attempt still open here ended without a kill. Ezrajal has no Wipe detection.
             _attempt?.End(UltraAttempt.Outcome.Stopped);
-            Bot.Events.ExtensionPacketReceived -= LockListener;
             Bot.Events.ScriptStopping -= StopAttemptEvent;
             try { if (File.Exists(_fbsMuteFile)) File.Delete(_fbsMuteFile); } catch { }
             Engine.DisableSkills();
@@ -492,7 +492,7 @@ public class UltraEzrajalv3
     {
         _baitLocked = false;
         _baiting = true;
-        Bot.Events.ExtensionPacketReceived += LockListener;
+        AuraStackWatch lockWatch = new(Bot, OnLockStacks);
         try
         {
             C.Logger($"[Lock] Hitting Ezrajal with {_baitWeapon} until he locks its Mana Vamp, for up to {LockTimeoutSec} s.");
@@ -516,7 +516,7 @@ public class UltraEzrajalv3
         finally
         {
             _baiting = false;
-            Bot.Events.ExtensionPacketReceived -= LockListener;
+            lockWatch.Dispose();
         }
 
         if (_baitLocked)
@@ -526,47 +526,26 @@ public class UltraEzrajalv3
     }
 
     /// <summary>
-    /// Ezrajal's locks arrive in "ct" packets as <c>{ cmd: "aura+", tInf: "p:&lt;player ID&gt;",
-    /// auras: [{ nam: "Skill Locked", val: "Mana Vampire", msgOn: "@Mana Vampire has been locked!" }] }</c>.
+    /// A new lock raises this player's "Skill Locked" stacks; the lock's msgOn names what it locked,
+    /// e.g. "@Mana Vampire has been locked!".
     /// </summary>
-    private void LockListener(dynamic packet)
+    private void OnLockStacks(string aura, int oldStacks, int newStacks, SubjectType subject)
     {
-        try
-        {
-            if (!_baiting)
-                return;
+        if (!_baiting || subject != SubjectType.Self || aura != SkillLocked || newStacks <= oldStacks)
+            return;
 
-            string type = packet["params"].type;
-            if (type is not "json")
-                return;
-
-            dynamic data = packet["params"].dataObj;
-            if (data["cmd"]?.ToString() != "ct" || data["a"] == null)
-                return;
-
-            string me = $"p:{Bot.Player.ID}";
-            foreach (dynamic action in data["a"])
-            {
-                if (action?["cmd"]?.ToString() != "aura+" || action["tInf"]?.ToString() != me || action["auras"] == null)
-                    continue;
-
-                foreach (dynamic aura in action["auras"])
-                {
-                    if (aura?["nam"]?.ToString() != SkillLocked)
-                        continue;
-
-                    string val = aura["val"]?.ToString() ?? "";
-                    string msgOn = aura["msgOn"]?.ToString() ?? "";
-                    if (val.Contains(ManaVampLock, StringComparison.OrdinalIgnoreCase)
-                        || msgOn.Contains(ManaVampLock, StringComparison.OrdinalIgnoreCase))
-                        _baitLocked = true;
-                    else
-                        C.Logger($"[Lock] Ezrajal locked {val}, not the bait's Mana Vamp.");
-                }
-            }
-        }
-        catch { }
+        List<string> locks = Bot.Self.Auras
+            .Where(a => a.Name == SkillLocked)
+            .Select(a => a.MsgOn ?? "")
+            .ToList();
+        if (locks.Any(msgOn => msgOn.Contains(ManaVampLock, StringComparison.OrdinalIgnoreCase)))
+            _baitLocked = true;
+        else
+            C.Logger($"[Lock] Ezrajal locked {string.Join(", ", locks.Select(LockedSkill))}, not the bait's Mana Vamp.");
     }
+
+    private static string LockedSkill(string msgOn) =>
+        msgOn.TrimStart('@').Replace(" has been locked!", "", StringComparison.OrdinalIgnoreCase);
 
     private static bool CounterAttackUp() =>
         Bot.Player.HasTarget && Bot.Target?.Auras?.Any(a => a != null && a.Name == "Counter Attack") == true;

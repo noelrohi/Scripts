@@ -11,6 +11,7 @@ tags: solstice, moon, hollow midnight, lunar haze, army, taunt, test
 //cs_include Scripts/Army/CoreArmyLite.cs
 using Newtonsoft.Json;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Auras;
 using Skua.Core.Options;
 using Skua.Core.Models.Quests;
 using System;
@@ -923,7 +924,8 @@ public class SolsticeMoonTest
 
     /// <summary>
     /// Fights a monster with optional alternating Scroll of Enrage taunting.
-    /// Listens via Bot.Flash.FlashCall (same event as UltraDrakath),
+    /// Listens for the boss's message via Bot.Flash.FlashCall (same event as UltraDrakath)
+    /// and for its aura via AuraStackWatch,
     /// fires Core.UsePotion() and retries until the boss has Focus/Reckless aura.
     /// Both taunters (LR and LoO) participate and alternate each convergence.
     /// startingTaunterConfig: the player config key whose account goes SECOND
@@ -942,8 +944,10 @@ public class SolsticeMoonTest
         DateTimeOffset tauntTime = DateTimeOffset.MinValue;
         long noTargetSince = 0;
         bool fightSpawnSet = false;
+        long lastEnrageAt = 0;
 
         Bot.Flash.FlashCall += Listener;
+        using AuraStackWatch auraWatch = new(Bot, OnAuraStacks, monster);
         try
         {
             while (!Bot.ShouldExit)
@@ -1077,25 +1081,36 @@ public class SolsticeMoonTest
                         if (a?.msg != null && ((string)a!.msg).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0)
                         { triggered = true; break; }
 
-                if (!triggered && data!["a"] != null)
-                    foreach (var a in data.a)
-                        if (a != null && a!["cmd"]?.ToString() == "aura+" && a!["auras"] != null)
-                            foreach (var aura in a!["auras"])
-                                if (aura?.msgOn != null &&
-                                    ((string)aura!.msgOn).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0 &&
-                                    (bool)aura!.isNew)
-                                { triggered = true; break; }
-
-                if (!triggered) return;
-
-                needsEnrage = true;
-                usedEnrage = false;
-                if (tauntOffsetSeconds > 0)
-                    tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
-
-                Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+                if (triggered)
+                    Enrage();
             }
             catch { }
+        }
+
+        // The boss's message and its aura can both announce one enrage; count it once.
+        void Enrage()
+        {
+            long now = Environment.TickCount64;
+            if (now - lastEnrageAt < 1500)
+                return;
+            lastEnrageAt = now;
+
+            needsEnrage = true;
+            usedEnrage = false;
+            if (tauntOffsetSeconds > 0)
+                tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
+
+            Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+        }
+
+        // An aura announcing the enrage in its message, newly on this player or on the boss.
+        void OnAuraStacks(string aura, int oldStacks, int newStacks, SubjectType subject)
+        {
+            if (newStacks <= oldStacks)
+                return;
+            List<Aura> auras = subject == SubjectType.Self ? Bot.Self.Auras : Bot.Target.Auras;
+            if (auras.Any(a => a.Name == aura && a.MsgOn?.Contains(enrageMessage, StringComparison.OrdinalIgnoreCase) == true))
+                Enrage();
         }
     }
 

@@ -11,6 +11,7 @@ tags: greatblade, entwined, eclipse, midnight, sun, farm, test, army
 //cs_include Scripts/Army/CoreArmyLite.cs
 using Newtonsoft.Json;
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Auras;
 using Skua.Core.Options;
 using Skua.Core.Models.Quests;
 using System;
@@ -818,8 +819,10 @@ public class MidnightSunTest
         DateTimeOffset tauntTime = DateTimeOffset.MinValue;
         long noTargetSince = 0;
         bool fightSpawnSet = false;
+        long lastEnrageAt = 0;
 
         Bot.Flash.FlashCall += Listener;
+        using AuraStackWatch auraWatch = new(Bot, OnAuraStacks, monster);
         try
         {
             while (!Bot.ShouldExit)
@@ -955,22 +958,29 @@ public class MidnightSunTest
                         if (a?.msg != null && ((string)a!.msg).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0)
                         { triggered = true; break; }
 
-                if (!triggered && data?["a"] != null)
-                    foreach (var a in data!.a)
-                        if (a != null && a!["cmd"]?.ToString() == "aura+" && a?["auras"] != null)
-                            foreach (var aura in a!["auras"])
-                                if (aura?.msgOn != null &&
-                                    ((string)aura!.msgOn).IndexOf(enrageMessage, StringComparison.OrdinalIgnoreCase) >= 0 &&
-                                    (bool)aura!.isNew)
-                                { triggered = true; break; }
-
-                if (!triggered) return;
-
-                needsEnrage = true; usedEnrage = false;
-                if (tauntOffsetSeconds > 0) tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
-                Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+                if (triggered) Enrage();
             }
             catch { }
+        }
+
+        // The boss's message and its aura can both announce one enrage; count it once.
+        void Enrage()
+        {
+            long now = Environment.TickCount64;
+            if (now - lastEnrageAt < 1500) return;
+            lastEnrageAt = now;
+            needsEnrage = true; usedEnrage = false;
+            if (tauntOffsetSeconds > 0) tauntTime = DateTimeOffset.Now.AddSeconds(tauntOffsetSeconds);
+            Core.Logger($"[Taunt] '{enrageMessage}' — {(tauntOffsetSeconds > 0 ? $"enraging in {tauntOffsetSeconds}s" : "enraging now")}.");
+        }
+
+        // An aura announcing the enrage in its message, newly on this player or on the boss.
+        void OnAuraStacks(string aura, int oldStacks, int newStacks, SubjectType subject)
+        {
+            if (newStacks <= oldStacks) return;
+            List<Aura> auras = subject == SubjectType.Self ? Bot.Self.Auras : Bot.Target.Auras;
+            if (auras.Any(a => a.Name == aura && a.MsgOn?.Contains(enrageMessage, StringComparison.OrdinalIgnoreCase) == true))
+                Enrage();
         }
     }
 

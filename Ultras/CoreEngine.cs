@@ -1772,10 +1772,10 @@ public class CoreEnginev1
             : Bot.Target.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value) ?? 0f;
 
     /// <summary>
-    /// Returns stacks as int (rounded), +1, for legacy code compatibility.
+    /// Returns the aura's stack count from the game's HUD; 0 if missing.
     /// </summary>
     public int GetAuraStacks(string auraName, bool self = false)
-        => (int)Math.Round(GetAuraStacksFloat(auraName, self)) + 1;
+        => self ? Bot.Self.GetAuraStacks(auraName) : Bot.Target.GetAuraStacks(auraName);
 
 
     /// <summary>
@@ -2859,7 +2859,7 @@ public class CoreEnginev1
         int energyStacks = GetAuraStacks("Residual Energy", true);
 
         // If we are safely building stacks and hit our optimal low-mana/high-stack window
-        if (energyStacks >= 6 && Bot.Player.Mana < 40)
+        if (energyStacks >= 5 && Bot.Player.Mana < 40)
         {
             if (Cast(4)) // CORVAK!
                 return;
@@ -3088,7 +3088,7 @@ public class CoreEnginev1
         if (IsHealthLow(50))
             if (Cast(2))
                 return;
-        if (GetAuraStacks("Doom", true) > 9)
+        if (GetAuraStacks("Doom", true) >= 9)
             if (Cast(4))
                 return;
         if (Cast(1))

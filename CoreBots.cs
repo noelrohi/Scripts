@@ -6774,7 +6774,7 @@ public class CoreBots
                     foreach (dynamic a in data.a)
                     {
                         if (a?.aura?["nam"]?.ToString() == "Shapeshifted")
-                            Bot.Combat.StopAttacking = ((string)a.cmd)[^0] == '+';
+                            Bot.Combat.StopAttacking = ((string)a.cmd)[^1] == '+';
                     }
                 }
             }

@@ -1147,11 +1147,11 @@ public class CoreBots
 
                     if (!HasSpaceFor(categoryItem))
                     {
-                        Logger($"The {Bot.Inventory.GetPool(categoryItem)} inventory is full. Attempting to make room.");
+                        Logger($"Your {SpaceName(categoryItem)} is full. Attempting to make room.");
                         BankInventoryPoolFor(categoryItem);
                         if (!HasSpaceFor(categoryItem))
                         {
-                            Logger($"The {Bot.Inventory.GetPool(categoryItem)} inventory is still full. Please clear space and restart.",
+                            Logger($"Your {SpaceName(categoryItem)} is still full. Please bank or remove an item and restart.",
                                 messageBox: true, stopBot: true);
                             return;
                         }
@@ -2313,7 +2313,7 @@ public class CoreBots
         {
             int usedBefore = Bot.Inventory.UsedSlots;
             Logger(
-                $"Your inventory is full [{usedBefore}/{Bot.Inventory.Slots}]. Attempting to bank AC-tagged misc items...",
+                $"Your Bag Space is full [{usedBefore}/{Bot.Inventory.Slots}]. Attempting to bank AC-tagged misc items...",
                 "_CheckInventorySpace"
             );
 
@@ -2325,7 +2325,7 @@ public class CoreBots
             if (Bot.Inventory.FreeSlots <= 0)
             {
                 Logger(
-                    $"Banked {freed} item{(freed != 1 ? "s" : "")} but your inventory is still full. Please clear space manually. Stopping the bot.",
+                    $"Banked {freed} item{(freed != 1 ? "s" : "")} but your Bag Space is still full. Please bank or remove an item manually. Stopping the bot.",
                     "_CheckInventorySpace",
                     stopBot: true
                 );
@@ -2333,7 +2333,7 @@ public class CoreBots
             else
             {
                 Logger(
-                    $"Banked {freed} item{(freed != 1 ? "s" : "")}. {Bot.Inventory.FreeSlots} slot{(Bot.Inventory.FreeSlots != 1 ? "s" : "")} now available.",
+                    $"Banked {freed} item{(freed != 1 ? "s" : "")}. Your Bag Space has room for {Bot.Inventory.FreeSlots} more.",
                     "_CheckInventorySpace"
                 );
             }
@@ -3767,7 +3767,7 @@ public class CoreBots
     }
 
     // The game splits the inventory into Spaces (GLOSSARY: Bag Space, Misc Space); Skua owns the rules.
-    /// <summary>Bag Space in use: the inventory entries that are neither misc items nor classes.</summary>
+    /// <summary>How much of the Bag Space is in use, as Skua counts it.</summary>
     public int InventoryBagUsedSlots => Bot.Inventory.UsedSlots;
 
     /// <summary>Free Bag Space.</summary>
@@ -3786,6 +3786,14 @@ public class CoreBots
     /// </summary>
     public bool HasSpaceFor(ItemBase? item, int quantity = 1)
         => item != null && Bot.Inventory.HasSpaceFor(item, quantity);
+
+    /// <summary>The name of where the item goes, for log lines: "Misc Space", "Bag Space" or "house inventory".</summary>
+    public string SpaceName(ItemBase item) => Bot.Inventory.GetPool(item) switch
+    {
+        "misc" => "Misc Space",
+        "house" => "house inventory",
+        _ => "Bag Space",
+    };
 
     private InventoryItem[] FilterInventoryPool(InventoryItem[] items, string? pool)
     {

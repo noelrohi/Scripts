@@ -130,7 +130,7 @@ public class CoreAdvanced
         else if (!Core.HasSpaceFor(item, effectiveShopQuant))
         {
             if (Log)
-                Core.Logger($"❌ Your {(Bot.Inventory.GetPool(item) == "misc" ? "Misc Space" : "Bag Space")} is full, cannot buy \"{item.Name}\".");
+                Core.Logger($"❌ Your {Core.SpaceName(item)} is full, cannot buy \"{item.Name}\".");
             return;
         }
 

@@ -2447,6 +2447,19 @@ public class CoreBots
     }
 
     /// <summary>
+    /// Whether a sale of the item must be refused: it's a Favorite and <c>Bot.Shops.ProtectFavorites</c> is on.
+    /// The game's own windows won't sell a Favorite, but a raw sellItem packet would.
+    /// </summary>
+    private bool RefuseToSellFavorite(InventoryItem item)
+    {
+        if (!Bot.Shops.ProtectFavorites || !Bot.Inventory.IsFavorited(item.ID))
+            return false;
+
+        Logger($"\"{item.Name}\" is a Favorite, not selling it. A Script may set Bot.Shops.ProtectFavorites = false to allow it.");
+        return true;
+    }
+
+    /// <summary>
     /// Sells a item till you have the desired quantity
     /// </summary>
     /// <param name="itemName">Name of the item</param>
@@ -2458,6 +2471,9 @@ public class CoreBots
             !(quant > 0 ? CheckInventory(itemName, quant) : CheckInventory(itemName))
             || !Bot.Inventory.TryGetItem(itemName, out InventoryItem? item)
         )
+            return;
+
+        if (RefuseToSellFavorite(item!))
             return;
 
         InventoryItem? Item = null;
@@ -2548,6 +2564,9 @@ public class CoreBots
             Logger($"Item with ID {itemID} not found.");
             return;
         }
+
+        if (RefuseToSellFavorite(item))
+            return;
 
         string itemName = item.Name;
 
@@ -2985,6 +3004,13 @@ public class CoreBots
                 || TrashItem.Category == ItemCategory.Class
             )
                 continue;
+
+            // The game's own windows won't discard a Favorite; a raw removeItem packet would.
+            if (Bot.Inventory.IsFavorited(TrashItem.ID))
+            {
+                Logger($"\"{TrashItem.Name}\" is a Favorite, not trashing it.");
+                continue;
+            }
 
             if (!TrashItem.Coins)
             {

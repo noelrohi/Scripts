@@ -18,8 +18,8 @@
       "null"
     ],
     "path": "CoreAdvanced.cs",
-    "size": 176169,
-    "sha256": "54eea4c3737526fc20464cd70ef6ad0e45c543f66f0de746ec2e29a35da0c12c",
+    "size": 176499,
+    "sha256": "6246ad5bf5439e0432b1591954fd27b12a22ff5efbb4ed012be4c76e6a3c80ad",
     "fileName": "CoreAdvanced.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreAdvanced.cs"
   },
@@ -6314,8 +6314,8 @@
       "euphoria"
     ],
     "path": "Seasonal/AqwBirthday/17thBirthdayCastlePartyMerge.cs",
-    "size": 15896,
-    "sha256": "b189e86396f964dec9d08ce10dc0698f289a2e189892c7e47ef791f66d6bbb38",
+    "size": 13064,
+    "sha256": "82733f3aa9e46ac2f6e18c49e1bcd2f2cb8ecac04906e71f51c0f2bb371db30a",
     "fileName": "17thBirthdayCastlePartyMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/AqwBirthday/17thBirthdayCastlePartyMerge.cs"
   },
@@ -6437,7 +6437,7 @@
     ],
     "path": "Seasonal/AqwBirthday/EvilBirthdayPresents.cs",
     "size": 5694,
-    "sha256": "70c138f761808a656bed407ade44ec4e7baebbe4afdbf5268c9f123351765f75",
+    "sha256": "a250baa7d508bcbb7d536e53930667d5a2c9feef3e2636ea7e50187f8d764c1c",
     "fileName": "EvilBirthdayPresents.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/AqwBirthday/EvilBirthdayPresents.cs"
   },
@@ -27180,7 +27180,7 @@
     ],
     "path": "Story/AgeOfRuin/CoreAOR.cs",
     "size": 58488,
-    "sha256": "51085a7703dcee7b0deaa3c44fe0eb7aa9a86ea60bfe702518be43598d7e56c7",
+    "sha256": "352bb8924baf76a3f5822270041c99132561170e570dc7b2fe42617edbb5c5b3",
     "fileName": "CoreAOR.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/AgeOfRuin/CoreAOR.cs"
   },
@@ -28490,18 +28490,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/GetPotions.cs"
   },
   {
-    "name": "null",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Ultrasv3/DependenciesUltras/UltraAttempt.cs",
-    "size": 5066,
-    "sha256": "fd08e687aee3a5694d703d64b9578171521fac3ad25265ef9f787ea437edeca1",
-    "fileName": "UltraAttempt.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAttempt.cs"
-  },
-  {
     "name": "UltraEnhancements",
     "description": "Centralised enhancement presets for all Ultra boss scripts.",
     "tags": [
@@ -28543,18 +28531,6 @@
     "sha256": "5740cfeaf4e1363b615680e897ae2d89b33d3464f0bcde974599ec42b03b70e3",
     "fileName": "UltraDeath.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraDeath.cs"
-  },
-  {
-    "name": "null",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Ultrasv3/DependenciesUltras/UltraPartyLayout.cs",
-    "size": 7493,
-    "sha256": "975d70866f30957262139de9f477481fe51a9bc8b215eedcd86a7a74ca4bc495",
-    "fileName": "UltraPartyLayout.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs"
   },
   {
     "name": "UltraPulse",
@@ -28633,18 +28609,6 @@
     "sha256": "c30e21d97cb6df219a20a03ed045ba2fb82ce426b29a3434ab6380f84df1f155",
     "fileName": "UltraAsync.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAsync.cs"
-  },
-  {
-    "name": "null",
-    "description": "null",
-    "tags": [
-      "null"
-    ],
-    "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
-    "size": 33111,
-    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
-    "fileName": "UltraComp.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
   },
   {
     "name": "UltraCounterAttack",
@@ -35219,5 +35183,41 @@
     "sha256": "082e0dc7af4a0dcd96d53b080bcc04e5b35417d2d0701d0c7e41ebb02215834f",
     "fileName": "3BookOfIce.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/ArchMage/Books/3BookOfIce.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraAttempt.cs",
+    "size": 5066,
+    "sha256": "fd08e687aee3a5694d703d64b9578171521fac3ad25265ef9f787ea437edeca1",
+    "fileName": "UltraAttempt.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraAttempt.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
+    "size": 33111,
+    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
+    "fileName": "UltraComp.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
+  },
+  {
+    "name": "null",
+    "description": "null",
+    "tags": [
+      "null"
+    ],
+    "path": "Ultrasv3/DependenciesUltras/UltraPartyLayout.cs",
+    "size": 7493,
+    "sha256": "975d70866f30957262139de9f477481fe51a9bc8b215eedcd86a7a74ca4bc495",
+    "fileName": "UltraPartyLayout.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraPartyLayout.cs"
   }
 ]

@@ -1082,22 +1082,19 @@ public class CoreBots
             if (CheckInventory(item, toInv: false))
                 counter++;
 
-        // Names alone do not identify the destination pool in Game4000.
+        // Names alone do not identify the item's Space.
         // Unbank and BuyItem perform checks once the actual item data is known.
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (UsesCategoryInventory())
+        if (Bot.Inventory.HasCategories)
             return;
 
         int requiredSlots = items.Length - counter;
 
         // Attempt to bank misc AC items to free up space if needed
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (requiredSlots > 1 && InventoryBagFreeSlots < requiredSlots)
+        if (requiredSlots > 1 && Bot.Inventory.FreeSlots < requiredSlots)
             BankACMisc(requiredSlots);
 
         // Re-check free slots and alert if still insufficient
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (InventoryBagFreeSlots < requiredSlots)
+        if (Bot.Inventory.FreeSlots < requiredSlots)
         {
             string plural = requiredSlots != 1 ? "s" : "";
             Logger(
@@ -1141,8 +1138,7 @@ public class CoreBots
 
             if (inBank && (!inInventory || !inHouse))
             {
-                // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                if (UsesCategoryInventory())
+                if (Bot.Inventory.HasCategories)
                 {
                     InventoryItem? categoryItem = Bot.Bank.Items?.FirstOrDefault(candidate =>
                         candidate != null && candidate.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
@@ -1151,11 +1147,11 @@ public class CoreBots
 
                     if (!HasSpaceFor(categoryItem))
                     {
-                        Logger($"The {InventoryPoolFor(categoryItem)} inventory is full. Attempting to make room.");
+                        Logger($"The {Bot.Inventory.GetPool(categoryItem)} inventory is full. Attempting to make room.");
                         BankInventoryPoolFor(categoryItem);
                         if (!HasSpaceFor(categoryItem))
                         {
-                            Logger($"The {InventoryPoolFor(categoryItem)} inventory is still full. Please clear space and restart.",
+                            Logger($"The {Bot.Inventory.GetPool(categoryItem)} inventory is still full. Please clear space and restart.",
                                 messageBox: true, stopBot: true);
                             return;
                         }
@@ -1164,8 +1160,7 @@ public class CoreBots
                 else
                 {
                     if (
-                        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                        InventoryBagFreeSlots <= 0
+                        Bot.Inventory.FreeSlots <= 0
                         && Bot.Inventory.Slots != 0
                         && Bot.Inventory.UsedSlots >= Bot.Inventory.Slots
                     )
@@ -1180,14 +1175,12 @@ public class CoreBots
 
                     //Retry after banking misc stuff
                     if (
-                        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                        InventoryBagFreeSlots <= 0
+                        Bot.Inventory.FreeSlots <= 0
                         && Bot.Inventory.Slots != 0
                         && Bot.Inventory.UsedSlots >= Bot.Inventory.Slots
                     )
                     {
-                        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                        if (InventoryBagFreeSlots <= 0)
+                        if (Bot.Inventory.FreeSlots <= 0)
                             Logger($"⚠️ Your inventory is full ({Bot.Inventory.UsedSlots}/{Bot.Inventory.Slots}) — please make {requiredSpaces} space(s) and restart the bot.",
                                 messageBox: true,
                                 stopBot: true
@@ -1290,11 +1283,9 @@ public class CoreBots
                 }
 
                 if (
-                    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                    UsesCategoryInventory()
+                    Bot.Inventory.HasCategories
                         ? !HasSpaceFor(bankItem)
-                        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                        : InventoryBagFreeSlots <= 0
+                        : Bot.Inventory.FreeSlots <= 0
                             && Bot.Inventory.Slots != 0
                             && Bot.Inventory.UsedSlots >= Bot.Inventory.Slots
                 )
@@ -1926,8 +1917,7 @@ public class CoreBots
                         Relogin(
                             "Inventory de-sync (AE Issue) detected, relogging so the bot can continue"
                         );
-                        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                        if (UsesCategoryInventory() ? !HasSpaceFor(item, buy_quant) : InventoryBagFreeSlots < 1)
+                        if (Bot.Inventory.HasCategories ? !HasSpaceFor(item, buy_quant) : Bot.Inventory.FreeSlots < 1)
                             Logger(
                                 "The destination inventory has insufficient space after login. Please clear space.",
                                 stopBot: true
@@ -1978,8 +1968,7 @@ public class CoreBots
             if (item == null)
                 return false;
 
-            // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-            if (UsesCategoryInventory())
+            if (Bot.Inventory.HasCategories)
             {
                 int actualQuantity = _CalcBuyQuantity(item, buy_quant);
                 if (!HasSpaceFor(item, actualQuantity))
@@ -2313,13 +2302,11 @@ public class CoreBots
 
     private void _CheckInventorySpace()
     {
-        // Game4000 purchases are checked in _canBuy using the selected item.
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (UsesCategoryInventory())
+        // With Spaces, purchases are checked in _canBuy using the selected item.
+        if (Bot.Inventory.HasCategories)
             return;
 
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (Bot.Inventory.Slots != 0 && InventoryBagFreeSlots <= 0)
+        if (Bot.Inventory.Slots != 0 && Bot.Inventory.FreeSlots <= 0)
         {
             int usedBefore = Bot.Inventory.UsedSlots;
             Logger(
@@ -2332,8 +2319,7 @@ public class CoreBots
             int usedAfter = Bot.Inventory.UsedSlots;
             int freed = usedBefore - usedAfter;
 
-            // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-            if (InventoryBagFreeSlots <= 0)
+            if (Bot.Inventory.FreeSlots <= 0)
             {
                 Logger(
                     $"Banked {freed} item{(freed != 1 ? "s" : "")} but your inventory is still full. Please clear space manually. Stopping the bot.",
@@ -2344,8 +2330,7 @@ public class CoreBots
             else
             {
                 Logger(
-                    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-                    $"Banked {freed} item{(freed != 1 ? "s" : "")}. {InventoryBagFreeSlots} slot{(InventoryBagFreeSlots != 1 ? "s" : "")} now available.",
+                    $"Banked {freed} item{(freed != 1 ? "s" : "")}. {Bot.Inventory.FreeSlots} slot{(Bot.Inventory.FreeSlots != 1 ? "s" : "")} now available.",
                     "_CheckInventorySpace"
                 );
             }
@@ -3781,110 +3766,38 @@ public class CoreBots
         }
     }
 
-    // BEGIN TEMPORARY Game4000 inventory compatibility helpers.
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    /// <summary>Ordinary bag entries, excluding Game4000 misc items and classes.</summary>
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public int InventoryBagUsedSlots
-    {
-        get
-        {
-            var categories = OpenInventoryCategories();
-            return categories?.CountBag() ?? Bot.Inventory.UsedSlots;
-        }
-    }
+    // The game splits the inventory into Spaces (GLOSSARY: Bag Space, Misc Space); Skua owns the rules.
+    /// <summary>Bag Space in use: the inventory entries that are neither misc items nor classes.</summary>
+    public int InventoryBagUsedSlots => Bot.Inventory.UsedSlots;
 
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public int InventoryBagFreeSlots => Bot.Inventory.Slots - InventoryBagUsedSlots;
+    /// <summary>Free Bag Space.</summary>
+    public int InventoryBagFreeSlots => Bot.Inventory.FreeSlots;
 
-    /// <summary>The current Game4000 misc limit, including server overrides.</summary>
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public int InventoryMiscSlots => OpenInventoryCategories()?.MiscSlots ?? 0;
+    /// <summary>The Misc Space limit, including server overrides; zero on games without Spaces.</summary>
+    public int InventoryMiscSlots => Bot.Inventory.MiscSlots;
 
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public int InventoryMiscUsedSlots => OpenInventoryCategories()?.CountMisc() ?? 0;
+    public int InventoryMiscUsedSlots => Bot.Inventory.MiscUsedSlots;
 
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public int InventoryMiscFreeSlots
-    {
-        get
-        {
-            var categories = OpenInventoryCategories();
-            return categories == null ? 0 : categories.MiscSlots - categories.CountMisc();
-        }
-    }
+    public int InventoryMiscFreeSlots => Bot.Inventory.MiscFreeSlots;
 
     /// <summary>
-    /// Checks the item's destination pool, existing stack, and merge/token space.
-    /// quantity is the actual purchase amount, not the desired final total.
+    /// Whether the item fits its Space, counting an owned stack it tops up and, for shop items,
+    /// the materials and tokens the purchase consumes. quantity is the amount bought, not the final total.
     /// </summary>
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
     public bool HasSpaceFor(ItemBase? item, int quantity = 1)
-    {
-        if (item == null)
-            return false;
-
-        var categories = OpenInventoryCategories();
-        if (categories == null)
-            // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-            return InventoryBagFreeSlots > 0 || Bot.Inventory.Contains(item.ID);
-
-        JObject data = InventorySpaceItemData(item);
-        if (GameInventoryCategories.IsHouse(data))
-            return Bot.House.FreeSlots > 0;
-
-        int freedSlots = item is ShopItem ? categories.FreedBy(data, quantity) : 0;
-        return !categories.IsFullFor(data, Bot.Inventory.Slots, freedSlots);
-    }
-
-    private bool UsesCategoryInventory()
-    {
-        string? result = Bot.Flash.CallGameFunction(
-            "loaderInfo.applicationDomain.hasDefinition", "InvCat");
-        if (string.IsNullOrWhiteSpace(result) || result == "null")
-            throw new InvalidOperationException("Cannot determine the game inventory categories.");
-        return JsonConvert.DeserializeObject<bool>(result);
-    }
-
-    private GameInventoryCategories? OpenInventoryCategories()
-    {
-        return UsesCategoryInventory() ? new GameInventoryCategories(Bot.Flash) : null;
-    }
-
-    // Keep raw fields such as bHouse, TokID, and TokQty that Skua models omit.
-    private JObject InventorySpaceItemData(ItemBase item, JArray? rawItems = null)
-    {
-        string path = item is ShopItem ? "world.shopinfo.items" : "world.bankinfo.items";
-        rawItems ??= Bot.Flash.GetGameObject<JArray>(path);
-        return rawItems?.OfType<JObject>().FirstOrDefault(candidate =>
-            candidate.Value<int?>("ItemID") == item.ID
-            && (item is not ShopItem shop
-                || candidate.Value<int?>("ShopItemID") == shop.ShopItemID))
-            ?? JObject.FromObject(item);
-    }
-
-    private string InventoryPoolFor(ItemBase item)
-    {
-        var categories = OpenInventoryCategories();
-        return categories?.PoolOf(InventorySpaceItemData(item)) ?? "bag";
-    }
+        => item != null && Bot.Inventory.HasSpaceFor(item, quantity);
 
     private InventoryItem[] FilterInventoryPool(InventoryItem[] items, string? pool)
     {
-        if (pool == null || items.Length == 0)
+        if (pool == null || items.Length == 0 || !Bot.Inventory.HasCategories)
             return items;
-
-        var categories = OpenInventoryCategories();
-        if (categories == null)
-            return items;
-
-        JArray? rawItems = Bot.Flash.GetGameObject<JArray>("world.myAvatar.items");
-        return items.Where(item => categories.PoolOf(InventorySpaceItemData(item, rawItems)) == pool).ToArray();
+        return items.Where(item => Bot.Inventory.GetPool(item) == pool).ToArray();
     }
 
+    // Make room in the Space the item goes to.
     private void BankInventoryPoolFor(ItemBase item, int requiredSpaces = 1)
     {
-        switch (InventoryPoolFor(item))
+        switch (Bot.Inventory.GetPool(item))
         {
             case "misc":
                 BankACMisc(requiredSpaces, inventoryPool: "misc");
@@ -3898,135 +3811,8 @@ public class CoreBots
         }
     }
 
-    // Temporary C# port of Game4000 InvCat. The live class supplies misc settings.
-    // A snapshot keeps all inventory entries intact and needs no event subscription.
-    private sealed class GameInventoryCategories
-    {
-        private readonly JArray _items;
-        private readonly HashSet<string> _miscTypes;
-        public int MiscSlots { get; }
-
-        public GameInventoryCategories(IFlashUtil flash)
-        {
-            string? json = flash.CallGameFunction(
-                "loaderInfo.applicationDomain.getDefinition", "InvCat");
-            if (string.IsNullOrWhiteSpace(json) || json == "null")
-                throw new InvalidOperationException("Cannot read the game misc inventory settings.");
-            JObject settings = JObject.Parse(json);
-            MiscSlots = settings.Value<int?>("MISC_SLOTS")
-                ?? throw new InvalidOperationException("The game misc inventory limit is unavailable.");
-            _miscTypes = settings["MISC_TYPES"] is JArray types
-                ? new HashSet<string>(types.Values<string>()!, StringComparer.Ordinal)
-                : throw new InvalidOperationException("The game misc inventory types are unavailable.");
-            _items = flash.GetGameObject<JArray>("world.myAvatar.items")
-                ?? throw new InvalidOperationException("The game inventory is unavailable.");
-        }
-
-        private static bool IsClass(JObject item) => item.Value<string>("sType") == "Class";
-
-        private bool IsMisc(JObject item)
-        {
-            string? type = item.Value<string>("sType");
-            return type != null && _miscTypes.Contains(type)
-                && !(type == "Item" && item["sMeta"]?.Type != JTokenType.Null
-                    && Regex.IsMatch(item.Value<string>("sMeta") ?? "", @"^\s*[0-9]+\s*$"));
-        }
-
-        public static bool IsHouse(JObject item)
-        {
-            string? type = item.Value<string>("sType");
-            return Int(item["bHouse"]) == 1
-                || type == "House" || type == "Wall Item" || type == "Floor Item" || type == "Guild";
-        }
-
-        private bool IsBag(JObject item) => !IsClass(item) && !IsMisc(item) && !IsHouse(item);
-
-        public int CountBag() => _items.OfType<JObject>().Count(IsBag);
-        public int CountMisc() => _items.OfType<JObject>().Count(IsMisc);
-
-        public string PoolOf(JObject item) => IsClass(item) ? "class"
-            : IsHouse(item) ? "house" : IsMisc(item) ? "misc" : "bag";
-
-        private JObject? Owned(int id) => _items.OfType<JObject>().FirstOrDefault(item => Int(item["ItemID"]) == id);
-
-        public bool IsFullFor(JObject item, int bagSlots, int freedSlots = 0)
-        {
-            if (IsClass(item))
-                return false;
-            JObject? owned = Owned(Int(item["ItemID"]));
-            if (owned != null && Int(owned["iQty"]) < Int(owned["iStk"]))
-                return false;
-            return IsMisc(item)
-                ? owned == null && CountMisc() - freedSlots >= MiscSlots
-                : CountBag() - freedSlots >= bagSlots;
-        }
-
-        // Match InvCat.freedBy: only consumed stacks from the output pool count.
-        public int FreedBy(JObject item, int quantity)
-        {
-            if (Owned(Int(item["ItemID"])) != null)
-                return 0;
-            string pool = PoolOf(item);
-            if (pool != "bag" && pool != "misc")
-                return 0;
-
-            double batchSize = Number(item["iQty"]);
-            if (batchSize <= 0) batchSize = 1;
-            double batches = Math.Max(1, Math.Floor(quantity / batchSize));
-            int freed = 0;
-            bool tokenSeen = false;
-            int tokenID = Int(item["TokID"]);
-            bool isToken = Number(item["TokID"]) > 0 && Number(item["TokQty"]) > 0;
-            int tokenNeed = unchecked((int)(Number(item["TokQty"]) * batches));
-
-            if (item["turnin"] is JArray requirements)
-            {
-                foreach (JObject requirement in requirements.OfType<JObject>())
-                {
-                    int id = Int(requirement["ItemID"]);
-                    double consumed = Number(requirement["iQty"]) * batches;
-                    if (isToken && id == tokenID)
-                    {
-                        tokenSeen = true;
-                        consumed += tokenNeed;
-                    }
-                    JObject? owned = Owned(id);
-                    if (owned != null && id != 45739 && PoolOf(owned) == pool
-                        && (owned.Value<string>("sES") == "ar" || Int(owned["iQty"]) <= consumed))
-                        freed++;
-                }
-            }
-
-            if (isToken && !tokenSeen && tokenID != 45739)
-            {
-                JObject? owned = Owned(tokenID);
-                if (owned != null && PoolOf(owned) == pool && Int(owned["iQty"]) <= tokenNeed)
-                    freed++;
-            }
-            return freed;
-        }
-
-        private static double Number(JToken? token)
-        {
-            if (token == null || token.Type == JTokenType.Null) return 0;
-            if (token.Type == JTokenType.Boolean) return token.Value<bool>() ? 1 : 0;
-            string text = token.ToString().Trim();
-            if (text.Length == 0) return 0;
-            return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double value)
-                ? value : double.NaN;
-        }
-
-        private static int Int(JToken? token)
-        {
-            double value = Number(token);
-            return double.IsNaN(value) || double.IsInfinity(value) ? 0 : unchecked((int)Math.Truncate(value));
-        }
-    }
-
-    /// <summary>Whether an ordinary bag entry can fit. Use HasSpaceFor for a specific item.</summary>
-    // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-    public bool HasSpace => InventoryBagFreeSlots > 0;
-    // END TEMPORARY Game4000 inventory compatibility helpers.
+    /// <summary>Whether an ordinary Bag Space entry can fit. Use HasSpaceFor for a specific item.</summary>
+    public bool HasSpace => Bot.Inventory.FreeSlots > 0;
 
     /// <summary>
     /// Completes a quest and chooses any item from it that you don't have (automatically accepts the drop).

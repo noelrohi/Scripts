@@ -1193,7 +1193,7 @@ public class CoreAdvanced
                         );
                     else
                         Core.Logger(
-                            "The bot fetched 0 items to farm. Something must have gone wrong."
+                            "The bot fetched 0 items to farm. Something must have gone wrong. Try re-checking your options, if you picked specificly items, then you'll want stop the script (if it isnt) and change the `Mode` to `Select`, and rerun this script"
                         );
                     break;
                 case 3:
@@ -1203,7 +1203,7 @@ public class CoreAdvanced
                         );
                     else
                         Core.Logger(
-                            "The bot fetched 0 items to farm. Something must have gone wrong."
+                            "The bot fetched 0 items to farm. Something must have gone wrong. Try re-checking your options, if you picked specificly items, then you'll want stop the script (if it isnt) and change the `Mode` to `Select`, and rerun this script"
                         );
                     break;
             }

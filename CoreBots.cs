@@ -87,6 +87,9 @@ public class CoreBots
     public bool BankMiscAC { get; set; } = false;
     public bool BankUnenhancedACGear { get; set; } = false;
 
+    // [Can Change] Whether banking to make room may also bank Boosted Gear (see IsBoostedGear)
+    public bool BankBoostedGear { get; set; } = false;
+
     // [Can Change] Whether you want anti lag features (lag killer, invisible monsters, set to 10 FPS)
     public bool AntiLag { get; set; } = true;
 
@@ -9017,7 +9020,8 @@ public class CoreBots
                 && !item.Equipped
                 && !item.Wearing
                 && !BankingBlackList.Contains(item.Name)
-                && !allProtectedGear.Contains(item.Name);
+                && !allProtectedGear.Contains(item.Name)
+                && (BankBoostedGear || !IsBoostedGear(item));
         }
 
         void LogBankingIntent(InventoryItem[] items)
@@ -9025,6 +9029,34 @@ public class CoreBots
             var itemSummary = string.Join(", ", items.Select(i => $"\"{i.Name}\" x{i.Quantity}"));
             Logger($"🏦 Banking unenhanced AC gear [{items.Length} items]: {itemSummary}");
         }
+    }
+
+    // The meta keys the game reads as boosts: damage against everything or a kind of foe,
+    // then gold, XP, reputation and class points.
+    private static readonly HashSet<string> BoostMetaKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "dmgAll", "Undead", "Human", "Chaos", "Dragonkin", "Orc", "Drakath", "Elemental",
+        "gold", "exp", "rep", "cp",
+    };
+
+    // Equip slots of gear: weapon, armor, helm, cape, pet.
+    private static readonly HashSet<string> GearEquipSlots = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Weapon", "co", "he", "ba", "pe",
+    };
+
+    /// <summary>
+    /// Whether the item is Boosted Gear: a weapon, armor, helm, cape or pet whose meta lists a boost.
+    /// Banking to make room leaves Boosted Gear alone unless <see cref="BankBoostedGear"/> is on.
+    /// </summary>
+    public static bool IsBoostedGear(ItemBase item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.Meta) || !GearEquipSlots.Contains(item.ItemGroup ?? ""))
+            return false;
+
+        return item.Meta
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Any(entry => BoostMetaKeys.Contains(entry.Split(':')[0].Trim()));
     }
 
     private static HashSet<string> CombineGearSets(string[][] gearSets)
@@ -11946,6 +11978,8 @@ public class CoreBots
             BankMiscAC = _BankMiscAC;
         if (CBOBool("BankUnenhancedACGear", out bool _BankUnenhGear))
             BankUnenhancedACGear = _BankUnenhGear;
+        if (CBOBool("BankBoostedGear", out bool _BankBoostedGear))
+            BankBoostedGear = _BankBoostedGear;
         if (CBOBool("LoggerInChat", out bool _LoggerInChat))
             LoggerInChat = _LoggerInChat;
 

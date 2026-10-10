@@ -104,8 +104,8 @@
       "null"
     ],
     "path": "Ultras/CoreEngine.cs",
-    "size": 106622,
-    "sha256": "410a2dd165f79ba0aabf571409473f72a4737198d9e7157497dfd29d43009e2b",
+    "size": 106642,
+    "sha256": "6846e0618a7e695eff81bcd59239b4807cc18b7976610ba01be9d7f72c2cae6b",
     "fileName": "CoreEngine.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultras/CoreEngine.cs"
   },
@@ -28590,8 +28590,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/CoreEnginev3.cs",
-    "size": 119070,
-    "sha256": "9f38c9a15f32f4fdb68624c1b27600eb52bafe4712cf5a35dd54de97f1b589da",
+    "size": 119269,
+    "sha256": "afa517789dc249a320ab357a8d5d2180f07910e23f574077226d31373a5749e5",
     "fileName": "CoreEnginev3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/CoreEnginev3.cs"
   },
@@ -28698,8 +28698,8 @@
       "null"
     ],
     "path": "Ultrasv3/Entwined Eclipse/CoreEngine.cs",
-    "size": 106681,
-    "sha256": "43a03938f2cf1308dd30d2018c3c9da1da1e1b3e54eddb5653b159b8ef9090e6",
+    "size": 106701,
+    "sha256": "6c1b4eb745dd505f4247378ab1b37befc7e8dde661f34f7aca01e6e4a7b6d000",
     "fileName": "CoreEngine.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/Entwined Eclipse/CoreEngine.cs"
   },

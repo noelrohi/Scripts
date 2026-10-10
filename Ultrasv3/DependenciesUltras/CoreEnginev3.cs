@@ -1938,10 +1938,22 @@ public class CoreEnginev3
     }
 
     /// <summary>
-    /// Returns stacks as int (rounded), +1, for legacy code compatibility.
+    /// Returns the aura's stack count from the game's HUD; 0 if missing.
     /// </summary>
     public int GetAuraStacks(string auraName, bool self = false)
-        => (int)Math.Round(GetAuraStacksFloat(auraName, self)) + 1;
+    {
+        if (string.IsNullOrWhiteSpace(auraName))
+            return 0;
+
+        try
+        {
+            return self ? Bot.Self.GetAuraStacks(auraName) : Bot.Target.GetAuraStacks(auraName);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
 
 
     /// <summary>
@@ -3185,7 +3197,7 @@ public class CoreEnginev3
                 return;
         }
 
-        if (energyStacks >= 23)
+        if (energyStacks >= 22)
         {
             if (Cast(4))
                 return;

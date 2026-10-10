@@ -1350,14 +1350,17 @@ public class CoreBots
     private static readonly HashSet<int> Extras = [18927, 38575];
 
     /// <summary>
-    /// Whether bulk or make-room banking must leave the item alone because it's a Favorite.
+    /// Whether bulk or make-room banking, or the trash helper, must leave the item alone because it's a Favorite.
+    /// Logs that it's kept.
     /// </summary>
-    private bool SkipFavoriteInBulkBanking(ItemBase item)
+    /// <param name="item">The item about to be banked or trashed.</param>
+    /// <param name="action">What is skipped, as in "not banking it": "banking" or "trashing".</param>
+    public bool KeepFavorite(ItemBase item, string action = "banking")
     {
         if (!Bot.Inventory.IsFavorited(item.ID))
             return false;
 
-        Logger($"⭐ {item.Name} is a Favorite, not banking it.");
+        Logger($"\"{item.Name}\" is a Favorite, not {action} it.");
         return true;
     }
 
@@ -1417,7 +1420,7 @@ public class CoreBots
                 continue;
             }
 
-            if (bulk && SkipFavoriteInBulkBanking(inventoryItem))
+            if (bulk && KeepFavorite(inventoryItem))
                 continue;
 
             // TEMPORARY Game4000 class-banking guard. Review after the client banking fix.
@@ -1536,7 +1539,7 @@ public class CoreBots
             if (inventoryItem == null)
                 continue;
 
-            if (bulk && SkipFavoriteInBulkBanking(inventoryItem))
+            if (bulk && KeepFavorite(inventoryItem))
                 continue;
 
             // TEMPORARY Game4000 class-banking guard. Review after the client banking fix.
@@ -3013,11 +3016,8 @@ public class CoreBots
                 continue;
 
             // The game's own windows won't discard a Favorite; a raw removeItem packet would.
-            if (Bot.Inventory.IsFavorited(TrashItem.ID))
-            {
-                Logger($"\"{TrashItem.Name}\" is a Favorite, not trashing it.");
+            if (KeepFavorite(TrashItem, "trashing"))
                 continue;
-            }
 
             if (!TrashItem.Coins)
             {
@@ -8762,7 +8762,7 @@ public class CoreBots
                 && !BossGear.Contains(item.Name)
                 && item.Name != BossClass
                 // Making room never banks a Favorite
-                && !Bot.Inventory.IsFavorited(item.ID)
+                && !KeepFavorite(item)
             )
             .ToArray();
 
@@ -8796,7 +8796,7 @@ public class CoreBots
     public void BankACHouseItems()
     {
         var toHouseBank = Bot
-            .House.Items.Where(item => item != null && item.Coins && !item.Equipped && !Bot.Inventory.IsFavorited(item.ID))
+            .House.Items.Where(item => item != null && item.Coins && !item.Equipped && !KeepFavorite(item))
             .Select(item => item.ID)
             .ToArray();
 
@@ -8851,7 +8851,7 @@ public class CoreBots
                 && !BankingBlackList.Contains(item.Name)
                 && !allProtectedGear.Contains(item.Name)
                 && (BankBoostedGear || !IsBoostedGear(item))
-                && !Bot.Inventory.IsFavorited(item.ID);
+                && !KeepFavorite(item);
         }
 
         void LogBankingIntent(InventoryItem[] items)

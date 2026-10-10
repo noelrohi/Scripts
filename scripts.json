@@ -54,8 +54,8 @@
       "null"
     ],
     "path": "CoreBots.cs",
-    "size": 462214,
-    "sha256": "1d7b9120c2be9faf5680ec10caaffec644c2b35624ba53d9329a74b1e8cc0f90",
+    "size": 462270,
+    "sha256": "08dbccd1b6b3e695bb5490ae1010286620c4a07363023627816a11aef8f49086",
     "fileName": "CoreBots.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreBots.cs"
   },
@@ -4735,8 +4735,8 @@
       "null"
     ],
     "path": "Tools/BankAllItems.cs",
-    "size": 4017,
-    "sha256": "28200938164bc9f4c696bca0cf8d96aa67deb0df10c13ed38927e862b2a69b87",
+    "size": 4006,
+    "sha256": "b161290d2394fe588a2bda67bb8745ea368b40b9e29c2b1dc8436b39dbcf35c0",
     "fileName": "BankAllItems.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/BankAllItems.cs"
   },

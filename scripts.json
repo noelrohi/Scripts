@@ -4446,21 +4446,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Good/Paladin.cs"
   },
   {
-    "name": "Bank All Classes",
-    "description": "Banks every unequipped class in the inventory.",
-    "tags": [
-      "bank",
-      "classes",
-      "inventory",
-      "utility"
-    ],
-    "path": "Tools/BankAllClasses.cs",
-    "size": 802,
-    "sha256": "c17ee6f1268e3d986ddc205d94ec1d5f7ec499f8e3ac62a59484832bfad6f2ba",
-    "fileName": "BankAllClasses.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/BankAllClasses.cs"
-  },
-  {
     "name": "Player Finder",
     "description": "Finds a player in a range of roomnumbers, with a specific map name, player name, stop location (wether u want to stop at the player or your default location), and a start and stop range for room#",
     "tags": [

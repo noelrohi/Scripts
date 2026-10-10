@@ -1547,8 +1547,18 @@ public class CoreAdvanced
 
             foreach (dynamic a in data.a)
             {
-                string? auraName = a?.aura?["nam"]?.ToString();
-                if (string.IsNullOrEmpty(auraName) || !auraNames.Contains(auraName))
+                // aura+ lists its auras in "auras"; some aura- packets carry a single "aura".
+                string? auraName = null;
+                foreach (dynamic aura in a?.auras ?? (a?.aura != null ? new[] { a.aura } : Array.Empty<dynamic>()))
+                {
+                    string? name = aura?["nam"]?.ToString();
+                    if (!string.IsNullOrEmpty(name) && auraNames.Contains(name))
+                    {
+                        auraName = name;
+                        break;
+                    }
+                }
+                if (auraName == null)
                     continue;
 
                 // Throttle cooldown

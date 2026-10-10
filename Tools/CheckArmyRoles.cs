@@ -601,8 +601,8 @@ public class CheckArmyRoles
             .Where(x => x.Contains("Chrono") || x.Contains("Time"))
             .ToArray();
 
-        // Check if any Chrono class is found in Inventory or Bank
-        return Bot.Inventory.Items.Concat(Bot.Bank.Items).Any(x => ChronoClasses.Contains(x.Name));
+        // Check if any Chrono class is found in the inventory
+        return Bot.Inventory.Items.Any(x => ChronoClasses.Contains(x.Name));
     }
 
     /// <summary>

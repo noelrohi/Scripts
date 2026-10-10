@@ -1812,7 +1812,6 @@ public class CoreAdvanced
                 : i.Name.Equals(className!, StringComparison.OrdinalIgnoreCase));
 
         ItemBase? itemInv = Bot.Inventory.Items
-            .Concat(Bot.Bank.Items)
             .FirstOrDefault(i => i != null && classMatch(i));
 
         if (itemInv == null)
@@ -1823,19 +1822,6 @@ public class CoreAdvanced
                     : $"Can't level up \"{className}\" because you don't own it."
             );
             return;
-        }
-
-        if (Bot.Bank.Contains(itemInv.ID) && !Bot.Inventory.Contains(itemInv.ID))
-        {
-            Core.Unbank(itemInv.ID);
-            Core.Sleep();
-
-            itemInv = Bot.Inventory.Items.FirstOrDefault(i => i != null && classMatch(i));
-            if (itemInv == null)
-            {
-                Core.Logger("Failed to unbank class item.");
-                return;
-            }
         }
 
         if (itemInv.Upgrade && !Bot.Player.IsMember)

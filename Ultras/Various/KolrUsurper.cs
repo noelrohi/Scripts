@@ -575,30 +575,6 @@ public class LoneWolf_UltraUsurper
         );
 
         if (classItem == null)
-        {
-            Bot.Bank.Open();
-            Bot.Bank.Load();
-            Bot.Sleep(500);
-
-            classItem = Bot.Bank.Items.FirstOrDefault(item =>
-                item != null
-                && item.Category == ItemCategory.Class
-                && item.Name.Equals(requiredClass, StringComparison.OrdinalIgnoreCase)
-            );
-
-            if (classItem != null)
-            {
-                int classItemId = classItem.ID;
-                Bot.Bank.ToInventory(classItemId);
-                Bot.Wait.ForTrue(() => Bot.Inventory.Contains(classItemId), 20);
-
-                classItem = Bot.Inventory.Items.FirstOrDefault(item =>
-                    item != null && item.ID == classItemId
-                );
-            }
-        }
-
-        if (classItem == null)
             return Fail($"{role} does not own the required class: {requiredClass}.");
 
         if (!Bot.Inventory.IsEquipped(classItem.ID))

@@ -242,10 +242,6 @@ public class CoreSDKA
 
             // Complete the quest for obtaining the class
             Core.EnsureComplete(Core.CheckInventory(8523) ? 2086 : 2087);
-
-            // Bank non-solo classes if equipped
-            if (Core.SoloClass != "DoomKnight")
-                Core.ToBank(Core.IsMember ? 8523 : 2083);
         }
 
         // Toiling with Terror | 2088

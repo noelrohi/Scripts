@@ -89,14 +89,6 @@ public class CoreAdvanced
         if (Core.CheckInventory(itemID, quant))
             return;
 
-        // Inventory space check
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (Core.InventoryBagFreeSlots <= 0 && !Bot.Inventory.Contains(itemID))
-        {
-            if (Log) Core.Logger("❌ Inventory full, cannot buy items.");
-            return;
-        }
-
         Core.Join(map);
         Bot.Wait.ForMapLoad(map);
         Core.JumpWait();
@@ -117,6 +109,8 @@ public class CoreAdvanced
             return;
         }
 
+        int effectiveShopQuant = item.Quantity > 0 ? item.Quantity : shopQuant;
+
         // House space check if item is a house-storable category
         if (!string.IsNullOrEmpty(item.CategoryString) && Core.CategoryStrings.Contains(item.CategoryString))
         {
@@ -132,8 +126,13 @@ public class CoreAdvanced
                 return;
             }
         }
-
-        int effectiveShopQuant = item.Quantity > 0 ? item.Quantity : shopQuant;
+        // Check the Space the item goes to, so a full Bag Space doesn't block a misc item.
+        else if (!Core.HasSpaceFor(item, effectiveShopQuant))
+        {
+            if (Log)
+                Core.Logger($"❌ Your {(Bot.Inventory.GetPool(item) == "misc" ? "Misc Space" : "Bag Space")} is full, cannot buy \"{item.Name}\".");
+            return;
+        }
 
         _BuyItem(map, shopID, item, quant, effectiveShopQuant, shopItemID, index, Log);
     }

@@ -18,8 +18,8 @@
       "null"
     ],
     "path": "CoreAdvanced.cs",
-    "size": 175935,
-    "sha256": "b05f3fd3bfff3cc274bd71928b7f88426583132aadcdc02054a53ee7f44e5d49",
+    "size": 176169,
+    "sha256": "54eea4c3737526fc20464cd70ef6ad0e45c543f66f0de746ec2e29a35da0c12c",
     "fileName": "CoreAdvanced.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreAdvanced.cs"
   },
@@ -54,8 +54,8 @@
       "null"
     ],
     "path": "CoreBots.cs",
-    "size": 468903,
-    "sha256": "bf816c0809612d287c62b761a40b90bc628dfc20c65338ca241c7f796d0b806b",
+    "size": 462510,
+    "sha256": "f4d03601470b6aa1a7ab307be9c44ba0b8b0c60abda09166dedb8e597aa867a8",
     "fileName": "CoreBots.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreBots.cs"
   },
@@ -104,8 +104,8 @@
       "null"
     ],
     "path": "Ultras/CoreEngine.cs",
-    "size": 106622,
-    "sha256": "410a2dd165f79ba0aabf571409473f72a4737198d9e7157497dfd29d43009e2b",
+    "size": 106689,
+    "sha256": "e627714c0484aac2a2240d8ea771e13d42cd62ab194fa155417012c7c003a48f",
     "fileName": "CoreEngine.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultras/CoreEngine.cs"
   },
@@ -130,8 +130,8 @@
       "null"
     ],
     "path": "Ultras/CoreUltra.cs",
-    "size": 62963,
-    "sha256": "4b3bede16260780259ba9a9716761c7a25c198d5862c81e27d56ef0a696ceb81",
+    "size": 62733,
+    "sha256": "d4f4812f8e9267016788f041ced7eecd310637cfe85dd4116771a39e4b20cfe0",
     "fileName": "CoreUltra.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultras/CoreUltra.cs"
   },
@@ -4446,21 +4446,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Good/Paladin.cs"
   },
   {
-    "name": "Bank All Classes",
-    "description": "Banks every unequipped class in the inventory.",
-    "tags": [
-      "bank",
-      "classes",
-      "inventory",
-      "utility"
-    ],
-    "path": "Tools/BankAllClasses.cs",
-    "size": 802,
-    "sha256": "c17ee6f1268e3d986ddc205d94ec1d5f7ec499f8e3ac62a59484832bfad6f2ba",
-    "fileName": "BankAllClasses.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/BankAllClasses.cs"
-  },
-  {
     "name": "Player Finder",
     "description": "Finds a player in a range of roomnumbers, with a specific map name, player name, stop location (wether u want to stop at the player or your default location), and a start and stop range for room#",
     "tags": [
@@ -4651,8 +4636,8 @@
       "seasonal"
     ],
     "path": "Tools/CheckArmyRoles.cs",
-    "size": 28273,
-    "sha256": "3222ff75a5b461346e6cc9c4b716a5fdcc619846cf565b8e21ef1f4e9eb6056a",
+    "size": 28246,
+    "sha256": "9ec081995658d1727149ae86e7dd91477e97fd69c855c3aef05fda7232f6b906",
     "fileName": "CheckArmyRoles.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/CheckArmyRoles.cs"
   },
@@ -4696,8 +4681,8 @@
       "class points"
     ],
     "path": "Tools/RankUpAllClasses.cs",
-    "size": 3830,
-    "sha256": "61049412ca8790c3c9ed788415431f7b3a7b569e005df576a850c2ed04032678",
+    "size": 2496,
+    "sha256": "ebdba9b9dfdefb035639a3a6d0c5c22d77547b1e6d175d6576f418ba8a75f09f",
     "fileName": "RankUpAllClasses.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/RankUpAllClasses.cs"
   },
@@ -4750,8 +4735,8 @@
       "null"
     ],
     "path": "Tools/BankAllItems.cs",
-    "size": 3959,
-    "sha256": "4fee12f5a0ecdffaf3ceb73d349cc30433f057b634adb144b1e77d42a9f8ea28",
+    "size": 4006,
+    "sha256": "b161290d2394fe588a2bda67bb8745ea368b40b9e29c2b1dc8436b39dbcf35c0",
     "fileName": "BankAllItems.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/BankAllItems.cs"
   },
@@ -4877,8 +4862,8 @@
       "lonewolf12"
     ],
     "path": "Ultras/Various/KolrUsurper.cs",
-    "size": 88052,
-    "sha256": "9a71a7bbaaf7808a67b6947a1ee0d2b369edf6e7e8c6ce10164ea6b9a61ffe89",
+    "size": 87271,
+    "sha256": "c78a36196127ae829401bbe252be377d430de9bd4b72e13fdeea8ddc2ea1d6bf",
     "fileName": "KolrUsurper.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultras/Various/KolrUsurper.cs"
   },
@@ -11697,8 +11682,8 @@
       "null"
     ],
     "path": "Evil/SDKA/CoreSDKA.cs",
-    "size": 40073,
-    "sha256": "3e91e692f1cebbd0af0cc11018d9111fc8537e000ca04236a76ade2051e9a57c",
+    "size": 39913,
+    "sha256": "f9db553b7e1421f7cd1b4afd44328d523afc47a3e4e01ec4e55d5d0830052e6e",
     "fileName": "CoreSDKA.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Evil/SDKA/CoreSDKA.cs"
   },
@@ -12155,8 +12140,8 @@
       "all"
     ],
     "path": "Other/Classes/0AllClasses.cs",
-    "size": 46675,
-    "sha256": "90f5b0663a7beabe95800327e4552b564d7ffb3a9c1d015fcc331097689c2e0c",
+    "size": 42919,
+    "sha256": "f78abfdeeec02b276819d6ea6ed61339f009088233aa1ab266da00003a3a5199",
     "fileName": "0AllClasses.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/0AllClasses.cs"
   },
@@ -12645,8 +12630,8 @@
       "null"
     ],
     "path": "Other/FarmJoeKits/CoreFarmerJoe.cs",
-    "size": 54886,
-    "sha256": "d38c8489ca5091ed762ee679ce86c32adb2fcaf5f45ec40ba1b52ac46c368522",
+    "size": 53684,
+    "sha256": "71cab9ce888128258fdbfbb8a8591106c34c79541c4f9fd39883ba665889f87a",
     "fileName": "CoreFarmerJoe.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/FarmJoeKits/CoreFarmerJoe.cs"
   },
@@ -28605,8 +28590,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/CoreEnginev3.cs",
-    "size": 119070,
-    "sha256": "9f38c9a15f32f4fdb68624c1b27600eb52bafe4712cf5a35dd54de97f1b589da",
+    "size": 119130,
+    "sha256": "966315c6ff35fbf161d90b815a61db507e182e742bc6b5a3975b74c707cc4ad1",
     "fileName": "CoreEnginev3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/CoreEnginev3.cs"
   },
@@ -28713,8 +28698,8 @@
       "null"
     ],
     "path": "Ultrasv3/Entwined Eclipse/CoreEngine.cs",
-    "size": 106681,
-    "sha256": "43a03938f2cf1308dd30d2018c3c9da1da1e1b3e54eddb5653b159b8ef9090e6",
+    "size": 106748,
+    "sha256": "510d57f9dc131fd3e7c8bbcd753f4e246252e093dd776dfa0fe358cca8442ce3",
     "fileName": "CoreEngine.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/Entwined Eclipse/CoreEngine.cs"
   },
@@ -28743,8 +28728,8 @@
       "null"
     ],
     "path": "Ultrasv3/Entwined Eclipse/CoreUltra.cs",
-    "size": 63881,
-    "sha256": "e0261daa9a8551b9c0531ccc411b751999a3e64bfd23886d558af44c15e63547",
+    "size": 63651,
+    "sha256": "ba265a78a0edb73c581d12917272db3b33ebddc10790cdd4d49d012bfb7f01c5",
     "fileName": "CoreUltra.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/Entwined Eclipse/CoreUltra.cs"
   },
@@ -29877,8 +29862,8 @@
       "null"
     ],
     "path": "Prototypes/FourHarbingers/CoreFourHarbingers.cs",
-    "size": 23796,
-    "sha256": "fc114fe1202809551926e55e77bee181b84836295343e2081737461c5bb08088",
+    "size": 23046,
+    "sha256": "09c3f05f52337110f8a462fc761112337e0a52fe5334bc3a90d5f646be7c8a86",
     "fileName": "CoreFourHarbingers.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/FourHarbingers/CoreFourHarbingers.cs"
   },

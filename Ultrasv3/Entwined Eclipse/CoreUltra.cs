@@ -1223,9 +1223,8 @@ public class CoreUltra
 
         Bot.Log($"[EquipClassSync] - Equipping class: {myClass}");
 
-        // Search inventory + bank and only allow actual class-category items
+        // Search the inventory and only allow actual class-category items
         InventoryItem? classItem = (Bot.Inventory.Items ?? [])
-            .Concat(Bot.Bank.Items ?? [])
             .FirstOrDefault(item =>
                 item != null
                 && item.ID > 0
@@ -1244,10 +1243,6 @@ public class CoreUltra
 
             return string.Empty;
         }
-
-        // Ensure the exact class item ID is in inventory
-        if (!(Bot.Inventory.Items?.Any(i => i?.ID == classItem.ID) ?? false))
-            Bot.Bank.ToInventory(classItem.ID);
 
         // Re-fetch from inventory by ID to avoid same-name armor collisions
         InventoryItem? equippedClass = Bot.Inventory.Items?

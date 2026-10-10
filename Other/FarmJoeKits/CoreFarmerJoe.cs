@@ -455,7 +455,7 @@ public class CoreFarmerJoe
             return cached;
 
         InventoryItem? item = Bot
-            .Inventory.Items.Concat(Bot.Bank.Items)
+            .Inventory.Items
             .FirstOrDefault(i =>
                 i.Name?.Trim().Equals(className, StringComparison.OrdinalIgnoreCase) == true
                 && i.Category == ItemCategory.Class
@@ -649,7 +649,6 @@ public class CoreFarmerJoe
             {
                 Bot.Log($"Level Handler: {level} bracket");
                 handler();
-                BankAllUnusedClasses();
             }
             // Reset enhancement flag for next bracket
             HasEnhancedThisBracket = false;
@@ -1343,38 +1342,6 @@ public class CoreFarmerJoe
 
         found = pool.FirstOrDefault(x => Core.CheckInventory(x));
         return found ?? current;
-    }
-
-    private static void BankAllUnusedClasses()
-    {
-        // More explicit null handling instead of relying on spread operator
-        var keepList = new List<string>();
-        if (!string.IsNullOrWhiteSpace(Core.SoloClass))
-            keepList.Add(Core.SoloClass!);
-        if (!string.IsNullOrWhiteSpace(Core.FarmClass))
-            keepList.Add(Core.FarmClass!);
-        if (!string.IsNullOrWhiteSpace(Core.DodgeClass))
-            keepList.Add(Core.DodgeClass!);
-
-        string[] keep = [.. keepList.Distinct(StringComparer.OrdinalIgnoreCase)];
-
-        // Get ALL classes from inventory (actual items)
-        string[] toBank = Bot.Inventory.Items
-            .Where(x => x != null
-                && x.Category == ItemCategory.Class
-                && !keep.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-            .Select(x => x.Name)
-            .ToArray();
-
-        if (toBank.Length > 0)
-        {
-            Core.Logger($"Banking unused classes: {string.Join(", ", toBank)}");
-            Core.ToBank(toBank);
-        }
-        else
-        {
-            Core.Logger("No unused classes to bank");
-        }
     }
 
     private static void RankIfNeeded(string? className, string label)

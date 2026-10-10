@@ -99,28 +99,10 @@ public class CoreFourHarbingers
 
     public bool EquipClass(string className)
     {
-        if (!Core.CheckInventory(className, toInv: false))
+        if (!Bot.Inventory.Contains(className))
         {
             Core.Logger($"WARNING: {className} is required for this setup.", messageBox: true);
             return false;
-        }
-
-        if (!Bot.Inventory.Contains(className))
-        {
-            // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-            if (Core.InventoryBagFreeSlots <= 0)
-            {
-                Core.Logger($"WARNING: {className} is in the bank, but no free inventory slot is available.", messageBox: true);
-                return false;
-            }
-
-            Bot.Bank.EnsureToInventory(className);
-            Bot.Wait.ForTrue(() => Bot.Inventory.Contains(className), 20);
-            if (!Bot.Inventory.Contains(className))
-            {
-                Core.Logger($"WARNING: {className} could not be moved from the bank.", messageBox: true);
-                return false;
-            }
         }
 
         Core.Equip(className);

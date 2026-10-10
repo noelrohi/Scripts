@@ -1764,7 +1764,8 @@ public class CoreEngine
               ?.Any(a => a?.Name != null && !auraName.Equals(a.Name, StringComparison.OrdinalIgnoreCase)) == true;
 
     /// <summary>
-    /// Returns stacks as a float (preserves fractional stacks); 0 if missing.
+    /// Returns the aura's raw effect value (the server's <c>val</c>, which can be fractional); 0 if missing.
+    /// This is not the stack count for every aura: use <see cref="GetAuraStacks"/> for that.
     /// </summary>
     public float GetAuraStacksFloat(string auraName, bool self = false)
         => (self
@@ -1772,10 +1773,22 @@ public class CoreEngine
             : Bot.Target.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value) ?? 0f;
 
     /// <summary>
-    /// Returns stacks as int (rounded), +1, for legacy code compatibility.
+    /// Returns the aura's stack count from the game's HUD; 0 if missing.
     /// </summary>
     public int GetAuraStacks(string auraName, bool self = false)
-        => (int)Math.Round(GetAuraStacksFloat(auraName, self)) + 1;
+    {
+        if (string.IsNullOrWhiteSpace(auraName))
+            return 0;
+
+        try
+        {
+            return self ? Bot.Self.GetAuraStacks(auraName) : Bot.Target.GetAuraStacks(auraName);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
 
 
     /// <summary>
@@ -1791,15 +1804,11 @@ public class CoreEngine
     }
 
     /// <summary>
-    /// Checks if the aura has at least the specified quantity of stacks (int or float).
+    /// Checks if the aura has at least the specified number of stacks on the game's HUD.
     /// Returns false if aura is missing.
     /// </summary>
     public bool Stacks(string auraName, float quantity, bool self = false)
-        => !string.IsNullOrWhiteSpace(auraName)
-           && quantity > 0f
-           && ((self
-                ? Bot.Self.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value
-                : Bot.Target.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value) ?? 0f) >= quantity;
+        => quantity > 0f && GetAuraStacks(auraName, self) >= quantity;
 
     /// <summary>
     /// Returns true if the aura has less than or equal to the specified duration in seconds remaining.
@@ -2861,7 +2870,7 @@ public class CoreEngine
         int energyStacks = GetAuraStacks("Residual Energy", true);
 
         // If we are safely building stacks and hit our optimal low-mana/high-stack window
-        if (energyStacks >= 6 && Bot.Player.Mana < 40)
+        if (energyStacks >= 5 && Bot.Player.Mana < 40)
         {
             if (Cast(4)) // CORVAK!
                 return;
@@ -3090,7 +3099,7 @@ public class CoreEngine
         if (IsHealthLow(50))
             if (Cast(2))
                 return;
-        if (GetAuraStacks("Doom", true) > 9)
+        if (GetAuraStacks("Doom", true) >= 9)
             if (Cast(4))
                 return;
         if (Cast(1))
@@ -3242,8 +3251,8 @@ public class CoreEngine
     {
         // Snapshot
         int mana = Bot.Player.Mana;
-        int rift = (int)(Bot.Self.GetAura("Temporal Rift")?.Value ?? 0);
-        int rounds = (int)(Bot.Self.GetAura("Rounds Empty")?.Value ?? 0);
+        int rift = GetAuraStacks("Temporal Rift", true);
+        int rounds = GetAuraStacks("Rounds Empty", true);
 
         // High mana phase
         if (mana > 20)
@@ -3252,7 +3261,7 @@ public class CoreEngine
             {
                 if (Cast(4))
                 {
-                    Bot.Wait.ForTrue(() => (int)(Bot.Self.GetAura("Temporal Rift")?.Value ?? 0) == 0, 20);
+                    Bot.Wait.ForTrue(() => GetAuraStacks("Temporal Rift", true) == 0, 20);
                     return;
                 }
             }

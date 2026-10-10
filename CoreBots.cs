@@ -1359,15 +1359,29 @@ public class CoreBots
     private static readonly HashSet<int> Extras = [18927, 38575];
 
     /// <summary>
+    /// Whether bulk or make-room banking must leave the item alone because it's a Favorite.
+    /// </summary>
+    private bool SkipFavoriteInBulkBanking(ItemBase item)
+    {
+        if (!Bot.Inventory.IsFavorited(item.ID))
+            return false;
+
+        Logger($"⭐ {item.Name} is a Favorite, not banking it.");
+        return true;
+    }
+
+    /// <summary>
     /// Transfers specified items by name from inventory/house to bank.
     /// Skips classes, equipped, blacklisted, or nonexistent items.
     /// Retries up to 5 times on failures. Handles house items separately.
     /// </summary>
-    /// <param name="items">Item names to move to bank.</param>
+    /// <param name="items">Item names to move to bank. Banking several skips Favorites; banking one banks it even if it's a Favorite.</param>
     public void ToBank(params string[] items)
     {
         if (items == null || !items.Any(name => !string.IsNullOrEmpty(name)))
             return;
+
+        bool bulk = items.Where(name => !string.IsNullOrEmpty(name)).Distinct().Count() > 1;
 
         List<ItemCategory> whiteList =
     [
@@ -1411,6 +1425,9 @@ public class CoreBots
                 DebugLogger($"❌ {item} not found in inventory, skipping.", "ToBank Debug");
                 continue;
             }
+
+            if (bulk && SkipFavoriteInBulkBanking(inventoryItem))
+                continue;
 
             // TEMPORARY Game4000 class-banking guard. Review after the client banking fix.
             // Game4000 classes cannot be banked, including AC-tagged classes.
@@ -1497,11 +1514,13 @@ public class CoreBots
     /// Skips classes, equipped, blacklisted, or nonexistent items.
     /// Retries up to 20 times on failures. Handles house items separately.
     /// </summary>
-    /// <param name="items">Item IDs to move to bank.</param>
+    /// <param name="items">Item IDs to move to bank. Banking several skips Favorites; banking one banks it even if it's a Favorite.</param>
     public void ToBank(params int[] items)
     {
         if (items == null || !items.Any(id => id > 0))
             return;
+
+        bool bulk = items.Where(id => id > 0).Distinct().Count() > 1;
 
         List<ItemCategory> whiteList =
     [
@@ -1524,6 +1543,9 @@ public class CoreBots
                 .FirstOrDefault(x => x?.ID == itemID);
 
             if (inventoryItem == null)
+                continue;
+
+            if (bulk && SkipFavoriteInBulkBanking(inventoryItem))
                 continue;
 
             // TEMPORARY Game4000 class-banking guard. Review after the client banking fix.
@@ -2447,6 +2469,19 @@ public class CoreBots
     }
 
     /// <summary>
+    /// Whether a sale of the item must be refused: it's a Favorite and <c>Bot.Shops.ProtectFavorites</c> is on.
+    /// The game's own windows won't sell a Favorite, but a raw sellItem packet would.
+    /// </summary>
+    private bool RefuseToSellFavorite(InventoryItem item)
+    {
+        if (!Bot.Shops.ProtectFavorites || !Bot.Inventory.IsFavorited(item.ID))
+            return false;
+
+        Logger($"\"{item.Name}\" is a Favorite, not selling it. A Script may set Bot.Shops.ProtectFavorites = false to allow it.");
+        return true;
+    }
+
+    /// <summary>
     /// Sells a item till you have the desired quantity
     /// </summary>
     /// <param name="itemName">Name of the item</param>
@@ -2458,6 +2493,9 @@ public class CoreBots
             !(quant > 0 ? CheckInventory(itemName, quant) : CheckInventory(itemName))
             || !Bot.Inventory.TryGetItem(itemName, out InventoryItem? item)
         )
+            return;
+
+        if (RefuseToSellFavorite(item!))
             return;
 
         InventoryItem? Item = null;
@@ -2548,6 +2586,9 @@ public class CoreBots
             Logger($"Item with ID {itemID} not found.");
             return;
         }
+
+        if (RefuseToSellFavorite(item))
+            return;
 
         string itemName = item.Name;
 
@@ -2985,6 +3026,13 @@ public class CoreBots
                 || TrashItem.Category == ItemCategory.Class
             )
                 continue;
+
+            // The game's own windows won't discard a Favorite; a raw removeItem packet would.
+            if (Bot.Inventory.IsFavorited(TrashItem.ID))
+            {
+                Logger($"\"{TrashItem.Name}\" is a Favorite, not trashing it.");
+                continue;
+            }
 
             if (!TrashItem.Coins)
             {
@@ -8863,7 +8911,7 @@ public class CoreBots
 
     /// <summary>
     /// Banks miscellaneous AC-tagged inventory items from specific allowed categories,
-    /// excluding equipped items, blacklisted names, and explicitly exempt item IDs.
+    /// excluding equipped items, Favorites, blacklisted names, and explicitly exempt item IDs.
     /// Also includes <see cref="ItemCategory.ServerUse"/> if no boosts are active,
     /// and optional CBO flags (e.g., doGoldBoost, doRepBoost) are disabled.
     /// </summary>
@@ -8927,6 +8975,8 @@ public class CoreBots
                 && item.Name != DodgeClass
                 && !BossGear.Contains(item.Name)
                 && item.Name != BossClass
+                // Making room never banks a Favorite
+                && !Bot.Inventory.IsFavorited(item.ID)
             )
             .ToArray();
 
@@ -8955,12 +9005,12 @@ public class CoreBots
     }
 
     /// <summary>
-    /// Banks miscellaneous AC-tagged non-equipped House items.
+    /// Banks miscellaneous AC-tagged non-equipped House items, except Favorites.
     /// </summary>
     public void BankACHouseItems()
     {
         var toHouseBank = Bot
-            .House.Items.Where(item => item != null && item.Coins && !item.Equipped)
+            .House.Items.Where(item => item != null && item.Coins && !item.Equipped && !Bot.Inventory.IsFavorited(item.ID))
             .Select(item => item.ID)
             .ToArray();
 
@@ -8973,7 +9023,7 @@ public class CoreBots
 
     /// <summary>
     /// Banks unenhanced AdventureCoins (AC) gear from whitelisted categories or weapons,
-    /// excluding equipped items and those in any active gear set (Solo/Farm/Boss/Dodge).
+    /// excluding equipped items, Favorites and those in any active gear set (Solo/Farm/Boss/Dodge).
     /// Optionally limits how many items are banked based on requiredSpaces.
     /// </summary>
     /// <param name="requiredSpaces">Max number of items to bank; 0 means all.</param>
@@ -9014,7 +9064,8 @@ public class CoreBots
                 && !item.Wearing
                 && !BankingBlackList.Contains(item.Name)
                 && !allProtectedGear.Contains(item.Name)
-                && (BankBoostedGear || !IsBoostedGear(item));
+                && (BankBoostedGear || !IsBoostedGear(item))
+                && !Bot.Inventory.IsFavorited(item.ID);
         }
 
         void LogBankingIntent(InventoryItem[] items)

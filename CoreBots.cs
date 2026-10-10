@@ -2979,6 +2979,7 @@ public class CoreBots
                 !Bot.Inventory.TryGetItem(item, out InventoryItem? TrashItem)
                 || TrashItem == null
                 || TrashItem.Temp
+                || TrashItem.Category == ItemCategory.Class
             )
                 continue;
 
@@ -7005,8 +7006,8 @@ public class CoreBots
         "Void Highlord"
     };
 
-        // Find all class items currently stored in inventory or bank
-        List<InventoryItem> ownedClasses = Bot.Inventory.Items.Concat(Bot.Bank.Items).Where(i => i.Category == ItemCategory.Class).ToList();
+        // Find all class items in the inventory
+        List<InventoryItem> ownedClasses = Bot.Inventory.Items.Where(i => i.Category == ItemCategory.Class).ToList();
 
         // Find first owned DoT class in inventory
         InventoryItem? ownedDotClass = dotClasses
@@ -7120,7 +7121,6 @@ public class CoreBots
 
         bool RankFiveOrHigher(string className) =>
             Bot.Inventory.Items
-                .Concat(Bot.Bank.Items)
                 .Any(classItem =>
                     classItem.Name.Equals(className, StringComparison.OrdinalIgnoreCase)
                     && classItem.Category == ItemCategory.Class
@@ -8008,12 +8008,12 @@ public class CoreBots
     /// </param>
     /// <returns>
     /// The class rank of the player or specified class.
-    /// If the player is not found or the class is not in inventory or bank, <c>1</c> is returned by default.
+    /// If the player is not found or the class is not in the inventory, <c>1</c> is returned by default.
     /// </returns>
     /// <remarks>
     /// The method first checks if the player is available. If <paramref name="CurrentClass"/> is set to <c>true</c>,
     /// the rank of the current equipped class is returned. Otherwise, it searches for the specified class in the player's
-    /// inventory and bank, and calculates the rank based on the class quantity (Class Xp).
+    /// inventory, and calculates the rank based on the class quantity (Class Xp).
     /// </remarks>
     public int CheckClassRank(bool CurrentClass = false, string? ClassName = null)
     {
@@ -8033,9 +8033,9 @@ public class CoreBots
         }
         else
         {
-            // Find the class item from the inventory or bank
+            // Find the class item in the inventory
             InventoryItem? Class = Bot
-                .Inventory.Items.Concat(Bot.Bank.Items)
+                .Inventory.Items
                 .Find(i => i.Name == ClassName && i.Category == ItemCategory.Class);
 
             if (ClassName != null && Class != null)
@@ -8398,7 +8398,7 @@ public class CoreBots
             case ClassType.Farm:
                 if (FarmClass != "Generic" && FarmClass != "(Current)"
                     && !string.IsNullOrEmpty(FarmClass)
-                    && CheckInventory(FarmClass))
+                    && Bot.Inventory.Contains(FarmClass))
                     if (_equipClass(usingFarmGeneric, FarmClass, FarmUseMode, FarmGearOn, FarmGear))
                         return;
                 break;
@@ -8406,7 +8406,7 @@ public class CoreBots
             case ClassType.Solo:
                 if (SoloClass != "Generic" && SoloClass != "(Current)"
                     && !string.IsNullOrEmpty(SoloClass)
-                    && CheckInventory(SoloClass))
+                    && Bot.Inventory.Contains(SoloClass))
                     if (_equipClass(usingSoloGeneric, SoloClass, SoloUseMode, SoloGearOn, SoloGear))
                         return;
                 break;
@@ -8414,7 +8414,7 @@ public class CoreBots
             case ClassType.Dodge:
                 if (DodgeClass != "Generic" && DodgeClass != "(Current)"
                     && !string.IsNullOrEmpty(DodgeClass)
-                    && CheckInventory(DodgeClass))
+                    && Bot.Inventory.Contains(DodgeClass))
                     if (_equipClass(usingDodgeGeneric, DodgeClass, DodgeUseMode, DodgeGearOn, DodgeGear))
                         return;
                 break;
@@ -8422,7 +8422,7 @@ public class CoreBots
             case ClassType.Boss:
                 if (BossClass != "Generic" && BossClass != "(Current)"
                     && !string.IsNullOrEmpty(BossClass)
-                    && CheckInventory(BossClass))
+                    && Bot.Inventory.Contains(BossClass))
                     if (_equipClass(usingBossGeneric, BossClass, BossUseMode, BossGearOn, BossGear))
                         return;
                 break;
@@ -8446,15 +8446,15 @@ public class CoreBots
                 return false;
             }
 
-            // Check all inventorys (inv and bank) for class
-            if (!CheckInventory(className))
+            // Check the inventory for class
+            if (!Bot.Inventory.Contains(className))
             {
                 Logger("You do not own " + className);
                 return false;
             }
 
             // Get class ID once
-            InventoryItem? classItem = Bot.Inventory.Items.Concat(Bot.Bank.Items)
+            InventoryItem? classItem = Bot.Inventory.Items
                 .FirstOrDefault(x =>
                     x.Name.Equals(className, StringComparison.OrdinalIgnoreCase)
                     && x.Category == ItemCategory.Class);
@@ -8470,13 +8470,6 @@ public class CoreBots
                 Logger($"Class \"{className}\" found but not categorized as Class item");
                 return false;
             }
-            // If bank still contains class somehow.. unbank it
-            if (Bot.Bank.Contains(className))
-            {
-                Bot.Wait.ForTrue(() => Bot.Bank.EnsureToInventory(classItem.ID), 20);
-                Bot.Sleep(500);
-            }
-
             if (useEquipment && equipment.Any())
             {
                 Sleep((int)(ActionDelay * 1.5));

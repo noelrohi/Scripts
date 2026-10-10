@@ -89,14 +89,6 @@ public class CoreAdvanced
         if (Core.CheckInventory(itemID, quant))
             return;
 
-        // Inventory space check
-        // TEMPORARY Game4000 inventory change. Remove after the client inventory fix.
-        if (Core.InventoryBagFreeSlots <= 0 && !Bot.Inventory.Contains(itemID))
-        {
-            if (Log) Core.Logger("❌ Inventory full, cannot buy items.");
-            return;
-        }
-
         Core.Join(map);
         Bot.Wait.ForMapLoad(map);
         Core.JumpWait();
@@ -117,6 +109,8 @@ public class CoreAdvanced
             return;
         }
 
+        int effectiveShopQuant = item.Quantity > 0 ? item.Quantity : shopQuant;
+
         // House space check if item is a house-storable category
         if (!string.IsNullOrEmpty(item.CategoryString) && Core.CategoryStrings.Contains(item.CategoryString))
         {
@@ -132,8 +126,13 @@ public class CoreAdvanced
                 return;
             }
         }
-
-        int effectiveShopQuant = item.Quantity > 0 ? item.Quantity : shopQuant;
+        // Check the Space the item goes to, so a full Bag Space doesn't block a misc item.
+        else if (!Core.HasSpaceFor(item, effectiveShopQuant))
+        {
+            if (Log)
+                Core.Logger($"❌ Your {Core.SpaceName(item)} is full, cannot buy \"{item.Name}\".");
+            return;
+        }
 
         _BuyItem(map, shopID, item, quant, effectiveShopQuant, shopItemID, index, Log);
     }
@@ -1547,7 +1546,12 @@ public class CoreAdvanced
 
             foreach (dynamic a in data.a)
             {
-                // aura+ lists its auras in "auras"; some aura- packets carry a single "aura".
+                // React only to arrivals (aura+, aura++); aura- and aura-- report an aura leaving.
+                string? auraCmd = a?.cmd?.ToString();
+                if (auraCmd != "aura+" && auraCmd != "aura++")
+                    continue;
+
+                // Arrivals list their auras in "auras"; some carry a single "aura".
                 string? auraName = null;
                 foreach (dynamic aura in a?.auras ?? (a?.aura != null ? new[] { a.aura } : Array.Empty<dynamic>()))
                 {

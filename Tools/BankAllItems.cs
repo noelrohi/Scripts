@@ -65,8 +65,8 @@ public class BankAllItems
                 if (blackListedItems.Contains(item.Name)
                     || item.Equipped
                     || item.Wearing
-                    || Bot.Inventory.IsFavorited(item.ID)
-                    || (!bankNonAc && !item.Coins))
+                    || (!bankNonAc && !item.Coins)
+                    || Core.KeepFavorite(item))
                     continue;
 
                 if (!item.Coins && Bot.Bank.FreeSlots == 0)

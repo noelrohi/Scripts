@@ -1919,7 +1919,8 @@ public class CoreEnginev3
     }
 
     /// <summary>
-    /// Returns stacks as a float (preserves fractional stacks); 0 if missing.
+    /// Returns the aura's raw effect value (the server's <c>val</c>, which can be fractional); 0 if missing.
+    /// This is not the stack count for every aura: use <see cref="GetAuraStacks"/> for that.
     /// </summary>
     public float GetAuraStacksFloat(string auraName, bool self = false)
     {
@@ -1969,15 +1970,11 @@ public class CoreEnginev3
     }
 
     /// <summary>
-    /// Checks if the aura has at least the specified quantity of stacks (int or float).
+    /// Checks if the aura has at least the specified number of stacks on the game's HUD.
     /// Returns false if aura is missing.
     /// </summary>
     public bool Stacks(string auraName, float quantity, bool self = false)
-        => !string.IsNullOrWhiteSpace(auraName)
-           && quantity > 0f
-           && ((self
-                ? Bot.Self.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value
-                : Bot.Target.Auras.FirstOrDefault(a => a?.Name == auraName)?.Value) ?? 0f) >= quantity;
+        => quantity > 0f && GetAuraStacks(auraName, self) >= quantity;
 
     /// <summary>
     /// Returns true if the aura has less than or equal to the specified duration in seconds remaining.
@@ -3615,7 +3612,7 @@ public class CoreEnginev3
                 return;
         }
 
-        if (GetAuraStacksFloat("End of the World", true) > 22f)
+        if (GetAuraStacks("End of the World", true) > 22)
         {
             if (Cast(1))
                 return;
@@ -3761,8 +3758,8 @@ public class CoreEnginev3
     {
         // Snapshot
         int mana = Bot.Player.Mana;
-        int rift = (int)(Bot.Self.GetAura("Temporal Rift")?.Value ?? 0);
-        int rounds = (int)(Bot.Self.GetAura("Rounds Empty")?.Value ?? 0);
+        int rift = GetAuraStacks("Temporal Rift", true);
+        int rounds = GetAuraStacks("Rounds Empty", true);
 
         // High mana phase
         if (mana > 20)
@@ -3771,7 +3768,7 @@ public class CoreEnginev3
             {
                 if (Cast(4))
                 {
-                    Bot.Wait.ForTrue(() => (int)(Bot.Self.GetAura("Temporal Rift")?.Value ?? 0) == 0, 20);
+                    Bot.Wait.ForTrue(() => GetAuraStacks("Temporal Rift", true) == 0, 20);
                     return;
                 }
             }

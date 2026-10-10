@@ -6700,7 +6700,8 @@ public class CoreBots
             Bot.Wait.ForCellChange("Boss");
         }
 
-        Bot.Events.ExtensionPacketReceived += KitsuneListener;
+        Bot.AuraMonitor.AuraStackChanged += OnShapeshifted;
+        Bot.AuraMonitor.EnsureMonitoring();
 
         if (item == null)
         {
@@ -6760,24 +6761,18 @@ public class CoreBots
             }
         }
 
-        Bot.Events.ExtensionPacketReceived -= KitsuneListener;
+        Bot.AuraMonitor.AuraStackChanged -= OnShapeshifted;
+        Bot.AuraMonitor.EnsureMonitoring();
 
-        void KitsuneListener(dynamic packet)
+        // Hold attacks while Shapeshifted is on, on the player or on Kitsune. The target's stacks count only while it is Kitsune,
+        // so switching to another monster, which reports Kitsune's stacks going to 0, changes nothing.
+        void OnShapeshifted(string aura, float oldStacks, float newStacks, SubjectType subject)
         {
-            string type = packet["params"].type;
-            dynamic data = packet["params"].dataObj;
-            if (type == "json")
-            {
-                string cmd = data.cmd.ToString();
-                if (cmd == "ct" && data.a != null)
-                {
-                    foreach (dynamic a in data.a)
-                    {
-                        if (a?.aura?["nam"]?.ToString() == "Shapeshifted")
-                            Bot.Combat.StopAttacking = ((string)a.cmd)[^1] == '+';
-                    }
-                }
-            }
+            if (aura != "Shapeshifted")
+                return;
+            if (subject == SubjectType.Target && Bot.Player.Target?.Name != "Kitsune")
+                return;
+            Bot.Combat.StopAttacking = newStacks > 0;
         }
     }
 
@@ -12755,6 +12750,73 @@ public static class UtilExtensionsS
 
 
 
+}
+
+/// <summary>
+/// Reports the aura stack changes Skua's <c>AuraStackChanged</c> sees from now on: the HUD stack counts of the player's auras, and of the
+/// target's while the target is <c>target</c> (any target when null). Auras already on when the watch starts aren't reported, nor are the
+/// changes a target switch causes (the old target's auras going to 0, the new one's coming from 0). Dispose it to stop.
+/// </summary>
+public sealed class AuraStackWatch : IDisposable
+{
+    // AuraStackChanged polls every 100 ms; give it a few polls to catch up with a new target or a new watch.
+    private const int SettleMs = 300;
+
+    private readonly IScriptInterface _bot;
+    private readonly Action<string, int, int, SubjectType> _onChange;
+    private readonly string? _target;
+    private readonly long _startedAt = Environment.TickCount64;
+    private readonly System.Threading.Timer _targetTimer;
+    private int _targetId;
+    private long _targetSince;
+
+    public AuraStackWatch(IScriptInterface bot, Action<string, int, int, SubjectType> onChange, string? target = null)
+    {
+        _bot = bot;
+        _onChange = onChange;
+        _target = target;
+        _targetId = bot.Player.Target?.MapID ?? 0;
+        _targetSince = _startedAt;
+        _targetTimer = new System.Threading.Timer(_ => SampleTarget(), null, 100, 100);
+        bot.AuraMonitor.AuraStackChanged += OnStackChanged;
+        bot.AuraMonitor.EnsureMonitoring();
+    }
+
+    private Monster? SampleTarget()
+    {
+        Monster? target = null;
+        try { target = _bot.Player.Target; } catch { }
+        int id = target?.MapID ?? 0;
+        if (id != Interlocked.Exchange(ref _targetId, id))
+            Interlocked.Exchange(ref _targetSince, Environment.TickCount64);
+        return target;
+    }
+
+    private void OnStackChanged(string aura, float oldStacks, float newStacks, SubjectType subject)
+    {
+        long now = Environment.TickCount64;
+        if (now - _startedAt < SettleMs)
+            return;
+
+        if (subject == SubjectType.Target)
+        {
+            Monster? target = SampleTarget();
+            if (target == null || now - Interlocked.Read(ref _targetSince) < SettleMs)
+                return;
+            if (_target != null && !string.Equals(target.Name, _target, StringComparison.OrdinalIgnoreCase))
+                return;
+        }
+
+        try { _onChange(aura, (int)oldStacks, (int)newStacks, subject); }
+        catch { }
+    }
+
+    public void Dispose()
+    {
+        _bot.AuraMonitor.AuraStackChanged -= OnStackChanged;
+        _bot.AuraMonitor.EnsureMonitoring();
+        _targetTimer.Dispose();
+    }
 }
 
 #nullable disable

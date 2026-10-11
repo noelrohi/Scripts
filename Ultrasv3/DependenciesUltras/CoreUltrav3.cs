@@ -660,6 +660,74 @@ public class CoreUltrav3
         return newest.Count > 0 && newest.Values.All(e => e.Status == 1);
     }
 
+    // How long an account without the defeat item waits for its own drop once another account has posted the kill.
+    private const int OwnDropWaitMs = 5000;
+
+    /// <summary>
+    /// The completion check of every v3 Ultra: whether the boss is down for the party. A kill counts for the whole
+    /// party, so the boss is down once any account holds the defeat item (<paramref name="hasKill"/>), and then every
+    /// account leaves together. This account posts whether it holds the item to <paramref name="syncFilePath"/>, which
+    /// each Fight clears before the party's barrier. An account without the item, e.g. one that was dead at the kill,
+    /// waits briefly for its own drop. If the drop doesn't come, it leaves too without a turn-in, and DoAllUltras runs
+    /// the boss again for it. No account stays to refight the respawned boss for another account. Unlike
+    /// <see cref="CheckArmyProgressBool"/>, the answer doesn't depend on which accounts have written to the file yet.
+    /// <paramref name="myKill"/> is whether this account holds the item and should turn the quest in.
+    /// </summary>
+    public bool BossDownForArmy(Func<bool> hasKill, string syncFilePath, out bool myKill)
+    {
+        myKill = false;
+        string? username = Bot.Player.Username;
+        string? className = Bot.Player.CurrentClass?.Name;
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(className))
+            return false;
+
+        // The key the boss scripts pre-seed with.
+        string syncFile = ResolveSyncPath(syncFilePath);
+        string myKey = $"{username}|{className}".Replace(":", "-");
+
+        myKill = hasKill();
+        UpdateEntry(syncFile, myKey, myKill ? "1" : "0");
+        if (myKill)
+            return true;
+
+        List<string> holders = KillHolders(syncFile);
+        if (holders.Count == 0)
+            return false;
+
+        myKill = Bot.Wait.ForTrue(hasKill, OwnDropWaitMs / 250, 250);
+        if (myKill)
+        {
+            UpdateEntry(syncFile, myKey, "1");
+            return true;
+        }
+
+        Bot.Log($"[BossDown] The boss is down: {string.Join(", ", holders)} hold(s) the kill. This account has no defeat item "
+            + "(dead at the kill?), so it leaves with the party without a turn-in; DoAllUltras runs the boss again for it.");
+        return true;
+    }
+
+    // The accounts whose fresh entry in a completion file says they hold the defeat item.
+    private List<string> KillHolders(string syncFile)
+    {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        const int staleThreshold = 600;
+        List<string> holders = new();
+
+        foreach (string line in ReadLines(syncFile))
+        {
+            string[] parts = line.Split(':');
+            if (parts.Length < 3) continue;
+            if (parts[1] != "1") continue;
+            if (!long.TryParse(parts[2], out long ts) || now - ts > staleThreshold) continue;
+
+            string user = parts[0].Split('|')[0];
+            if (!string.IsNullOrWhiteSpace(user) && !holders.Contains(user, StringComparer.OrdinalIgnoreCase))
+                holders.Add(user);
+        }
+
+        return holders;
+    }
+
     // -------------------------------------------------------
     // Wipe the sync file. Now serialized on the same per-path
     // mutex as UpdateEntry so it can't interleave with a write

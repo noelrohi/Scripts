@@ -368,14 +368,17 @@ public class UltraSpeakerv3
             if (Bot.Inventory.Contains(bossDefeatedTemp, 1))
                 attempt.End(UltraAttempt.Outcome.Kill);
 
-            if (Ultra.CheckArmyProgressBool(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForArmy(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
             {
                 C.Logger("The First Speaker defeated. Finishing quest.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
+                if (myKill)
+                    UltraGeneral.CompleteQuest(Bot, questId);
+                // The boss is down. An account without the item ends its Attempt with the party's kill;
+                // the next fight is a new Attempt.
+                attempt.End(UltraAttempt.Outcome.Kill);
                 _attempt = null;
                 UltraLoadout.Restore();
                 Bot.Sleep(3000);

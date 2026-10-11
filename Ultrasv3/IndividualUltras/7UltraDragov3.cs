@@ -227,7 +227,7 @@ public class UltraDragov3
                 continue;
             }
 
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForArmy(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
             {
                 C.Logger("King Drago defeated. Finishing quest.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
@@ -235,7 +235,8 @@ public class UltraDragov3
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
+                if (myKill)
+                    UltraGeneral.CompleteQuest(Bot, questId);
                 Bot.Sleep(3000);
                 break;
             }

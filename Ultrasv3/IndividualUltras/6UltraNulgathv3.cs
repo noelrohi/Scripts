@@ -435,7 +435,7 @@ public class UltraNulgathv3
             if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
                 attempt.End(UltraAttempt.Outcome.Kill);
 
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForArmy(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
             {
                 C.Logger("Nulgath the Archfiend defeated. Finishing quest.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
@@ -443,8 +443,11 @@ public class UltraNulgathv3
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
+                if (myKill)
+                    UltraGeneral.CompleteQuest(Bot, questId);
+                // The boss is down. An account without the item ends its Attempt with the party's kill;
+                // the next fight is a new Attempt.
+                attempt.End(UltraAttempt.Outcome.Kill);
                 _attempt = null;
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;

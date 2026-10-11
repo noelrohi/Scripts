@@ -28,6 +28,17 @@ game's daily `id…` or weekly `iw…` completion flag, logged as `periodDone`).
 still holds the boss's defeat item but never turned the quest in retries the turn-in before
 the next pass; it is not skipped and the party does not refight for it.
 
+In the fight, a kill counts for the whole party. Every v3 Ultra checks this the same way
+(`CoreUltrav3.BossDownForArmy`): once any account holds the boss's defeat item, the boss is
+down for all four and they leave the fight together. Each account that holds the item turns
+the quest in. An account without the item, for example one that was dead at the kill and got
+no drop, waits up to 5 s for its own drop. If it still has none, it logs `[BossDown] The boss
+is down: <accounts> hold(s) the kill`, leaves with the party without a turn-in, and DoAllUltras
+runs the boss again for it on its next pass. A single boss script just ends for that account.
+The party never stays to refight the respawned boss for one account. A refight would cost more
+Wipes against a boss nobody set up for, and it used to split the party: the first account to
+check after a Wipe could pass on its own entry and leave while the rest fought on.
+
 Before each pass, every account publishes which bosses it has done and waits until all four
 have published for that pass, so each decides from the same statuses and the party agrees
 on the queue: a boss is skipped only when every participant has turned it in. The log says
@@ -57,7 +68,9 @@ and end, the outcome (`kill`, `wipe` or `stopped`), the boss's HP at the end, th
 account's deaths in seconds since the start, and its `loadout`. Ultra Ezrajal, Ultra Warden,
 Ultra Engineer and Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or
 `stopped`. A refight before the turn-in after this account's kill, such as after a Wipe that
-came after the kill, starts no Attempt and logs that: the kill was reported when it happened.
+came after the kill, starts no Attempt and logs that: the kill was reported when it happened. An
+account that leaves without the defeat item because another account holds the kill ends its
+Attempt in `kill` too: the boss died.
 
 `loadout` is what the account wore as the Attempt began: `class`, `weapon`, `cape` and `helm`,
 each with its `name`, `enhancement` (the type, or a cape's or helm's special), weapon

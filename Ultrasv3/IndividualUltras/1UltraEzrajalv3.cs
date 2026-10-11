@@ -425,15 +425,18 @@ public class UltraEzrajalv3
             if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
                 attempt.End(UltraAttempt.Outcome.Kill);
 
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForArmy(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
             {
                 C.Logger("Ultra Ezrajal defeated. Finishing quest.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Bot.UltraBossHelper.DisableCounterAttack();
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
+                if (myKill)
+                    UltraGeneral.CompleteQuest(Bot, questId);
+                // The boss is down. An account without the item ends its Attempt with the party's kill;
+                // the next fight is a new Attempt.
+                attempt.End(UltraAttempt.Outcome.Kill);
                 _attempt = null;
                 Bot.Sleep(3000);
                 break;

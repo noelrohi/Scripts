@@ -117,15 +117,20 @@ def staged_entries():
 
 
 def unstaged(paths):
-    """The given .cs paths whose working-tree file isn't what's staged: edited, deleted, or never added."""
+    """The given .cs paths whose working-tree file isn't what's staged: edited, deleted, or never
+    added (and not ignored)."""
     out = git("--literal-pathspecs", "diff", "--name-only", "--no-renames", "-z", "--", *paths)
-    out += git("--literal-pathspecs", "ls-files", "--others", "-z", "--", *paths)
+    out += git("--literal-pathspecs", "ls-files", "--others", "--exclude-standard", "-z", "--", *paths)
     return sorted({p for p in out.decode().split("\0") if p.endswith(".cs")})
 
 
 def hooks_hint():
-    installed = subprocess.run(["git", "config", "core.hooksPath"], capture_output=True).stdout.strip()
-    return "" if installed == b".githooks" else "\nInstall the hooks once per clone and every commit syncs its Scripts: git config core.hooksPath .githooks"
+    """A pointer to the hooks, unless core.hooksPath already names .githooks; run from the repo root."""
+    installed = subprocess.run(["git", "config", "core.hooksPath"], capture_output=True, text=True).stdout.strip()
+    if installed and os.path.realpath(os.path.expanduser(installed)) == os.path.realpath(".githooks"):
+        return ""
+    return ("\nInstall the hooks once per clone and every commit syncs its Scripts:"
+            " git config core.hooksPath .githooks")
 
 
 def sync(paths=(), all=False):
@@ -149,7 +154,8 @@ def sync(paths=(), all=False):
         print(f"{SCRIPTS_JSON} has the staged version of these, not their working-tree changes:",
               *changed, sep="\n  ", file=sys.stderr)
         args = shlex.join(changed)
-        print(f"\nStage them and sync again, from the repo root: git add -A -- {args} && python3 Tools/ForDevelopers/scripts_json.py sync {args}",
+        print("\nStage them and sync again, from the repo root:",
+              f" git add -A -- {args} && python3 Tools/ForDevelopers/scripts_json.py sync {args}",
               hooks_hint(), sep="", file=sys.stderr)
 
 
@@ -171,7 +177,8 @@ def check():
 
     if problems:
         print(f"{SCRIPTS_JSON} is out of date:", *problems, sep="\n  ", file=sys.stderr)
-        print("\nFix it with: python3 Tools/ForDevelopers/scripts_json.py sync --all", hooks_hint(), sep="", file=sys.stderr)
+        print("\nFix it with: python3 Tools/ForDevelopers/scripts_json.py sync --all", hooks_hint(),
+              sep="", file=sys.stderr)
         return 1
     print(f"{SCRIPTS_JSON} matches all {sum(e is not None for e in wanted.values())} Scripts.")
     return 0

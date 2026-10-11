@@ -18,8 +18,8 @@
       "null"
     ],
     "path": "CoreAdvanced.cs",
-    "size": 176499,
-    "sha256": "6246ad5bf5439e0432b1591954fd27b12a22ff5efbb4ed012be4c76e6a3c80ad",
+    "size": 177132,
+    "sha256": "e23312cf80782f2d582b6ee5acd6cabff885ff7711cae59b0f3a107a82e057ab",
     "fileName": "CoreAdvanced.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreAdvanced.cs"
   },
@@ -28244,8 +28244,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs",
-    "size": 26489,
-    "sha256": "1916ab26dd2fb8d3b6e1bdc2b497385fac1ada2bf2561c9da634ed1bfda90c6d",
+    "size": 26529,
+    "sha256": "fd564dd86a293aefb17a2c8a0f0a3fa222ea3938b6773d4a63c0cfc52c6d5554",
     "fileName": "10UltraSpeakerv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs"
   },
@@ -28614,8 +28614,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/CoreEnginev3.cs",
-    "size": 119130,
-    "sha256": "966315c6ff35fbf161d90b815a61db507e182e742bc6b5a3975b74c707cc4ad1",
+    "size": 119474,
+    "sha256": "342c7e37725c905c52e379ceb1996a54cf0ad28204213e15ae43b85f3f2bafbb",
     "fileName": "CoreEnginev3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/CoreEnginev3.cs"
   },
@@ -28641,8 +28641,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraComp.cs",
-    "size": 33111,
-    "sha256": "290d5aa944ec37798067dc69900b21426b0c8a4982c0023788166c6a31eca780",
+    "size": 37982,
+    "sha256": "9718fd326fe9bca521622b5fd1993d3f7104cb35c4a70b797aef40577af7b90f",
     "fileName": "UltraComp.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraComp.cs"
   },
@@ -35219,5 +35219,21 @@
     "sha256": "082e0dc7af4a0dcd96d53b080bcc04e5b35417d2d0701d0c7e41ebb02215834f",
     "fileName": "3BookOfIce.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/ArchMage/Books/3BookOfIce.cs"
+  },
+  {
+    "name": "Restore Ultra Loadout",
+    "description": "Puts back the gear and class enhancement an Ultra Loadout changed on an account with auto enhance off, after a run stopped before it could.",
+    "tags": [
+      "ultra",
+      "loadout",
+      "restore",
+      "enhancement",
+      "gear"
+    ],
+    "path": "Ultrasv3/RestoreLoadout.cs",
+    "size": 1178,
+    "sha256": "59a520309ca47b616a4288fd0fc2eba442212d9da205dabafdf39258afb29c46",
+    "fileName": "RestoreLoadout.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/RestoreLoadout.cs"
   }
 ]

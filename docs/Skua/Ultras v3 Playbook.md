@@ -375,6 +375,9 @@ containing "Behold the power of the Abyss", in any case. The lead taunter sees t
 new Focus aura on Nulgath and taunts again once the Focus is gone. If no new Focus shows up
 within 5 s of the line, it taunts then.
 
+**`loo-lrpen-sc-dot`**: as `loo-lr-sc-dot`, but Legion Revenant wears a Penitence cape and a plain Wizard helm, for an
+account without Lament.
+
 **`default`** (it wiped repeatedly in testing; prefer `dot-lr-ap-loo`):
 
 | Class | Role | Loadout | Taunts |

@@ -49,7 +49,9 @@ Each Attempt, from engaging the boss to its kill, a Wipe or the bot stopping, en
 and end, the outcome (`kill`, `wipe` or `stopped`), the boss's HP at the end, that
 account's deaths in seconds since the start, and its `loadout`. Ultra Ezrajal, Ultra Warden,
 Ultra Engineer and Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or
-`stopped`.
+`stopped`. An account that already holds the boss's defeat item when a fight starts, such as
+after a Wipe that came after its kill, starts no Attempt: the kill was reported when it
+happened.
 
 `loadout` is what the account wore as the Attempt began: `class`, `weapon`, `cape` and `helm`,
 each with its `name`, `enhancement` (the type, or a cape's or helm's special), weapon

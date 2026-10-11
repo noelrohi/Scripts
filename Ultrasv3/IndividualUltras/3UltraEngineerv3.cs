@@ -316,7 +316,10 @@ public class UltraEngineerv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Engineer, _entry.Loadout.Worn());
+        // Already holding the kill, e.g. back after a retreat: it was reported when it happened, so this is no new Attempt.
+        UltraAttempt attempt = _attempt = Bot.TempInv.Contains(bossDefeatedTemp, 1)
+            ? UltraAttempt.AlreadyWon()
+            : UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Engineer, _entry.Loadout.Worn());
 
         bool attackDroneDebuffed = false;
 

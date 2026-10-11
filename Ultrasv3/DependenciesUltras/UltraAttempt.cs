@@ -74,6 +74,12 @@ public class UltraAttempt
     }
 
     /// <summary>
+    /// An Attempt that notes and reports nothing, for a fight this account has already won: it still holds the
+    /// boss's defeat item, e.g. back in the boss's map after a retreat, and that kill was reported when it happened.
+    /// </summary>
+    public static UltraAttempt AlreadyWon() => new();
+
+    /// <summary>
     /// Notes the boss's HP while this account is in the boss's map, alive or dead. Call it as the
     /// fight goes; a Wipe notes it once more as it ends the Attempt, before the retreat leaves the map.
     /// </summary>

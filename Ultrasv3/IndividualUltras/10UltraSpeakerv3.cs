@@ -294,7 +294,10 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
+        // Already holding the kill, e.g. back after a retreat: it was reported when it happened, so this is no new Attempt.
+        UltraAttempt attempt = _attempt = Bot.Inventory.Contains(bossDefeatedTemp, 1)
+            ? UltraAttempt.AlreadyWon()
+            : UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
 
         while (!Bot.ShouldExit)
         {

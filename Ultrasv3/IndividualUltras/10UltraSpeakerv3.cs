@@ -377,6 +377,7 @@ public class UltraSpeakerv3
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                UltraLoadout.Restore();
                 Bot.Sleep(3000);
                 break;
             }

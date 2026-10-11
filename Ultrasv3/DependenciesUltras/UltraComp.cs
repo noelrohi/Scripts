@@ -294,6 +294,11 @@ public class UltraLoadout
             C.Logger($"[Loadout] {Bot.Player.CurrentClass?.Name} keeps its own gear.");
             return;
         }
+        if (!CanEnhance)
+        {
+            FitOwnedGear();
+            return;
+        }
 
         CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
         HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
@@ -545,6 +550,105 @@ public class UltraLoadout
         if (item.ProcID != 0 && Enum.IsDefined(typeof(WeaponSpecial), item.ProcID))
             name += $"/{(WeaponSpecial)item.ProcID}";
         return $"{name} level {item.EnhancementLevel}";
+    }
+
+    /// <summary>
+    /// For an account with the CoreBots option DisableAutoEnhance on, which keeps its gear's enhancements: wears the
+    /// owned weapon, cape and helm that already have the Loadout's (enhancing none of them), and enhances only the
+    /// class. What it had is noted in a file, so <see cref="Restore"/> puts it back after the fight, or at any time
+    /// with Ultrasv3/RestoreLoadout.cs; a note left by a stopped run keeps the gear it had before that run.
+    /// </summary>
+    private void FitOwnedGear()
+    {
+        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
+        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
+        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        Dictionary<string, string> note = ReadRestoreNote();
+
+        foreach (Slot slot in new[] { Slot.Weapon, Slot.Cape, Slot.Helm })
+        {
+            InventoryItem? worn = Equipped(slot);
+            if (worn != null && Has(worn, cape, helm, weapon))
+                continue;
+            InventoryItem? match = Owned(slot).FirstOrDefault(i => !i.Equipped && Has(i, cape, helm, weapon));
+            if (match == null)
+            {
+                C.Logger($"[Loadout] Auto enhance is off and no {slot.ToString().ToLower()} has the Loadout's enhancement; keeps {worn?.Name ?? "none"}.");
+                continue;
+            }
+            if (worn != null)
+                note.TryAdd(slot.ToString(), worn.ID.ToString());
+            WriteRestoreNote(note);
+            C.Logger(Wear(match)
+                ? $"[Loadout] Auto enhance is off: wears {match.Name} ({Describe(match)}) in place of {worn?.Name ?? "nothing"}."
+                : $"[Loadout] Couldn't wear {match.Name}; keeps {worn?.Name ?? "none"}.");
+        }
+
+        if (Equipped(Slot.Class) is { } cls && !Has(cls, cape, helm, weapon))
+        {
+            note.TryAdd(nameof(Slot.Class), $"{cls.ID}:{cls.EnhancementPatternID}");
+            WriteRestoreNote(note);
+            string was = Describe(cls);
+            Adv.EnhanceItem(cls.Name, Enhancement!.Value, CapeSpecial.None, HelmSpecial.None, WeaponSpecial.None, false, bypassDisableAutoEnhance: true);
+            C.Logger($"[Loadout] Auto enhance is off: enhanced {cls.Name} from {was} to {Enhancement}; it goes back after the fight.");
+        }
+    }
+
+    /// <summary>
+    /// Puts back what <see cref="FitOwnedGear"/> changed: the weapon, cape and helm it replaced, and the class's
+    /// enhancement. Does nothing without a note.
+    /// </summary>
+    public static void Restore()
+    {
+        Dictionary<string, string> note = ReadRestoreNote();
+        if (note.Count == 0)
+            return;
+
+        foreach (Slot slot in new[] { Slot.Weapon, Slot.Cape, Slot.Helm })
+        {
+            if (!note.TryGetValue(slot.ToString(), out string? id) || !int.TryParse(id, out int itemId))
+                continue;
+            InventoryItem? item = Owned(slot).FirstOrDefault(i => i.ID == itemId);
+            C.Logger(item != null && Wear(item)
+                ? $"[Loadout] Put {item.Name} back on."
+                : $"[Loadout] Couldn't put item {itemId} back on.");
+        }
+
+        if (note.TryGetValue(nameof(Slot.Class), out string? cls)
+            && cls.Split(':') is [string classId, string pattern]
+            && int.TryParse(classId, out int clsId) && int.TryParse(pattern, out int was)
+            && Bot.Inventory.Items.Concat(Bot.Bank.Items).FirstOrDefault(i => i?.ID == clsId) is { } classItem)
+        {
+            if (classItem.EnhancementPatternID != was && Enum.IsDefined(typeof(EnhancementType), was))
+            {
+                Adv.EnhanceItem(classItem.Name, (EnhancementType)was, CapeSpecial.None, HelmSpecial.None, WeaponSpecial.None, false, bypassDisableAutoEnhance: true);
+                C.Logger($"[Loadout] Enhanced {classItem.Name} back to {(EnhancementType)was}.");
+            }
+        }
+
+        try { File.Delete(RestoreNotePath); } catch { }
+    }
+
+    private static string RestoreNotePath =>
+        Path.Combine(ClientFileSources.SkuaOptionsDIR, $"UltraLoadoutRestore({Bot.Player.Username}).txt");
+
+    private static Dictionary<string, string> ReadRestoreNote()
+    {
+        Dictionary<string, string> note = new();
+        try
+        {
+            if (File.Exists(RestoreNotePath))
+                foreach (string line in File.ReadAllLines(RestoreNotePath))
+                    if (line.Split('=', 2) is [string key, string value])
+                        note[key] = value;
+        }
+        catch { }
+        return note;
+    }
+
+    private static void WriteRestoreNote(Dictionary<string, string> note)
+    {
+        try { File.WriteAllLines(RestoreNotePath, note.Select(kv => $"{kv.Key}={kv.Value}")); } catch { }
     }
 
     /// <summary>Buys the potions and gets the scroll. Either can swap the class: put it back afterwards.</summary>

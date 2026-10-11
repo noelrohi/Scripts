@@ -2142,12 +2142,27 @@ public class CoreAdvanced
         HelmSpecial hSpecial = HelmSpecial.None,
         WeaponSpecial wSpecial = WeaponSpecial.None,
         bool logging = false
+    ) => EnhanceItem(item, type, cSpecial, hSpecial, wSpecial, logging, bypassDisableAutoEnhance: false);
+
+    /// <summary>
+    /// Enhances <paramref name="item"/>; with <paramref name="bypassDisableAutoEnhance"/>, even when the CoreBots
+    /// option DisableAutoEnhance is on, for a caller that puts the old enhancement back itself.
+    /// </summary>
+    public void EnhanceItem(
+        string item,
+        EnhancementType type,
+        CapeSpecial cSpecial,
+        HelmSpecial hSpecial,
+        WeaponSpecial wSpecial,
+        bool logging,
+        bool bypassDisableAutoEnhance
     )
     {
         if (
             string.IsNullOrEmpty(item)
             || (
-                Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance)
+                !bypassDisableAutoEnhance
+                && Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance)
                 && _disableAutoEnhance
             )
         )

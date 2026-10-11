@@ -28244,8 +28244,8 @@
       "null"
     ],
     "path": "Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs",
-    "size": 21204,
-    "sha256": "2e2b5fe7244c2ad21404046cb79701673aa881736f73294451db50bb983bbc03",
+    "size": 23979,
+    "sha256": "dac3d3e3e822fdd24348be706c5f19763a29fc5548858778a921434de4ed243f",
     "fileName": "10UltraSpeakerv3.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/IndividualUltras/10UltraSpeakerv3.cs"
   },
@@ -28691,8 +28691,8 @@
       "null"
     ],
     "path": "Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs",
-    "size": 16607,
-    "sha256": "8cf371bb75b0437b6f8ba2b7f361174597d5317ddd05838570ded477336c4240",
+    "size": 17900,
+    "sha256": "46b5c78833992f512316b214ef6f22d73b05a9001b268ddec67a88419fbfd8fb",
     "fileName": "UltraWaitForArmy.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs"
   },

@@ -96,6 +96,64 @@ public class UltraSpeakerv3
                 },
                 Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
             }),
+        // As default, but Lord of Order runs Lucky with Awe Blast and Penitence: for a party where its
+        // account hasn't unlocked Valiance.
+        new("loo-luck",
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = ListenTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on every \"You shall listen.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TruthTaunter1,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 3rd, 6th, 9th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = TruthTaunter2,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 1st, 4th, 7th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Verus DoomKnight",
+                Role = TruthTaunter3,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Praxis },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
+            }),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;
@@ -214,6 +272,8 @@ public class UltraSpeakerv3
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        if (_party.IsSet)
+            UltraWaitForArmy.Instance.WaitForPartyInRoom(_party.ClassByUser.Keys);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();

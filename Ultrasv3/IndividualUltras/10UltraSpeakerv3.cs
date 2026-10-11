@@ -280,9 +280,7 @@ public class UltraSpeakerv3
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
-        if (_party.IsSet)
-            UltraWaitForArmy.Instance.WaitForPartyInRoom(_party.ClassByUser.Keys);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
@@ -296,7 +294,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
 
         while (!Bot.ShouldExit)
         {
@@ -377,6 +375,8 @@ public class UltraSpeakerv3
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                // Turned in: the next fight is a new Attempt.
+                _attempt = null;
                 UltraLoadout.Restore();
                 Bot.Sleep(3000);
                 break;

@@ -601,13 +601,16 @@ public class CoreUltrav3
         return activeMembers > 0 && completedMembers == activeMembers;
     }
 
+    // CheckArmyProgressBool's entry for a dead account stands in for its class.
+    private const string DeadPlaceholder = "PlaceHolder";
+
     public bool CheckArmyProgressBool(Func<bool> condition, string syncFilePath = "army_sync.sync")
     {
         if (!Bot.Player.Alive)
         {
             if (!string.IsNullOrWhiteSpace(Bot.Player.Username))
             {
-                string deadKey = $"{Bot.Player.Username}|PlaceHolder".Replace(":", "-");
+                string deadKey = $"{Bot.Player.Username}|{DeadPlaceholder}".Replace(":", "-");
                 UpdateEntry(ResolveSyncPath(syncFilePath), deadKey, "0");
             }
 
@@ -633,8 +636,9 @@ public class CoreUltrav3
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         const int staleThreshold = 600;
 
-        int activeMembers = 0;
-        int completedMembers = 0;
+        // Each account counts once, by its newest entry. One that died wrote a PlaceHolder entry while dead
+        // and its class's entry after it came back; the stale PlaceHolder must not hold the army back.
+        Dictionary<string, (long Ts, bool Placeholder, int Status)> newest = new(StringComparer.OrdinalIgnoreCase);
 
         foreach (string line in lines)
         {
@@ -648,11 +652,12 @@ public class CoreUltrav3
             if (!long.TryParse(parts[2], out long ts)) continue;
             if (now - ts > staleThreshold) continue;
 
-            activeMembers++;
-            if (status == 1) completedMembers++;
+            bool placeholder = keyParts.Length > 1 && keyParts[1] == DeadPlaceholder;
+            if (!newest.TryGetValue(keyParts[0], out var seen) || ts > seen.Ts || (ts == seen.Ts && seen.Placeholder && !placeholder))
+                newest[keyParts[0]] = (ts, placeholder, status);
         }
 
-        return activeMembers > 0 && completedMembers == activeMembers;
+        return newest.Count > 0 && newest.Values.All(e => e.Status == 1);
     }
 
     // -------------------------------------------------------

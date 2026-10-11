@@ -6,6 +6,7 @@ tags: null
 
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/Ultrasv3/DependenciesUltras/UltraCustomClassSync.cs
+//cs_include Scripts/Ultrasv3/DependenciesUltras/UltraWaitForArmy.cs
 
 using System;
 using System.Collections.Generic;
@@ -172,6 +173,19 @@ public class UltraPartyLayout
 
         Stop($"Could not equip {Class}.");
         return false;
+    }
+
+    /// <summary>
+    /// Waits in the boss map for the army to be ready, then, with a layout, for every account it names to be in
+    /// this room (<see cref="UltraWaitForArmy.WaitForPartyInRoom"/>): the ready sync file is shared on this
+    /// machine, so accounts on other servers or rooms read as ready too. Stops the bot, naming who is missing,
+    /// after 60 s.
+    /// </summary>
+    public void WaitForArmyInRoom(int armySize, string waitSyncFileName)
+    {
+        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFileName, useSkill: true);
+        if (IsSet)
+            UltraWaitForArmy.Instance.WaitForPartyInRoom(ClassByUser.Keys);
     }
 
     private bool IsOnClass() =>

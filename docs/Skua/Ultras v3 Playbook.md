@@ -46,9 +46,19 @@ fallback ("else"), the first one unlocked is used.
 
 Each Attempt, from engaging the boss to its kill, a Wipe or the bot stopping, ends with an
 `ultra.attempt` Script Report on every account: the boss, Comp, class and Role, the start
-and end, the outcome (`kill`, `wipe` or `stopped`), the boss's HP at the end, and that
-account's deaths in seconds since the start. Ultra Ezrajal, Ultra Warden, Ultra Engineer and
-Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or `stopped`.
+and end, the outcome (`kill`, `wipe` or `stopped`), the boss's HP at the end, that
+account's deaths in seconds since the start, and its `loadout`. Ultra Ezrajal, Ultra Warden,
+Ultra Engineer and Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or
+`stopped`. A refight before the turn-in after this account's kill, such as after a Wipe that
+came after the kill, starts no Attempt and logs that: the kill was reported when it happened.
+
+`loadout` is what the account wore as the Attempt began: `class`, `weapon`, `cape` and `helm`,
+each with its `name`, `enhancement` (the type, or a cape's or helm's special), weapon
+`special` and enhancement `level`. Its `notes` list how that falls short of the Loadout: a
+special that isn't unlocked (`Lacerate not unlocked`), gear kept because the CoreBots option
+DisableAutoEnhance is on, owned gear fitted in its place, and any slot without what the
+Loadout aims for. Read an account's `loadout` before its deaths: an account that died most
+may have fought on the wrong gear.
 
 ## Setting the party layout
 
@@ -70,6 +80,10 @@ alt1=Dragon of Time; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order
 - Leave a layout blank to keep the automatic assignment: the accounts share which role
   classes they own and the script hands the roles out (for a boss with Comps, the chosen
   Comp's classes).
+- With a layout, once the party is ready in the boss map, each account waits up to 60 s for
+  every account in the layout to be in its room, then stops the bot and names who is
+  missing. The ready check is a file shared on the machine, so accounts on different servers
+  or rooms all read as ready; put every account on the same server and in the same room.
 
 The layouts are saved with the `DoAllUltras` options and read once per boss run. Running a
 single boss script (for example `6UltraNulgathv3.cs`) uses the same saved layout, so set it
@@ -148,8 +162,9 @@ A Legion Revenant under 3175 max HP is warned about before each Attempt.
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
@@ -213,8 +228,9 @@ class; `loo-lr-vdk-ke`'s Lord of Order, and Legion Revenant keeping Warden taunt
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
@@ -259,8 +275,9 @@ Forge helms):
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
@@ -288,8 +305,9 @@ killing it.
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 **`loo-sc-ap-ke`** (the guide's Recommended Group, King's Echo in its DPS / Support slot):
 
@@ -361,8 +379,9 @@ within 5 s of the line, it taunts then.
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
@@ -401,8 +420,9 @@ fights and gets the drop, but the turn-in is refused ("Missing Quest Progress").
 
 #### Results
 
-One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
-`alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
+One row per Attempt, from the four accounts' `ultra.attempt` reports. Check each
+account's `loadout` and its notes before reading its deaths, and name any shortfall in Notes.
+Accounts are `alt1`…`alt4`; deaths are `Role @ s` since the Attempt started.
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|

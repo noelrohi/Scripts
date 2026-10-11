@@ -388,7 +388,7 @@ public class UltraEzrajalv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
@@ -403,7 +403,7 @@ public class UltraEzrajalv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Ezrajal);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Ezrajal, _entry.Loadout.Worn());
 
         if (_entry.Role == LockBaiter)
             PlayLockTrick(boss, armySize);
@@ -433,6 +433,8 @@ public class UltraEzrajalv3
                 Bot.UltraBossHelper.DisableCounterAttack();
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                // Turned in: the next fight is a new Attempt.
+                _attempt = null;
                 Bot.Sleep(3000);
                 break;
             }

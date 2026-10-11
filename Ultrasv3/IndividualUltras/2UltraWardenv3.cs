@@ -457,7 +457,7 @@ public class UltraWardenv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
@@ -472,7 +472,7 @@ public class UltraWardenv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Warden);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Warden, _entry.Loadout.Worn());
 
         _comp.StartTaunts(_entry, Ultra, Ultra.ResolveSyncPath(fightTimeSyncFile), _tauntCts.Token);
         _inFight = true;
@@ -512,6 +512,8 @@ public class UltraWardenv3
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                // Turned in: the next fight is a new Attempt.
+                _attempt = null;
                 Bot.Sleep(3000);
                 break;
             }

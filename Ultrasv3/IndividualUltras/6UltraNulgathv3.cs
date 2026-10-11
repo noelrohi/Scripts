@@ -345,7 +345,7 @@ public class UltraNulgathv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         var (bestCell, bestPad) = Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
@@ -360,7 +360,7 @@ public class UltraNulgathv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath, _entry.Loadout.Worn());
         // The wipe monitor cancels this token the moment the whole party is dead.
         using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
@@ -395,6 +395,8 @@ public class UltraNulgathv3
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                // Turned in: the next fight is a new Attempt.
+                _attempt = null;
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;
                 break;

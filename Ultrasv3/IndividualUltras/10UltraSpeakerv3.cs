@@ -96,6 +96,64 @@ public class UltraSpeakerv3
                 },
                 Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
             }),
+        // As default, but Lord of Order runs Lucky with Awe Blast and Penitence: for a party where its
+        // account hasn't unlocked Valiance.
+        new("loo-luck",
+            new UltraCompEntry
+            {
+                Class = "ArchPaladin",
+                Role = ListenTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on every \"You shall listen.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = TruthTaunter1,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 3rd, 6th, 9th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = TruthTaunter2,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Valiance },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Potions = new[] { "Body Tonic", "Unstable Divine Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 1st, 4th, 7th... \"I will make you see the truth.\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "Verus DoomKnight",
+                Role = TruthTaunter3,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Praxis },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Potions = new[] { "Body Tonic", "Potent Destruction Elixir" },
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on the 2nd, 5th, 8th... \"I will make you see the truth.\""),
+            }),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;
@@ -118,6 +176,15 @@ public class UltraSpeakerv3
     private const string ListenTurnSyncFile = "UltraSpeakerListenTurn.sync";
     private int equalizeCount;
     private bool _movingToEqualize;
+
+    // The Speaker's lines run in a fixed order, T L E T L T E L T (Truth, Listen, Equal), so "All stand equal"
+    // comes 7.0 s after the T of T L T and 3.0 s after the L of T T L. Its Scintillation and Revitalization come in
+    // the same packet, and Revitalization heals the Speaker unless Decay lands within about 0.6 s; the class
+    // rotation's last skill held the global cooldown and delayed Decay by up to 1.5 s. So TruthTaunter3 holds the
+    // rotation from just before the predicted line until it casts Decay.
+    private readonly List<char> _lines = new();
+    private const double DecayHoldLeadSec = 0.9;
+    private const double DecayHoldSec = 2.5;
     private bool _positioned;
 
     private const int EqualizeX = 200;
@@ -214,6 +281,8 @@ public class UltraSpeakerv3
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
         UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        if (_party.IsSet)
+            UltraWaitForArmy.Instance.WaitForPartyInRoom(_party.ClassByUser.Keys);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();
@@ -308,6 +377,7 @@ public class UltraSpeakerv3
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
                 UltraGeneral.CompleteQuest(Bot, questId);
+                UltraLoadout.Restore();
                 Bot.Sleep(3000);
                 break;
             }
@@ -327,9 +397,6 @@ public class UltraSpeakerv3
             if (type is not "json")
                 return;
 
-            if (!Bot.Player.Alive)
-                return;
-
             dynamic data = packet["params"].dataObj;
             string cmd = data.cmd.ToString();
 
@@ -345,6 +412,17 @@ public class UltraSpeakerv3
                     continue;
 
                 string message = (string)anim.msg;
+
+                if (message.Contains("You shall listen.", StringComparison.OrdinalIgnoreCase))
+                    NoteLine('L');
+                else if (message.Contains("I will make you see the truth.", StringComparison.OrdinalIgnoreCase))
+                    NoteLine('T');
+                else if (message.Contains("All stand equal beneath the eyes of the Eternal.", StringComparison.OrdinalIgnoreCase))
+                    NoteLine('E');
+
+                // The line order is noted while dead too; the taunts need a living player.
+                if (!Bot.Player.Alive)
+                    continue;
 
                 // Energy Draw — ListenTaunters (cascade 1-2-1-2-1-2)
                 if (message.Contains("You shall listen.", StringComparison.OrdinalIgnoreCase))
@@ -507,10 +585,50 @@ public class UltraSpeakerv3
         if (_entry?.Role != TruthTaunter3 || !Bot.Player.Alive)
             return;
 
-        for (int i = 0; i < 60; i++)
+        // Keep the rotation off the global cooldown until Decay is out, whether or not a hold was predicted.
+        Engine.HoldSkillsUntil = DateTime.UtcNow.AddSeconds(3);
+        try
         {
-            Engine.Cast(4);
-            await Task.Delay(50);
+            for (int i = 0; i < 60; i++)
+            {
+                if (Engine.Cast(4))
+                    break;
+                await Task.Delay(50);
+            }
+        }
+        finally
+        {
+            Engine.HoldSkillsUntil = DateTime.MinValue;
+        }
+    }
+
+    /// <summary>Notes a Speaker line and, for TruthTaunter3, holds the rotation ahead of a predicted "All stand equal".</summary>
+    private void NoteLine(char line)
+    {
+        lock (_lines)
+        {
+            _lines.Add(line);
+            if (_lines.Count > 3)
+                _lines.RemoveAt(0);
+            if (_entry?.Role != TruthTaunter3 || _lines.Count < 3)
+                return;
+
+            string last = new(_lines.ToArray());
+            double inSec = last switch
+            {
+                "TLT" => 7.0,
+                "TTL" => 3.0,
+                _ => 0,
+            };
+            if (inSec == 0)
+                return;
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(inSec - DecayHoldLeadSec));
+                if (Bot.Player.Alive)
+                    Engine.HoldSkillsUntil = DateTime.UtcNow.AddSeconds(DecayHoldSec);
+            });
         }
     }
 

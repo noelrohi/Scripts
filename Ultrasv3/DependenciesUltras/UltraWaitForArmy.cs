@@ -295,6 +295,34 @@ public class UltraWaitForArmy
     /// Entries older than this many seconds are ignored.
     /// 0 or negative = no age check (all entries counted).
     /// </param>
+    /// <summary>
+    /// Waits until every one of <paramref name="usernames"/> is in this room, as the game lists its players.
+    /// The ready sync file is shared on this machine whatever server each account is on, so an account on
+    /// another server (or in another room) reads as ready but fights its own copy of the boss. Stops the bot,
+    /// naming who is missing, after <paramref name="timeoutSec"/>.
+    /// </summary>
+    public void WaitForPartyInRoom(IEnumerable<string> usernames, int timeoutSec = 60)
+    {
+        string[] expected = usernames.Where(u => !string.IsNullOrWhiteSpace(u)).ToArray();
+        if (expected.Length == 0)
+            return;
+
+        string[] Missing() => expected
+            .Where(u => !(Bot.Map.PlayerNames ?? new List<string>()).Any(p => p.Equals(u, StringComparison.OrdinalIgnoreCase)))
+            .ToArray();
+
+        if (Bot.Wait.ForTrue(() => Missing().Length == 0, timeoutSec * 2))
+            return;
+
+        string[] missing = Missing();
+        C.Logger(
+            $"Not in this room ({Bot.Map.Name}-{Bot.Map.RoomID}) after {timeoutSec} s: {string.Join(", ", missing)}. "
+                + "Every account must be on the same server and in the same room.",
+            messageBox: true,
+            stopBot: true
+        );
+    }
+
     public void NewWaitForArmy(
         int quantity,
         string syncFilePath = "army_sync.sync",

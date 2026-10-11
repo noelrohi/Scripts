@@ -95,7 +95,7 @@ public class DoAllChallengeBosses
     }
 
     private IEnumerable<string> GetSharedBossQueue(IEnumerable<string> bosses)
-        => UltraQueue.GetSharedBossQueue(Ultra, Bot, C, bosses, BossSyncFile, BossParticipantSyncFile, IsBossComplete);
+        => UltraQueue.GetSharedBossQueue(Ultra, Bot, C, bosses, BossSyncFile, BossParticipantSyncFile, IsBossComplete, "[DoAllChallengeBosses]");
 
     private bool IsBossComplete(string boss)
     {

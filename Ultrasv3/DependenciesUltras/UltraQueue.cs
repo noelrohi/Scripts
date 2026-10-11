@@ -15,13 +15,25 @@ using Skua.Core.Models.Items;
 
 public class UltraQueue
 {
-    public static IEnumerable<string> GetSharedBossQueue(dynamic ultra, IScriptInterface bot, dynamic C, IEnumerable<string> bosses, string bossSyncFile, string participantSyncFile, Func<string, bool> isBossComplete)
+    /// <summary>
+    /// The bosses the party still has to run: each account publishes which bosses it has
+    /// turned in this period, waits until every participant has published during this call,
+    /// and queues a boss when any of them hasn't turned it in.
+    /// </summary>
+    public static IEnumerable<string> GetSharedBossQueue(dynamic ultra, IScriptInterface bot, dynamic C, IEnumerable<string> bosses, string bossSyncFile, string participantSyncFile, Func<string, bool> isBossComplete, string logPrefix = "[AllUltras-v3]")
     {
         if (bot == null)
             return bosses;
 
         // Ultras-v3 are designed for a fixed 4-player army queue.
         const int armySize = 4;
+        const int staleThreshold = 600;
+        const int timeoutMs = 60000;
+
+        // Statuses stamped before this call are from an earlier pass, which an account may still
+        // be replacing. The slack covers the sync files' whole-second stamps.
+        long since = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 2;
+
         string syncPath = ultra.ResolveSyncPath(bossSyncFile);
         string user = bot.Player?.Username ?? Guid.NewGuid().ToString();
 
@@ -32,45 +44,35 @@ public class UltraQueue
         if (ShouldClearParticipantSync(participantPath))
             ultra.ClearSyncFile(participantPath);
         else
-            CleanupStaleParticipants(ultra, C, participantPath);
+            CleanupStaleParticipants(ultra, C, participantPath, logPrefix);
 
         ultra.UpdateEntry(participantPath, user, "1");
 
+        Dictionary<string, string> published = new(StringComparer.OrdinalIgnoreCase);
         int lastCount = -1;
-        const int staleThreshold = 600;
         DateTime waitStarted = DateTime.UtcNow;
-        const int timeoutMs = 60000;
 
         while (!bot.ShouldExit)
         {
-            int count = 0;
-            foreach (string line in ultra.ReadLines(participantPath))
+            published = EntriesSince((string[])ultra.ReadLines(syncPath), since);
+
+            if (published.Count != lastCount)
             {
-                string[] parts = line.Split(':');
-                if (parts.Length < 3)
-                    continue;
-
-                if (!long.TryParse(parts[^1], out long ts))
-                    continue;
-
-                if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - ts > staleThreshold)
-                    continue;
-
-                count++;
+                lastCount = published.Count;
+                C.Logger($"{logPrefix} Participants with this pass's statuses: {published.Count}/{armySize}", "Info");
             }
 
-            if (count != lastCount)
-            {
-                lastCount = count;
-                C.Logger($"[AllUltras-v3] Registered participants: {count}/{armySize}", "Info");
-            }
-
-            if (count >= armySize)
+            if (published.Count >= armySize)
                 break;
 
-            if ((DateTime.UtcNow - waitStarted).TotalMilliseconds >= timeoutMs && count > 0)
+            if ((DateTime.UtcNow - waitStarted).TotalMilliseconds >= timeoutMs && published.Count > 0)
             {
-                C.Logger($"[AllUltras-v3] Wait timeout reached — proceeding with {count}/{armySize} registered clients.", "Warning");
+                long recent = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - staleThreshold;
+                var missing = EntriesSince((string[])ultra.ReadLines(participantPath), recent).Keys
+                    .Where(account => !published.ContainsKey(account))
+                    .ToList();
+                string who = missing.Count > 0 ? string.Join(", ", missing) : "accounts that haven't registered";
+                C.Logger($"{logPrefix} Wait timeout reached, proceeding with {published.Count}/{armySize}. No statuses this pass from {who}.", "Warning");
                 break;
             }
 
@@ -82,37 +84,16 @@ public class UltraQueue
         if (bot.ShouldExit)
             return bosses;
 
-        // Ensure all accounts have written their latest payload before reading
+        // Restamp so an account still waiting, whose call began after this one, counts this
+        // account's statuses as this pass's.
         ultra.UpdateEntry(syncPath, user, payload);
-        bot.Sleep(3000);
 
-        // A boss runs when any participant hasn't turned its quest in this period; it is
-        // skipped only when every participant has. All accounts read the same file, so they
-        // agree on the queue.
-        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        HashSet<string> participants = FreshKeys((string[])ultra.ReadLines(participantPath), now, staleThreshold);
+        // Every account decides from the same pass's statuses of the same participants, so the
+        // party agrees on the queue (unless one publishes just as another's wait times out).
         var pendingFor = bosses.ToDictionary(b => b, b => new List<string>(), StringComparer.OrdinalIgnoreCase);
-        var reported = new List<string>();
-
-        foreach (string line in ultra.ReadLines(syncPath))
+        foreach (KeyValuePair<string, string> entry in published)
         {
-            string[] parts = line.Split(':');
-            if (parts.Length < 3)
-                continue;
-
-            if (!long.TryParse(parts[^1], out long ts))
-                continue;
-
-            if (now - ts > staleThreshold)
-                continue;
-
-            string account = parts[0];
-            if (participants.Count > 0 && !participants.Contains(account))
-                continue;
-
-            reported.Add(account);
-            string payloadLine = parts[1];
-            var statuses = payloadLine.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+            var statuses = entry.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(p => p.Split(new[] { '=' }, 2))
                 .Where(pair => pair.Length == 2)
                 .ToDictionary(pair => pair[0].Trim(), pair => pair[1].Trim(), StringComparer.OrdinalIgnoreCase);
@@ -123,38 +104,32 @@ public class UltraQueue
                     || !bool.TryParse(rawValue, out bool complete)
                     || !complete)
                 {
-                    pendingFor[boss].Add(account);
+                    pendingFor[boss].Add(entry.Key);
                 }
             }
-        }
-
-        // A participant that never published its statuses can't be assumed done.
-        foreach (string missing in participants.Where(p => !reported.Contains(p, StringComparer.OrdinalIgnoreCase)))
-        {
-            foreach (string boss in bosses)
-                pendingFor[boss].Add(missing);
         }
 
         var queue = bosses.Where(b => pendingFor[b].Count > 0).ToList();
         var skipped = bosses.Where(b => pendingFor[b].Count == 0).ToList();
         if (skipped.Count > 0)
-            C.Logger($"[AllUltras-v3] Skipping {string.Join(", ", skipped)}: all {reported.Count} participant(s) turned the quest in this period.", "Info");
+            C.Logger($"{logPrefix} Skipping {string.Join(", ", skipped)}: all {published.Count} participant(s) turned the quest in this period.", "Info");
         foreach (string boss in queue)
-            C.Logger($"[AllUltras-v3] Running {boss}: not turned in this period by {string.Join(", ", pendingFor[boss])}.", "Info");
+            C.Logger($"{logPrefix} Running {boss}: not turned in this period by {string.Join(", ", pendingFor[boss])}.", "Info");
 
         return queue;
     }
 
-    private static HashSet<string> FreshKeys(string[] lines, long now, int staleThreshold)
+    /// <summary>Each account's payload from the sync lines (key:payload:stamp) stamped at or after <paramref name="since"/>.</summary>
+    private static Dictionary<string, string> EntriesSince(string[] lines, long since)
     {
-        var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (string line in lines)
         {
             string[] parts = line.Split(':');
-            if (parts.Length >= 3 && long.TryParse(parts[^1], out long ts) && now - ts <= staleThreshold)
-                keys.Add(parts[0]);
+            if (parts.Length >= 3 && long.TryParse(parts[^1], out long ts) && ts >= since)
+                entries[parts[0]] = parts[1];
         }
-        return keys;
+        return entries;
     }
 
     private static bool ShouldClearParticipantSync(string path)
@@ -172,7 +147,7 @@ public class UltraQueue
         }
     }
 
-    private static void CleanupStaleParticipants(dynamic ultra, dynamic C, string path)
+    private static void CleanupStaleParticipants(dynamic ultra, dynamic C, string path, string logPrefix)
     {
         try
         {
@@ -209,12 +184,12 @@ public class UltraQueue
             if (freshLines.Count != lines.Length)
             {
                 System.IO.File.WriteAllText(path, string.Join(Environment.NewLine, freshLines));
-                C.Logger($"[AllUltras-v3] Cleaned stale participant entries; {freshLines.Count} remain.", "Info");
+                C.Logger($"{logPrefix} Cleaned stale participant entries; {freshLines.Count} remain.", "Info");
             }
         }
         catch (Exception ex)
         {
-            C.Logger($"[AllUltras-v3] Failed to cleanup participant sync: {ex.Message}", "Warning");
+            C.Logger($"{logPrefix} Failed to cleanup participant sync: {ex.Message}", "Warning");
         }
     }
 }

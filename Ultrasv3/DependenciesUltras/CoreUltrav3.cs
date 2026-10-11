@@ -559,7 +559,7 @@ public class CoreUltrav3
             Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
 
         string syncFile = ResolveSyncPath(syncFilePath);
-        string myKey = $"{Bot.Player.Username}|{Bot.Player.CurrentClass?.Name ?? "Peasant"}".Replace(":", "-");
+        string myKey = MyArmyKey(Bot.Player.CurrentClass?.Name ?? "Peasant");
         int myQty = isTemp
             ? (Bot?.TempInv?.GetQuantity(itemName) ?? 0)
             : (Bot?.Inventory?.GetQuantity(itemName) ?? 0);
@@ -609,10 +609,7 @@ public class CoreUltrav3
         if (!Bot.Player.Alive)
         {
             if (!string.IsNullOrWhiteSpace(Bot.Player.Username))
-            {
-                string deadKey = $"{Bot.Player.Username}|{DeadPlaceholder}".Replace(":", "-");
-                UpdateEntry(ResolveSyncPath(syncFilePath), deadKey, "0");
-            }
+                UpdateEntry(ResolveSyncPath(syncFilePath), MyArmyKey(DeadPlaceholder), "0");
 
             Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
         }
@@ -627,105 +624,165 @@ public class CoreUltrav3
             return false;
 
         string syncFile = ResolveSyncPath(syncFilePath);
-        string myKey = $"{username}|{className}".Replace(":", "-");
 
         bool myCondition = condition();
-        UpdateEntry(syncFile, myKey, myCondition ? "1" : "0");
-
-        string[] lines = ReadLines(syncFile);
-        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        const int staleThreshold = 600;
+        UpdateEntry(syncFile, MyArmyKey(className), myCondition ? "1" : "0");
 
         // Each account counts once, by its newest entry. One that died wrote a PlaceHolder entry while dead
         // and its class's entry after it came back; the stale PlaceHolder must not hold the army back.
         Dictionary<string, (long Ts, bool Placeholder, int Status)> newest = new(StringComparer.OrdinalIgnoreCase);
 
-        foreach (string line in lines)
+        foreach (var entry in FreshEntries(syncFile))
         {
-            string[] parts = line.Split(':');
-            if (parts.Length < 3) continue;
+            if (!int.TryParse(entry.Status, out int status)) continue;
 
-            string[] keyParts = parts[0].Split('|');
-            if (keyParts.Length < 1 || string.IsNullOrWhiteSpace(keyParts[0])) continue;
-
-            if (!int.TryParse(parts[1], out int status)) continue;
-            if (!long.TryParse(parts[2], out long ts)) continue;
-            if (now - ts > staleThreshold) continue;
-
-            bool placeholder = keyParts.Length > 1 && keyParts[1] == DeadPlaceholder;
-            if (!newest.TryGetValue(keyParts[0], out var seen) || ts > seen.Ts || (ts == seen.Ts && seen.Placeholder && !placeholder))
-                newest[keyParts[0]] = (ts, placeholder, status);
+            bool placeholder = entry.Class == DeadPlaceholder;
+            if (!newest.TryGetValue(entry.User, out var seen) || entry.Ts > seen.Ts || (entry.Ts == seen.Ts && seen.Placeholder && !placeholder))
+                newest[entry.User] = (entry.Ts, placeholder, status);
         }
 
         return newest.Count > 0 && newest.Values.All(e => e.Status == 1);
     }
 
-    // How long an account without the defeat item waits for its own drop once another account has posted the kill.
-    private const int OwnDropWaitMs = 5000;
+    // This account's key in the sync files: its username and a class (or a stand-in), without the ':' that separates fields.
+    private string MyArmyKey(string? className) => $"{Bot.Player.Username}|{className}".Replace(":", "-");
 
-    /// <summary>
-    /// The completion check of every v3 Ultra: whether the boss is down for the party. A kill counts for the whole
-    /// party, so the boss is down once any account holds the defeat item (<paramref name="hasKill"/>), and then every
-    /// account leaves together. This account posts whether it holds the item to <paramref name="syncFilePath"/>, which
-    /// each Fight clears before the party's barrier. An account without the item, e.g. one that was dead at the kill,
-    /// waits briefly for its own drop. If the drop doesn't come, it leaves too without a turn-in, and DoAllUltras runs
-    /// the boss again for it. No account stays to refight the respawned boss for another account. Unlike
-    /// <see cref="CheckArmyProgressBool"/>, the answer doesn't depend on which accounts have written to the file yet.
-    /// <paramref name="myKill"/> is whether this account holds the item and should turn the quest in.
-    /// </summary>
-    public bool BossDownForArmy(Func<bool> hasKill, string syncFilePath, out bool myKill)
-    {
-        myKill = false;
-        string? username = Bot.Player.Username;
-        string? className = Bot.Player.CurrentClass?.Name;
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(className))
-            return false;
-
-        // The key the boss scripts pre-seed with.
-        string syncFile = ResolveSyncPath(syncFilePath);
-        string myKey = $"{username}|{className}".Replace(":", "-");
-
-        myKill = hasKill();
-        UpdateEntry(syncFile, myKey, myKill ? "1" : "0");
-        if (myKill)
-            return true;
-
-        List<string> holders = KillHolders(syncFile);
-        if (holders.Count == 0)
-            return false;
-
-        myKill = Bot.Wait.ForTrue(hasKill, OwnDropWaitMs / 250, 250);
-        if (myKill)
-        {
-            UpdateEntry(syncFile, myKey, "1");
-            return true;
-        }
-
-        Bot.Log($"[BossDown] The boss is down: {string.Join(", ", holders)} hold(s) the kill. This account has no defeat item "
-            + "(dead at the kill?), so it leaves with the party without a turn-in; DoAllUltras runs the boss again for it.");
-        return true;
-    }
-
-    // The accounts whose fresh entry in a completion file says they hold the defeat item.
-    private List<string> KillHolders(string syncFile)
+    // The KEY:status:timestamp entries of a sync file written in the last 10 minutes, KEY being user|class.
+    private IEnumerable<(string User, string Class, string Status, long Ts)> FreshEntries(string syncFile)
     {
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         const int staleThreshold = 600;
-        List<string> holders = new();
 
         foreach (string line in ReadLines(syncFile))
         {
             string[] parts = line.Split(':');
             if (parts.Length < 3) continue;
-            if (parts[1] != "1") continue;
-            if (!long.TryParse(parts[2], out long ts) || now - ts > staleThreshold) continue;
 
-            string user = parts[0].Split('|')[0];
-            if (!string.IsNullOrWhiteSpace(user) && !holders.Contains(user, StringComparer.OrdinalIgnoreCase))
-                holders.Add(user);
+            string[] keyParts = parts[0].Split('|');
+            if (string.IsNullOrWhiteSpace(keyParts[0])) continue;
+
+            if (!long.TryParse(parts[2], out long ts)) continue;
+            if (now - ts > staleThreshold) continue;
+
+            yield return (keyParts[0], keyParts.Length > 1 ? keyParts[1] : string.Empty, parts[1], ts);
+        }
+    }
+
+    // A v3 Ultra's completion: what each account posts to the boss's completion file.
+    private const string KillFresh = "1";      // got the defeat item in this fight
+    private const string KillNeeded = "0";     // can still gain from a kill
+    private const string NothingToGain = "2";  // done this period, quest not taken, or held the item before the fight and couldn't turn it in
+
+    // How long an account without the defeat item waits for its own drop once another account has posted the kill.
+    private const int OwnDropWaitMs = 5000;
+
+    /// <summary>
+    /// Call it in each fight before the party's barrier. An account that already holds the boss's defeat item (e.g. from a
+    /// kill before a Wipe) turns quest <paramref name="questId"/> in now. Returns whether it still holds the item: then
+    /// it couldn't turn it in, the item doesn't count as a kill for the party, and the fight starts no Attempt.
+    /// </summary>
+    public bool TurnInHeldKill(int questId, Func<bool> hasKill)
+    {
+        if (!hasKill())
+            return false;
+
+        if (Bot.Quests.IsInProgress(questId))
+        {
+            Bot.Log($"[BossDown] This account holds the defeat item from before this fight: turning quest {questId} in.");
+            TurnIn(questId);
         }
 
-        return holders;
+        if (!hasKill())
+            return false;
+
+        Bot.Log($"[BossDown] This account still holds the defeat item from before this fight and couldn't turn quest {questId} in. "
+            + "It fights without counting for the kill and starts no Attempt.");
+        return true;
+    }
+
+    /// <summary>
+    /// The completion check of every v3 Ultra: whether the boss is down for the party. A kill counts for the whole party:
+    /// once any account gets the defeat item in this fight (<paramref name="hasKill"/> without <paramref name="heldAtStart"/>,
+    /// from <see cref="TurnInHeldKill"/>), the boss is down and every account leaves together. An account without the item,
+    /// e.g. one that was dead at the kill, waits briefly for its own drop; without it, it leaves too and DoAllUltras runs the
+    /// boss again for it. No account stays to refight the respawned boss for another. The boss is also down, with no kill,
+    /// once all <paramref name="partySize"/> accounts have nothing to gain from one: each turned the quest in this period,
+    /// hasn't taken it, or holds an item it can't turn in. Each account posts its status to <paramref name="syncFilePath"/>,
+    /// which each fight clears before the barrier; the answer doesn't depend on which accounts have posted first.
+    /// <paramref name="myKill"/> is whether this account got the item and turns the quest in (<see cref="LeaveAfterKill"/>).
+    /// </summary>
+    public bool BossDownForParty(Func<bool> hasKill, bool heldAtStart, int questId, int partySize, string syncFilePath, out bool myKill)
+    {
+        myKill = false;
+        if (string.IsNullOrWhiteSpace(Bot.Player.Username) || Bot.Player.CurrentClass?.Name is not string className)
+            return false;
+
+        // The key the boss scripts pre-seed with.
+        string syncFile = ResolveSyncPath(syncFilePath);
+        string myKey = MyArmyKey(className);
+
+        myKill = !heldAtStart && hasKill();
+        bool nothingToGain = heldAtStart || !Bot.Quests.IsInProgress(questId) || Bot.Quests.IsDailyComplete(questId);
+        UpdateEntry(syncFile, myKey, myKill ? KillFresh : nothingToGain ? NothingToGain : KillNeeded);
+        if (myKill)
+            return true;
+
+        // Each account's newest status.
+        Dictionary<string, (long Ts, string Status)> statuses = new(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in FreshEntries(syncFile))
+            if (!statuses.TryGetValue(entry.User, out var seen) || entry.Ts >= seen.Ts)
+                statuses[entry.User] = (entry.Ts, entry.Status);
+
+        List<string> holders = statuses.Where(s => s.Value.Status == KillFresh).Select(s => s.Key).ToList();
+        if (holders.Count == 0)
+        {
+            if (statuses.Count < partySize || statuses.Values.Any(s => s.Status != NothingToGain))
+                return false;
+
+            Bot.Log("[BossDown] No account in the party can gain from a kill (each turned the quest in this period, "
+                + "hasn't taken it, or holds an item it can't turn in): leaving without a fight.");
+            return true;
+        }
+
+        if (!heldAtStart && Bot.Wait.ForTrue(hasKill, OwnDropWaitMs / 250, 250))
+        {
+            myKill = true;
+            UpdateEntry(syncFile, myKey, KillFresh);
+            return true;
+        }
+
+        string why = heldAtStart
+            ? "It held the defeat item from before this fight and couldn't turn the quest in."
+            : Bot.Quests.IsDailyComplete(questId)
+                ? "It turned the quest in this period already."
+                : "It has no defeat item (dead at the kill?), so DoAllUltras runs the boss again for it.";
+        Bot.Log($"[BossDown] The boss is down: {string.Join(", ", holders)} got the kill. This account leaves with the party "
+            + $"without a turn-in. {why}");
+        return true;
+    }
+
+    /// <summary>
+    /// The end of a fight once <see cref="BossDownForParty"/> says the boss is down: turns quest <paramref name="questId"/>
+    /// in when this account got the kill (<paramref name="myKill"/>), and ends its Attempt, if the boss has them, with
+    /// the party's kill (<paramref name="endAttempt"/>), with or without the item. The next fight is a new Attempt.
+    /// </summary>
+    public void LeaveAfterKill(int questId, bool myKill, Action? endAttempt = null)
+    {
+        if (myKill)
+            TurnIn(questId);
+        endAttempt?.Invoke();
+    }
+
+    // Turns a quest in, up to 5 tries a second apart.
+    private void TurnIn(int questId)
+    {
+        for (int attempt = 1; attempt <= 5; attempt++)
+        {
+            if (Bot.Quests.EnsureComplete(questId))
+                return;
+            if (attempt < 5)
+                Bot.Sleep(1000);
+        }
     }
 
     // -------------------------------------------------------

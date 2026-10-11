@@ -390,6 +390,10 @@ public class UltraNulgathv3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.TempInv.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
@@ -409,7 +413,7 @@ public class UltraNulgathv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath, _entry.Loadout.Worn());
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(heldAtStart, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath, _entry.Loadout.Worn());
         // The wipe monitor cancels this token the moment the whole party is dead.
         using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
@@ -432,10 +436,7 @@ public class UltraNulgathv3
 
             attempt.SeeBoss();
 
-            if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Outcome.Kill);
-
-            if (Ultra.BossDownForArmy(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
             {
                 C.Logger("Nulgath the Archfiend defeated. Finishing quest.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
@@ -443,12 +444,7 @@ public class UltraNulgathv3
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                if (myKill)
-                    UltraGeneral.CompleteQuest(Bot, questId);
-                // The boss is down. An account without the item ends its Attempt with the party's kill;
-                // the next fight is a new Attempt.
-                attempt.End(UltraAttempt.Outcome.Kill);
-                _attempt = null;
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(UltraAttempt.Outcome.Kill));
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;
                 break;

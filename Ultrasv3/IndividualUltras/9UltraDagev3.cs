@@ -168,6 +168,10 @@ public class UltraDagev3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.TempInv.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
@@ -240,7 +244,7 @@ public class UltraDagev3
                 continue;
             }
 
-            if (Ultra.BossDownForArmy(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
             {
                 C.Logger("Dage the Dark Lord defeated. Finishing quest.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
@@ -248,8 +252,7 @@ public class UltraDagev3
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                if (myKill)
-                    UltraGeneral.CompleteQuest(Bot, questId);
+                Ultra.LeaveAfterKill(questId, myKill);
                 Bot.Sleep(3000);
                 break;
             }

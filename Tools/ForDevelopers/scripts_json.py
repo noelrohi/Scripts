@@ -7,7 +7,8 @@ index, i.e. what the commit will hold, not the working tree.
 
   scripts_json.py sync PATH...   rewrite the entries of these Scripts, in the index and the
                                  working tree; a deleted Script, or one without a header,
-                                 loses its entry
+                                 loses its entry; warns about the ones with unstaged changes,
+                                 which need `git add` and another sync
   scripts_json.py sync --all     the same for every Script, and drop entries of missing files;
                                  this repairs a stale scripts.json
   scripts_json.py check          fail when an entry is stale, or a Script has none
@@ -18,6 +19,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 
@@ -114,6 +116,23 @@ def staged_entries():
     return json.loads(git("show", ":" + SCRIPTS_JSON))
 
 
+def unstaged(paths):
+    """The given .cs paths whose working-tree file isn't what's staged: edited, deleted, or never
+    added (and not ignored)."""
+    out = git("--literal-pathspecs", "diff", "--name-only", "--no-renames", "-z", "--", *paths)
+    out += git("--literal-pathspecs", "ls-files", "--others", "--exclude-standard", "-z", "--", *paths)
+    return sorted({p for p in out.decode().split("\0") if p.endswith(".cs")})
+
+
+def hooks_hint():
+    """A pointer to the hooks, unless core.hooksPath already names .githooks; run from the repo root."""
+    installed = subprocess.run(["git", "config", "core.hooksPath"], capture_output=True, text=True).stdout.strip()
+    if installed and os.path.realpath(os.path.expanduser(installed)) == os.path.realpath(".githooks"):
+        return ""
+    return ("\nInstall the hooks once per clone and every commit syncs its Scripts:"
+            " git config core.hooksPath .githooks")
+
+
 def sync(paths=(), all=False):
     staged_json = staged_entries()
     if all:
@@ -129,6 +148,15 @@ def sync(paths=(), all=False):
         working = json.loads(f.read())
     with open(SCRIPTS_JSON, "wb") as f:
         f.write(dump(update(working, wanted)))
+
+    # git commit's hooks run with GIT_INDEX_FILE set and want only what's staged.
+    if paths and "GIT_INDEX_FILE" not in os.environ and (changed := unstaged(paths)):
+        print(f"{SCRIPTS_JSON} has the staged version of these, not their working-tree changes:",
+              *changed, sep="\n  ", file=sys.stderr)
+        args = shlex.join(changed)
+        print("\nStage them and sync again, from the repo root:",
+              f" git add -A -- {args} && python3 Tools/ForDevelopers/scripts_json.py sync {args}",
+              hooks_hint(), sep="", file=sys.stderr)
 
 
 def check():
@@ -149,7 +177,8 @@ def check():
 
     if problems:
         print(f"{SCRIPTS_JSON} is out of date:", *problems, sep="\n  ", file=sys.stderr)
-        print("\nFix it with: python3 Tools/ForDevelopers/scripts_json.py sync --all", file=sys.stderr)
+        print("\nFix it with: python3 Tools/ForDevelopers/scripts_json.py sync --all", hooks_hint(),
+              sep="", file=sys.stderr)
         return 1
     print(f"{SCRIPTS_JSON} matches all {sum(e is not None for e in wanted.values())} Scripts.")
     return 0

@@ -202,6 +202,55 @@ public class UltraNulgathv3
                 Taunt = UltraTaunt.Never,
             },
             BladeHittingDragonOfTime),
+        // As loo-lr-sc-dot, but Legion Revenant wears a Penitence cape and a plain Wizard helm, for an
+        // account without Lament.
+        new("loo-lrpen-sc-dot",
+            new UltraCompEntry
+            {
+                Class = "Lord of Order",
+                Role = LeadTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Lucky,
+                    Weapon = new[] { WeaponSpecial.Awe_Blast },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    Helm = new[] { HelmSpecial.Forge },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("about 1.5 s into the fight, never at 0 s; then each time the cue taunter's taunt on Nulgath ends"),
+            },
+            new UltraCompEntry
+            {
+                Class = "Legion Revenant",
+                Role = CueTaunter,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Wizard,
+                    Weapon = new[] { WeaponSpecial.Arcanas_Concerto },
+                    Cape = new[] { CapeSpecial.Penitence },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Scroll = UltraLoadout.ScrollOfEnrage,
+                },
+                Taunt = UltraTaunt.ByRole("on every \"Behold the power of the Abyss!\""),
+            },
+            new UltraCompEntry
+            {
+                Class = "StoneCrusher",
+                Role = NulgathAttacker,
+                Loadout = new UltraLoadout
+                {
+                    Enhancement = EnhancementType.Fighter,
+                    Weapon = new[] { WeaponSpecial.Lacerate },
+                    Cape = new[] { CapeSpecial.Absolution },
+                    Helm = new[] { HelmSpecial.Anima },
+                    EnhanceWhenAutoEnhanceIsOff = true,
+                    Potions = new[] { "Sage Tonic", "Potent Honor Potion" },
+                    ClickPotionInFight = false,
+                },
+                Taunt = UltraTaunt.Never,
+            },
+            BladeHittingDragonOfTime),
     };
 
     private static IScriptInterface Bot => IScriptInterface.Instance;

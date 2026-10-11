@@ -2919,10 +2919,19 @@ public class CoreEnginev3
             Bot.Skills.Stop();
     }
 
+    /// <summary>
+    /// The class rotation casts nothing until this time, so a boss script can keep the global cooldown free
+    /// for a skill it casts itself with <see cref="Cast"/> at a known moment.
+    /// </summary>
+    public DateTime HoldSkillsUntil { get; set; }
+
     void Skills()
     {
         if (!Bot.Player.Alive)
             Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
+
+        if (DateTime.UtcNow < HoldSkillsUntil)
+            return;
 
         if (!Bot.Player.HasTarget)
             return;

@@ -162,8 +162,10 @@ public class DoAllUltras
 
     /// <summary>
     /// A boss is done only when its quest was turned in this period (daily or weekly flag).
-    /// An account that has the defeat item but no turn-in retries the turn-in here instead
-    /// of being skipped.
+    /// An account that has the defeat item (a temp item, or the Speaker's inventory item) but
+    /// no turn-in retries the turn-in here instead of being skipped. If the game still refuses
+    /// it, a refight can't help (the boss scripts don't count an item held from before the fight
+    /// as a kill), so the boss counts as done for this account and the queue doesn't rerun it.
     /// </summary>
     private bool IsBossComplete(string boss)
     {
@@ -187,13 +189,21 @@ public class DoAllUltras
             return false;
 
         bool complete = UltraGeneral.IsQuestDoneThisPeriod(Bot, id);
-        if (!complete && Bot.TempInv.Contains(defeatItem))
+        bool holdsItem() => Bot.TempInv.Contains(defeatItem) || Bot.Inventory.Contains(defeatItem);
+        if (!complete && holdsItem())
         {
             C.Logger($"{name} [{id}] has {defeatItem} but was not turned in. Retrying the turn-in.", "Warning");
             UltraGeneral.EnsureAcceptOnce(Bot, id);
             UltraGeneral.CompleteQuest(Bot, id);
             Bot.Wait.ForTrue(() => UltraGeneral.IsQuestDoneThisPeriod(Bot, id), 10);
             complete = UltraGeneral.IsQuestDoneThisPeriod(Bot, id);
+
+            if (!complete && holdsItem())
+            {
+                C.Logger($"{name} [{id}]: the turn-in is still refused while this account holds {defeatItem}. "
+                    + "A refight can't help it, so the queue counts the boss as done for it.", "Warning");
+                complete = true;
+            }
         }
 
         LogBossQuestStatus(name, id, complete);

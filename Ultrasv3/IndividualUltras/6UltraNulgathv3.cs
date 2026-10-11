@@ -390,6 +390,10 @@ public class UltraNulgathv3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.TempInv.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
@@ -409,7 +413,7 @@ public class UltraNulgathv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath, _entry.Loadout.Worn());
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(heldAtStart, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Nulgath, _entry.Loadout.Worn());
         // The wipe monitor cancels this token the moment the whole party is dead.
         using CancellationTokenRegistration onWipe = _wipeCts.Token.Register(() => attempt.End(UltraAttempt.Outcome.Wipe));
 
@@ -432,20 +436,15 @@ public class UltraNulgathv3
 
             attempt.SeeBoss();
 
-            if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Outcome.Kill);
-
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Nulgath the Archfiend defeated. Finishing quest.");
+                C.Logger(killed ? "Nulgath the Archfiend defeated. Finishing quest." : "Nothing to gain from Nulgath the Archfiend: leaving without a fight.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
-                _attempt = null;
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;
                 break;

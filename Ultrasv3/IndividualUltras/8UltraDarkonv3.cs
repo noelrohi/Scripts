@@ -175,6 +175,10 @@ public class UltraDarkonv3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.TempInv.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(fightTimeSyncFile));
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
@@ -241,15 +245,15 @@ public class UltraDarkonv3
                 continue;
             }
 
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Darkon the Conductor defeated. Finishing quest.");
+                C.Logger(killed ? "Darkon the Conductor defeated. Finishing quest." : "Nothing to gain from Darkon the Conductor: leaving without a fight.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
+                Ultra.LeaveAfterKill(questId, myKill);
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;
                 break;

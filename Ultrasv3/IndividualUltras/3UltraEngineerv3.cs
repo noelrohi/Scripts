@@ -298,6 +298,10 @@ public class UltraEngineerv3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.TempInv.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
@@ -316,7 +320,7 @@ public class UltraEngineerv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Engineer, _entry.Loadout.Worn());
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(heldAtStart, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Engineer, _entry.Loadout.Worn());
 
         bool attackDroneDebuffed = false;
 
@@ -334,18 +338,13 @@ public class UltraEngineerv3
 
             attempt.SeeBoss();
 
-            if (Bot.TempInv.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Outcome.Kill);
-
-            if (Ultra.CheckArmyProgressBool(() => Bot.TempInv.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Ultra Engineer defeated. Finishing quest.");
+                C.Logger(killed ? "Ultra Engineer defeated. Finishing quest." : "Nothing to gain from Ultra Engineer: leaving without a fight.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
-                _attempt = null;
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 Bot.Sleep(3000);
                 break;
             }

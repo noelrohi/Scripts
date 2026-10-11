@@ -270,6 +270,10 @@ public class UltraSpeakerv3
         if (!UltraGeneral.IsQuestGreen(Bot, questId))
             UltraGeneral.EnsureAcceptOnce(Bot, questId);
 
+        // An item held from before this fight is turned in now; one still held doesn't count for the party's kill.
+        Func<bool> hasKill = () => Bot.Inventory.Contains(bossDefeatedTemp, 1);
+        bool heldAtStart = Ultra.TurnInHeldKill(questId, hasKill);
+
         if (!Bot.Quests.IsUnlocked(questId))
             Bot.Quests.UpdateQuest(9125);
 
@@ -294,7 +298,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(_attempt, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(heldAtStart, Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
 
         while (!Bot.ShouldExit)
         {
@@ -365,18 +369,13 @@ public class UltraSpeakerv3
 
             attempt.SeeBoss();
 
-            if (Bot.Inventory.Contains(bossDefeatedTemp, 1))
-                attempt.End(UltraAttempt.Outcome.Kill);
-
-            if (Ultra.CheckArmyProgressBool(() => Bot.Inventory.Contains(bossDefeatedTemp, 1), completionSyncFile))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("The First Speaker defeated. Finishing quest.");
+                C.Logger(killed ? "The First Speaker defeated. Finishing quest." : "Nothing to gain from The First Speaker: leaving without a fight.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                UltraGeneral.CompleteQuest(Bot, questId);
-                // Turned in: the next fight is a new Attempt.
-                _attempt = null;
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 UltraLoadout.Restore();
                 Bot.Sleep(3000);
                 break;

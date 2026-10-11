@@ -3803,6 +3803,22 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/DoUltrasDoDailiesDoChallengeBosses.cs"
   },
   {
+    "name": "Restore Ultra Loadout",
+    "description": "Puts back the gear and class enhancement an Ultra Loadout changed on an account with auto enhance off, after a run stopped before it could.",
+    "tags": [
+      "ultra",
+      "loadout",
+      "restore",
+      "enhancement",
+      "gear"
+    ],
+    "path": "Ultrasv3/RestoreLoadout.cs",
+    "size": 1178,
+    "sha256": "59a520309ca47b616a4288fd0fc2eba442212d9da205dabafdf39258afb29c46",
+    "fileName": "RestoreLoadout.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/RestoreLoadout.cs"
+  },
+  {
     "name": "null",
     "description": "null",
     "tags": [
@@ -35219,21 +35235,5 @@
     "sha256": "082e0dc7af4a0dcd96d53b080bcc04e5b35417d2d0701d0c7e41ebb02215834f",
     "fileName": "3BookOfIce.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/ArchMage/Books/3BookOfIce.cs"
-  },
-  {
-    "name": "Restore Ultra Loadout",
-    "description": "Puts back the gear and class enhancement an Ultra Loadout changed on an account with auto enhance off, after a run stopped before it could.",
-    "tags": [
-      "ultra",
-      "loadout",
-      "restore",
-      "enhancement",
-      "gear"
-    ],
-    "path": "Ultrasv3/RestoreLoadout.cs",
-    "size": 1178,
-    "sha256": "59a520309ca47b616a4288fd0fc2eba442212d9da205dabafdf39258afb29c46",
-    "fileName": "RestoreLoadout.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/RestoreLoadout.cs"
   }
 ]

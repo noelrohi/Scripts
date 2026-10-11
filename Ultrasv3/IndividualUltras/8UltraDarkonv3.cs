@@ -245,9 +245,9 @@ public class UltraDarkonv3
                 continue;
             }
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Darkon the Conductor defeated. Finishing quest.");
+                C.Logger(killed ? "Darkon the Conductor defeated. Finishing quest." : "Nothing to gain from Darkon the Conductor: leaving without a fight.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();

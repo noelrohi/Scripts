@@ -680,9 +680,15 @@ public class CoreUltrav3
     /// Call it in each fight before the party's barrier. An account that already holds the boss's defeat item (e.g. from a
     /// kill before a Wipe) turns quest <paramref name="questId"/> in now. Returns whether it still holds the item: then
     /// it couldn't turn it in, the item doesn't count as a kill for the party, and the fight starts no Attempt.
+    /// It also warns when the quest isn't taken though it wasn't turned in this period (locked, or a prerequisite
+    /// missing): such an account can't gain from the kill, so the boss would otherwise be skipped for it silently.
     /// </summary>
     public bool TurnInHeldKill(int questId, Func<bool> hasKill)
     {
+        if (QuestNotTaken(questId))
+            Bot.Log($"[BossDown] Warning: quest {questId} isn't taken and wasn't turned in this period (locked, or a "
+                + "prerequisite missing?). This account can't gain from the kill.");
+
         if (!hasKill())
             return false;
 
@@ -709,11 +715,12 @@ public class CoreUltrav3
     /// once all <paramref name="partySize"/> accounts have nothing to gain from one: each turned the quest in this period,
     /// hasn't taken it, or holds an item it can't turn in. Each account posts its status to <paramref name="syncFilePath"/>,
     /// which each fight clears before the barrier; the answer doesn't depend on which accounts have posted first.
-    /// <paramref name="myKill"/> is whether this account got the item and turns the quest in (<see cref="LeaveAfterKill"/>).
+    /// <paramref name="killed"/> is whether the boss was killed rather than left without a fight; <paramref name="myKill"/>
+    /// is whether this account got the item and turns the quest in (<see cref="LeaveAfterKill"/>).
     /// </summary>
-    public bool BossDownForParty(Func<bool> hasKill, bool heldAtStart, int questId, int partySize, string syncFilePath, out bool myKill)
+    public bool BossDownForParty(Func<bool> hasKill, bool heldAtStart, int questId, int partySize, string syncFilePath, out bool killed, out bool myKill)
     {
-        myKill = false;
+        killed = myKill = false;
         if (string.IsNullOrWhiteSpace(Bot.Player.Username) || Bot.Player.CurrentClass?.Name is not string className)
             return false;
 
@@ -725,7 +732,7 @@ public class CoreUltrav3
         bool nothingToGain = heldAtStart || !Bot.Quests.IsInProgress(questId) || Bot.Quests.IsDailyComplete(questId);
         UpdateEntry(syncFile, myKey, myKill ? KillFresh : nothingToGain ? NothingToGain : KillNeeded);
         if (myKill)
-            return true;
+            return killed = true;
 
         // Each account's newest status.
         Dictionary<string, (long Ts, string Status)> statuses = new(StringComparer.OrdinalIgnoreCase);
@@ -744,6 +751,8 @@ public class CoreUltrav3
             return true;
         }
 
+        killed = true;
+
         if (!heldAtStart && Bot.Wait.ForTrue(hasKill, OwnDropWaitMs / 250, 250))
         {
             myKill = true;
@@ -755,7 +764,9 @@ public class CoreUltrav3
             ? "It held the defeat item from before this fight and couldn't turn the quest in."
             : Bot.Quests.IsDailyComplete(questId)
                 ? "It turned the quest in this period already."
-                : "It has no defeat item (dead at the kill?), so DoAllUltras runs the boss again for it.";
+                : QuestNotTaken(questId)
+                    ? "It hasn't taken the quest (locked, or a prerequisite missing?)."
+                    : "It has no defeat item (dead at the kill?), so DoAllUltras runs the boss again for it.";
         Bot.Log($"[BossDown] The boss is down: {string.Join(", ", holders)} got the kill. This account leaves with the party "
             + $"without a turn-in. {why}");
         return true;
@@ -763,8 +774,9 @@ public class CoreUltrav3
 
     /// <summary>
     /// The end of a fight once <see cref="BossDownForParty"/> says the boss is down: turns quest <paramref name="questId"/>
-    /// in when this account got the kill (<paramref name="myKill"/>), and ends its Attempt, if the boss has them, with
-    /// the party's kill (<paramref name="endAttempt"/>), with or without the item. The next fight is a new Attempt.
+    /// in when this account got the kill (<paramref name="myKill"/>), and ends its Attempt, if the boss has them
+    /// (<paramref name="endAttempt"/>): in <c>kill</c> when the boss was killed, with or without the item, else in <c>stopped</c>.
+    /// The next fight is a new Attempt.
     /// </summary>
     public void LeaveAfterKill(int questId, bool myKill, Action? endAttempt = null)
     {
@@ -772,6 +784,9 @@ public class CoreUltrav3
             TurnIn(questId);
         endAttempt?.Invoke();
     }
+
+    // Whether a quest is neither taken nor turned in this period: locked, or a prerequisite missing.
+    private bool QuestNotTaken(int questId) => !Bot.Quests.IsInProgress(questId) && !Bot.Quests.IsDailyComplete(questId);
 
     // Turns a quest in, up to 5 tries a second apart.
     private void TurnIn(int questId)

@@ -225,9 +225,9 @@ public class ChampionDrakathv3
                 continue;
             }
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Champion Drakath defeated. Finishing quest.");
+                C.Logger(killed ? "Champion Drakath defeated. Finishing quest." : "Nothing to gain from Champion Drakath: leaving without a fight.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();

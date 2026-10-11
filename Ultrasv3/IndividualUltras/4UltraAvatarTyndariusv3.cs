@@ -313,15 +313,15 @@ public class UltraAvatarTyndariusv3
 
             attempt.SeeBoss();
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Ultra Avatar Tyndarius defeated. Finishing quest.");
+                C.Logger(killed ? "Ultra Avatar Tyndarius defeated. Finishing quest." : "Nothing to gain from Ultra Avatar Tyndarius: leaving without a fight.");
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(UltraAttempt.Outcome.Kill));
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 Bot.Sleep(3000);
                 _deathRetries.Value = MaxDeathRetries;
                 break;

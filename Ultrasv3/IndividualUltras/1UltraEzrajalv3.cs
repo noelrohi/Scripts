@@ -426,14 +426,14 @@ public class UltraEzrajalv3
 
             attempt.SeeBoss();
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Ultra Ezrajal defeated. Finishing quest.");
+                C.Logger(killed ? "Ultra Ezrajal defeated. Finishing quest." : "Nothing to gain from Ultra Ezrajal: leaving without a fight.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Bot.UltraBossHelper.DisableCounterAttack();
                 Ultra.PersistentJoinHouse();
-                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(UltraAttempt.Outcome.Kill));
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 Bot.Sleep(3000);
                 break;
             }

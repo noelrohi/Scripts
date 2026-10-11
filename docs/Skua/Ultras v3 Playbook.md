@@ -43,7 +43,8 @@ leave while the rest fought on.
 Only an item got in this fight counts. Before the party gathers, an account that already holds
 the defeat item (from a kill before a Wipe, or the Speaker's `The First Speaker Silenced`, which
 stays in the inventory) turns the quest in. If the game refuses, it fights without counting for
-the kill and starts no Attempt. When no account can gain from a kill (each turned the quest in
+the kill and starts no Attempt. An account whose quest isn't taken though it wasn't turned in
+this period (locked, or a prerequisite missing) logs a warning. When no account can gain from a kill (each turned the quest in
 this period, hasn't taken it, or holds an item it can't turn in), the party leaves without a
 fight. If an account's turn-in is still refused while it holds the item, the queue counts the
 boss as done for it, since a refight can't help.
@@ -78,7 +79,8 @@ account's deaths in seconds since the start, and its `loadout`. Ultra Ezrajal, U
 Ultra Engineer and Ultra Speaker have no Wipe detection, so their Attempts end in `kill` or
 `stopped`. An account that still holds the defeat item from before the fight starts no Attempt
 and logs that. An account that leaves without the defeat item because another account got the
-kill ends its Attempt in `kill` too: the boss died.
+kill ends its Attempt in `kill` too: the boss died. When the party leaves without a fight
+because no account can gain from a kill, the Attempts end in `stopped`.
 
 `loadout` is what the account wore as the Attempt began: `class`, `weapon`, `cape` and `helm`,
 each with its `name`, `enhancement` (the type, or a cape's or helm's special), weapon

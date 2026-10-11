@@ -503,16 +503,16 @@ public class UltraWardenv3
             if (_entry.Role == BerserkHealerHoldingOrder)
                 HoldOrderNearBerserk();
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("Ultra Warden defeated. Finishing quest.");
+                C.Logger(killed ? "Ultra Warden defeated. Finishing quest." : "Nothing to gain from Ultra Warden: leaving without a fight.");
                 _inFight = false;
                 Bot.Events.ScriptStopping -= StopTauntEvent;
                 _tauntCts.Cancel();
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(UltraAttempt.Outcome.Kill));
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 Bot.Sleep(3000);
                 break;
             }

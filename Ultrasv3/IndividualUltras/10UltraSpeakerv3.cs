@@ -369,13 +369,13 @@ public class UltraSpeakerv3
 
             attempt.SeeBoss();
 
-            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool myKill))
+            if (Ultra.BossDownForParty(hasKill, heldAtStart, questId, armySize, completionSyncFile, out bool killed, out bool myKill))
             {
-                C.Logger("The First Speaker defeated. Finishing quest.");
+                C.Logger(killed ? "The First Speaker defeated. Finishing quest." : "Nothing to gain from The First Speaker: leaving without a fight.");
                 Engine.DisableSkills();
                 Engine.Join(map);
                 Ultra.PersistentJoinHouse();
-                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(UltraAttempt.Outcome.Kill));
+                Ultra.LeaveAfterKill(questId, myKill, () => attempt.End(killed ? UltraAttempt.Outcome.Kill : UltraAttempt.Outcome.Stopped));
                 UltraLoadout.Restore();
                 Bot.Sleep(3000);
                 break;

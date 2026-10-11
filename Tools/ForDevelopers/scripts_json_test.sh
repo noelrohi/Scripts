@@ -65,8 +65,9 @@ verify 'git commit D.cs, adding it'
 write A 3
 git add A.cs
 write A 4
-git commit -qm A
+hook_output=$(git commit -qm A 2>&1)
 verify 'git commit, with unstaged edits on top'
+[ -z "$hook_output" ] || { printf 'FAIL the hooks warned:\n%s\n' "$hook_output"; failed=1; }
 
 write B 3
 git add B.cs
@@ -74,5 +75,24 @@ git commit -qm A A.cs
 verify 'git commit A.cs, with B.cs staged'
 git commit -qm B
 verify 'git commit B.cs, staged before'
+
+# By hand, sync reads the index too, so it warns about Scripts whose changes aren't staged yet.
+expect_warning() {
+  out=$(python3 Tools/ForDevelopers/scripts_json.py sync "$@" 2>&1 >/dev/null)
+  if [ "$(printf '%s\n' "$out" | grep -c '^  ')" -ne "$#" ] || ! printf '%s' "$out" | grep -q 'git add'; then
+    printf 'FAIL sync %s: expected a warning naming each path\n%s\n' "$*" "$out"
+    failed=1
+  else
+    echo "ok   sync $*, warning before git add"
+  fi
+}
+write A 5; write E 1
+expect_warning A.cs E.cs
+git add A.cs E.cs
+out=$(python3 Tools/ForDevelopers/scripts_json.py sync A.cs E.cs 2>&1)
+[ -z "$out" ] || { printf 'FAIL sync after git add warned:\n%s\n' "$out"; failed=1; }
+git add scripts.json
+git commit -qm 'A and E, synced by hand' --no-verify
+verify 'git add, sync by hand, git commit --no-verify'
 
 exit $failed

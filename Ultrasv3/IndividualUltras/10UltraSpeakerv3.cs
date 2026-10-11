@@ -294,7 +294,7 @@ public class UltraSpeakerv3
         }
 
         DateTime fightStartTime = DateTime.UtcNow;
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.Name == boss, _entry.Loadout.Worn());
 
         while (!Bot.ShouldExit)
         {

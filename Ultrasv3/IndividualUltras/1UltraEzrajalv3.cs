@@ -403,7 +403,7 @@ public class UltraEzrajalv3
             Ultra.UpdateEntry(Ultra.ResolveSyncPath(completionSyncFile), _myKey, "0");
         }
 
-        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Ezrajal);
+        UltraAttempt attempt = _attempt = UltraAttempt.Begin(Boss, _comp.Name, _entry.Class, _entry.Role, map, m => m.MapID == Ezrajal, _entry.Loadout.Worn());
 
         if (_entry.Role == LockBaiter)
             PlayLockTrick(boss, armySize);

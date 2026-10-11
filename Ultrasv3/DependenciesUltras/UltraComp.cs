@@ -287,22 +287,33 @@ public class UltraLoadout
     /// </summary>
     public bool KeepVaingloryAndPneuma { get; init; }
 
+    // How the last Enhance fell short of the Loadout, and the specials it put on, for Worn.
+    private readonly List<string> _notes = new();
+    private (CapeSpecial Cape, HelmSpecial Helm, WeaponSpecial Weapon)? _aimed;
+    private const int MaxNotes = 12;
+
     public void Enhance()
     {
+        _notes.Clear();
+        _aimed = null;
         if (Enhancement == null)
         {
             C.Logger($"[Loadout] {Bot.Player.CurrentClass?.Name} keeps its own gear.");
-            return;
-        }
-        if (!CanEnhance)
-        {
-            FitOwnedGear();
+            _notes.Add("keeps own gear: the Loadout names no enhancement");
             return;
         }
 
-        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
-        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
-        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        CapeSpecial cape = PickNoted(Cape, CapeUnlocked, CapeSpecial.None);
+        HelmSpecial helm = PickNoted(Helm, HelmUnlocked, HelmSpecial.None);
+        WeaponSpecial weapon = PickNoted(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        _aimed = (cape, helm, weapon);
+        if (!CanEnhance)
+        {
+            _notes.Add("kept own gear: DisableAutoEnhance, enhanced only the class");
+            FitOwnedGear(cape, helm, weapon);
+            return;
+        }
+
         if (KeepVaingloryAndPneuma)
         {
             SpareVaingloryOrPneuma(Slot.Cape, cape, helm, weapon, CapeUnlocked(cape));
@@ -411,6 +422,8 @@ public class UltraLoadout
         C.Logger(change != null
             ? $"[Loadout] Keeps {kept.Name} on {Describe(kept)} for other Comps: {change}."
             : $"[Loadout] Keeps {kept.Name} on {Describe(kept)} for other Comps, with no other {slot.ToString().ToLower()} to enhance.");
+        if (change == null)
+            _notes.Add($"kept {kept.Name} on {Describe(kept)} for other Comps: no other {slot.ToString().ToLower()}");
     }
 
     /// <summary>
@@ -541,16 +554,77 @@ public class UltraLoadout
     {
         if (item.EnhancementLevel <= 0)
             return "unenhanced";
-        int pattern = item.EnhancementPatternID;
-        string name = Enum.IsDefined(typeof(EnhancementType), pattern) ? ((EnhancementType)pattern).ToString()
-            : pattern == 10 ? "Forge"
-            : item.Category == ItemCategory.Cape && Enum.IsDefined(typeof(CapeSpecial), pattern) ? ((CapeSpecial)pattern).ToString()
-            : item.Category == ItemCategory.Helm && Enum.IsDefined(typeof(HelmSpecial), pattern) ? ((HelmSpecial)pattern).ToString()
-            : $"pattern {pattern}";
-        if (item.ProcID != 0 && Enum.IsDefined(typeof(WeaponSpecial), item.ProcID))
-            name += $"/{(WeaponSpecial)item.ProcID}";
+        string name = PatternName(item);
+        if (ProcName(item) is { } proc)
+            name += $"/{proc}";
         return $"{name} level {item.EnhancementLevel}";
     }
+
+    /// <summary>The enhancement on <paramref name="item"/>: its type, or a cape's or helm's special.</summary>
+    private static string PatternName(InventoryItem item)
+    {
+        int pattern = item.EnhancementPatternID;
+        return Enum.IsDefined(typeof(EnhancementType), pattern) ? ((EnhancementType)pattern).ToString()
+            : pattern == 10 ? "Forge"
+            : item.Category == ItemCategory.Cape && Enum.IsDefined(typeof(CapeSpecial), pattern) ? Name((CapeSpecial)pattern)
+            : item.Category == ItemCategory.Helm && Enum.IsDefined(typeof(HelmSpecial), pattern) ? Name((HelmSpecial)pattern)
+            : $"pattern {pattern}";
+    }
+
+    /// <summary>The weapon special on <paramref name="item"/>, or null.</summary>
+    private static string? ProcName(InventoryItem item) =>
+        item.ProcID != 0 && Enum.IsDefined(typeof(WeaponSpecial), item.ProcID) ? Name((WeaponSpecial)item.ProcID) : null;
+
+    private static string Name<T>(T special) where T : Enum => special.ToString().Replace('_', ' ');
+
+    /// <summary>
+    /// What this account wears now, for the <c>ultra.attempt</c> report: the class, weapon, cape and helm with
+    /// their enhancements, and notes on how they fall short of the Loadout: a special that wasn't unlocked, gear
+    /// kept or fitted because of the CoreBots option DisableAutoEnhance, and a slot without what <see cref="Enhance"/>
+    /// aimed for.
+    /// </summary>
+    public object Worn()
+    {
+        List<string> notes = new(_notes);
+        if (Enhancement != null && _aimed is (CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon))
+        {
+            foreach (Slot slot in new[] { Slot.Class, Slot.Weapon, Slot.Cape, Slot.Helm })
+            {
+                InventoryItem? item = Equipped(slot);
+                string aim = Aim(slot, cape, helm, weapon);
+                if (item == null)
+                    notes.Add($"no {slot.ToString().ToLower()}, the Loadout aims for {aim}");
+                else if (!Has(item, cape, helm, weapon) && !(KeepVaingloryAndPneuma && IsVaingloryOrPneuma(item)))
+                    notes.Add($"{slot.ToString().ToLower()} {item.Name} is {Describe(item)}, the Loadout aims for {aim}");
+            }
+        }
+
+        return new
+        {
+            @class = Gear(Slot.Class),
+            weapon = Gear(Slot.Weapon),
+            cape = Gear(Slot.Cape),
+            helm = Gear(Slot.Helm),
+            notes = notes.Distinct().Take(MaxNotes).ToArray(),
+        };
+    }
+
+    private static object? Gear(Slot slot) => Equipped(slot) is not { } item ? null : new
+    {
+        name = item.Name,
+        enhancement = item.EnhancementLevel > 0 ? PatternName(item) : null,
+        special = ProcName(item),
+        level = item.EnhancementLevel,
+    };
+
+    /// <summary>What the Loadout puts on <paramref name="slot"/>, as <see cref="Describe"/> names it.</summary>
+    private string Aim(Slot slot, CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon) => slot switch
+    {
+        Slot.Cape when cape != CapeSpecial.None => Name(cape),
+        Slot.Helm when helm != HelmSpecial.None => Name(helm),
+        Slot.Weapon when weapon != WeaponSpecial.None => (int)weapon <= 6 ? $"{Enhancement}/{Name(weapon)}" : Name(weapon),
+        _ => $"{Enhancement}",
+    } + $" level {Bot.Player.Level}";
 
     /// <summary>
     /// For an account with the CoreBots option DisableAutoEnhance on, which keeps its gear's enhancements: wears the
@@ -558,11 +632,8 @@ public class UltraLoadout
     /// class. What it had is noted in a file, so <see cref="Restore"/> puts it back after the fight, or at any time
     /// with Ultrasv3/RestoreLoadout.cs; a note left by a stopped run keeps the gear it had before that run.
     /// </summary>
-    private void FitOwnedGear()
+    private void FitOwnedGear(CapeSpecial cape, HelmSpecial helm, WeaponSpecial weapon)
     {
-        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None);
-        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None);
-        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None);
         Dictionary<string, string> note = ReadRestoreNote();
 
         foreach (Slot slot in new[] { Slot.Weapon, Slot.Cape, Slot.Helm })
@@ -579,9 +650,12 @@ public class UltraLoadout
             if (worn != null)
                 note.TryAdd(slot.ToString(), worn.ID.ToString());
             WriteRestoreNote(note);
-            C.Logger(Wear(match)
+            bool on = Wear(match);
+            C.Logger(on
                 ? $"[Loadout] Auto enhance is off: wears {match.Name} ({Describe(match)}) in place of {worn?.Name ?? "nothing"}."
                 : $"[Loadout] Couldn't wear {match.Name}; keeps {worn?.Name ?? "none"}.");
+            if (on)
+                _notes.Add($"fitted owned {match.Name} ({Describe(match)}) in place of {worn?.Name ?? "nothing"}");
         }
 
         if (Equipped(Slot.Class) is { } cls && !Has(cls, cape, helm, weapon))
@@ -712,6 +786,18 @@ public class UltraLoadout
         parts.Add(Potions.Length > 0 ? string.Join(", ", Potions) : "no potions");
         parts.Add(Scroll ?? "no scroll");
         return string.Join("; ", parts);
+    }
+
+    /// <summary><see cref="Pick"/>, noting each choice it passes over, or uses anyway, because it isn't unlocked.</summary>
+    private T PickNoted<T>(T[] choices, Func<T, bool> unlocked, T none) where T : Enum
+    {
+        foreach (T choice in choices)
+        {
+            if (unlocked(choice))
+                return choice;
+            _notes.Add($"{Name(choice)} not unlocked");
+        }
+        return choices.Length == 0 ? none : choices[^1];
     }
 
     private static T Pick<T>(T[] choices, Func<T, bool> unlocked, T none)

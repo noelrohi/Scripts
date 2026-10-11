@@ -292,6 +292,9 @@ public class UltraLoadout
     private (CapeSpecial Cape, HelmSpecial Helm, WeaponSpecial Weapon)? _aimed;
     private const int MaxNotes = 12;
 
+    // Weapon specials up to this one are Awe specials, put on beside the enhancement type; the later ones replace it.
+    private const int LastAweSpecial = 6;
+
     public void Enhance()
     {
         _notes.Clear();
@@ -299,13 +302,12 @@ public class UltraLoadout
         if (Enhancement == null)
         {
             C.Logger($"[Loadout] {Bot.Player.CurrentClass?.Name} keeps its own gear.");
-            _notes.Add("keeps own gear: the Loadout names no enhancement");
             return;
         }
 
-        CapeSpecial cape = PickNoted(Cape, CapeUnlocked, CapeSpecial.None);
-        HelmSpecial helm = PickNoted(Helm, HelmUnlocked, HelmSpecial.None);
-        WeaponSpecial weapon = PickNoted(Weapon, WeaponUnlocked, WeaponSpecial.None);
+        CapeSpecial cape = Pick(Cape, CapeUnlocked, CapeSpecial.None, _notes);
+        HelmSpecial helm = Pick(Helm, HelmUnlocked, HelmSpecial.None, _notes);
+        WeaponSpecial weapon = Pick(Weapon, WeaponUnlocked, WeaponSpecial.None, _notes);
         _aimed = (cape, helm, weapon);
         if (!CanEnhance)
         {
@@ -499,7 +501,7 @@ public class UltraLoadout
             return pattern == Pattern(Slot.Helm, cape, helm);
         if (item.Category == ItemCategory.Class || weapon == WeaponSpecial.None)
             return pattern == (int)type;
-        if ((int)weapon <= 6)
+        if ((int)weapon <= LastAweSpecial)
             return pattern == (int)type && item.ProcID == (int)weapon;
         return item.ProcID == (int)weapon;
     }
@@ -622,7 +624,7 @@ public class UltraLoadout
     {
         Slot.Cape when cape != CapeSpecial.None => Name(cape),
         Slot.Helm when helm != HelmSpecial.None => Name(helm),
-        Slot.Weapon when weapon != WeaponSpecial.None => (int)weapon <= 6 ? $"{Enhancement}/{Name(weapon)}" : Name(weapon),
+        Slot.Weapon when weapon != WeaponSpecial.None => (int)weapon <= LastAweSpecial ? $"{Enhancement}/{Name(weapon)}" : Name(weapon),
         _ => $"{Enhancement}",
     } + $" level {Bot.Player.Level}";
 
@@ -650,11 +652,11 @@ public class UltraLoadout
             if (worn != null)
                 note.TryAdd(slot.ToString(), worn.ID.ToString());
             WriteRestoreNote(note);
-            bool on = Wear(match);
-            C.Logger(on
+            bool fitted = Wear(match);
+            C.Logger(fitted
                 ? $"[Loadout] Auto enhance is off: wears {match.Name} ({Describe(match)}) in place of {worn?.Name ?? "nothing"}."
                 : $"[Loadout] Couldn't wear {match.Name}; keeps {worn?.Name ?? "none"}.");
-            if (on)
+            if (fitted)
                 _notes.Add($"fitted owned {match.Name} ({Describe(match)}) in place of {worn?.Name ?? "nothing"}");
         }
 
@@ -788,24 +790,17 @@ public class UltraLoadout
         return string.Join("; ", parts);
     }
 
-    /// <summary><see cref="Pick"/>, noting each choice it passes over, or uses anyway, because it isn't unlocked.</summary>
-    private T PickNoted<T>(T[] choices, Func<T, bool> unlocked, T none) where T : Enum
+    /// <summary>
+    /// The first choice that's unlocked, else the last. Adds each choice it passes over, or uses anyway,
+    /// because it isn't unlocked to <paramref name="notes"/>.
+    /// </summary>
+    private static T Pick<T>(T[] choices, Func<T, bool> unlocked, T none, List<string>? notes = null) where T : Enum
     {
         foreach (T choice in choices)
         {
             if (unlocked(choice))
                 return choice;
-            _notes.Add($"{Name(choice)} not unlocked");
-        }
-        return choices.Length == 0 ? none : choices[^1];
-    }
-
-    private static T Pick<T>(T[] choices, Func<T, bool> unlocked, T none)
-    {
-        foreach (T choice in choices)
-        {
-            if (unlocked(choice))
-                return choice;
+            notes?.Add($"{Name(choice)} not unlocked");
         }
         return choices.Length == 0 ? none : choices[^1];
     }
@@ -816,7 +811,7 @@ public class UltraLoadout
 
     /// <summary>Whether CoreAdvanced can put <paramref name="s"/> on a weapon: Awe specials need Awe enhancements.</summary>
     private static bool WeaponCanGoOn(WeaponSpecial s) =>
-        WeaponUnlocked(s) && (s == WeaponSpecial.Forge || (int)s > 6 || Adv.uAwe());
+        WeaponUnlocked(s) && (s == WeaponSpecial.Forge || (int)s > LastAweSpecial || Adv.uAwe());
 
     private static bool WeaponUnlocked(WeaponSpecial s) => s switch
     {

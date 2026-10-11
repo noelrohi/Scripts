@@ -280,9 +280,7 @@ public class UltraSpeakerv3
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
         Bot.Sleep(2500);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
-        if (_party.IsSet)
-            UltraWaitForArmy.Instance.WaitForPartyInRoom(_party.ClassByUser.Keys);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();

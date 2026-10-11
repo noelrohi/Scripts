@@ -457,7 +457,7 @@ public class UltraWardenv3
         Ultra.ClearSyncFile(Ultra.ResolveSyncPath(completionSyncFile));
 
         UltraComp.ReadyForAttempt(_party, _entry, armySize, waitSyncFile, map);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();

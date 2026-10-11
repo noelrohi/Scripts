@@ -196,7 +196,7 @@ public class UltraDarkonv3
 
         _party.EnsureClass();
         Engine.Join(map);
-        UltraWaitForArmy.Instance.NewWaitForArmy(armySize - 1, waitSyncFile, useSkill: true);
+        _party.WaitForArmyInRoom(armySize, waitSyncFile);
 
         Engine.ChooseBestCell(boss);
         Bot.Player.SetSpawnPoint();

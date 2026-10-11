@@ -70,6 +70,10 @@ alt1=Dragon of Time; alt2=Legion Revenant; alt3=ArchPaladin; alt4=Lord of Order
 - Leave a layout blank to keep the automatic assignment: the accounts share which role
   classes they own and the script hands the roles out (for a boss with Comps, the chosen
   Comp's classes).
+- With a layout, once the party is ready in the boss map, each account waits up to 60 s for
+  every account in the layout to be in its room, then stops the bot and names who is
+  missing. The ready check is a file shared on the machine, so accounts on different servers
+  or rooms all read as ready; put every account on the same server and in the same room.
 
 The layouts are saved with the `DoAllUltras` options and read once per boss run. Running a
 single boss script (for example `6UltraNulgathv3.cs`) uses the same saved layout, so set it

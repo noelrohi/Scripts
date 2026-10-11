@@ -24,9 +24,14 @@ Examples name the accounts `alt1`…`alt4`. Use your own login names in the opti
 | Ultra Gramiel | 10301 | weekly |
 
 A boss counts as done for an account only once its quest is turned in this period (the
-game's daily `id` or weekly `iw` completion flag). An account that still holds the boss's
-defeat item but never turned the quest in retries the turn-in before the next pass; it is
-not skipped and the party does not refight for it.
+game's daily `id…` or weekly `iw…` completion flag, logged as `periodDone`). An account that
+still holds the boss's defeat item but never turned the quest in retries the turn-in before
+the next pass; it is not skipped and the party does not refight for it.
+
+Each account publishes which bosses it has done, and every account reads the same list, so
+the party agrees on the queue: a boss is skipped only when every participant has turned it
+in. The log says `Skipping <bosses>: all N participant(s) turned the quest in this period`,
+and `Running <boss>: not turned in this period by <accounts>` for the rest.
 
 ## Picking a Comp
 

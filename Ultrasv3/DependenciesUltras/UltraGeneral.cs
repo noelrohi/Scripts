@@ -707,8 +707,9 @@ public class UltraGeneral
     }
 
     /// <summary>
-    /// True only when the quest was turned in this period: its daily ("id") or weekly ("iw")
+    /// True only when the quest was turned in this period: its daily ("id…") or weekly ("iw…")
     /// completion flag is set. A quest that is merely ready to turn in is not done.
+    /// The game numbers the field ("id4", "iw0"), so it is matched by prefix.
     /// </summary>
     public static bool IsQuestDoneThisPeriod(IScriptInterface bot, int questId)
     {
@@ -716,8 +717,8 @@ public class UltraGeneral
             return false;
 
         Quest? quest = bot.Quests.EnsureLoad(questId);
-        return quest != null
-            && (quest.Field == "id" || quest.Field == "iw")
+        return quest?.Field != null
+            && (quest.Field.StartsWith("id", StringComparison.Ordinal) || quest.Field.StartsWith("iw", StringComparison.Ordinal))
             && bot.Quests.IsDailyComplete(quest);
     }
 

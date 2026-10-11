@@ -385,6 +385,20 @@ Somber. The taunts follow the Speaker's chat lines, not a timer.
 | StoneCrusher | Truth taunter 2 | Fighter; Valiance weapon, Absolution cape; Body Tonic, Unstable Divine Elixir; Scroll of Enrage | on the 1st, 4th, 7th… "I will make you see the truth." |
 | Verus DoomKnight | Truth taunter 3; also casts Decay on "All stand equal beneath the eyes of the Eternal." | Fighter; Praxis weapon, Penitence cape; Body Tonic, Potent Destruction Elixir; Scroll of Enrage | on the 2nd, 5th, 8th… "I will make you see the truth." |
 
+**`loo-luck`**: as `default`, but Lord of Order runs Lucky with an Awe Blast weapon and a Penitence cape, for a party
+whose Lord of Order account hasn't unlocked Valiance.
+
+The Verus DoomKnight holds its rotation from just before each "All stand equal…" until it casts Decay, so Decay lands
+before Revitalization heals the Speaker; the lines run in a fixed order (truth, listen, equal, truth, listen, truth,
+equal, listen, truth). The Speaker also waits for every account of the layout to be in the room before it fights.
+
+An account with the CoreBots option DisableAutoEnhance on wears owned gear that already has its Loadout's enhancements
+and enhances only its class; after the kill its gear and class enhancement go back (`Ultrasv3/RestoreLoadout.cs` does
+it after a stopped run).
+
+Ultra Speaker's quest needs the Shadows of War story through Build Malgor's Armor Set (9127). An account without it
+fights and gets the drop, but the turn-in is refused ("Missing Quest Progress").
+
 #### Results
 
 One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts are
@@ -392,6 +406,10 @@ One row per Attempt, from the four accounts' `ultra.attempt` reports. Accounts a
 
 | Date | Comp | Party Layout (`alt1=Class; …`) | Outcome | Duration | Deaths (Role @ s) | Note |
 |---|---|---|---|---|---|---|
+| 2026-10-11 | default | alt1=Verus DoomKnight; alt2=Lord of Order; alt3=StoneCrusher; alt4=ArchPaladin | stopped | 25 min | every account, about every 30 s | The party was on two servers, each pair fighting its own Speaker with half the Roles; the Speaker never fell below 99.5%. Led to the same-room check. |
+| 2026-10-11 | loo-luck | alt1=Verus DoomKnight; alt2=ArchPaladin; alt3=StoneCrusher; alt4=Lord of Order | kill | about 6 min | TruthTaunter3 @ 108, 155, 178, 214, 253, 292; TruthTaunter2 @ 168, 256, 303; ListenTaunter @ 296, 331 | Revitalization healed the Speaker 6 times when Decay landed 0.6 s or later. alt1 fought on its own gear (auto enhance off). |
+| 2026-10-11 | loo-luck | as above | stopped | 11 min | a wipe reset the Speaker to full | With the Decay hold: no heal while alt1 lived; it healed only while alt1 was dead. |
+| 2026-10-11 | loo-luck | as above | kill | about 6 min | none for TruthTaunter3 | Decay hold plus alt1 on its Loadout (owned gear, class re-enhanced and restored): Decay at 0.00–0.03 s in 15 of 16 cycles, no heal. alt4's turn-in was refused: it lacks quest 9127. |
 
 ### Ultra Drago
 

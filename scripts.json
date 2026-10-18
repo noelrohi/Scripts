@@ -7953,6 +7953,21 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/07MystcroftForestStory.cs"
   },
   {
+    "name": "BirgittaMogloween",
+    "description": "Completes the quest chain in /birgittamogloween.",
+    "tags": [
+      "birgittamogloween",
+      "story",
+      "quests",
+      "birgittamogloween"
+    ],
+    "path": "Seasonal/Mogloween/18BirgittaMogloween.cs",
+    "size": 814,
+    "sha256": "0fb5b96b8fb710166616459387b7f0a81ac9e3845e1490677ac18fdbd50771ca",
+    "fileName": "18BirgittaMogloween.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/18BirgittaMogloween.cs"
+  },
+  {
     "name": "Asylum Story",
     "description": "This will complete the Asylum story quest.",
     "tags": [
@@ -29776,6 +29791,24 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/ScriptMainCleaner.cs"
   },
   {
+    "name": "Weekly Release Generator v3",
+    "description": "Reads every quest chain from a location SWF and matches requirements to live monsterDrops packets. Uses explicit hunts for quests requiring multiple monsters.",
+    "tags": [
+      "developer",
+      "generator",
+      "story",
+      "quests",
+      "drops",
+      "packets",
+      "v3"
+    ],
+    "path": "Tools/ForDevelopers/WeeklyReleaseGeneratorV3.cs",
+    "size": 37966,
+    "sha256": "a4dea98bd7623dc67708731942215b8a291c731f1401e710c6427f62a9f9b2b3",
+    "fileName": "WeeklyReleaseGeneratorV3.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/WeeklyReleaseGeneratorV3.cs"
+  },
+  {
     "name": "Weekly Release Generator v2",
     "description": "Reads every quest chain from a location SWF and matches requirements to live monsterDrops packets.",
     "tags": [
@@ -29991,6 +30024,21 @@
     "sha256": "470fb69ebeae263f7c207afef550b5106e68db402ad0800a64df66b73af612d3",
     "fileName": "Fame.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/FourHarbingers/Fame.cs"
+  },
+  {
+    "name": "Kathool Adept Class Prerequisites",
+    "description": "This script will farm for Kathool Adept Prerequisites.",
+    "tags": [
+      "ageofruin",
+      "kathool adept",
+      "fishing",
+      "somnia"
+    ],
+    "path": "Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs",
+    "size": 3540,
+    "sha256": "96266aa7c000c81482a4612d60ca27908af1648ef84d108b8b85f00f91c5a286",
+    "fileName": "KathoolAdeptPrerequisite.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs"
   },
   {
     "name": "New Year Story",
@@ -31053,6 +31101,23 @@
     "sha256": "d1c327e382046d39dd7d5cbc0b6065ef5a2b44b59dd27d6edd699037b3458339",
     "fileName": "MogloweenSeasonalMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/MogloweenSeasonalMerge.cs"
+  },
+  {
+    "name": "Walpurga Witch Wares Merge",
+    "description": "Farms the Walpurga Witch Wares Merge [2780] in /birgittamogloween.",
+    "tags": [
+      "birgittamogloween",
+      "merge",
+      "walpurga",
+      "witch",
+      "wares",
+      "merge"
+    ],
+    "path": "Seasonal/Mogloween/MergeShops/WalpurgaWitchWares.cs",
+    "size": 9334,
+    "sha256": "5bef7fb00c8acb13bd04dcdc903212f4ddf9afafcd111206b60745a23c330630",
+    "fileName": "WalpurgaWitchWares.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/WalpurgaWitchWares.cs"
   },
   {
     "name": "Feast of the Depths Merge",
@@ -35235,70 +35300,5 @@
     "sha256": "082e0dc7af4a0dcd96d53b080bcc04e5b35417d2d0701d0c7e41ebb02215834f",
     "fileName": "3BookOfIce.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/ArchMage/Books/3BookOfIce.cs"
-  },
-  {
-    "name": "Kathool Adept Class Prerequisites",
-    "description": "This script will farm for Kathool Adept Prerequisites.",
-    "tags": [
-      "ageofruin",
-      "kathool adept",
-      "fishing",
-      "somnia"
-    ],
-    "path": "Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs",
-    "size": 3540,
-    "sha256": "96266aa7c000c81482a4612d60ca27908af1648ef84d108b8b85f00f91c5a286",
-    "fileName": "KathoolAdeptPrerequisite.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs"
-  },
-  {
-    "name": "BirgittaMogloween",
-    "description": "Completes the quest chain in /birgittamogloween.",
-    "tags": [
-      "birgittamogloween",
-      "story",
-      "quests",
-      "birgittamogloween"
-    ],
-    "path": "Seasonal/Mogloween/18BirgittaMogloween.cs",
-    "size": 814,
-    "sha256": "0fb5b96b8fb710166616459387b7f0a81ac9e3845e1490677ac18fdbd50771ca",
-    "fileName": "18BirgittaMogloween.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/18BirgittaMogloween.cs"
-  },
-  {
-    "name": "Walpurga Witch Wares Merge",
-    "description": "Farms the Walpurga Witch Wares Merge [2780] in /birgittamogloween.",
-    "tags": [
-      "birgittamogloween",
-      "merge",
-      "walpurga",
-      "witch",
-      "wares",
-      "merge"
-    ],
-    "path": "Seasonal/Mogloween/MergeShops/WalpurgaWitchWares.cs",
-    "size": 9334,
-    "sha256": "5bef7fb00c8acb13bd04dcdc903212f4ddf9afafcd111206b60745a23c330630",
-    "fileName": "WalpurgaWitchWares.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/WalpurgaWitchWares.cs"
-  },
-  {
-    "name": "Weekly Release Generator v3",
-    "description": "Reads every quest chain from a location SWF and matches requirements to live monsterDrops packets. Uses explicit hunts for quests requiring multiple monsters.",
-    "tags": [
-      "developer",
-      "generator",
-      "story",
-      "quests",
-      "drops",
-      "packets",
-      "v3"
-    ],
-    "path": "Tools/ForDevelopers/WeeklyReleaseGeneratorV3.cs",
-    "size": 37966,
-    "sha256": "a4dea98bd7623dc67708731942215b8a291c731f1401e710c6427f62a9f9b2b3",
-    "fileName": "WeeklyReleaseGeneratorV3.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/WeeklyReleaseGeneratorV3.cs"
   }
 ]

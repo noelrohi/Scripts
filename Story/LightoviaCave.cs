@@ -63,8 +63,13 @@ public class LightoviaCave
         Story.KillQuest(7132, "LightoviaCave", "Imbalanced Knight");
 
         //Free the Lycans 7133
-        Story.MapItemQuest(7133, "LightoviaCave", 6767, 6);
-        Story.KillQuest(7133, "LightoviaCave", "Imbalanced Mage");
+        if (!Story.QuestProgression(7133))
+        {
+            Core.EnsureAccept(7133);
+            Core.GetMapItem(6767, 6, "LightoviaCave");
+            Core.HuntMonster("lightoviacave", "Imbalanced Mage", "Enchanted Key", 6);
+            Core.EnsureComplete(7133);
+        }
 
         //Cleanse the Land 7134
         Story.MapItemQuest(7134, "LightoviaCave", 6768, 6);

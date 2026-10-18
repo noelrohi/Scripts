@@ -90,12 +90,23 @@ public class CoreShadowofDoom
         Story.KillQuest(9433, "camlan", "Possessed Armor");
 
         // Equivalent Exchange 9434
-        Story.MapItemQuest(9434, "camlan", new[] { 12249, 12250 });
-        Story.KillQuest(9434, "camlan", "Ouro Spawn");
+        if (!Story.QuestProgression(9434))
+        {
+            Core.EnsureAccept(9434);
+            Core.GetMapItems(new[] { (12249, 1), (12250, 1) }, "camlan");
+            Core.HuntMonster("camlan", "Ouro Spawn", "Serpent Tongue", 5);
+            Core.EnsureComplete(9434);
+        }
 
         // Mouth of the Snake Den 9435
-        Story.MapItemQuest(9435, "camlan", 12251);
-        Story.KillQuest(9435, "camlan", new[] { "Ouro Spawn", "Possessed Armor" });
+        if (!Story.QuestProgression(9435))
+        {
+            Core.EnsureAccept(9435);
+            Core.GetMapItem(12251, 1, "camlan");
+            Core.HuntMonster("camlan", "Ouro Spawn", "Veiny Scale", 3);
+            Core.HuntMonster("camlan", "Possessed Armor", "Black Steel", 3);
+            Core.EnsureComplete(9435);
+        }
 
         // Buried Human Pillars 9436
         Story.KillQuest(9436, "camlan", "Tainted Wraith");
@@ -107,8 +118,13 @@ public class CoreShadowofDoom
         Story.KillQuest(9438, "camlan", "Doomed Elf");
 
         // Come to Light 9439
-        Story.MapItemQuest(9439, "camlan", new[] { 12255, 12256 });
-        Story.KillQuest(9439, "camlan", "Ouro Spawn");
+        if (!Story.QuestProgression(9439))
+        {
+            Core.EnsureAccept(9439);
+            Core.GetMapItems(new[] { (12255, 1), (12256, 1) }, "camlan");
+            Core.HuntMonster("camlan", "Ouro Spawn", "Spawn Eye", 2);
+            Core.EnsureComplete(9439);
+        }
 
         // It's in the Blood 9440
         Story.KillQuest(9440, "camlan", "Doomed Elf");
@@ -187,8 +203,13 @@ public class CoreShadowofDoom
         }
 
         // 9913 | Apep's Minders
-        Story.MapItemQuest(9913, "lotustomb", 13731);
-        Story.KillQuest(9913, "lotustomb", UMLotusTomb[1]);
+        if (!Story.QuestProgression(9913))
+        {
+            Core.EnsureAccept(9913);
+            Core.GetMapItem(13731, 1, "lotustomb");
+            Core.HuntMonster("lotustomb", "Umbral Armor", "Umbral Helmet", 6);
+            Core.EnsureComplete(9913);
+        }
 
         // 9914 | Primeval Discord
         if (!Story.QuestProgression(9914))
@@ -312,8 +333,13 @@ public class CoreShadowofDoom
         // 9955 | Eclipsed Memory
         if (!Story.QuestProgression(9955))
         {
-            Story.MapItemQuest(9955, "hiddenduat", 13812);
-            Story.KillQuest(9955, "hiddenduat", UseableMonsters[0]);
+            if (!Story.QuestProgression(9955))
+            {
+                Core.EnsureAccept(9955);
+                Core.GetMapItem(13812, 1, "hiddenduat");
+                Core.HuntMonster("hiddenduat", "Umbral Sphinx", "Sphinx's Tail", 9);
+                Core.EnsureComplete(9955);
+            }
         }
 
         // 9956 | Sons in Spirit
@@ -341,8 +367,13 @@ public class CoreShadowofDoom
         // 9959 | Lum'ah
         if (!Story.QuestProgression(9959))
         {
-            Story.MapItemQuest(9959, "hiddenduat", 13815);
-            Story.KillQuest(9959, "hiddenduat", UseableMonsters[3]);
+            if (!Story.QuestProgression(9959))
+            {
+                Core.EnsureAccept(9959);
+                Core.GetMapItem(13815, 1, "hiddenduat");
+                Core.HuntMonster("hiddenduat", "Royal Mummy", "Royal Bandages", 18);
+                Core.EnsureComplete(9959);
+            }
         }
 
         // 9960 | Asyut's Hounds
@@ -360,8 +391,14 @@ public class CoreShadowofDoom
         // 9962 | Warrior's Death
         if (!Story.QuestProgression(9962))
         {
-            Story.MapItemQuest(9962, "hiddenduat", 13818);
-            Story.KillQuest(9962, "hiddenduat", new[] { UseableMonsters[4], UseableMonsters[3] });
+            if (!Story.QuestProgression(9962))
+            {
+                Core.EnsureAccept(9962);
+                Core.GetMapItem(13818, 1, "hiddenduat");
+                Core.HuntMonster("hiddenduat", "Anubian Overseer", "Anubian Crest", 3);
+                Core.HuntMonster("hiddenduat", "Royal Mummy", "Mummy's Canopic Jar", 12);
+                Core.EnsureComplete(9962);
+            }
         }
 
         // 9963 | Uraeus

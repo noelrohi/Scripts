@@ -90,7 +90,13 @@ public class Fiendshard_Story
         if (!Story.QuestProgression(7897))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.KillQuest(7897, "Fiendshard", new[] { "Dirtlicker", "Fiend Shard" });
+            if (!Story.QuestProgression(7897))
+            {
+                Core.EnsureAccept(7897);
+                Core.HuntMonster("fiendshard", "Dirtlicker", "Dirtlicker Defeated", 1);
+                Core.HuntMonster("fiendshard", "Fiend Shard", "Dirtlicker's Fiend Shard Shattered", 5);
+                Core.EnsureComplete(7897);
+            }
             Core.Jump("Enter", "Spawn");
         }
 

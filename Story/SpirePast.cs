@@ -56,7 +56,13 @@ public class SpirePast
         Story.KillQuest(6830, "spirepast", "Celestial Knight");
 
         //Journal Entry 583 (6831)
-        Story.KillQuest(6831, "spirepast", new[] { "Infernal Guard", "Infernal Hound" });
+        if (!Story.QuestProgression(6831))
+        {
+            Core.EnsureAccept(6831);
+            Core.HuntMonster("spirepast", "Infernal Guard", "Guard Tackled", 1);
+            Core.HuntMonster("spirepast", "Infernal Hound", "Hound Attacked", 1);
+            Core.EnsureComplete(6831);
+        }
 
         //Journal Entry 600 (6832)
         Story.KillQuest(6832, "spirepast", "Infernal Hound");

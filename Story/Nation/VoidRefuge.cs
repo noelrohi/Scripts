@@ -41,19 +41,35 @@ public class VoidRefuge
         Story.KillQuest(9523, "voidrefuge", "Paladin Ascendant");
 
         // Work Fiends (9524)
-        Story.MapItemQuest(9524, "voidrefuge", 12572);
-        Story.KillQuest(9524, "voidrefuge", "Nation Caster");
+        if (!Story.QuestProgression(9524))
+        {
+            Core.EnsureAccept(9524);
+            Core.GetMapItem(12572, 1, "voidrefuge");
+            Core.HuntMonster("voidrefuge", "Nation Caster", "Void Engraving", 5);
+            Core.EnsureComplete(9524);
+        }
 
         // Rewritten Signatures (9525)
         Story.KillQuest(9525, "voidrefuge", "Nation Outrider");
 
         // Where the Heart is (9526)
-        Story.MapItemQuest(9526, "voidrefuge", 12573);
-        Story.KillQuest(9526, "voidrefuge", new[] { "Lightguard Paladin", "Paladin Ascendant" });
+        if (!Story.QuestProgression(9526))
+        {
+            Core.EnsureAccept(9526);
+            Core.GetMapItem(12573, 1, "voidrefuge");
+            Core.HuntMonster("voidrefuge", "Lightguard Paladin", "Paladin's Iudex Oath", 6);
+            Core.HuntMonster("voidrefuge", "Paladin Ascendant", "Ascendant's Iudex Oath", 3);
+            Core.EnsureComplete(9526);
+        }
 
         // Rip Space (9527)
-        Story.MapItemQuest(9527, "voidrefuge", 12574, 5);
-        Story.KillQuest(9527, "voidrefuge", "Nation Caster");
+        if (!Story.QuestProgression(9527))
+        {
+            Core.EnsureAccept(9527);
+            Core.GetMapItem(12574, 5, "voidrefuge");
+            Core.HuntMonster("voidrefuge", "Nation Caster", "Void Tattoo", 3);
+            Core.EnsureComplete(9527);
+        }
 
         // Permanent Record (9528)
         Story.KillQuest(9528, "voidrefuge", "Nation Outrider");
@@ -62,7 +78,13 @@ public class VoidRefuge
         Story.MapItemQuest(9529, "voidrefuge", new[] { 12575, 12576, 12577 });
 
         // Family Feud (9530)
-        Story.KillQuest(9530, "voidrefuge", new[] { "Paladin Ascendant", "Nation Outrider" });
+        if (!Story.QuestProgression(9530))
+        {
+            Core.EnsureAccept(9530);
+            Core.HuntMonster("voidrefuge", "Paladin Ascendant", "Shimmering Blood", 4);
+            Core.HuntMonster("voidrefuge", "Nation Outrider", "Caustic Blood", 8);
+            Core.EnsureComplete(9530);
+        }
 
         // Twisted Helix (9531)
         Story.KillQuest(9531, "voidrefuge", "Carnage");

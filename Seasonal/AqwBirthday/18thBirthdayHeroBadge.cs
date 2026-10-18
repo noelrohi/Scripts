@@ -37,11 +37,15 @@ public class BirthdayHeroBadge
         Core.EquipClass(ClassType.Solo);
 
         //18th Anniversary Gifts
-        Story.KillQuest(
-            6554,
-            "birthday",
-            new[] { "Birthday Cake", "Birthday Cake", "Birthday Cake", "Birthday Cake" }
-        );
+        if (!Story.QuestProgression(6554))
+        {
+            Core.EnsureAccept(6554);
+            Core.HuntMonster("birthday", "Birthday Cake", "Top Cherry", 1);
+            Core.HuntMonster("birthday", "Birthday Cake", "Copper Knife", 1);
+            Core.HuntMonster("birthday", "Birthday Cake", "Platinum Fork", 1);
+            Core.HuntMonster("birthday", "Birthday Cake", "Gold Spoon", 1);
+            Core.EnsureComplete(6554);
+        }
     }
 
     private readonly string badge = "Birthday Hero of DOOM";

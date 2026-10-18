@@ -56,7 +56,8 @@ public class BlazebeardMerge
             {
                 case "Alpha Pirate Class Token":
                     Core.FarmingLogger(req.Name, quant);
-                    Core.Logger("Cannot automate Classic Alpha Pirate [22] for New Alpha Pirate Class [4552] from this map.", messageBox: true, stopBot: true);
+                    if (!Core.CheckInventory("Classic Alpha Pirate"))
+                        Core.Logger("Cannot automate Classic Alpha Pirate [22] for New Alpha Pirate Class [4552] from this map.", messageBox: true, stopBot: true);
                     Core.RegisterQuests(4552);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.ID, quant))
                     {

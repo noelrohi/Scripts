@@ -56,7 +56,13 @@ public class DwarvesVsGiants
         Story.KillQuest(2781, "dvg", "Krashh");
 
         // Win The Exhibition Match 2782
-        Story.KillQuest(2782, "dvg", new[] { "Blixx", "Meatball" });
+        if (!Story.QuestProgression(2782))
+        {
+            Core.EnsureAccept(2782);
+            Core.HuntMonster("dvg", "Blixx", "Blixx Defeated", 1);
+            Core.HuntMonster("dvg", "Meatball", "Meatball Defeated", 1);
+            Core.EnsureComplete(2782);
+        }
 
         // Mow Down Munthor 2783
         Story.KillQuest(2783, "dvg", "Munthor");

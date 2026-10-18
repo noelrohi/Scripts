@@ -48,11 +48,23 @@ public class BlazingBeachStory
         Story.KillQuest(8702, "blazingbeach", "Burning Bombadier");
 
         // Piracy for Pyromancers
-        Story.KillQuest(8703, "blazingbeach", new[] { "Magma Pirate", "Scalding Shooter", "Red-Hot Raider" });
+        if (!Story.QuestProgression(8703))
+        {
+            Core.EnsureAccept(8703);
+            Core.HuntMonster("blazingbeach", "Magma Pirate", "Superheated Blade", 7);
+            Core.HuntMonster("blazingbeach", "Scalding Shooter", "Burning Blunderbuss", 5);
+            Core.HuntMonster("blazingbeach", "Magma Pirate", "Stolen Supplies", 10);
+            Core.EnsureComplete(8703);
+        }
 
         // Canned Heat
-        Story.MapItemQuest(8704, "blazingbeach", 10252);
-        Story.KillQuest(8704, "blazingbeach", "Burning Bombadier");
+        if (!Story.QuestProgression(8704))
+        {
+            Core.EnsureAccept(8704);
+            Core.GetMapItem(10252, 1, "blazingbeach");
+            Core.HuntMonster("blazingbeach", "Burning Bombadier", "Packed Firebomb", 4);
+            Core.EnsureComplete(8704);
+        }
 
         // Dau Go
         if (!Story.QuestProgression(8705))
@@ -75,8 +87,14 @@ public class BlazingBeachStory
         }
 
         // Sung Sot
-        Story.MapItemQuest(8707, "blazingbeach", 10253);
-        Story.KillQuest(8707, "burningbeach", new[] { "Maladrite", "Shark" });
+        if (!Story.QuestProgression(8707))
+        {
+            Core.EnsureAccept(8707);
+            Core.GetMapItem(10253, 1, "blazingbeach");
+            Core.HuntMonster("burningbeach", "Maladrite", "Maladrite's Storm Core", 1);
+            Core.HuntMonster("burningbeach", "Shark", "Shark Skin", 5);
+            Core.EnsureComplete(8707);
+        }
 
         // Ha Long
         Story.KillQuest(8708, "blazingbeach", "Magma Blazebeard");

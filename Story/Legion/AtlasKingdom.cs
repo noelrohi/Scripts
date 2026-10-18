@@ -56,8 +56,13 @@ public class AtlasKingdom
         #endregion Useable Monsters
 
         // 10116 | Knight's Honor
-        Story.MapItemQuest(10116, "atlaskingdom", 14252);
-        Story.KillQuest(10116, "atlaskingdom", UseableMonsters[0]);
+        if (!Story.QuestProgression(10116))
+        {
+            Core.EnsureAccept(10116);
+            Core.GetMapItem(14252, 1, "atlaskingdom");
+            Core.HuntMonster("atlaskingdom", "Atlas Knight", "Knight's Head", 9);
+            Core.EnsureComplete(10116);
+        }
 
         // 10117 | Drawn Light
         Story.MapItemQuest(10117, "atlaskingdom", new[] { 14253, 14254, 14255 });

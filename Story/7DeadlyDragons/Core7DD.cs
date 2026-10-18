@@ -50,8 +50,13 @@ public class Core7DD
         Story.KillQuest(5904, "Gluttony", "Mucus");
 
         // Build a Bone-a-fied Ladder 5905]
-        Story.MapItemQuest(5905, "Gluttony", 5346, 2);
-        Story.KillQuest(5905, "Gluttony", "Skeletal Slayer");
+        if (!Story.QuestProgression(5905))
+        {
+            Core.EnsureAccept(5905);
+            Core.GetMapItem(5346, 2, "Gluttony");
+            Core.HuntMonster("gluttony", "Skeletal Slayer", "Nice Long Bones", 10);
+            Core.EnsureComplete(5905);
+        }
 
         // Talk About Reflux 5906
         Story.MapItemQuest(5906, "Gluttony", 5344);
@@ -77,11 +82,22 @@ public class Core7DD
         }
 
         // Eye Need Bones 5910
-        Story.MapItemQuest(5910, "Gluttony", 5348, 5);
-        Story.KillQuest(5910, "Gluttony", "Skeletal Slayer");
+        if (!Story.QuestProgression(5910))
+        {
+            Core.EnsureAccept(5910);
+            Core.GetMapItem(5348, 5, "Gluttony");
+            Core.HuntMonster("gluttony", "Skeletal Slayer", "Replacement Eyes", 2);
+            Core.EnsureComplete(5910);
+        }
 
         // Bile Burns 5911
-        Story.KillQuest(5911, "Gluttony", new[] { "Bowel Worm", "Bile" });
+        if (!Story.QuestProgression(5911))
+        {
+            Core.EnsureAccept(5911);
+            Core.HuntMonster("gluttony", "Bowel Worm", "Bowel Worm Slain", 5);
+            Core.HuntMonster("gluttony", "Bile", "Bile Slain", 5);
+            Core.EnsureComplete(5911);
+        }
 
         // Find the Chest 5912
         Story.MapItemQuest(5912, "Gluttony", 5349);
@@ -124,20 +140,40 @@ public class Core7DD
         Story.MapItemQuest(5921, "Pride", 5352, 6);
 
         // Make Lightning Rods 5922
-        Story.MapItemQuest(5922, "Pride", 5353, 8);
-        Story.KillQuest(5922, "Pride", "Storm Drakel");
+        if (!Story.QuestProgression(5922))
+        {
+            Core.EnsureAccept(5922);
+            Core.GetMapItem(5353, 8, "Pride");
+            Core.HuntMonster("pride", "Storm Drakel", "Electric Prod", 8);
+            Core.EnsureComplete(5922);
+        }
 
         // Free the Villagers 5923
-        Story.MapItemQuest(5923, "Pride", 5354, 4);
-        Story.KillQuest(5923, "Pride", "Drakel Guard");
+        if (!Story.QuestProgression(5923))
+        {
+            Core.EnsureAccept(5923);
+            Core.GetMapItem(5354, 4, "Pride");
+            Core.HuntMonster("pride", "Drakel Guard", "Drakel Key", 4);
+            Core.EnsureComplete(5923);
+        }
 
         // Open the Gate 5924
-        Story.MapItemQuest(5924, "Pride", 5355);
-        Story.KillQuest(5924, "Pride", "Elite Guard");
+        if (!Story.QuestProgression(5924))
+        {
+            Core.EnsureAccept(5924);
+            Core.GetMapItem(5355, 1, "Pride");
+            Core.HuntMonster("pride", "Elite Guard", "Gate Key", 1);
+            Core.EnsureComplete(5924);
+        }
 
         // Fight Your Way Throug 5925
-        Story.MapItemQuest(5925, "Pride", 5356);
-        Story.KillQuest(5925, "Pride", "Storm Drakel");
+        if (!Story.QuestProgression(5925))
+        {
+            Core.EnsureAccept(5925);
+            Core.GetMapItem(5356, 1, "Pride");
+            Core.HuntMonster("pride", "Storm Drakel", "Storm Drakel Slain", 12);
+            Core.EnsureComplete(5925);
+        }
 
         // Defeat Valsarian 5926
         Story.KillQuest(5926, "Pride", "Valsarian");
@@ -173,11 +209,22 @@ public class Core7DD
         Story.MapItemQuest(5939, "Greed", new[] { 5377, 5378 });
 
         // Crystal-eyes 5940
-        Story.KillQuest(5940, "Greed", new[] { "Ice Crystal", "Glacial Horror" });
+        if (!Story.QuestProgression(5940))
+        {
+            Core.EnsureAccept(5940);
+            Core.HuntMonster("greed", "Ice Crystal", "Ice Crystal Slain", 5);
+            Core.HuntMonster("greed", "Glacial Horror", "Glacial Horror Slain", 10);
+            Core.EnsureComplete(5940);
+        }
 
         // Go-bolds? 5941
-        Story.MapItemQuest(5941, "Greed", 5375, 5);
-        Story.KillQuest(5941, "Greed", "Kobold");
+        if (!Story.QuestProgression(5941))
+        {
+            Core.EnsureAccept(5941);
+            Core.GetMapItem(5375, 5, "Greed");
+            Core.HuntMonster("greed", "Kobold", "Recovered Gold", 10);
+            Core.EnsureComplete(5941);
+        }
 
         // Follow the Trail 5942
         Story.MapItemQuest(5942, "Greed", 5376, 3);
@@ -200,11 +247,22 @@ public class Core7DD
         HazMatSuit();
 
         // Are There Any Survivors? 5945
-        Story.MapItemQuest(5945, "Sloth", 5382);
-        Story.KillQuest(5945, "Sloth", "Plague Zombie");
+        if (!Story.QuestProgression(5945))
+        {
+            Core.EnsureAccept(5945);
+            Core.GetMapItem(5382, 1, "Sloth");
+            Core.HuntMonster("sloth", "Plague Zombie", "Plague Zombie Defeated", 10);
+            Core.EnsureComplete(5945);
+        }
 
         // Gathering Samples 5946
-        Story.KillQuest(5946, "Sloth", new[] { "Snotgoblin", "Wandering Plague" });
+        if (!Story.QuestProgression(5946))
+        {
+            Core.EnsureAccept(5946);
+            Core.HuntMonster("sloth", "SnotGoblin", "Snot Sample", 6);
+            Core.HuntMonster("sloth", "Wandering Plague", "Plague Sample", 6);
+            Core.EnsureComplete(5946);
+        }
 
         // Find a ‘Volunteer’ 5947
         Story.KillQuest(5947, "Sloth", "Plague Zombie");
@@ -240,8 +298,13 @@ public class Core7DD
         Story.MapItemQuest(5955, "Sloth", 5384, 10);
 
         // Clear the Castellum 5956
-        Story.MapItemQuest(5956, "Sloth", 5385);
-        Story.KillQuest(5956, "Sloth", "SnotGoblin Prime");
+        if (!Story.QuestProgression(5956))
+        {
+            Core.EnsureAccept(5956);
+            Core.GetMapItem(5385, 1, "Sloth");
+            Core.HuntMonster("sloth", "SnotGoblin Prime", "Snotgoblin Prime Defeated", 1);
+            Core.EnsureComplete(5956);
+        }
 
         // Get rid of Phlegnn 5957
         Story.KillQuest(5957, "Sloth", "Phlegnn");
@@ -280,8 +343,13 @@ public class Core7DD
         Story.KillQuest(5964, "Lust", "Enamored Guard");
 
         // Gird your Loins 5965
-        Story.MapItemQuest(5965, "Lust", new[] { 5410, 5411 });
-        Story.KillQuest(5965, "Lust", "Devoted Admirer");
+        if (!Story.QuestProgression(5965))
+        {
+            Core.EnsureAccept(5965);
+            Core.GetMapItems(new[] { (5410, 1), (5411, 1) }, "Lust");
+            Core.HuntMonster("lust", "Devoted Admirer", "Spell Broken", 8);
+            Core.EnsureComplete(5965);
+        }
 
         // Get the Keys 5966
         Story.KillQuest(5966, "Lust", "Enamored Guard");
@@ -290,12 +358,22 @@ public class Core7DD
         Story.MapItemQuest(5967, "Lust", 5412, 5);
 
         // Get Past the Guards 5968
-        Story.MapItemQuest(5968, "Lust", 5413);
-        Story.KillQuest(5968, "Lust", "Elite Guard");
+        if (!Story.QuestProgression(5968))
+        {
+            Core.EnsureAccept(5968);
+            Core.GetMapItem(5413, 1, "Lust");
+            Core.HuntMonster("lust", "Elite Guard", "Elite Guards Defeated", 9);
+            Core.EnsureComplete(5968);
+        }
 
         // Viscyra’lly Yours 5969
-        Story.MapItemQuest(5969, "Lust", 5414);
-        Story.KillQuest(5969, "Lust", "Viscyra");
+        if (!Story.QuestProgression(5969))
+        {
+            Core.EnsureAccept(5969);
+            Core.GetMapItem(5414, 1, "Lust");
+            Core.HuntMonster("lust", "Viscyra", "Viscyra's Key", 1);
+            Core.EnsureComplete(5969);
+        }
 
         // Lascivia’sness 5970
         Story.KillQuest(5970, "Lust", "Lascivia");
@@ -304,14 +382,25 @@ public class Core7DD
         Story.KillQuest(5971, "Lust", "Elite Guard");
 
         // Lascivia Stunk Pretty 5972
-        Story.KillQuest(5972, "Lust", new[] { "Golden Vase", "Golden Vase" });
+        if (!Story.QuestProgression(5972))
+        {
+            Core.EnsureAccept(5972);
+            Core.HuntMonster("lust", "Golden Vase", "Gold Vase", 1);
+            Core.HuntMonster("lust", "Golden Vase", "Lascivia's \"Smell-Good\"", 5);
+            Core.EnsureComplete(5972);
+        }
 
         // You Broke It, You Fix It 5973
         Story.KillQuest(5973, "Lust", "Devoted Admirer");
 
         // Elite Energy 5974
-        Story.MapItemQuest(5974, "Lust", 5415, 8);
-        Story.KillQuest(5974, "Lust", "Elite Guard");
+        if (!Story.QuestProgression(5974))
+        {
+            Core.EnsureAccept(5974);
+            Core.GetMapItem(5415, 8, "Lust");
+            Core.HuntMonster("lust", "Elite Guard", "Special Energy Drink", 3);
+            Core.EnsureComplete(5974);
+        }
 
         // No Pillow Unturned 5975
         Story.MapItemQuest(5975, "Lust", new[] { 5416, 5417 });
@@ -338,14 +427,31 @@ public class Core7DD
         Story.MapItemQuest(5984, "DragonCrown", 5421);
 
         // Fire and Ice 5985
-        Story.MapItemQuest(5985, "DragonCrown", 5422, 6);
-        Story.KillQuest(5985, "DragonCrown", "Fire Sprite");
+        if (!Story.QuestProgression(5985))
+        {
+            Core.EnsureAccept(5985);
+            Core.GetMapItem(5422, 6, "DragonCrown");
+            Core.HuntMonster("dragoncrown", "Fire Sprite", "Fire Sprites Slain", 6);
+            Core.EnsureComplete(5985);
+        }
 
         // Round ‘em Up 5986
-        Story.KillQuest(5986, "DragonCrown", new[] { "Llama", "Rampaging Boar" });
+        if (!Story.QuestProgression(5986))
+        {
+            Core.EnsureAccept(5986);
+            Core.HuntMonster("dragoncrown", "Llama", "Llamas Rustled", 5);
+            Core.HuntMonster("dragoncrown", "Rampaging Boar", "Boars Rustled", 5);
+            Core.EnsureComplete(5986);
+        }
 
         // Get Rockin’ 5987
-        Story.KillQuest(5987, "DragonCrown", new[] { "Rock Elemental", "Earth Elemental" });
+        if (!Story.QuestProgression(5987))
+        {
+            Core.EnsureAccept(5987);
+            Core.HuntMonster("dragoncrown", "Rock Elemental", "Strong Rocks", 10);
+            Core.HuntMonster("dragoncrown", "Earth Elemental", "Sticky Mud", 5);
+            Core.EnsureComplete(5987);
+        }
 
         // Stop Fightin’ 5988
         Story.MapItemQuest(5988, "DragonCrown", 5423);
@@ -397,11 +503,16 @@ public class Core7DD
         Story.KillQuest(6003, "Maloth", "Golgar");
 
         // Hand over the Entry Code 6004
-        Story.KillQuest(
-            6004,
-            "Maloth",
-            new[] { "Golgar", "Castle Guard", "Scroll Keeper", "Nervous Serf", "Locked Chest" }
-        );
+        if (!Story.QuestProgression(6004))
+        {
+            Core.EnsureAccept(6004);
+            Core.HuntMonster("maloth", "Golgar", "Final Word", 1);
+            Core.HuntMonster("maloth", "Castle Guard", "First Word", 1);
+            Core.HuntMonster("maloth", "Scroll Keeper", "Second Word", 1);
+            Core.HuntMonster("maloth", "Nervous Serf", "Third Word", 1);
+            Core.HuntMonster("maloth", "Locked Chest", "Fourth Word", 1);
+            Core.EnsureComplete(6004);
+        }
 
         // Confront the Dragon King 6005
         Story.KillQuest(6005, "Maloth", "Maloth");
@@ -419,14 +530,25 @@ public class Core7DD
         Story.PreLoad(this);
 
         // Decimate the Horde 6110
-        Story.KillQuest(6110, "Wrath", new[] { "Fishbones", "Bone Terror" });
+        if (!Story.QuestProgression(6110))
+        {
+            Core.EnsureAccept(6110);
+            Core.HuntMonster("wrath", "Fishbones", "Fishbones Slain", 5);
+            Core.HuntMonster("wrath", "Bone Terror", "Bone Terror Slain", 5);
+            Core.EnsureComplete(6110);
+        }
 
         // Douse with Flames 6111
         Story.KillQuest(6111, "Wrath", "Dark Fire");
 
         // Grenades of AWE 6112
-        Story.MapItemQuest(6112, "Wrath", 5541, 6);
-        Story.KillQuest(6112, "Wrath", "Bone Terror");
+        if (!Story.QuestProgression(6112))
+        {
+            Core.EnsureAccept(6112);
+            Core.GetMapItem(5541, 6, "Wrath");
+            Core.HuntMonster("wrath", "Bone Terror", "Bone Shrapnel", 6);
+            Core.EnsureComplete(6112);
+        }
 
         // The Final Ingredient 6113
         if (!Story.QuestProgression(6113))
@@ -454,11 +576,22 @@ public class Core7DD
         Story.MapItemQuest(6115, "Wrath", 5540);
 
         // Find the Manifest 6116
-        Story.MapItemQuest(6116, "Wrath", 5544);
-        Story.KillQuest(6116, "Wrath", "Undead Pirate");
+        if (!Story.QuestProgression(6116))
+        {
+            Core.EnsureAccept(6116);
+            Core.GetMapItem(5544, 1, "Wrath");
+            Core.HuntMonster("wrath", "Undead Pirate", "Undead Pirates Slain", 8);
+            Core.EnsureComplete(6116);
+        }
 
         // Get the Cargo Hold Key 6117
-        Story.KillQuest(6117, "Wrath", new[] { "Mutineer", "Mutineer" });
+        if (!Story.QuestProgression(6117))
+        {
+            Core.EnsureAccept(6117);
+            Core.HuntMonster("wrath", "Mutineer", "Mutineers Slain", 8);
+            Core.HuntMonster("wrath", "Mutineer", "Cargo Hold Key", 1);
+            Core.EnsureComplete(6117);
+        }
 
         // Find the Jewel 6118
         Story.MapItemQuest(6118, "Wrath", 5545);
@@ -470,8 +603,14 @@ public class Core7DD
         Story.KillQuest(6120, "Wrath", "Gorgorath");
 
         // Navigate the Maze 6163
-        Story.MapItemQuest(6163, "Dragonbone", 5587);
-        Story.KillQuest(6163, "Dragonbone", new[] { "Bone Dragonling", "Dark Fire" });
+        if (!Story.QuestProgression(6163))
+        {
+            Core.EnsureAccept(6163);
+            Core.GetMapItem(5587, 1, "Dragonbone");
+            Core.HuntMonster("dragonbone", "Bone Dragonling", "Bone Dragonlings Slain", 5);
+            Core.HuntMonster("dragonbone", "Dark Fire", "Dark Fire Extinguished", 5);
+            Core.EnsureComplete(6163);
+        }
 
         // Get a Clue 6164
         Story.KillQuest(6164, "Dragonbone", "Bone Terror");
@@ -489,8 +628,13 @@ public class Core7DD
         Story.MapItemQuest(6168, "Dragonbone", 5590);
 
         // Unlock the Door 6169
-        Story.MapItemQuest(6169, "Dragonbone", 5591);
-        Story.KillQuest(6169, "Dragonbone", "Dragonshade");
+        if (!Story.QuestProgression(6169))
+        {
+            Core.EnsureAccept(6169);
+            Core.GetMapItem(5591, 1, "Dragonbone");
+            Core.HuntMonster("dragonbone", "DragonShade", "Key to the Lair", 1);
+            Core.EnsureComplete(6169);
+        }
 
         // Slay Gorgorath 6170
         Story.KillQuest(6170, "Dragonbone", "Gorgorath");

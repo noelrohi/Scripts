@@ -112,8 +112,13 @@ public class FiendVoid
         // 10566 | Sleeping Soldier
         if (!Story.QuestProgression(10566))
         {
-            Story.MapItemQuest(10566, "fiendvoid", 15414);
-            Story.KillQuest(10566, "fiendvoid", UseableMonsters[4]);
+            if (!Story.QuestProgression(10566))
+            {
+                Core.EnsureAccept(10566);
+                Core.GetMapItem(15414, 1, "fiendvoid");
+                Core.HuntMonster("fiendvoid", "Arachnid Seeker", "Crystalized Pupa", 9);
+                Core.EnsureComplete(10566);
+            }
         }
 
 

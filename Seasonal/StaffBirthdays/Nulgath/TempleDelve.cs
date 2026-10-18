@@ -47,12 +47,22 @@ public class TempleDelve
         Story.KillQuest(9080, "templedelve", "Overdriven Paladin");
 
         //Stone Proxy (9081)
-        Story.MapItemQuest(9081, "templedelve", new[] { 11160, 11161 }, 2);
-        Story.KillQuest(9081, "templedelve", "Doomed Troll");
+        if (!Story.QuestProgression(9081))
+        {
+            Core.EnsureAccept(9081);
+            Core.GetMapItems(new[] { (11160, 2), (11161, 2) }, "templedelve");
+            Core.HuntMonster("templedelve", "Doomed Troll", "Infested Troll Hide", 7);
+            Core.EnsureComplete(9081);
+        }
 
         //The Deepness of Shadows... (9082)
-        Story.MapItemQuest(9082, "templedelve", 11162, 4);
-        Story.KillQuest(9082, "templedelve", "Doomed Beast");
+        if (!Story.QuestProgression(9082))
+        {
+            Core.EnsureAccept(9082);
+            Core.GetMapItem(11162, 4, "templedelve");
+            Core.HuntMonster("templedelve", "Doomed Beast", "Beasts Freed", 6);
+            Core.EnsureComplete(9082);
+        }
 
         //...Begets the Glare of the Light (9083)
         if (!Core.isCompletedBefore(9083))
@@ -74,11 +84,22 @@ public class TempleDelve
         Story.MapItemQuest(9086, "templedelve", 11165);
 
         //Prephosphorus (9087)
-        Story.MapItemQuest(9087, "templedelve", new[] { 11166, 11167 });
-        Story.KillQuest(9087, "templedelve", "Delirious Elemental");
+        if (!Story.QuestProgression(9087))
+        {
+            Core.EnsureAccept(9087);
+            Core.GetMapItems(new[] { (11166, 1), (11167, 1) }, "templedelve");
+            Core.HuntMonster("templedelve", "Delirious Elemental", "Elemental Vanquished", 6);
+            Core.EnsureComplete(9087);
+        }
 
         //Sunspotty (9088)
-        Story.KillQuest(9088, "templedelve", new[] { "Delirious Elemental", "Infested Nation" });
+        if (!Story.QuestProgression(9088))
+        {
+            Core.EnsureAccept(9088);
+            Core.HuntMonster("templedelve", "Delirious Elemental", "Frenzied Essence", 6);
+            Core.HuntMonster("templedelve", "Infested Nation", "Nation Essence", 6);
+            Core.EnsureComplete(9088);
+        }
 
         //Feeding Time (9089)
         Core.EquipClass(ClassType.Solo);
@@ -95,23 +116,44 @@ public class TempleDelve
         Story.MapItemQuest(9136, "siegefortress", 11313);
 
         // Banal Barage 9137
-        Story.KillQuest(9137, "siegefortress", new[] { "Legion Dread Knight", "Legion Dreadmarch" }
-        );
+        if (!Story.QuestProgression(9137))
+        {
+            Core.EnsureAccept(9137);
+            Core.HuntMonster("siegefortress", "Legion Dread Knight", "Knight Demolished", 6);
+            Core.HuntMonster("siegefortress", "Legion Dreadmarch", "Dreadmarch Demolished", 6);
+            Core.EnsureComplete(9137);
+        }
 
         // Bluebirds 9138
         Story.KillQuest(9138, "siegefortress", "Shadow Traitor");
 
         // Anatomical Example 9139
-        Story.MapItemQuest(9139, "siegefortress", 11314, 4);
-        Story.KillQuest(9139, "siegefortress", "Shadow Traitor");
+        if (!Story.QuestProgression(9139))
+        {
+            Core.EnsureAccept(9139);
+            Core.GetMapItem(11314, 4, "siegefortress");
+            Core.HuntMonster("siegefortress", "Shadow Traitor", "Traitor Subdued", 6);
+            Core.EnsureComplete(9139);
+        }
 
         // Bloodless Daisy 9140
-        Story.MapItemQuest(9140, "siegefortress", 11315);
-        Story.KillQuest(9140, "siegefortress", "Enslaved Elemental");
+        if (!Story.QuestProgression(9140))
+        {
+            Core.EnsureAccept(9140);
+            Core.GetMapItem(11315, 1, "siegefortress");
+            Core.HuntMonster("siegefortress", "Enslaved Elemental", "Light Rune", 8);
+            Core.EnsureComplete(9140);
+        }
 
         // Shadows of Espionage 9141
-        Story.MapItemQuest(9141, "siegefortress", 11316, 2);
-        Story.KillQuest(9141, "siegefortress", new[] { "Shadow Traitor", "Enslaved Elemental" });
+        if (!Story.QuestProgression(9141))
+        {
+            Core.EnsureAccept(9141);
+            Core.GetMapItem(11316, 2, "siegefortress");
+            Core.HuntMonster("siegefortress", "Shadow Traitor", "Traitor Interrogated", 5);
+            Core.HuntMonster("siegefortress", "Enslaved Elemental", "Light Strangled", 5);
+            Core.EnsureComplete(9141);
+        }
 
         // Foul Duke of Light 9142
         Story.KillQuest(9142, "siegefortress", "Enslaved Astero");

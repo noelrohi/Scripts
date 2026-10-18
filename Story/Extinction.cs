@@ -35,14 +35,25 @@ public class Extinction
         Story.PreLoad(this);
 
         //Chopped HAMM 3855
-        Story.MapItemQuest(3855, "extinction", 2956, 5);
-        Story.KillQuest(3855, "extinction", "Control Panel");
+        if (!Story.QuestProgression(3855))
+        {
+            Core.EnsureAccept(3855);
+            Core.GetMapItem(2956, 5, "extinction");
+            Core.HuntMonster("extinction", "Control Panel", "Control Panel Destroyed", 5);
+            Core.EnsureComplete(3855);
+        }
 
         //Bad Dog 3856
         Story.KillQuest(3856, "extinction", "Cyworg");
 
         //Pink Slime Yum! 3857
-        Story.KillQuest(3857, "extinction", new[] { "Pink Slime", "Gelatinous Slime" });
+        if (!Story.QuestProgression(3857))
+        {
+            Core.EnsureAccept(3857);
+            Core.HuntMonster("extinction", "Pink Slime", "Pink Slime Slain", 5);
+            Core.HuntMonster("extinction", "Gelatinous Slime", "Gelatinous Slime Slain", 5);
+            Core.EnsureComplete(3857);
+        }
 
         //Processed What? 3858
         Story.MapItemQuest(3858, "extinction", 2957, 5);

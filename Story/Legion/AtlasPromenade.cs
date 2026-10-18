@@ -77,16 +77,26 @@ public class AtlasPromenade
         if (!Story.QuestProgression(10109))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.MapItemQuest(10109, "atlaspromenade", 14206);
-            Story.KillQuest(10109, "atlaspromenade", UseableMonsters[2]);
+            if (!Story.QuestProgression(10109))
+            {
+                Core.EnsureAccept(10109);
+                Core.GetMapItem(14206, 1, "atlaspromenade");
+                Core.HuntMonster("atlaspromenade", "Atlas Knight", "Knight's Soul Residue", 9);
+                Core.EnsureComplete(10109);
+            }
         }
 
         // 10110 | Golden Youth
         if (!Story.QuestProgression(10110))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.MapItemQuest(10110, "atlaspromenade", 14207);
-            Story.KillQuest(10110, "atlaspromenade", UseableMonsters[3]);
+            if (!Story.QuestProgression(10110))
+            {
+                Core.EnsureAccept(10110);
+                Core.GetMapItem(14207, 1, "atlaspromenade");
+                Core.HuntMonster("atlaspromenade", "Atlas Light Magus", "Mage's Soul Residue", 9);
+                Core.EnsureComplete(10110);
+            }
         }
 
         // 10111 | Old Souls

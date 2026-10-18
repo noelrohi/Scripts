@@ -52,24 +52,38 @@ public class TerraDeFesta
         Story.KillQuest(3383, "terradefesta", "GreenRat");
 
         //A Head Needs A Body (3384)
-        Story.KillQuest(3384, "terradefesta", new[] { "Crow", "Crow" });
+        if (!Story.QuestProgression(3384))
+        {
+            Core.EnsureAccept(3384);
+            Core.HuntMonster("terradefesta", "Crow", "Scrap of Fabric", 4);
+            Core.HuntMonster("terradefesta", "Crow", "Bundle of Straw", 4);
+            Core.EnsureComplete(3384);
+        }
 
         //Bind It All Together (3385)
         Story.KillQuest(3385, "carnaval", "Mulher de Branco");
 
         //Take 'Em Apart (3386)
-        Story.KillQuest(
-            3386,
-            "terradefesta",
-            new[] { "Voodoo Doll", "Voodoo Doll", "Voodoo Doll", "Voodoo Doll" }
-        );
+        if (!Story.QuestProgression(3386))
+        {
+            Core.EnsureAccept(3386);
+            Core.HuntMonster("terradefesta", "Voodoo Doll", "Feathered Topknot", 4);
+            Core.HuntMonster("terradefesta", "Voodoo Doll", "Little Cloth Bodies", 4);
+            Core.HuntMonster("terradefesta", "Voodoo Doll", "Straw Stuffing", 4);
+            Core.HuntMonster("terradefesta", "Voodoo Doll", "Skully Head", 4);
+            Core.EnsureComplete(3386);
+        }
 
         //Who Could It Be? (3387)
-        Story.KillQuest(
-            3387,
-            "terradefesta",
-            new[] { "Party Zombie", "Party Zombie", "Party Zombie", "Party Zombie" }
-        );
+        if (!Story.QuestProgression(3387))
+        {
+            Core.EnsureAccept(3387);
+            Core.HuntMonster("terradefesta", "Party Zombie", "Seriously Bad Mojo", 1);
+            Core.HuntMonster("terradefesta", "Party Zombie", "A Dramatic Flair", 1);
+            Core.HuntMonster("terradefesta", "Party Zombie", "The Smell Of Death", 1);
+            Core.HuntMonster("terradefesta", "Party Zombie", "Distinctive Talisman", 1);
+            Core.EnsureComplete(3387);
+        }
 
         //A Bag For A Talisman (3388)
         Story.KillQuest(3388, "terradefesta", "GreenRat");
@@ -81,7 +95,13 @@ public class TerraDeFesta
         Story.KillQuest(3390, "terradefesta", "Dancing Zombie");
 
         //Tracking Down A Baron (3391)
-        Story.KillQuest(3391, "terradefesta", new[] { "GreenRat", "Crow" });
+        if (!Story.QuestProgression(3391))
+        {
+            Core.EnsureAccept(3391);
+            Core.HuntMonster("terradefesta", "GreenRat", "Rat Guts", 4);
+            Core.HuntMonster("terradefesta", "Crow", "Crow Entrails", 4);
+            Core.EnsureComplete(3391);
+        }
 
         //Defeat Baron Sunday (3392)
         Story.KillQuest(3392, "terradefesta", "Baron Sunday");

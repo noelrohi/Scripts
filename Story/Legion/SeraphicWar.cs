@@ -35,29 +35,37 @@ public class SeraphicWar_Story
         Story.PreLoad(this);
 
         //Get the Parts
-        Story.KillQuest(
-            6238,
-            "worldsoul",
-            new[]
-            {
-                "Dwakel Infiltrator",
-                "Dwakel Infiltrator",
-                "Dwakel Infiltrator",
-                "Dwakel Infiltrator",
-            }
-        );
+        if (!Story.QuestProgression(6238))
+        {
+            Core.EnsureAccept(6238);
+            Core.HuntMonster("worldsoul", "Dwakel Infiltrator", "Dwakel Defeated", 6);
+            Core.HuntMonster("worldsoul", "Dwakel Infiltrator", "Void Cortex", 1);
+            Core.HuntMonster("worldsoul", "Dwakel Infiltrator", "Paradox Processor", 1);
+            Core.HuntMonster("worldsoul", "Dwakel Infiltrator", "Thermal Vent", 1);
+            Core.EnsureComplete(6238);
+        }
         //Get the Water
         Story.KillQuest(6239, "worldsoul", "Divine Water Elemental");
         //Get the Fire
         Story.KillQuest(6240, "worldsoul", "Divine Fire Elemental");
         //Gather Armaments
-        Story.MapItemQuest(6241, "worldsoul", 5681, 3);
-        Story.KillQuest(6241, "worldsoul", "Skeletal Squatter");
+        if (!Story.QuestProgression(6241))
+        {
+            Core.EnsureAccept(6241);
+            Core.GetMapItem(5681, 3, "worldsoul");
+            Core.HuntMonster("worldsoul", "Skeletal Squatter", "Iron Lightblade", 6);
+            Core.EnsureComplete(6241);
+        }
         //Plutonium For Power
         Story.KillQuest(6242, "worldsoul", "Radioactive Hydra");
         //Defeat the Undead
-        Story.MapItemQuest(6243, "worldsoul", 5680);
-        Story.KillQuest(6243, "worldsoul", "Legion Dreadmarch");
+        if (!Story.QuestProgression(6243))
+        {
+            Core.EnsureAccept(6243);
+            Core.GetMapItem(5680, 1, "worldsoul");
+            Core.HuntMonster("worldsoul", "Legion Dreadmarch", "Legion Soldiers Defeated", 20);
+            Core.EnsureComplete(6243);
+        }
         //Remove the Ward
         if (!Story.QuestProgression(6244))
         {

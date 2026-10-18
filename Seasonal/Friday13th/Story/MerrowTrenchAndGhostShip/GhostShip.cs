@@ -54,8 +54,13 @@ public class GhostShip
             Core.EnsureComplete(7099);
         }
 
-        Story.MapItemQuest(7100, "ghostship", 6698);
-        Story.KillQuest(7100, "ghostship", "Ghostly Eel");
+        if (!Story.QuestProgression(7100))
+        {
+            Core.EnsureAccept(7100);
+            Core.GetMapItem(6698, 1, "ghostship");
+            Core.HuntMonster("ghostship", "Ghostly Eel", "Ghostly Electricity", 8);
+            Core.EnsureComplete(7100);
+        }
         Story.KillQuest(7101, "ghostship", "Cursed Cecaelia");
     }
 }

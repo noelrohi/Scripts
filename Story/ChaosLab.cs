@@ -66,11 +66,15 @@ public class ChaosLabStory
         Story.KillQuest(3565, "chaoslab", "Chaotic Server Hamster");
 
         //Cleaning Up 3566
-        Story.KillQuest(
-            3566,
-            "chaoslab",
-            new[] { "Chaos Alina", "Chaos Beleen", "Chaos Cysero", "Chaos Artix" }
-        );
+        if (!Story.QuestProgression(3566))
+        {
+            Core.EnsureAccept(3566);
+            Core.HuntMonster("chaoslab", "Chaos Alina", "Alina Cleansed", 1);
+            Core.HuntMonster("chaoslab", "Chaos Beleen", "Beleen Cleansed", 1);
+            Core.HuntMonster("chaoslab", "Chaos Cysero", "Cysero Cleansed", 1);
+            Core.HuntMonster("chaoslab", "Chaos Artix", "Artix Cleansed", 1);
+            Core.EnsureComplete(3566);
+        }
 
         //MORE HAMSTER? 3567
         Story.KillQuest(3567, "chaoslab", "Ultra Chaotic Server Hamster");

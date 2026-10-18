@@ -45,6 +45,12 @@ public class AlphaPirate
         if (Core.CheckInventory("Alpha Pirate") || !Core.isSeasonalMapActive("blazebeard"))
             return;
 
+        if (!Core.CheckInventory(new[] { "Alpha Pirate Class Token ", "Classic Alpha Pirate" }, any: true))
+        {
+            Core.Logger("This script *REQUIRES* the `Classic ALpha Pirate` Class ( with 1 point into it ) to be able to do the `Alpha Pirate` merge, cannot continue.");
+            return;
+        }
+
         BBM.BuyAllMerge("Alpha Pirate");
 
         if (rankUpClass)

@@ -34,11 +34,22 @@ public class DanceGuru
         Story.PreLoad(this);
 
         //Coconutty (7943)
-        Story.KillQuest(7943, "danceguru", new[] { "Palm Treeant", "Palm Treeant" });
+        if (!Story.QuestProgression(7943))
+        {
+            Core.EnsureAccept(7943);
+            Core.HuntMonster("danceguru", "Palm Treeant", "Coconut Water", 8);
+            Core.HuntMonster("danceguru", "Palm Treeant", "Coconut Shavings", 8);
+            Core.EnsureComplete(7943);
+        }
 
         //Gift Giving (7944)
-        Story.MapItemQuest(7944, "danceguru", 8177, 5);
-        Story.KillQuest(7944, "danceguru", "Crow");
+        if (!Story.QuestProgression(7944))
+        {
+            Core.EnsureAccept(7944);
+            Core.GetMapItem(8177, 5, "danceguru");
+            Core.HuntMonster("danceguru", "Crow", "Beads", 7);
+            Core.EnsureComplete(7944);
+        }
 
         //Clear the Forest (7945)
         Story.KillQuest(7945, "danceguru", "Crow");

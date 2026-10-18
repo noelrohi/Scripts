@@ -71,8 +71,13 @@ public class DageRecruitStory
         }
 
         //Island Sightseeing
-        Story.MapItemQuest(8561, "dagerecruit", 9885);
-        Story.KillQuest(8561, "dagerecruit", "Scared Wildcat");
+        if (!Story.QuestProgression(8561))
+        {
+            Core.EnsureAccept(8561);
+            Core.GetMapItem(9885, 1, "dagerecruit");
+            Core.HuntMonster("dagerecruit", "Scared Wildcat", "Wildlife Cleared", 10);
+            Core.EnsureComplete(8561);
+        }
 
         //Lure Crafted
         if (!Story.QuestProgression(8562))

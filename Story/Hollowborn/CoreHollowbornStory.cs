@@ -44,32 +44,64 @@ public class CoreHollowbornStory
         Story.KillQuest(8289, "trygve", "Vindicator Recruit");
 
         //Berkana (8290)
-        Story.MapItemQuest(8290, "trygve", 9036);
-        Story.KillQuest(8290, "trygve", "Blood Eagle");
+        if (!Story.QuestProgression(8290))
+        {
+            Core.EnsureAccept(8290);
+            Core.GetMapItem(9036, 1, "trygve");
+            Core.HuntMonster("trygve", "Blood Eagle", "Blood Eagle Feather", 9);
+            Core.EnsureComplete(8290);
+        }
 
         //Algiz, Reversed (8291)
-        Story.MapItemQuest(8291, "trygve", 9037);
-        Story.KillQuest(8291, "trygve", "Vindicator Recruit");
+        if (!Story.QuestProgression(8291))
+        {
+            Core.EnsureAccept(8291);
+            Core.GetMapItem(9037, 1, "trygve");
+            Core.HuntMonster("trygve", "Vindicator Recruit", "Armor Chunk", 9);
+            Core.EnsureComplete(8291);
+        }
 
         //Gebo (8292)
-        Story.MapItemQuest(8292, "trygve", 9038);
-        Story.KillQuest(8292, "trygve", "Rune Boar");
+        if (!Story.QuestProgression(8292))
+        {
+            Core.EnsureAccept(8292);
+            Core.GetMapItem(9038, 1, "trygve");
+            Core.HuntMonster("trygve", "Rune Boar", "Patch of Boar Hide", 8);
+            Core.EnsureComplete(8292);
+        }
 
         //Eihwaz (8293)
-        Story.MapItemQuest(8293, "trygve", 9039, 3);
-        Story.KillQuest(8293, "trygve", "Vindicator Recruit");
+        if (!Story.QuestProgression(8293))
+        {
+            Core.EnsureAccept(8293);
+            Core.GetMapItem(9039, 3, "trygve");
+            Core.HuntMonster("trygve", "Vindicator Recruit", "Soldiers Pacified", 9);
+            Core.EnsureComplete(8293);
+        }
 
         //Hagalaz (8294)
         Story.MapItemQuest(8294, "trygve", 9040, 8);
 
         //Mannaz (8295)
-        Story.KillQuest(8295, "trygve", new[] { "Blood Eagle", "Rune Boar" });
+        if (!Story.QuestProgression(8295))
+        {
+            Core.EnsureAccept(8295);
+            Core.HuntMonster("trygve", "Blood Eagle", "Eagle Talon", 9);
+            Core.HuntMonster("trygve", "Rune Boar", "Boar Bone", 9);
+            Core.EnsureComplete(8295);
+        }
 
         //Thurisaz (8296)
         Story.KillQuest(8296, "trygve", "Vindicator Recruit");
 
         //Othala (8297)
-        Story.KillQuest(8297, "trygve", new[] { "Blood Eagle", "Vindicator Recruit" });
+        if (!Story.QuestProgression(8297))
+        {
+            Core.EnsureAccept(8297);
+            Core.HuntMonster("trygve", "Blood Eagle", "Creature Bones", 7);
+            Core.HuntMonster("trygve", "Vindicator Recruit", "Vindicator Defeated", 7);
+            Core.EnsureComplete(8297);
+        }
 
         //Isa, Reversed (8298)
         Story.KillQuest(8298, "trygve", "Gramiel");
@@ -233,8 +265,13 @@ public class CoreHollowbornStory
         }
 
         // 9858 | A Dire Horcdeal
-        Story.MapItemQuest(9858, "neotower", 13581);
-        Story.KillQuest(9858, "neotower", UseableMonsters[2]);
+        if (!Story.QuestProgression(9858))
+        {
+            Core.EnsureAccept(9858);
+            Core.GetMapItem(13581, 1, "neotower");
+            Core.HuntMonster("neotower", "Vindicator Draconian", "Tower Key", 1);
+            Core.EnsureComplete(9858);
+        }
 
         // 9859 | Outclassin' the Assassin
         if (!Story.QuestProgression(9859))
@@ -314,8 +351,13 @@ public class CoreHollowbornStory
         }
 
         // 9979 | Algiz, Reversed - Realized
-        Story.MapItemQuest(9979, "dawnsanctum", 13853);
-        Story.KillQuest(9979, "dawnsanctum", UseableMonsters[2]);
+        if (!Story.QuestProgression(9979))
+        {
+            Core.EnsureAccept(9979);
+            Core.GetMapItem(13853, 1, "dawnsanctum");
+            Core.HuntMonster("dawnsanctum", "Vindicator Recruit", "Recruit's Brand", 5);
+            Core.EnsureComplete(9979);
+        }
 
         // 9980 | Gebo - Realized
         if (!Story.QuestProgression(9980))
@@ -324,8 +366,13 @@ public class CoreHollowbornStory
         }
 
         // 9981 | Eihwaz - Realized
-        Story.MapItemQuest(9981, "dawnsanctum", 13854);
-        Story.KillQuest(9981, "dawnsanctum", UseableMonsters[4]);
+        if (!Story.QuestProgression(9981))
+        {
+            Core.EnsureAccept(9981);
+            Core.GetMapItem(13854, 1, "dawnsanctum");
+            Core.HuntMonster("dawnsanctum", "Hollowborn Hound", "Hollowborn Collar", 6);
+            Core.EnsureComplete(9981);
+        }
 
         // 9982 | Hagalaz - Realized
         if (!Story.QuestProgression(9982))

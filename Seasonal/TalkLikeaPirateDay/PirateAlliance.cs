@@ -56,8 +56,13 @@ public class PirateAlliance
         #endregion Useable Monsters
 
         // 10400 | A Pirate's Stake
-        Story.MapItemQuest(10400, "piratealliance", 14926);
-        Story.KillQuest(10400, "piratealliance", UseableMonsters[0]);
+        if (!Story.QuestProgression(10400))
+        {
+            Core.EnsureAccept(10400);
+            Core.GetMapItem(14926, 1, "piratealliance");
+            Core.HuntMonster("piratealliance", "PunkStream Crew", "Streaming Device", 12);
+            Core.EnsureComplete(10400);
+        }
 
         // 10401 | Thalassalings
         if (!Story.QuestProgression(10401))

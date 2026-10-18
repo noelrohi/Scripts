@@ -41,12 +41,22 @@ public class Ubear
         Story.KillQuest(7431, "ubear", "Giant Bee");
 
         //That’s How We’ll Get Ants 7432
-        Story.MapItemQuest(7432, "ubear", 7199, 5);
-        Story.KillQuest(7432, "ubear", "Honey Glob");
+        if (!Story.QuestProgression(7432))
+        {
+            Core.EnsureAccept(7432);
+            Core.GetMapItem(7199, 5, "ubear");
+            Core.HuntMonster("ubear", "Honey Glob", "Honey Cleaned", 10);
+            Core.EnsureComplete(7432);
+        }
 
         //Door Jam 7433
-        Story.MapItemQuest(7433, "ubear", 7200);
-        Story.KillQuest(7433, "ubear", "Giant Bee");
+        if (!Story.QuestProgression(7433))
+        {
+            Core.EnsureAccept(7433);
+            Core.GetMapItem(7200, 1, "ubear");
+            Core.HuntMonster("ubear", "Giant Bee", "Strong Stinger", 8);
+            Core.EnsureComplete(7433);
+        }
 
         //Oh... gross 7434
         Story.KillQuest(7434, "ubear", "Lil' Poot");
@@ -61,12 +71,23 @@ public class Ubear
         Story.KillQuest(7437, "limft", "Electrical Fire");
 
         //Smoke! 7438
-        Story.MapItemQuest(7438, "limft", 7201, 6);
-        Story.KillQuest(7438, "limft", "Smoke Elemental");
+        if (!Story.QuestProgression(7438))
+        {
+            Core.EnsureAccept(7438);
+            Core.GetMapItem(7201, 6, "limft");
+            Core.HuntMonster("limft", "Smoke Elemental", "Smoke Elemental Slain", 10);
+            Core.EnsureComplete(7438);
+        }
 
         //Scavengers 7439
-        Story.MapItemQuest(7439, "limft", 7202, 5);
-        Story.KillQuest(7439, "limft", new[] { "Smoke Elemental", "Sock Golem" });
+        if (!Story.QuestProgression(7439))
+        {
+            Core.EnsureAccept(7439);
+            Core.GetMapItem(7202, 5, "limft");
+            Core.HuntMonster("limft", "Smoke Elemental", "Nuts", 5);
+            Core.HuntMonster("limft", "Smoke Elemental", "Bolts", 5);
+            Core.EnsureComplete(7439);
+        }
 
         //Repair Time 7440
         Story.MapItemQuest(7440, "limft", 7203, 6);

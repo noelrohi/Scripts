@@ -34,11 +34,14 @@ public class LadyLua
         Story.PreLoad(this);
 
         //Earning Your Stripes (8498)
-        Story.KillQuest(
-            8498,
-            "ravenloss",
-            new[] { "Evolved Dreadspider", "ChaosWeaver Magi", "Underbeast" }
-        );
+        if (!Story.QuestProgression(8498))
+        {
+            Core.EnsureAccept(8498);
+            Core.HuntMonster("ravenloss", "Evolved Dreadspider", "High-Quality Silk", 10);
+            Core.HuntMonster("ravenloss", "ChaosWeaver Magi", "Orange and Black Dye", 6);
+            Core.HuntMonster("ravenloss", "Underbeast", "Blue and White Dye", 6);
+            Core.EnsureComplete(8498);
+        }
 
         //A New Year in Bloom (8499)
         Story.KillQuest(8499, "akibacny", new[] { "Bamboo Treeant", "Lingzhi", "Xingzhi" });
@@ -71,19 +74,17 @@ public class LadyLua
         }
 
         //Yin and Yang (8503)
-        Story.KillQuest(
-            8503,
-            "shadowfortress",
-            new[]
-            {
-                "1st Head of Orochi",
-                "2nd Head of Orochi",
-                "3rd Head of Orochi",
-                "4th Head of Orochi",
-                "5th Head of Orochi",
-                "6th Head of Orochi",
-            }
-        );
+        if (!Story.QuestProgression(8503))
+        {
+            Core.EnsureAccept(8503);
+            Core.HuntMonster("shadowfortress", "6th Head of Orochi", "Sixth Head Slaughtered", 1);
+            Core.HuntMonster("shadowfortress", "1st Head of Orochi", "First Head Finished", 1);
+            Core.HuntMonster("shadowfortress", "2nd Head of Orochi", "Second Head Smashed", 1);
+            Core.HuntMonster("shadowfortress", "3rd Head of Orochi", "Third Head Thrashed", 1);
+            Core.HuntMonster("shadowfortress", "4th Head of Orochi", "Fourth Head Flattened", 1);
+            Core.HuntMonster("shadowfortress", "5th Head of Orochi", "Fifth Head Floored", 1);
+            Core.EnsureComplete(8503);
+        }
 
         //Tyger, Tyger, Burning Bright (8504)
         Story.KillQuest(8504, "akibacny", new[] { "Fiery Lantern", "Lin Kuei" });

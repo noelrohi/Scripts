@@ -69,8 +69,13 @@ public class FandH
         Story.KillQuest(6595, "river", "Kuro", GetReward: false);
 
         // Be Ebil
-        Story.MapItemQuest(6596, "maul", 6116);
-        Story.KillQuest(6596, "maul", "Creature Creation", GetReward: false);
+        if (!Story.QuestProgression(6596, GetReward: false))
+        {
+            Core.EnsureAccept(6596);
+            Core.GetMapItem(6116, 1, "maul");
+            Core.HuntMonster("maul", "Creature Creation", "Ebil Limbs", 5);
+            Core.EnsureComplete(6596);
+        }
         Core.SellItem("Zorbak's Secret G-Rave Key");
 
         // Eternal, Never-Ending Darkness and Death Lance
@@ -81,8 +86,13 @@ public class FandH
         Story.KillQuest(6599, "dragontown", "Chaos Fluffy", GetReward: false);
 
         // 1st Trial
-        Story.MapItemQuest(6600, "david", 6115);
-        Story.KillQuest(6600, "mountfrost", "Snow Golem", GetReward: false);
+        if (!Story.QuestProgression(6600, GetReward: false))
+        {
+            Core.EnsureAccept(6600);
+            Core.GetMapItem(6115, 1, "david");
+            Core.HuntMonster("mountfrost", "Snow Golem", "Golems Defeated", 20);
+            Core.EnsureComplete(6600);
+        }
 
         // 2nd Trial
         Story.KillQuest(6601, "northpointe", "Wyvern", GetReward: false);

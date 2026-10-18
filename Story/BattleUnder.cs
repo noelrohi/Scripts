@@ -150,8 +150,13 @@ public class BattleUnder
 
         Story.PreLoad(this);
 
-        Story.MapItemQuest(5927, "battleundere", 5362);
-        Story.KillQuest(5927, "battleundere", "Lava Guard");
+        if (!Story.QuestProgression(5927))
+        {
+            Core.EnsureAccept(5927);
+            Core.GetMapItem(5362, 1, "battleundere");
+            Core.HuntMonster("battleundere", "Lava Guard", "Cavern Info", 1);
+            Core.EnsureComplete(5927);
+        }
         Story.KillQuest(5928, "battleundere", "Hot Mama");
     }
 

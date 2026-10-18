@@ -85,8 +85,13 @@ public class QueenReign
         Story.KillQuest(8311, "queenreign", "Plaguemoss");
 
         //Infected With The Cure
-        Story.MapItemQuest(8312, "queenreign", 9122, 4);
-        Story.KillQuest(8312, "queenreign", "Plague Spreader");
+        if (!Story.QuestProgression(8312))
+        {
+            Core.EnsureAccept(8312);
+            Core.GetMapItem(9122, 4, "queenreign");
+            Core.HuntMonster("queenreign", "Plague Spreader", "Cure Tested", 4);
+            Core.EnsureComplete(8312);
+        }
 
         //Hurtful Healing
         Story.KillQuest(8313, "queenreign", "Plague Spreader");
@@ -111,8 +116,13 @@ public class QueenReign
         Story.KillQuest(8317, "queenreign", "Calcified Wyrm");
 
         //Lair Located
-        Story.MapItemQuest(8318, "queenreign", 9124);
-        Story.KillQuest(8318, "queenreign", "Calcified Remains");
+        if (!Story.QuestProgression(8318))
+        {
+            Core.EnsureAccept(8318);
+            Core.GetMapItem(9124, 1, "queenreign");
+            Core.HuntMonster("queenreign", "Calcified Remains", "Calcified Remains Defeated", 6);
+            Core.EnsureComplete(8318);
+        }
 
         //The Earth Orb
         Story.KillQuest(8319, "queenreign", "Grou'luu");

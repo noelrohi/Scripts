@@ -35,21 +35,51 @@ public class DreamPalace
         Story.PreLoad(this);
 
         // Potent Ruby 7869
-        Story.KillQuest(7869, "dreampalace", new[] { "Flaming Harpy", "Golmoth" });
+        if (!Story.QuestProgression(7869))
+        {
+            Core.EnsureAccept(7869);
+            Core.HuntMonster("dreampalace", "Flaming Harpy", "Monster Slain", 6);
+            Core.HuntMonster("dreampalace", "Golmoth", "Potent Ruby", 1);
+            Core.EnsureComplete(7869);
+        }
 
         // Mystic Sapphire 7870
-        Story.KillQuest(7870, "dreampalace", new[] { "Zelkur", "Lotus Spider" });
+        if (!Story.QuestProgression(7870))
+        {
+            Core.EnsureAccept(7870);
+            Core.HuntMonster("dreampalace", "Zelkur", "Mystic Sapphire", 1);
+            Core.HuntMonster("dreampalace", "Lotus Spider", "Monster Slain", 6);
+            Core.EnsureComplete(7870);
+        }
 
         // Living Emerald 7871
-        Story.KillQuest(7871, "dreampalace", new[] { "Palace Hound", "Gazeroth" });
+        if (!Story.QuestProgression(7871))
+        {
+            Core.EnsureAccept(7871);
+            Core.HuntMonster("dreampalace", "Palace Hound", "Monster Slain", 6);
+            Core.HuntMonster("dreampalace", "Gazeroth", "Living Emerald", 1);
+            Core.EnsureComplete(7871);
+        }
 
         // Ethereal Diamond 7872
-        Story.KillQuest(7872, "dreampalace", new[] { "Zal", "Ethereal Harpy" });
+        if (!Story.QuestProgression(7872))
+        {
+            Core.EnsureAccept(7872);
+            Core.HuntMonster("dreampalace", "Zal", "Ethereal Diamond", 1);
+            Core.HuntMonster("dreampalace", "Ethereal Harpy", "Monster Slain", 6);
+            Core.EnsureComplete(7872);
+        }
 
         // Open the Door 7873
         Story.MapItemQuest(7873, "dreampalace", 7944);
 
         // Zahad 7874
-        Story.KillQuest(7874, "dreampalace", new[] { "Guardian Hound", "Zahad" });
+        if (!Story.QuestProgression(7874))
+        {
+            Core.EnsureAccept(7874);
+            Core.HuntMonster("dreampalace", "Guardian Hound", "Monster Slain", 6);
+            Core.HuntMonster("dreampalace", "Zahad", "Zahad's Golden Orb", 1);
+            Core.EnsureComplete(7874);
+        }
     }
 }

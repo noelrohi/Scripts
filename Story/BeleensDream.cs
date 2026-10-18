@@ -44,9 +44,14 @@ public class BeleensDream
         Story.KillQuest(3358, "beleensdream", "Fortune Cookie");
 
         //Loony balloons 3359
-        Story.MapItemQuest(3359, "beleensdream", 2475);
-        Story.MapItemQuest(3359, "beleensdream", 2476, 3);
-        Story.KillQuest(3359, "beleensdream", "Bulloon");
+        if (!Story.QuestProgression(3359))
+        {
+            Core.EnsureAccept(3359);
+            Core.GetMapItem(2475, 1, "beleensdream");
+            Core.GetMapItem(2476, 3, "beleensdream");
+            Core.HuntMonster("beleensdream", "Bulloon", "Popped Air Heads", 4);
+            Core.EnsureComplete(3359);
+        }
 
         //Disgruntled Draconians 3360
         Story.KillQuest(3360, "beleensdream", "Disgruntled Draconian");

@@ -53,35 +53,67 @@ public class FortressDelve
         Story.MapItemQuest(9161, "fortressdelve", 11347, 3);
 
         //Humans DNI 9162
-        Story.MapItemQuest(9162, "fortressdelve", 11348);
-        Story.KillQuest(9162, "fortressdelve", "Doomed Beast");
+        if (!Story.QuestProgression(9162))
+        {
+            Core.EnsureAccept(9162);
+            Core.GetMapItem(11348, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Doomed Beast", "Beast's Vein", 7);
+            Core.EnsureComplete(9162);
+        }
 
         //Scion's Privilege 9163
-        Story.MapItemQuest(9163, "fortressdelve", 11349);
-        Story.KillQuest(9163, "fortressdelve", "Doom Worm");
+        if (!Story.QuestProgression(9163))
+        {
+            Core.EnsureAccept(9163);
+            Core.GetMapItem(11349, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Doom Worm", "Worm Disintegrated", 6);
+            Core.EnsureComplete(9163);
+        }
 
         //A Man-Cave and a Box of Scraps 9164
-        Story.MapItemQuest(9164, "fortressdelve", 11350);
-        Story.KillQuest(9164, "fortressdelve", "Legion Dreadmarch");
+        if (!Story.QuestProgression(9164))
+        {
+            Core.EnsureAccept(9164);
+            Core.GetMapItem(11350, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Legion Dreadmarch", "Dreadmarch Armor Scraps", 6);
+            Core.EnsureComplete(9164);
+        }
 
         //The Glare of the Light... 9165
-        Story.MapItemQuest(9165, "fortressdelve", 11351);
-        Story.KillQuest(9165, "fortressdelve", "Delirious Elemental");
+        if (!Story.QuestProgression(9165))
+        {
+            Core.EnsureAccept(9165);
+            Core.GetMapItem(11351, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Delirious Elemental", "Elemental Rune", 7);
+            Core.EnsureComplete(9165);
+        }
 
         //...Pierces the Deepest Shadowsl 9166
-        Story.MapItemQuest(9166, "fortressdelve", 11352);
-        Story.KillQuest(9166, "fortressdelve", "Enlightened Shadow");
+        if (!Story.QuestProgression(9166))
+        {
+            Core.EnsureAccept(9166);
+            Core.GetMapItem(11352, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Enlightened Shadow", "Glowing Armor Scrap", 7);
+            Core.EnsureComplete(9166);
+        }
 
         //Lonely Supremacy 9167
-        Story.MapItemQuest(9167, "fortressdelve", 11353);
-        Story.KillQuest(9167, "fortressdelve", "Legion Dreadmarch");
+        if (!Story.QuestProgression(9167))
+        {
+            Core.EnsureAccept(9167);
+            Core.GetMapItem(11353, 1, "fortressdelve");
+            Core.HuntMonster("fortressdelve", "Legion Dreadmarch", "Dreadmarch Badge", 8);
+            Core.EnsureComplete(9167);
+        }
 
         //The Condemner 9168
-        Story.KillQuest(
-            9168,
-            "fortressdelve",
-            new[] { "Enlightened Shadow", "Delirious Elemental" }
-        );
+        if (!Story.QuestProgression(9168))
+        {
+            Core.EnsureAccept(9168);
+            Core.HuntMonster("fortressdelve", "Enlightened Shadow", "Light Vein", 6);
+            Core.HuntMonster("fortressdelve", "Delirious Elemental", "Elemental Shard", 6);
+            Core.EnsureComplete(9168);
+        }
 
         //Lost Light, Astero 9169
         Story.KillQuest(9169, "fortressdelve", "Astero");

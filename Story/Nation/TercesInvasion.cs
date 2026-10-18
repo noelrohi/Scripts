@@ -88,17 +88,27 @@ public class TercesInvasion
         // 10575 | Return to Oblivion
         if (!Story.QuestProgression(10575))
         {
-            Story.MapItemQuest(10575, "tercesinvasion", 15432);
-            Core.EquipClass(ClassType.Solo);
-            Story.KillQuest(10575, "tercesinvasion", UseableMonsters[3]);
+            if (!Story.QuestProgression(10575))
+            {
+                Core.EnsureAccept(10575);
+                Core.GetMapItem(15432, 1, "tercesinvasion");
+                Core.EquipClass(ClassType.Solo);
+                Core.HuntMonster("tercesinvasion", "Archfiend Casimir", "Archfiend Casimir Defeated", 1);
+                Core.EnsureComplete(10575);
+            }
         }
 
 
         // 10576 | Blood Thinner
         if (!Story.QuestProgression(10576))
         {
-            Story.MapItemQuest(10576, "tercesinvasion", 15433);
-            Story.KillQuest(10576, "tercesinvasion", UseableMonsters[4]);
+            if (!Story.QuestProgression(10576))
+            {
+                Core.EnsureAccept(10576);
+                Core.GetMapItem(15433, 1, "tercesinvasion");
+                Core.HuntMonster("tercesinvasion", "Archfiend Vigneron", "Archfiend Vigneron Defeated", 1);
+                Core.EnsureComplete(10576);
+            }
         }
 
 

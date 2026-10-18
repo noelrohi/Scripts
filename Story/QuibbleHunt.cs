@@ -38,7 +38,13 @@ public class QuibbleHunt
         Story.KillQuest(5878, "quibblehunt", "Void Larva");
 
         //Aerodu Assault 5879
-        Story.KillQuest(5879, "quibblehunt", new[] { "Aerodu Defense Machine", "Nimbo" });
+        if (!Story.QuestProgression(5879))
+        {
+            Core.EnsureAccept(5879);
+            Core.HuntMonster("quibblehunt", "Aerodu Defense Machine", "Aerodux Crate", 6);
+            Core.HuntMonster("quibblehunt", "Nimbo", "Ausome Package", 3);
+            Core.EnsureComplete(5879);
+        }
 
         //Void Travel Battle 5880
         Story.KillQuest(5880, "quibblehunt", "Void Elemental");
@@ -50,7 +56,13 @@ public class QuibbleHunt
         Story.KillQuest(5882, "quibblehunt", "Void Elemental");
 
         //The Master Quest 5883
-        Story.KillQuest(5883, "quibblehunt", new[] { "Jimmy the Eye-Pod", "Master Twang" });
+        if (!Story.QuestProgression(5883))
+        {
+            Core.EnsureAccept(5883);
+            Core.HuntMonster("quibblehunt", "Jimmy the Eye-Pod", "iChest", 3);
+            Core.HuntMonster("quibblehunt", "Master Twang", "Combat Diploma", 1);
+            Core.EnsureComplete(5883);
+        }
 
         //Void Travel Battle 5884
         Story.KillQuest(5884, "quibblehunt", "Void Elemental");
@@ -62,11 +74,14 @@ public class QuibbleHunt
         Story.KillQuest(5886, "quibblehunt", "Void Elemental");
 
         //Nauts and Double-crosses 5887
-        Story.KillQuest(
-            5887,
-            "quibblehunt",
-            new[] { "Braken Tentacle", "Jellyfish", "Braken Tentacle" }
-        );
+        if (!Story.QuestProgression(5887))
+        {
+            Core.EnsureAccept(5887);
+            Core.HuntMonster("quibblehunt", "Braken Tentacle", "Soggy Note", 1);
+            Core.HuntMonster("quibblehunt", "Jellyfish", "Nautican ShellCase", 8);
+            Core.HuntMonster("quibblehunt", "Braken Tentacle", "Coral Capsule", 5);
+            Core.EnsureComplete(5887);
+        }
 
         //Void Travel Battle 5888
         Story.KillQuest(5888, "quibblehunt", "Void Elemental");

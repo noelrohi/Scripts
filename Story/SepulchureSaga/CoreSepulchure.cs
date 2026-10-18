@@ -50,18 +50,34 @@ public class CoreSepulchure
         Story.MapItemQuest(6332, "scarsgarde", 5860);
 
         // The Taint Spreads 6333
-        Story.MapItemQuest(6333, "scarsgarde", 5864, 6);
-        Story.KillQuest(6333, "scarsgarde", "VenomWing");
+        if (!Story.QuestProgression(6333))
+        {
+            Core.EnsureAccept(6333);
+            Core.GetMapItem(5864, 6, "scarsgarde");
+            Core.HuntMonster("scarsgarde", "VenomWing", "VenomWing Slain", 6);
+            Core.EnsureComplete(6333);
+        }
 
         // Beauty Twisted 6334
         Story.KillQuest(6334, "scarsgarde", "Garde Grif");
 
         // Element of Surprise 6335
-        Story.MapItemQuest(6335, "scarsgarde", 5865, 5);
-        Story.KillQuest(6335, "scarsgarde", "Tree");
+        if (!Story.QuestProgression(6335))
+        {
+            Core.EnsureAccept(6335);
+            Core.GetMapItem(5865, 5, "scarsgarde");
+            Core.HuntMonster("scarsgarde", "Tree", "Tree Branch Obtained", 10);
+            Core.EnsureComplete(6335);
+        }
 
         // (Take the) Watch Out 6336
-        Story.KillQuest(6336, "scarsgarde", new[] { "Garde Watch", "Garde Pikeman" });
+        if (!Story.QuestProgression(6336))
+        {
+            Core.EnsureAccept(6336);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Slain", 5);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 5);
+            Core.EnsureComplete(6336);
+        }
 
         // False Hoods 6337
         if (!Story.QuestProgression(6337))
@@ -98,18 +114,27 @@ public class CoreSepulchure
         Story.MapItemQuest(6339, "scarsgarde", 5869);
 
         // Stay Strong Keep Steady 6340
-        Story.KillQuest(6340, "scarsgarde", new[] { "Garde Knight", "Garde Pikeman" });
+        if (!Story.QuestProgression(6340))
+        {
+            Core.EnsureAccept(6340);
+            Core.HuntMonster("scarsgarde", "Garde Knight", "Knight Slain", 10);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 5);
+            Core.EnsureComplete(6340);
+        }
 
         // The Final Fight 6341
         Core.EquipClass(ClassType.Solo);
         Story.KillQuest(6341, "scarsgarde", "Garde Captain");
 
         // Arm the Army 6342
-        Story.KillQuest(
-            6342,
-            "scarsgarde",
-            new[] { "Garde Knight", "Garde Watch", "Garde Pikeman" }
-        );
+        if (!Story.QuestProgression(6342))
+        {
+            Core.EnsureAccept(6342);
+            Core.HuntMonster("scarsgarde", "Garde Knight", "Knight Slain", 3);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Slain", 3);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 3);
+            Core.EnsureComplete(6342);
+        }
     }
     #endregion
 
@@ -126,34 +151,48 @@ public class CoreSepulchure
         Story.MapItemQuest(6343, "scarsgarde", 5861);
 
         // The Taint Spreads 6344
-        Story.MapItemQuest(6344, "scarsgarde", 5864, 6);
-        Story.KillQuest(6344, "scarsgarde", "VenomWing");
+        if (!Story.QuestProgression(6344))
+        {
+            Core.EnsureAccept(6344);
+            Core.GetMapItem(5864, 6, "scarsgarde");
+            Core.HuntMonster("scarsgarde", "VenomWing", "VenomWing Slain", 6);
+            Core.EnsureComplete(6344);
+        }
 
         // Beauty Twisted 6345
         Story.KillQuest(6345, "scarsgarde", "Garde Grif");
 
         // Element of Surprise 6346
-        Story.MapItemQuest(6346, "scarsgarde", 5865, 5);
-        Story.KillQuest(6346, "scarsgarde", "Tree");
+        if (!Story.QuestProgression(6346))
+        {
+            Core.EnsureAccept(6346);
+            Core.GetMapItem(5865, 5, "scarsgarde");
+            Core.HuntMonster("scarsgarde", "Tree", "Tree Branch Obtained", 10);
+            Core.EnsureComplete(6346);
+        }
 
         // (Take the) Watch Out 6347
-        Story.KillQuest(6347, "scarsgarde", new[] { "Garde Watch", "Garde Pikeman" });
+        if (!Story.QuestProgression(6347))
+        {
+            Core.EnsureAccept(6347);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Slain", 5);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 5);
+            Core.EnsureComplete(6347);
+        }
 
         // False Hoods 6348
-        Story.KillQuest(
-            6348,
-            "scarsgarde",
-            new[]
-            {
-                "Garde Watch",
-                "Garde Watch",
-                "Garde Watch",
-                "Garde Watch",
-                "Garde Watch",
-                "Garde Watch",
-                "Garde Watch",
-            }
-        );
+        if (!Story.QuestProgression(6348))
+        {
+            Core.EnsureAccept(6348);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Hood", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Scarf", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Tunic", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Leggings", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Boots", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Dagger", 1);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Badge", 1);
+            Core.EnsureComplete(6348);
+        }
 
         // Pass for Real 6349
         if (!Story.QuestProgression(6349))
@@ -172,18 +211,27 @@ public class CoreSepulchure
         Story.MapItemQuest(6350, "scarsgarde", 5869);
 
         // Stay Strong Keep Steady 6351
-        Story.KillQuest(6351, "scarsgarde", new[] { "Garde Knight", "Garde Pikeman" });
+        if (!Story.QuestProgression(6351))
+        {
+            Core.EnsureAccept(6351);
+            Core.HuntMonster("scarsgarde", "Garde Knight", "Knight Slain", 10);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 5);
+            Core.EnsureComplete(6351);
+        }
 
         // The Final Fight 6352
         Core.EquipClass(ClassType.Solo);
         Story.KillQuest(6352, "scarsgarde", "Garde Captain");
 
         // Arm the Army 6353
-        Story.KillQuest(
-            6353,
-            "scarsgarde",
-            new[] { "Garde Knight", "Garde Watch", "Garde Pikeman" }
-        );
+        if (!Story.QuestProgression(6353))
+        {
+            Core.EnsureAccept(6353);
+            Core.HuntMonster("scarsgarde", "Garde Knight", "Knight Slain", 3);
+            Core.HuntMonster("scarsgarde", "Garde Watch", "Watch Slain", 3);
+            Core.HuntMonster("scarsgarde", "Garde Pikeman", "Pike Slain", 3);
+            Core.EnsureComplete(6353);
+        }
     }
     #endregion
 
@@ -209,7 +257,13 @@ public class CoreSepulchure
         Story.MapItemQuest(6359, "valleyofdoom", 5873, 8);
 
         // Get Through the Shadows 6360
-        Story.KillQuest(6360, "valleyofdoom", new[] { "Shadow Beast", "Shadow Person" });
+        if (!Story.QuestProgression(6360))
+        {
+            Core.EnsureAccept(6360);
+            Core.HuntMonster("valleyofdoom", "Shadow Beast", "Shadow Beasts Slain", 8);
+            Core.HuntMonster("valleyofdoom", "Shadow Person", "Shadow People Slain", 8);
+            Core.EnsureComplete(6360);
+        }
 
         // Get the Key 6361
         Story.KillQuest(6361, "valleyofdoom", "Doom Guardian");
@@ -315,14 +369,31 @@ public class CoreSepulchure
         Story.KillQuest(6385, "guardiantowerb", "Slime");
 
         // Garen's Key 6386
-        Story.KillQuest(6386, "guardiantowerb", new[] { "Guardian Selby", "Guardian Garen" });
+        if (!Story.QuestProgression(6386))
+        {
+            Core.EnsureAccept(6386);
+            Core.HuntMonster("guardiantowerb", "Guardian Selby", "Guardians Slain", 3);
+            Core.HuntMonster("guardiantowerb", "Guardian Garen", "Guardian Garen's Key", 1);
+            Core.EnsureComplete(6386);
+        }
 
         // Selby's Key 6387
-        Story.KillQuest(6387, "guardiantowerb", new[] { "Guardian Garen", "Guardian Selby" });
+        if (!Story.QuestProgression(6387))
+        {
+            Core.EnsureAccept(6387);
+            Core.HuntMonster("guardiantowerb", "Guardian Garen", "Guardians Slain", 3);
+            Core.HuntMonster("guardiantowerb", "Guardian Selby", "Guardian Selby's Key", 1);
+            Core.EnsureComplete(6387);
+        }
 
         // Get Rid of Bolton 6388
-        Story.MapItemQuest(6388, "guardiantowerb", 5901);
-        Story.KillQuest(6388, "guardiantowerb", "Guardian Bolton");
+        if (!Story.QuestProgression(6388))
+        {
+            Core.EnsureAccept(6388);
+            Core.GetMapItem(5901, 1, "guardiantowerb");
+            Core.HuntMonster("guardiantowerb", "Guardian Bolton", "Guardian Bolton Slain", 1);
+            Core.EnsureComplete(6388);
+        }
 
         // Get Rid of the Imps 6389
         Story.KillQuest(6389, "ebondungeon", "Ebonslate Imp");
@@ -405,8 +476,13 @@ public class CoreSepulchure
         Story.KillQuest(6543, "noxustower", "Lightguard Caster");
 
         // Spellbound 6544
-        Story.MapItemQuest(6544, "noxustower", 6018, 4);
-        Story.KillQuest(6544, "noxustower", "Lightguard Caster");
+        if (!Story.QuestProgression(6544))
+        {
+            Core.EnsureAccept(6544);
+            Core.GetMapItem(6018, 4, "noxustower");
+            Core.HuntMonster("noxustower", "Lightguard Caster", "Lightguard Scroll", 4);
+            Core.EnsureComplete(6544);
+        }
 
         // Lupine Resurrection 6545
         Story.KillQuest(6545, "noxustower", "Lightguard Wolf");
@@ -415,11 +491,14 @@ public class CoreSepulchure
         Story.KillQuest(6546, "noxustower", "Lightguard Paladin");
 
         // Illusory Disguise 6547
-        Story.KillQuest(
-            6547,
-            "noxustower",
-            new[] { "Slimeskull", "Lightguard Caster", "Doomwood Treeant" }
-        );
+        if (!Story.QuestProgression(6547))
+        {
+            Core.EnsureAccept(6547);
+            Core.HuntMonster("noxustower", "Slimeskull", "Necrotic Ooze", 3);
+            Core.HuntMonster("noxustower", "Lightguard Caster", "Lightguard Armor", 4);
+            Core.HuntMonster("noxustower", "Doomwood Treeant", "Arcane Energy", 3);
+            Core.EnsureComplete(6547);
+        }
 
         // Test the Disguise 6548
         Story.MapItemQuest(6548, "noxustower", 6019);
@@ -455,12 +534,22 @@ public class CoreSepulchure
         Story.KillQuest(6567, "lightguardwar", "Sigrid Sunshield");
 
         // Such a Mess 6581
-        Story.MapItemQuest(6581, "lumafortress", 6098, 8);
-        Story.KillQuest(6581, "lumafortress", "Invasive Shadow");
+        if (!Story.QuestProgression(6581))
+        {
+            Core.EnsureAccept(6581);
+            Core.GetMapItem(6098, 8, "lumafortress");
+            Core.HuntMonster("lumafortress", "Invasive Shadow", "Shadows Defeated", 8);
+            Core.EnsureComplete(6581);
+        }
 
         // Herbs Needed 6582
-        Story.MapItemQuest(6582, "lumafortress", 6099, 7);
-        Story.KillQuest(6582, "lumafortress", "Light Treeant");
+        if (!Story.QuestProgression(6582))
+        {
+            Core.EnsureAccept(6582);
+            Core.GetMapItem(6099, 7, "lumafortress");
+            Core.HuntMonster("lumafortress", "Light Treeant", "Glowmoss", 6);
+            Core.EnsureComplete(6582);
+        }
 
         // Shine a Light 6583
         Story.KillQuest(6583, "lumafortress", "Light Elemental");
@@ -472,8 +561,13 @@ public class CoreSepulchure
         Story.KillQuest(6585, "lumafortress", "Light Treeant");
 
         // Make an Offering 6586
-        Story.MapItemQuest(6586, "lumafortress", 6100);
-        Story.KillQuest(6586, "lumafortress", "Lightwing");
+        if (!Story.QuestProgression(6586))
+        {
+            Core.EnsureAccept(6586);
+            Core.GetMapItem(6100, 1, "lumafortress");
+            Core.HuntMonster("lumafortress", "Lightwing", "Brilliant Feather", 1);
+            Core.EnsureComplete(6586);
+        }
 
         // Test the Spell Again! 6587
         Story.MapItemQuest(6587, "lumafortress", 6101);

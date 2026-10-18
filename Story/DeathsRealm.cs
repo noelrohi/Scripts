@@ -65,8 +65,13 @@ public class DeathsRealm
         Story.KillQuest(2424, "deathsrealm", "Undead Mage");
 
         // Master Death's Realm (2425)
-        Story.MapItemQuest(2425, "deathsrealm", 1485);
-        Story.KillQuest(2425, "deathsrealm", "Undead Mage");
+        if (!Story.QuestProgression(2425))
+        {
+            Core.EnsureAccept(2425);
+            Core.GetMapItem(1485, 1, "deathsrealm");
+            Core.HuntMonster("deathsrealm", "Undead Mage", "Underworld Creature Slain", 10);
+            Core.EnsureComplete(2425);
+        }
 
         // Real Live Hero-Training (2426)
         Story.MapItemQuest(2426, "trainers", 1491, AutoCompleteQuest: false);

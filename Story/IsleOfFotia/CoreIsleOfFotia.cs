@@ -218,8 +218,13 @@ public class CoreIsleOfFotia
         Story.KillQuest(4249, "DageFortress", "Sullied Master");
 
         //The Key to Discovery 4250
-        Story.MapItemQuest(4250, "DageFortress", 3406);
-        Story.KillQuest(4250, "DageFortress", "Tainted Seneschal");
+        if (!Story.QuestProgression(4250))
+        {
+            Core.EnsureAccept(4250);
+            Core.GetMapItem(3406, 1, "DageFortress");
+            Core.HuntMonster("dagefortress", "Tainted Seneschal", "Skeleton Key", 1);
+            Core.EnsureComplete(4250);
+        }
 
         //Locate the Compass Stone 4251
         if (!Story.QuestProgression(4251) || (map && !Core.CheckInventory("Compass Stone")))

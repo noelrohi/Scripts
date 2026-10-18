@@ -88,15 +88,28 @@ public class QueenIona
         string map = "queeniona";
         string boss = "Queen Iona";
 
-        if (!Bot.Quests.IsDailyComplete(9852))
+        if (!C.IsMember && !Bot.Quests.IsDailyComplete(9852))
             C.EnsureAccept(9852);
 
         C.AddDrop(item);
 
         C.FarmingLogger(item, quant);
 
-            C.RegisterQuests((!C.IsMember && HasQuestItem) ? 9854 : 9853);
-        
+        int questId = !C.IsMember && HasQuestItem ? 9854 : 9853;
+        if (item == "Lothian's Lightning")
+        {
+            int itemQuantity = Bot.Inventory.GetQuantity(item) + Bot.TempInv.GetQuantity(item);
+            if (Bot.House.TryGetItem(item, out InventoryItem? houseItem) && houseItem != null)
+                itemQuantity += houseItem.Quantity;
+
+            C.Logger(
+                $"Queen Iona farming check: Core member={C.IsMember}, player member={Bot.Player!.IsMember}, " +
+                $"quest={questId}, {item} ({itemQuantity}/{quant})."
+            );
+        }
+
+        C.RegisterQuests(questId);
+
         // Always private
         C.Join(map + -100000, "r2", "Left");
         Core.ChooseBestCell(boss);
@@ -124,14 +137,14 @@ public class QueenIona
                 Bot.Wait.ForCellChange("r2");
             }
 
-            if (item == "Lothian's Lightning" && !HasQuestItem && !Bot.Quests.IsDailyComplete(9852) && Bot.TempInv.Contains(87681))
+            if (!C.IsMember && item == "Lothian's Lightning" && !HasQuestItem && !Bot.Quests.IsDailyComplete(9852) && Bot.TempInv.Contains(87681))
             {
                 C.Jump("Enter", "Spawn");
                 C.EnsureComplete(9852);
                 if (HasQuestItem)
                     continue;
 
-                C.Logger("Daily complete come back tomarrow");
+                C.Logger("Daily complete come back tomorrow");
                 Bot.Events.ExtensionPacketReceived -= QueenIonaListener;
                 return;
             }

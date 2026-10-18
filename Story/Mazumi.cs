@@ -62,6 +62,12 @@ public class Mazumi
 
         // Hit Job 92
         Core.EquipClass(ClassType.Solo);
-        Story.KillQuest(92, "greenguardwest", new[] { "Breken the Vile", "Ogug Stoneaxe" });
+        if (!Story.QuestProgression(92))
+        {
+            Core.EnsureAccept(92);
+            Core.HuntMonster("greenguardwest", "Breken the Vile", "Breken the Vile's Sword", 1);
+            Core.HuntMonster("greenguardwest", "Ogug Stoneaxe", "Ogug Stoneaxe's Helmet", 1);
+            Core.EnsureComplete(92);
+        }
     }
 }

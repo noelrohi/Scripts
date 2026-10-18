@@ -701,8 +701,13 @@ public class CoreFriday13th
         Story.KillQuest(5637, "CrownsReachFXIII", "Blood Maggot");
 
         // Purple is the Best Color 5639
-        Story.MapItemQuest(5639, "Safiria", 5114);
-        Story.KillQuest(5639, "Safiria", "Albino Bat");
+        if (!Story.QuestProgression(5639))
+        {
+            Core.EnsureAccept(5639);
+            Core.GetMapItem(5114, 1, "Safiria");
+            Core.HuntMonster("safiria", "Albino Bat ", "Scraps of Velvet", 8);
+            Core.EnsureComplete(5639);
+        }
 
         // Get Some Candles 5640
         Story.KillQuest(5640, "BattleUnderA", "Skeletal Fire Mage");

@@ -35,21 +35,57 @@ public class SambasFlag
         Story.PreLoad(this);
 
         // Bald Spots 9110
-        Story.KillQuest(9110, "bloodtusk", new[] { "Rhison", "Jungle Vulture" });
+        if (!Story.QuestProgression(9110))
+        {
+            Core.EnsureAccept(9110);
+            Core.HuntMonster("bloodtusk", "Rhison", "Rhison Fur", 8);
+            Core.HuntMonster("bloodtusk", "Jungle Vulture", "Vulture Feathers", 8);
+            Core.EnsureComplete(9110);
+        }
 
         // Work Out Glow 9111
-        Story.KillQuest(9111, "dwarfhold", new[] { "Gemrald", "Glow Worm" });
+        if (!Story.QuestProgression(9111))
+        {
+            Core.EnsureAccept(9111);
+            Core.HuntMonster("dwarfhold", "Gemrald", "Gem Sequin", 8);
+            Core.HuntMonster("dwarfhold", "Glow Worm", "Glowing Residue", 8);
+            Core.EnsureComplete(9111);
+        }
 
         // Burned Forevermore 9112
-        Story.KillQuest(9112, "fotia", new[] { "Femme Cult Worshiper", "Fotia Spirit" });
+        if (!Story.QuestProgression(9112))
+        {
+            Core.EnsureAccept(9112);
+            Core.HuntMonster("fotia", "Femme Cult Worshiper", "Cult Veil", 8);
+            Core.HuntMonster("fotia", "Fotia Spirit", "Fotia Spirit Dress", 8);
+            Core.EnsureComplete(9112);
+        }
 
         // Calm Sea and Prosperous Voyage 9113
-        Story.KillQuest(9113, "shipwreck", new[] { "Gilded Merdraconian", "Gilded Crystal Undead" });
+        if (!Story.QuestProgression(9113))
+        {
+            Core.EnsureAccept(9113);
+            Core.HuntMonster("shipwreck", "Gilded Merdraconian", "Gilded Draconia Scale", 8);
+            Core.HuntMonster("shipwreck", "Gilded Crystal Undead", "Gold Crystals", 8);
+            Core.EnsureComplete(9113);
+        }
 
         // Chaos Cleanse 9114
-        Story.KillQuest(9114, "falguard", new[] { "Chaonslaught Cavalry", "Chaonslaught Caster" });
+        if (!Story.QuestProgression(9114))
+        {
+            Core.EnsureAccept(9114);
+            Core.HuntMonster("falguard", "Chaonslaught Cavalry", "Chaos Cavalry Defeated", 8);
+            Core.HuntMonster("falguard", "Chaonslaught Caster", "Chaos Caster Defeated", 8);
+            Core.EnsureComplete(9114);
+        }
 
         // Fly the Standard 9115
-        Story.KillQuest(9115, "sambaflag", new[] { "Flag Bearer", "Master Of Ceremonies" });
+        if (!Story.QuestProgression(9115))
+        {
+            Core.EnsureAccept(9115);
+            Core.HuntMonster("sambaflag", "Flag Bearer", "Flag Standard", 1);
+            Core.HuntMonster("sambaflag", "Master of Ceremonies", "Ceremony Feather", 1);
+            Core.EnsureComplete(9115);
+        }
     }
 }

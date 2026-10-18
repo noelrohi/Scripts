@@ -57,7 +57,14 @@ public class JirabinChallenge
         Story.MapItemQuest(3977, "runedwoods", new[] { 3104, 3105, 3106, 3107, 3108, 3109 });
 
         //Ruining the Dragonwood 3978
-        Story.KillQuest(3978, "runedwoods", new[] { "Void Warrior", "Frask", "Jies" });
+        if (!Story.QuestProgression(3978))
+        {
+            Core.EnsureAccept(3978);
+            Core.HuntMonster("runedwoods", "Void Warrior", "Slay Void Warriors", 3);
+            Core.HuntMonster("runedwoods", "Frask", "Slay Frasks", 5);
+            Core.HuntMonster("runedwoods", "Jies", "Slay Jies", 4);
+            Core.EnsureComplete(3978);
+        }
 
         //Catch the Ki'lks! 3979
         if (!Story.QuestProgression(3979))
@@ -120,7 +127,13 @@ public class JirabinChallenge
         }
 
         //Discover the Void 3985
-        Story.KillQuest(3985, "void", new[] { "Void Elemental", "Void Bear" });
+        if (!Story.QuestProgression(3985))
+        {
+            Core.EnsureAccept(3985);
+            Core.HuntMonster("void", "Void Elemental", "Void Elemental Heart", 8);
+            Core.HuntMonster("void", "Void Bear", "Void Bear Tusk", 2);
+            Core.EnsureComplete(3985);
+        }
 
         //Confront Jir'abin 3986
         Core.EquipClass(ClassType.Solo);
@@ -152,16 +165,40 @@ public class JirabinChallenge
         Story.MapItemQuest(3998, "dethertombs", 3132, 12);
 
         //Find the Missing Pages 3999
-        Story.KillQuest(3999, "dethertombs", new[] { "De'ther Shade", "De'ther Shade" });
+        if (!Story.QuestProgression(3999))
+        {
+            Core.EnsureAccept(3999);
+            Core.HuntMonster("dethertombs", "De'ther Shade", "Tome Page", 10);
+            Core.HuntMonster("dethertombs", "De'ther Shade", "Device Diagram", 1);
+            Core.EnsureComplete(3999);
+        }
 
         //Find the Resonator Components 4000
-        Story.KillQuest(4000, "dethertombs", new[] { "Tomb Drifter", "Sand Frask" });
+        if (!Story.QuestProgression(4000))
+        {
+            Core.EnsureAccept(4000);
+            Core.HuntMonster("dethertombs", "Tomb Drifter", "Tomb Drifter Scale", 10);
+            Core.HuntMonster("dethertombs", "Sand Frask", "Frask Feather", 12);
+            Core.EnsureComplete(4000);
+        }
 
         //More Components needed 4001
-        Story.KillQuest(4001, "dethertombs", new[] { "Darkfang", "Tomb Shark" });
+        if (!Story.QuestProgression(4001))
+        {
+            Core.EnsureAccept(4001);
+            Core.HuntMonster("dethertombs", "Darkfang", "Darkfang Claw", 15);
+            Core.HuntMonster("dethertombs", "Tomb Shark", "Tomb Shark Hide", 1);
+            Core.EnsureComplete(4001);
+        }
 
         //Final Components 4002
-        Story.KillQuest(4002, "dethertombs", new[] { "Jies", "De'ther Vase" });
+        if (!Story.QuestProgression(4002))
+        {
+            Core.EnsureAccept(4002);
+            Core.HuntMonster("dethertombs", "Jies", "Diamond Tooth", 6);
+            Core.HuntMonster("dethertombs", "De'ther Vase", "Bottle of Oil", 1);
+            Core.EnsureComplete(4002);
+        }
         // if (!Story.QuestProgression(4002))
         // {
         //     Core.EnsureAccept(4002);

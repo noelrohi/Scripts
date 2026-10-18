@@ -62,8 +62,13 @@ public class AriaGreenhouse
 
         // 10181 | Aconite
         Core.AddDrop(Core.QuestRewards(10181));
-        Story.MapItemQuest(10181, "cloister", 14394);
-        Story.KillQuest(10181, "cloister", "Karasu");
+        if (!Story.QuestProgression(10181))
+        {
+            Core.EnsureAccept(10181);
+            Core.GetMapItem(14394, 1, "cloister");
+            Core.HuntMonster("cloister", "Karasu", "Karasu Plucked", 5);
+            Core.EnsureComplete(10181);
+        }
 
         // 10182 | Blood Red Carnations
         Story.MapItemQuest(10182, "darkoviaforest", 14395);
@@ -76,8 +81,13 @@ public class AriaGreenhouse
 
         // 10184 | Hebeloma Aminophilum
         Farm.Experience(60);
-        Story.MapItemQuest(10184, "deleuzetundra", new[] { 14396, 14397 });
-        Story.KillQuest(10184, "deleuzetundra", "Empty Creature");
+        if (!Story.QuestProgression(10184))
+        {
+            Core.EnsureAccept(10184);
+            Core.GetMapItems(new[] { (14396, 1), (14397, 1) }, "deleuzetundra");
+            Core.HuntMonster("deleuzetundra", "Empty Creature", "Empty Critter", 8);
+            Core.EnsureComplete(10184);
+        }
 
         // 10185 | Annual Mercury
         if (!Story.QuestProgression(10185))
@@ -132,8 +142,13 @@ public class AriaGreenhouse
 
         // 10192 | Water and Oil
         Farm.Experience(60);
-        Story.MapItemQuest(10192, "feverfew", 14399);
-        Story.KillQuest(10192, "feverfew", "Coral Creeper");
+        if (!Story.QuestProgression(10192))
+        {
+            Core.EnsureAccept(10192);
+            Core.GetMapItem(14399, 1, "feverfew");
+            Core.HuntMonster("feverfew", "Coral Creeper", "Creeps Eliminated", 14);
+            Core.EnsureComplete(10192);
+        }
 
         // 10193 | Black Silk and White Fleece
         if (!Story.QuestProgression(10193) || !Core.CheckInventory("Hyonix's Treasure Chest"))
@@ -199,8 +214,13 @@ public class AriaGreenhouse
         }
 
         // 10207 | Feldspar Silica
-        Story.MapItemQuest(10207, "mafic", 14402);
-        Story.KillQuest(10207, "mafic", "Living Fire");
+        if (!Story.QuestProgression(10207))
+        {
+            Core.EnsureAccept(10207);
+            Core.GetMapItem(14402, 1, "mafic");
+            Core.HuntMonster("mafic", "Living Fire", "Living Fire", 6);
+            Core.EnsureComplete(10207);
+        }
 
         // 10208 | Convective Conversation
         if (!Story.QuestProgression(10208))
@@ -221,8 +241,13 @@ public class AriaGreenhouse
         }
 
         // 10211 | Scattered Embers
-        Story.MapItemQuest(10211, "fireplanewar", 14403, 11);
-        Story.KillQuest(10211, "fireplanewar", "Shadefire Onslaught");
+        if (!Story.QuestProgression(10211))
+        {
+            Core.EnsureAccept(10211);
+            Core.GetMapItem(14403, 11, "fireplanewar");
+            Core.HuntMonster("fireplanewar", "Shadefire Onslaught", "Shadefire", 8);
+            Core.EnsureComplete(10211);
+        }
 
         // 10212 | Tempered Restraint
         if (!Story.QuestProgression(10212))
@@ -260,8 +285,13 @@ public class AriaGreenhouse
         }
 
         // 10217 | Solid Clouds
-        Story.MapItemQuest(10217, "stormtemple", 14405, 8);
-        Story.KillQuest(10217, "stormtemple", "Chaonslaught Warrior");
+        if (!Story.QuestProgression(10217))
+        {
+            Core.EnsureAccept(10217);
+            Core.GetMapItem(14405, 8, "stormtemple");
+            Core.HuntMonster("stormtemple", "Chaonslaught Warrior", "Warrior's Pocket", 6);
+            Core.EnsureComplete(10217);
+        }
 
         // 10218 | Electric Rivalry
         if (!Story.QuestProgression(10218))

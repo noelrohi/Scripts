@@ -50,10 +50,23 @@ public class Firebird
         Story.KillQuest(5712, "firebird", "Lantern");
 
         //Some Fiddling and the Right Spells (5713)
-        Story.KillQuest(5713, "terradefesta", new[] { "GreenRat", "Crow", "Baron Sunday" });
+        if (!Story.QuestProgression(5713))
+        {
+            Core.EnsureAccept(5713);
+            Core.HuntMonster("terradefesta", "GreenRat", "Green Fur", 8);
+            Core.HuntMonster("terradefesta", "Crow", "Crow Egg", 5);
+            Core.HuntMonster("terradefesta", "Baron Sunday", "Voodoo Dust", 1);
+            Core.EnsureComplete(5713);
+        }
 
         //I Need More Time (5714)
-        Story.KillQuest(5714, "firebird", new[] { "Fire Elemental", "Phoenix" });
+        if (!Story.QuestProgression(5714))
+        {
+            Core.EnsureAccept(5714);
+            Core.HuntMonster("firebird", "Fire Elemental", "Elemental Out", 6);
+            Core.HuntMonster("firebird", "Phoenix", "Phoenix Out", 6);
+            Core.EnsureComplete(5714);
+        }
 
         //Trapped Flames (5715)
         Story.MapItemQuest(5715, "firebird", 5156, 10);
@@ -65,7 +78,13 @@ public class Firebird
         Story.MapItemQuest(5717, "firebird", 5157);
 
         //Through the Flames (5718)
-        Story.KillQuest(5718, "carnaval", new[] { "Mulher de Branco", "Boiuna" });
+        if (!Story.QuestProgression(5718))
+        {
+            Core.EnsureAccept(5718);
+            Core.HuntMonster("carnaval", "Mulher de Branco", "Fireproof Hide", 5);
+            Core.HuntMonster("carnaval", "Boiuna", "Black Scales", 7);
+            Core.EnsureComplete(5718);
+        }
 
         //Battling the Inferno (5719)
         Story.KillQuest(5719, "firebird", "Belo Passaro");

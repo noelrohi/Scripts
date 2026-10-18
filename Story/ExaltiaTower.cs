@@ -42,19 +42,37 @@ public class ExaltiaTower
         );
 
         //Unlocking the Antechamber 8146
-        Story.KillQuest(8146, "timeinn", new[] { "Ice Elemental", "Fire Elemental" });
+        if (!Story.QuestProgression(8146))
+        {
+            Core.EnsureAccept(8146);
+            Core.HuntMonster("timeinn", "Ice Elemental", "Key Ice Essence", 3);
+            Core.HuntMonster("timeinn", "Fire Elemental", "Key Fire Essence", 3);
+            Core.EnsureComplete(8146);
+        }
 
         //Ezrajal 8147
         Story.KillQuest(8147, "timeinn", "Ezrajal");
 
         //Unlocking the Reliquary 8148
-        Story.KillQuest(8148, "timeinn", new[] { "Nature Elemental", "Wind Elemental" });
+        if (!Story.QuestProgression(8148))
+        {
+            Core.EnsureAccept(8148);
+            Core.HuntMonster("timeinn", "Nature Elemental", "Key Nature Essence", 3);
+            Core.HuntMonster("timeinn", "Wind Elemental", "Key Wind Essence", 3);
+            Core.EnsureComplete(8148);
+        }
 
         //The Warden 8149
         Story.KillQuest(8149, "timeinn", "The Warden");
 
         //Unlocking the Apex 8150
-        Story.KillQuest(8150, "timeinn", new[] { "Energy Elemental", "Water Elemental" });
+        if (!Story.QuestProgression(8150))
+        {
+            Core.EnsureAccept(8150);
+            Core.HuntMonster("timeinn", "Energy Elemental", "Key Energy Essence", 3);
+            Core.HuntMonster("timeinn", "Water Elemental", "Key Water Essence", 3);
+            Core.EnsureComplete(8150);
+        }
 
         //The Engineer 8151
         Story.KillQuest(8151, "timeinn", "The Engineer");

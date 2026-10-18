@@ -56,15 +56,25 @@ public class HoratioQuests
         Story.KillQuest(6942, "nursery", "Skeletal Minion");
 
         //Conduction Function (6943)
-        Story.MapItemQuest(6943, "nursery", 6471, 6);
-        Story.KillQuest(6943, "nursery", "Skeletal Minion");
+        if (!Story.QuestProgression(6943))
+        {
+            Core.EnsureAccept(6943);
+            Core.GetMapItem(6471, 6, "nursery");
+            Core.HuntMonster("nursery", "Skeletal Minion", "Nice Long Femur", 6);
+            Core.EnsureComplete(6943);
+        }
 
         //Gross (6944)
         Story.KillQuest(6944, "nursery", "Flesh Golem");
 
         //Time to Clean (6945)
-        Story.MapItemQuest(6945, "nursery", new[] { 6473, 6474 }, 1);
-        Story.KillQuest(6945, "nursery", "Spilled Ink");
+        if (!Story.QuestProgression(6945))
+        {
+            Core.EnsureAccept(6945);
+            Core.GetMapItems(new[] { (6473, 1), (6474, 1) }, "nursery");
+            Core.HuntMonster("nursery", "Spilled Ink", "Spilled Ink", 2);
+            Core.EnsureComplete(6945);
+        }
 
         //Find the Progeny (Again) (6946)
         Story.MapItemQuest(6946, "nursery", 6472);

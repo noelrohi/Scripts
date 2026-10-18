@@ -39,7 +39,13 @@ public class BrightCrystalStory
 
         //De-Pesting 4954
         Core.EquipClass(ClassType.Farm);
-        Story.KillQuest(4954, "dreamforest", new[] { "Green Rat", "Crow" });
+        if (!Story.QuestProgression(4954))
+        {
+            Core.EnsureAccept(4954);
+            Core.HuntMonster("dreamforest", "Crow", "Crows Shooed", 4);
+            Core.HuntMonster("dreamforest", "Green Rat", "Rats Shooed", 4);
+            Core.EnsureComplete(4954);
+        }
 
         //Earning That Guest Pass 4955
         Story.MapItemQuest(4955, "dreamforest", 4327, 4);
@@ -64,14 +70,23 @@ public class BrightCrystalStory
         Story.MapItemQuest(4960, "dreamforest", 4334);
 
         //Tumblers 4961
-        Story.KillQuest(4961, "dreamforest", new[] { "Acrobat", "Acrobat" });
+        if (!Story.QuestProgression(4961))
+        {
+            Core.EnsureAccept(4961);
+            Core.HuntMonster("dreamforest", "Acrobat", "Acrobat Defeated", 4);
+            Core.HuntMonster("dreamforest", "Acrobat", "Midway Ticket", 1);
+            Core.EnsureComplete(4961);
+        }
 
         //Head to the Midway 4962
-        Story.KillQuest(
-            4962,
-            "dreamforest",
-            new[] { "Acrobat", "Fire Dancer", "Elephant Trainer" }
-        );
+        if (!Story.QuestProgression(4962))
+        {
+            Core.EnsureAccept(4962);
+            Core.HuntMonster("dreamforest", "Acrobat", "Acrobats Know Nothing", 3);
+            Core.HuntMonster("dreamforest", "Fire Dancer", "Fire Dancers Seem Confused", 3);
+            Core.HuntMonster("dreamforest", "Elephant Trainer", "Trainers Haven't Seen Him", 3);
+            Core.EnsureComplete(4962);
+        }
 
         //Balloons 4963
         if (!Story.QuestProgression(4963))

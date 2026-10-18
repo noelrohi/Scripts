@@ -88,7 +88,7 @@ public class QueenIonav1
         string map = "queeniona";
         string boss = "Queen Iona";
 
-        if (!Bot.Quests.IsDailyComplete(9852))
+        if (!C.IsMember && !Bot.Quests.IsDailyComplete(9852))
             C.EnsureAccept(9852);
 
         C.AddDrop(item);
@@ -124,14 +124,14 @@ public class QueenIonav1
                 Bot.Wait.ForCellChange("r2");
             }
 
-            if (item == "Lothian's Lightning" && !HasQuestItem && !Bot.Quests.IsDailyComplete(9852) && Bot.TempInv.Contains(87681))
+            if (!C.IsMember && item == "Lothian's Lightning" && !HasQuestItem && !Bot.Quests.IsDailyComplete(9852) && Bot.TempInv.Contains(87681))
             {
                 C.Jump("Enter", "Spawn");
                 C.EnsureComplete(9852);
                 if (HasQuestItem)
                     continue;
 
-                C.Logger("Daily complete come back tomarrow");
+                C.Logger("Daily complete come back tomorrow");
                 Bot.Events.ExtensionPacketReceived -= QueenIonaListener;
                 return;
             }

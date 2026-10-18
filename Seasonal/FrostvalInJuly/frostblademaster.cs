@@ -58,7 +58,13 @@ public class FrostBladeMaster
         Story.KillQuest(6986, "yokaigrave", "Skello Kitty");
 
         //Mitsu Bishis Gift 6987
-        Story.KillQuest(6987, "bamboo", new[] { "Tanuki", "Tanuki" });
+        if (!Story.QuestProgression(6987))
+        {
+            Core.EnsureAccept(6987);
+            Core.HuntMonster("bamboo", "Tanuki", "Bamboo Carafe", 1);
+            Core.HuntMonster("bamboo", "Tanuki", "Bamboo Cup", 4);
+            Core.EnsureComplete(6987);
+        }
 
         //Kunoichis Gift 6988
         Story.KillQuest(6988, "pirates", "Fishwing");

@@ -2158,15 +2158,14 @@ public class CoreAdvanced
         bool bypassDisableAutoEnhance
     )
     {
-        if (
-            string.IsNullOrEmpty(item)
-            || (
-                !bypassDisableAutoEnhance
-                && Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance)
-                && _disableAutoEnhance
-            )
-        )
+        if (string.IsNullOrEmpty(item))
             return;
+
+        if (!bypassDisableAutoEnhance)
+        {
+            if (Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance) && _disableAutoEnhance)
+                return;
+        }
 
         if (!Core.CheckInventory(item))
         {
@@ -2220,14 +2219,26 @@ public class CoreAdvanced
         WeaponSpecial wSpecial = WeaponSpecial.None
     )
     {
-        if (
-            items.Length == 0
-            || (
-                Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance)
-                && _disableAutoEnhance
-            )
-        )
+        EnhanceItem(items, type, cSpecial, hSpecial, wSpecial, false);
+    }
+
+    public void EnhanceItem(
+        string[] items,
+        EnhancementType type,
+        CapeSpecial cSpecial,
+        HelmSpecial hSpecial,
+        WeaponSpecial wSpecial,
+        bool bypassDisableAutoEnhance
+    )
+    {
+        if (items.Length == 0)
             return;
+
+        if (!bypassDisableAutoEnhance)
+        {
+            if (Core.CBOBool("DisableAutoEnhance", out bool _disableAutoEnhance) && _disableAutoEnhance)
+                return;
+        }
 
         // If any of the items in the items array cant be found, return
         List<string>? notFound = [];

@@ -40,6 +40,24 @@ public class Shattersword
 
         Story.PreLoad(this);
 
+        // King vs Beast starts slot 108. The next quest stays locked until it is complete.
+        if (!Core.isCompletedBefore(2680))
+        {
+            Core.Join("shattersword");
+
+            if (!Core.isCompletedBefore(2680, log: false))
+            {
+                Core.EnsureAccept(2680);
+                Core.EnsureComplete(2680);
+            }
+
+            if (!Core.isCompletedBefore(2680, log: false))
+            {
+                Core.Logger("King vs Beast [2680] did not complete. Shattersword cannot continue until this quest is unlocked.", stopBot: true);
+                return;
+            }
+        }
+
         // Secure Shattersword Cavern 2681
         if (!Story.QuestProgression(2681))
         {

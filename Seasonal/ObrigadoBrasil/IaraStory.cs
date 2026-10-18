@@ -38,7 +38,13 @@ public class Iara
         Story.KillQuest(8258, "iara", "Earth Elemental");
 
         //Bandits and Treasure Hunters 8259
-        Story.KillQuest(8259, "iara", new[] { "Bandit", "Treasure Hunter" });
+        if (!Story.QuestProgression(8259))
+        {
+            Core.EnsureAccept(8259);
+            Core.HuntMonster("iara", "Bandit", "Bandit Captured", 3);
+            Core.HuntMonster("iara", "Treasure Hunter", "Treasure Hunter Scared Off", 3);
+            Core.EnsureComplete(8259);
+        }
 
         //Plants be Spooky 8260
         Story.KillQuest(8260, "iara", "Seed Spitter");

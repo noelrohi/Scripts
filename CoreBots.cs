@@ -3308,6 +3308,9 @@ public class CoreBots
 
         registeredQuests = allQuests.Select(q => q.ID).ToArray();
 
+        if (allQuests.Count == 0)
+            Logger("No quests left to register (all skipped, e.g. member-only or not available).");
+
         HashSet<int> inFlight = [];
         object inFlightLock = new();
 
@@ -3449,6 +3452,11 @@ public class CoreBots
 
                         await Task.Delay(ActionDelay * 2, token);
                     }
+
+                    // Without this the loop never yields when allQuests is empty, or when
+                    // every quest hits a `continue` above (in flight / failed to load),
+                    // and spins a CPU core at 100% until the script stops.
+                    await Task.Delay(Math.Max(ActionDelay, 100), token);
                 }
             }
             catch (OperationCanceledException) { }

@@ -366,14 +366,25 @@ public class CoreHarvestDay
         Story.KillQuest(7219, "furblefeast", "Angry Furble");
 
         // Pollinate 7220
-        Story.MapItemQuest(7220, "furblefeast", 6843, 10);
-        Story.KillQuest(7220, "poisonforest", "Treeant");
+        if (!Story.QuestProgression(7220))
+        {
+            Core.EnsureAccept(7220);
+            Core.GetMapItem(6843, 10, "furblefeast");
+            Core.HuntMonster("poisonforest", "Treeant", "Treeant Pollen", 10);
+            Core.EnsureComplete(7220);
+        }
 
         // Mecha-Furbles 7221
         Story.KillQuest(7221, "furblefeast", "Mecha Furble");
 
         // Sabotage 7222
-        Story.KillQuest(7222, "crashsite", new[] { "Dwakel Blaster", "Dwakel Warrior" });
+        if (!Story.QuestProgression(7222))
+        {
+            Core.EnsureAccept(7222);
+            Core.HuntMonster("crashsite", "Dwakel Warrior", "Breaking Tools", 5);
+            Core.HuntMonster("crashsite", "Dwakel Blaster", "Smashing Tools", 5);
+            Core.EnsureComplete(7222);
+        }
 
         // SMASH 7223
         Story.MapItemQuest(7223, "furblefeast", 6844, 4);
@@ -797,7 +808,13 @@ public class CoreHarvestDay
         Story.KillQuest(8405, "ebilcorphq", "Gravelyn");
 
         // Server Room Access 8406
-        Story.KillQuest(8406, "ebilcorphq", new[] { "EbilCorp Goon", "EbilCorp Security" });
+        if (!Story.QuestProgression(8406))
+        {
+            Core.EnsureAccept(8406);
+            Core.HuntMonster("ebilcorphq", "EbilCorp Goon", "Goon Defeated", 10);
+            Core.HuntMonster("ebilcorphq", "EbilCorp Security", "Server Room Key", 1);
+            Core.EnsureComplete(8406);
+        }
 
         // The M.C.P 8407
         Story.KillQuest(8407, "ebilcorphq", "Master Chairman");

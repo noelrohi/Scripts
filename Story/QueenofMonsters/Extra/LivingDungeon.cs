@@ -44,7 +44,12 @@ public class LivingDungeon
         Story.KillQuest(4350, "livingdungeon", "Seed Spitter");
 
         // Bark is worse than its bite
-        Story.KillQuest(4351, "livingdungeon", new[] { "Evil Plant Horror", "Titan Decay" });
+        if (!Story.QuestProgression(4351))
+        {
+            Core.EnsureAccept(4351);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "It's a CLUE!", 10);
+            Core.EnsureComplete(4351);
+        }
 
         // Knot what you expected
         Story.KillQuest(4352, "livingdungeon", "Weeping Widowmaker");
@@ -53,11 +58,14 @@ public class LivingDungeon
         Story.KillQuest(4353, "livingdungeon", "Chia Warrior");
 
         // Leaf me alone!
-        Story.KillQuest(
-            4354,
-            "livingdungeon",
-            new[] { "Titan Decay", "Seed Spitter", "Evil Plant Horror" }
-        );
+        if (!Story.QuestProgression(4354))
+        {
+            Core.EnsureAccept(4354);
+            Core.HuntMonster("livingdungeon", "Titan Decay", "Titan Decay defeated", 5);
+            Core.HuntMonster("livingdungeon", "Seed Spitter", "Seed Spitter de-seeded", 5);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "Evil Plant Horror defeated", 5);
+            Core.EnsureComplete(4354);
+        }
 
         // Evil Faerie Ambush!
         Story.KillQuest(4355, "livingdungeon", "Evil Tree Faerie");
@@ -66,27 +74,39 @@ public class LivingDungeon
         Story.KillQuest(4356, "livingdungeon", "Vulchurion");
 
         // Committing Tree-son
-        Story.KillQuest(
-            4357,
-            "livingdungeon",
-            new[] { "Evil Plant Horror", "Evil Tree Faerie", "Vulchurion" }
-        );
+        if (!Story.QuestProgression(4357))
+        {
+            Core.EnsureAccept(4357);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "Magic Tree Bark", 10);
+            Core.EnsureComplete(4357);
+        }
 
         // Heartwood
-        Story.KillQuest(
-            4358,
-            "livingdungeon",
-            new[] { "Evil Plant Horror", "Evil Tree Faerie", "Vulchurion" }
-        );
+        if (!Story.QuestProgression(4358))
+        {
+            Core.EnsureAccept(4358);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "Titan's Heart", 1);
+            Core.EnsureComplete(4358);
+        }
 
         // Drayko BOSS FIGHT!
         Story.KillQuest(4359, "livingdungeon", "Drayko");
 
         // Foilaged again!
-        Story.KillQuest(4360, "livingdungeon", new[] { "Evil Plant Horror", "Evil Tree Faerie" });
+        if (!Story.QuestProgression(4360))
+        {
+            Core.EnsureAccept(4360);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "Monsters defeated", 15);
+            Core.EnsureComplete(4360);
+        }
 
         // Mind Games
-        Story.KillQuest(4361, "livingdungeon", new[] { "Evil Plant Horror", "Evil Tree Faerie" });
+        if (!Story.QuestProgression(4361))
+        {
+            Core.EnsureAccept(4361);
+            Core.HuntMonster("livingdungeon", "Evil Plant Horror", "Tree Titan Brain Chunk", 10);
+            Core.EnsureComplete(4361);
+        }
 
         // DRAGON vs TITAN
         Story.KillQuest(4362, "treetitanbattle", "Dakka the Dire Dragon");

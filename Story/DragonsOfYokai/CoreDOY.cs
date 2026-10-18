@@ -134,7 +134,13 @@ public class CoreDOY
         Story.MapItemQuest(9403, "yokaitreasure", 12167, 4);
 
         // Sons of Biscuit Eaters (9404)
-        Story.KillQuest(9404, "yokaitreasure", new[] { "Needle Mouth", "Imperial Warrior" });
+        if (!Story.QuestProgression(9404))
+        {
+            Core.EnsureAccept(9404);
+            Core.HuntMonster("yokaitreasure", "Needle Mouth", "Criminal Marker", 6);
+            Core.HuntMonster("yokaitreasure", "Imperial Warrior", "Imperial Scale", 6);
+            Core.EnsureComplete(9404);
+        }
 
         // Pearl of my Heart (9405)
         Core.EquipClass(ClassType.Solo);
@@ -157,20 +163,40 @@ public class CoreDOY
         Story.KillQuest(9590, "hakuvillage", "Tsukumogami");
 
         // Red and Blue (9591)
-        Story.MapItemQuest(9591, "hakuvillage", 12706);
-        Story.KillQuest(9591, "hakuvillage", "Mountain Oni");
+        if (!Story.QuestProgression(9591))
+        {
+            Core.EnsureAccept(9591);
+            Core.GetMapItem(12706, 1, "hakuvillage");
+            Core.HuntMonster("hakuvillage", "Mountain Oni", "Clay Gourd", 10);
+            Core.EnsureComplete(9591);
+        }
 
         // Cold Sunshower (9592)
-        Story.MapItemQuest(9592, "hakuvillage", 12707);
-        Story.KillQuest(9592, "hakuvillage", "Tsukumogami");
+        if (!Story.QuestProgression(9592))
+        {
+            Core.EnsureAccept(9592);
+            Core.GetMapItem(12707, 1, "hakuvillage");
+            Core.HuntMonster("hakuvillage", "Tsukumogami", "Spirit Lights", 10);
+            Core.EnsureComplete(9592);
+        }
 
         // Inari Boom (9593)
-        Story.MapItemQuest(9593, "hakuvillage", new[] { 12708, 12709 });
-        Story.KillQuest(9593, "hakuvillage", "Kitsune Spy");
+        if (!Story.QuestProgression(9593))
+        {
+            Core.EnsureAccept(9593);
+            Core.GetMapItems(new[] { (12708, 1), (12709, 1) }, "hakuvillage");
+            Core.HuntMonster("hakuvillage", "Kitsune Spy", "Fried Tofu Skins", 12);
+            Core.EnsureComplete(9593);
+        }
 
         // Cui Niao (9594)
-        Story.MapItemQuest(9594, "hakuvillage", 12710);
-        Story.KillQuest(9594, "hakuvillage", "Nagami");
+        if (!Story.QuestProgression(9594))
+        {
+            Core.EnsureAccept(9594);
+            Core.GetMapItem(12710, 1, "hakuvillage");
+            Core.HuntMonster("hakuvillage", "Nagami", "Mermeat", 12);
+            Core.EnsureComplete(9594);
+        }
 
         // Huli Jing (9595)
         Story.KillQuest(9595, "hakuvillage", "Kitsune Spy");
@@ -255,8 +281,13 @@ public class CoreDOY
         Story.MapItemQuest(9671, "yokaiportal", new[] { 12987, 12988 });
 
         // Simple Wishes (9672)
-        Story.MapItemQuest(9672, "yokaiportal", new[] { 12989, 12995, 12990 });
-        Story.KillQuest(9672, "yokaiportal", "Snake Shikigami");
+        if (!Story.QuestProgression(9672))
+        {
+            Core.EnsureAccept(9672);
+            Core.GetMapItems(new[] { (12989, 1), (12995, 1), (12990, 1) }, "yokaiportal");
+            Core.HuntMonster("yokaiportal", "Snake Shikigami", "Quicksilver Venom", 21);
+            Core.EnsureComplete(9672);
+        }
 
         // Left Behind (9673)
         Story.KillQuest(9673, "yokaiportal", "Puppeted Dragonling");
@@ -265,8 +296,14 @@ public class CoreDOY
         Story.MapItemQuest(9674, "yokaiportal", new[] { 12991, 12992, 12993 });
 
         // Amano Iwato (9675)
-        Story.MapItemQuest(9675, "yokaiportal", 12994);
-        Story.KillQuest(9675, "yokaiportal", new[] { "Kitsune Spirits", "Puppeted Dragonling" });
+        if (!Story.QuestProgression(9675))
+        {
+            Core.EnsureAccept(9675);
+            Core.GetMapItem(12994, 1, "yokaiportal");
+            Core.HuntMonster("yokaiportal", "Kitsune Spirits", "Fox Soul Pearl", 15);
+            Core.HuntMonster("yokaiportal", "Puppeted Dragonling", "Seeded Dragon Heart", 15);
+            Core.EnsureComplete(9675);
+        }
 
         // Corrupted Protector (9676)
         if (!Core.isCompletedBefore(9676))
@@ -288,35 +325,77 @@ public class CoreDOY
         Core.EquipClass(ClassType.Farm);
 
         // Tail End (9680)
-        Story.MapItemQuest(9680, "yokairealm", new[] { 13036, 13037 });
-        Story.KillQuest(9680, "yokairealm", "Snake Shikigami");
+        if (!Story.QuestProgression(9680))
+        {
+            Core.EnsureAccept(9680);
+            Core.GetMapItems(new[] { (13036, 1), (13037, 1) }, "yokairealm");
+            Core.HuntMonster("yokairealm", "Snake Shikigami", "Tame Snake Shikigami", 18);
+            Core.EnsureComplete(9680);
+        }
 
         // A Thousand Hills (9681)
-        Story.MapItemQuest(9681, "yokairealm", new[] { 13038, 13039 });
-        Story.KillQuest(9681, "yokairealm", "Snake Shikigami");
+        if (!Story.QuestProgression(9681))
+        {
+            Core.EnsureAccept(9681);
+            Core.GetMapItems(new[] { (13038, 1), (13039, 1) }, "yokairealm");
+            Core.HuntMonster("yokairealm", "Snake Shikigami", "Snake Quicksilver", 18);
+            Core.EnsureComplete(9681);
+        }
 
         // Mount the Land and Skies (9682)
-        Story.MapItemQuest(9682, "yokairealm", new[] { 13040, 13041 });
-        Story.KillQuest(9682, "yokairealm", "Puppeted Dragonling");
+        if (!Story.QuestProgression(9682))
+        {
+            Core.EnsureAccept(9682);
+            Core.GetMapItems(new[] { (13040, 1), (13041, 1) }, "yokairealm");
+            Core.HuntMonster("yokairealm", "Puppeted Dragonling", "Eggshell Shard", 80);
+            Core.EnsureComplete(9682);
+        }
 
         // Distant Shores (9683)
-        Story.MapItemQuest(9683, "yokairealm", new[] { 13042, 13043 });
-        Story.KillQuest(9683, "yokairealm", "Dark Zmey");
+        if (!Story.QuestProgression(9683))
+        {
+            Core.EnsureAccept(9683);
+            Core.GetMapItems(new[] { (13042, 1), (13043, 1) }, "yokairealm");
+            Core.HuntMonster("yokairealm", "Dark Zmey", "Tarnished Gold", 21);
+            Core.EnsureComplete(9683);
+        }
 
         // Taizi (9684)
-        Story.MapItemQuest(9684, "yokairealm", 13044);
-        Story.KillQuest(9684, "yokairealm", new[] { "Puppeted Dragonling", "Dark Zmey" });
+        if (!Story.QuestProgression(9684))
+        {
+            Core.EnsureAccept(9684);
+            Core.GetMapItem(13044, 1, "yokairealm");
+            Core.HuntMonster("yokairealm", "Puppeted Dragonling", "Dragonling Bone", 15);
+            Core.HuntMonster("yokairealm", "Dark Zmey", "Zmey Bone", 15);
+            Core.EnsureComplete(9684);
+        }
 
         // Begrudged Oni (9685)
-        Story.MapItemQuest(9685, "yokairealm", new[] { 13045, 13046 });
-        Story.KillQuest(9685, "yokairealm", "Oni Spirits");
+        if (!Story.QuestProgression(9685))
+        {
+            Core.EnsureAccept(9685);
+            Core.GetMapItems(new[] { (13045, 1), (13046, 1) }, "yokairealm");
+            Core.HuntMonster("yokairealm", "Oni Spirits", "Dried Oni Blood", 1);
+            Core.EnsureComplete(9685);
+        }
 
         // Lingering Discord (9686)
-        Story.MapItemQuest(9686, "yokairealm", 13047);
-        Story.KillQuest(9686, "yokairealm", "Kitsune Spirits");
+        if (!Story.QuestProgression(9686))
+        {
+            Core.EnsureAccept(9686);
+            Core.GetMapItem(13047, 1, "yokairealm");
+            Core.HuntMonster("yokairealm", "Kitsune Spirits", "Chaotic Kitsunebi", 21);
+            Core.EnsureComplete(9686);
+        }
 
         // Yokai's Cycle (9687)
-        Story.KillQuest(9687, "yokairealm", new[] { "Oni Spirits", "Kitsune Spirits" });
+        if (!Story.QuestProgression(9687))
+        {
+            Core.EnsureAccept(9687);
+            Core.HuntMonster("yokairealm", "Oni Spirits", "Oni Pacified", 15);
+            Core.HuntMonster("yokairealm", "Kitsune Spirits", "Kitsune Pacified", 15);
+            Core.EnsureComplete(9687);
+        }
 
         // Kojutsu (9688)
         if (!Story.QuestProgression(9688))
@@ -361,7 +440,13 @@ public class CoreDOY
         if (!Story.QuestProgression(9801))
         {
             Bot.Quests.UpdateQuest(9607);
-            Story.KillQuest(9801, "hakuwar", new[] { "Zakhvatchik", "Zmey Warrior" });
+            if (!Story.QuestProgression(9801))
+            {
+                Core.EnsureAccept(9801);
+                Core.HuntMonster("hakuwar", "Zakhvatchik", "Zakhvatchik Fang", 1);
+                Core.HuntMonster("hakuwar", "Zmey Warrior", "Zmey Fang", 15);
+                Core.EnsureComplete(9801);
+            }
         }
         // Hoshiyoru 9802
         Core.EquipClass(ClassType.Solo);

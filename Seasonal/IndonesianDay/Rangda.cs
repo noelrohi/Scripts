@@ -54,15 +54,25 @@ public class RangdaSeasonal
         Story.KillQuest(7618, "rangda", "Leyak");
 
         // 7619 Create a Barrier
-        Story.MapItemQuest(7619, "rangda", 7526, 4);
-        Story.KillQuest(7619, "rangda", "Leyak");
+        if (!Story.QuestProgression(7619))
+        {
+            Core.EnsureAccept(7619);
+            Core.GetMapItem(7526, 4, "rangda");
+            Core.HuntMonster("rangda", "Leyak", "Blood of the Leyak", 4);
+            Core.EnsureComplete(7619);
+        }
 
         // 7620 Purify the Tuyul
         Story.KillQuest(7620, "rangda", "Tuyul");
 
         // 7621 Give an Offering
-        Story.MapItemQuest(7621, "rangda", 7527);
-        Story.KillQuest(7621, "rangda", "Leyak");
+        if (!Story.QuestProgression(7621))
+        {
+            Core.EnsureAccept(7621);
+            Core.GetMapItem(7527, 1, "rangda");
+            Core.HuntMonster("rangda", "Leyak", "Evil Spirits Slain", 10);
+            Core.EnsureComplete(7621);
+        }
 
         // 7622 Defeat Rangda
         Story.KillQuest(7622, "rangda", "Rangda");

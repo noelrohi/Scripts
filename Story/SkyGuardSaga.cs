@@ -78,11 +78,14 @@ public class SkyGuardSaga
         Story.KillQuest(886, "airship", "Sky Pirate Dragon");
 
         // Things Are Looking Up 887
-        Story.KillQuest(
-            887,
-            "airship",
-            new[] { "Sky Pirate Draconian", "Rehydrated Gell Oh No", "Sky Pirate Dragon" }
-        );
+        if (!Story.QuestProgression(887))
+        {
+            Core.EnsureAccept(887);
+            Core.HuntMonster("airship", "Sky Pirate Draconian", "Sky Pirate Medal of Dishonor", 8);
+            Core.HuntMonster("airship", "Rehydrated Gell Oh No", "Gel-O-No Medal of Dishonor", 1);
+            Core.HuntMonster("airship", "Sky Pirate Dragon", "Sky Dragon Medal of Dishonor", 1);
+            Core.EnsureComplete(887);
+        }
 
         // Don't Get Mad, Get Gladius 888
         Story.KillQuest(888, "airship", "Gladius");

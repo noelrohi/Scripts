@@ -87,7 +87,13 @@ public class DragonRoad
         }
 
         //Find the Fourth DragonStar Crystal 4538
-        Story.KillQuest(4538, "Lair", new[] { "Onyx Lava Dragon", "Onyx Lava Dragon" });
+        if (!Story.QuestProgression(4538))
+        {
+            Core.EnsureAccept(4538);
+            Core.HuntMonster("lair", "Onyx Lava Dragon", "Fourth DragonStar Found", 1);
+            Core.HuntMonster("lair", "Onyx Lava Dragon", "Radar Recharged", 1);
+            Core.EnsureComplete(4538);
+        }
 
         //Find the Fifth DragonStar Crystal 4539
         if (!Story.QuestProgression(4539))

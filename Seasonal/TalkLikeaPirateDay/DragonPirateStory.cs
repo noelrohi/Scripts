@@ -43,8 +43,13 @@ public class DragonPirateStory
         Story.KillQuest(8269, "dragonpirate", "Pirate Wyvern");
 
         // 8270 Commandeer The Vessel
-        Story.MapItemQuest(8270, "dragonpirate", 8930);
-        Story.KillQuest(8270, "dragonpirate", "Pirate Draconian");
+        if (!Story.QuestProgression(8270))
+        {
+            Core.EnsureAccept(8270);
+            Core.GetMapItem(8930, 1, "dragonpirate");
+            Core.HuntMonster("dragonpirate", "Pirate Draconian", "Enemies Cleared", 6);
+            Core.EnsureComplete(8270);
+        }
 
         // 8271 There Be Dragon
         Story.KillQuest(8271, "dragonpirate", "Dragon Pirate");
@@ -53,8 +58,13 @@ public class DragonPirateStory
         Story.KillQuest(8272, "dragonpirate", "Dragon Gunner");
 
         // 8273 Boarding Party
-        Story.MapItemQuest(8273, "dragonpirate", 8931);
-        Story.KillQuest(8273, "dragonpirate", "Dragon Pirate");
+        if (!Story.QuestProgression(8273))
+        {
+            Core.EnsureAccept(8273);
+            Core.GetMapItem(8931, 1, "dragonpirate");
+            Core.HuntMonster("dragonpirate", "Dragon Pirate", "Boarding Planks Collected", 5);
+            Core.EnsureComplete(8273);
+        }
 
         // 8274 The Mates First
         Story.KillQuest(8274, "dragonpirate", "Pirate Draconian");

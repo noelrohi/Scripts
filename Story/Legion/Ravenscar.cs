@@ -40,7 +40,13 @@ public class Ravenscar
         Story.MapItemQuest(2901, "ravenscar", 1767);
 
         // Slay the Necromancer's Soldiers (2902)
-        Story.KillQuest(2902, "ravenscar", new[] { "Restless Undead", "Restless Undead" });
+        if (!Story.QuestProgression(2902))
+        {
+            Core.EnsureAccept(2902);
+            Core.HuntMonster("ravenscar", "Restless Undead", "Crumpled Book Page", 1);
+            Core.HuntMonster("ravenscar", "Restless Undead", "Undead Slain", 6);
+            Core.EnsureComplete(2902);
+        }
 
         // The Book of Portals (2903)
         Story.MapItemQuest(2903, "ravenscar", 1768);

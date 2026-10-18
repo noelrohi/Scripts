@@ -599,7 +599,13 @@ public class UnlockForgeEnhancements
                 Core.KillMonster("greenguardwest", "West12", "Up", "Big Bad Boar", "Big Bad Boar's Wallet");
                 Core.EnsureComplete(91);
             }
-            Story.KillQuest(92, "greenguardwest", new[] { "Breken the Vile", "Ogug Stoneaxe" });
+            if (!Story.QuestProgression(92))
+            {
+                Core.EnsureAccept(92);
+                Core.HuntMonster("greenguardwest", "Breken the Vile", "Breken the Vile's Sword", 1);
+                Core.HuntMonster("greenguardwest", "Ogug Stoneaxe", "Ogug Stoneaxe's Helmet", 1);
+                Core.EnsureComplete(92);
+            }
         }
 
         Farm.Experience(40);

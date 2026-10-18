@@ -252,10 +252,10 @@ public class QuestFileUpdaterV4
         if (a.Gold != b.Gold) return true;
         if (a.XP != b.XP) return true;
 
-        if ((a.AcceptRequirements == null) != (b.AcceptRequirements == null)) return true;
-        if ((a.Requirements == null) != (b.Requirements == null)) return true;
-        if ((a.Rewards == null) != (b.Rewards == null)) return true;
-        if ((a.SimpleRewards == null) != (b.SimpleRewards == null)) return true;
+        if (a.AcceptRequirements == null != (b.AcceptRequirements == null)) return true;
+        if (a.Requirements == null != (b.Requirements == null)) return true;
+        if (a.Rewards == null != (b.Rewards == null)) return true;
+        if (a.SimpleRewards == null != (b.SimpleRewards == null)) return true;
 
         if (!ItemBaseListsEqual(a.AcceptRequirements, b.AcceptRequirements)) return true;
         if (!ItemBaseListsEqual(a.Requirements, b.Requirements)) return true;

@@ -42,8 +42,13 @@ public class Shinkansen
         Story.PreLoad(this);
 
         // Snack Run 8116
-        Story.MapItemQuest(8116, "Shinkansen", 8496, 3);
-        Story.KillQuest(8116, "Shinkansen", "Temptation 1");
+        if (!Story.QuestProgression(8116))
+        {
+            Core.EnsureAccept(8116);
+            Core.GetMapItem(8496, 3, "Shinkansen");
+            Core.HuntMonster("shinkansen", "Temptation 1", "Temptations Kicked", 3);
+            Core.EnsureComplete(8116);
+        }
 
         // Clean Up Crew 8117
         Story.KillQuest(8117, "Shinkansen", "Trash Pile");
@@ -76,7 +81,13 @@ public class Shinkansen
         Story.KillQuest(8122, "Shinkansen", "Crystallis Soldier");
 
         // The Twin Saints 8123
-        Story.KillQuest(8123, "Shinkansen", new[] { "Saint Apa", "Saint Eta" });
+        if (!Story.QuestProgression(8123))
+        {
+            Core.EnsureAccept(8123);
+            Core.HuntMonster("shinkansen", "Saint Apa", "Saint Apa Defeated", 1);
+            Core.HuntMonster("shinkansen", "Saint Eta", "Saint Eta Defeated", 1);
+            Core.EnsureComplete(8123);
+        }
 
         // Sometimes Losing is Winning 8124
         Story.KillQuest(8124, "Shinkansen", "Crystallis Soldier");

@@ -35,18 +35,34 @@ public class Tournament
         Story.PreLoad(this);
 
         //Guard Swordhaven 2708
-        Story.MapItemQuest(2708, "tournament", 1682, 5);
-        Story.KillQuest(2708, "tournament", "Suspicious Spy Bot");
+        if (!Story.QuestProgression(2708))
+        {
+            Core.EnsureAccept(2708);
+            Core.GetMapItem(1682, 5, "tournament");
+            Core.HuntMonster("tournament", "Suspicious Spy Bot ", "Bot Disabled", 5);
+            Core.EnsureComplete(2708);
+        }
 
         //Stalkers and Mercenaries 2709
-        Story.KillQuest(2709, "tournament", new[] {  "Mercenary","SandStalker" });
+        if (!Story.QuestProgression(2709))
+        {
+            Core.EnsureAccept(2709);
+            Core.HuntMonster("tournament", "Mercenary", "Mercenary Slain", 4);
+            Core.HuntMonster("tournament", "SandStalker", "Intruder Slain", 3);
+            Core.EnsureComplete(2709);
+        }
 
         //Brave the Bandits 2710
         Story.KillQuest(2710, "tournament", "Greenguard Bandit");
 
         //Find the Princesses! 2711
-        Story.MapItemQuest(2711, "tournament", 1683);
-        Story.KillQuest(2711, "tournament", "Princess Tara");
+        if (!Story.QuestProgression(2711))
+        {
+            Core.EnsureAccept(2711);
+            Core.GetMapItem(1683, 1, "tournament");
+            Core.HuntMonster("tournament", "Princess Tara", "Tara is Safe", 1);
+            Core.EnsureComplete(2711);
+        }
 
         //Find Princess Brittany! 2712
         Story.MapItemQuest(2712, "tournament", 1684);

@@ -73,7 +73,13 @@ public class YokaiHunt
         Story.PreLoad(this);
 
         //Vitamoon (9092)
-        Story.KillQuest(9092, "natatorium", new[] { "Anglerfish", "Merdraconian" });
+        if (!Story.QuestProgression(9092))
+        {
+            Core.EnsureAccept(9092);
+            Core.HuntMonster("natatorium", "Anglerfish", "Angler Oil", 7);
+            Core.HuntMonster("natatorium", "Merdraconian", "Draconian Oil", 7);
+            Core.EnsureComplete(9092);
+        }
 
         //Fill'er Up (9093)
         if (!Story.QuestProgression(9093))
@@ -85,13 +91,31 @@ public class YokaiHunt
         }
 
         //Mirror Flowers (9094)
-        Story.KillQuest(9094, "guardiantree", new[] { "Blossoming Treeant", "Seed Spitter" });
+        if (!Story.QuestProgression(9094))
+        {
+            Core.EnsureAccept(9094);
+            Core.HuntMonster("guardiantree", "Blossoming Treeant", "Fresh Blossoms", 8);
+            Core.HuntMonster("guardiantree", "Seed Spitter", "Fresh Seeds", 8);
+            Core.EnsureComplete(9094);
+        }
 
         //Moon's Reflection (9095)
-        Story.KillQuest(9095, "beachparty", new[] { "Water Elemental", "Boiling Elemental" });
+        if (!Story.QuestProgression(9095))
+        {
+            Core.EnsureAccept(9095);
+            Core.HuntMonster("beachparty", "Water Elemental", "Sparkling Water", 9);
+            Core.HuntMonster("beachparty", "Boiling Elemental", "Boiling Water", 9);
+            Core.EnsureComplete(9095);
+        }
 
         //Shifting Faces (9096)
-        Story.KillQuest(9096, "safiria", new[] { "Albino Bat", "Chaos Lycan" });
+        if (!Story.QuestProgression(9096))
+        {
+            Core.EnsureAccept(9096);
+            Core.HuntMonster("safiria", "Albino Bat ", "White Bat", 10);
+            Core.HuntMonster("safiria", "Chaos Lycan", "Violet Wolf", 10);
+            Core.EnsureComplete(9096);
+        }
 
         //Eto... Bleh (9097)
         Core.EquipClass(ClassType.Solo);
@@ -114,7 +138,13 @@ public class YokaiHunt
         Story.KillQuest(9571, "zhu", "Plum Treeant");
 
         // Lucky Red (9572)
-        Story.KillQuest(9572, "shipwreck", new[] { "Gilded Merdraconian", "Lobthulhu" });
+        if (!Story.QuestProgression(9572))
+        {
+            Core.EnsureAccept(9572);
+            Core.HuntMonster("shipwreck", "Gilded Merdraconian", "Merdraconian Coins", 15);
+            Core.HuntMonster("shipwreck", "Lobthulhu", "Lobthulu's Gold Bar", 1);
+            Core.EnsureComplete(9572);
+        }
 
         // Palm Soot (9573)
         Story.KillQuest(9573, "burningbeach", "Lava Guardian");

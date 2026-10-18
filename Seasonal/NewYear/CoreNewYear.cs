@@ -109,21 +109,37 @@ public class CoreNewYear
         Story.KillQuest(2591, "darksun", "Aku");
 
         //Fight the Darkness 2592
-        Story.MapItemQuest(2592, "darkoviaforest", 1604);
-        Story.KillQuest(2592, "darkoviagrave", "Albino Bat");
+        if (!Story.QuestProgression(2592))
+        {
+            Core.EnsureAccept(2592);
+            Core.GetMapItem(1604, 1, "darkoviaforest");
+            Core.HuntMonster("darkoviagrave", "Albino Bat ", "Spy Slain", 7);
+            Core.EnsureComplete(2592);
+        }
 
         //Cloaked in Darkness 2593
         Story.MapItemQuest(2593, "darksun", 1597);
 
         //Escape to Freedom 2594
-        Story.KillQuest(2594, "darkoviaforest", new[] { "Blood Maggot", "Dire Wolf" });
+        if (!Story.QuestProgression(2594))
+        {
+            Core.EnsureAccept(2594);
+            Core.HuntMonster("darkoviaforest", "Blood Maggot", "Blood Maggot Slain", 4);
+            Core.HuntMonster("darkoviaforest", "Dire Wolf", "Dire Wolf Slain", 4);
+            Core.EnsureComplete(2594);
+        }
 
         //Shine a Light on Truth 2595
         Story.MapItemQuest(2595, "darksun", 1598);
 
         //Weave Light into Dark 2596
-        Story.MapItemQuest(2596, "darksun", 1599, 6);
-        Story.KillQuest(2596, "darkoviagrave", "Skeletal Fire Mage");
+        if (!Story.QuestProgression(2596))
+        {
+            Core.EnsureAccept(2596);
+            Core.GetMapItem(1599, 6, "darksun");
+            Core.HuntMonster("darkoviagrave", "Skeletal Fire Mage", "Solar Flare", 5);
+            Core.EnsureComplete(2596);
+        }
 
         //Battle for a New Start 2597
         Story.KillQuest(2597, "darksun", "Raskar");
@@ -300,21 +316,33 @@ public class CoreNewYear
 
         Core.EquipClass(ClassType.Farm);
         // Raw Gems (9533)
-        Story.KillQuest(
-            9533,
-            "earthstorm",
-            new[] { "Ruby Golem", "Sapphire Golem", "Diamond Golem", "Emerald Golem" }
-        );
+        if (!Story.QuestProgression(9533))
+        {
+            Core.EnsureAccept(9533);
+            Core.HuntMonster("earthstorm", "Ruby Golem", "Uncut Ruby", 4);
+            Core.HuntMonster("earthstorm", "Sapphire Golem", "Uncut Sapphire", 4);
+            Core.HuntMonster("earthstorm", "Diamond Golem", "Uncut Diamond", 4);
+            Core.HuntMonster("earthstorm", "Emerald Golem", "Uncut Emerald", 4);
+            Core.EnsureComplete(9533);
+        }
 
         // Rest in Riches (9534)
-        Story.KillQuest(
-            9534,
-            "battleunderc",
-            new[] { "Crystalized Jellyfish", "Green Crystalized Undead" }
-        );
+        if (!Story.QuestProgression(9534))
+        {
+            Core.EnsureAccept(9534);
+            Core.HuntMonster("battleunderc", "Crystalized Jellyfish", "Jellyfish's Alexandrite", 6);
+            Core.HuntMonster("battleunderc", "Green Crystalized Undead", "Undead's Peridot", 6);
+            Core.EnsureComplete(9534);
+        }
 
         // Overclocked and Timed (9535)
-        Story.KillQuest(9535, "templesiege", new[] { "Overdriven Paladin", "Light Elemental" });
+        if (!Story.QuestProgression(9535))
+        {
+            Core.EnsureAccept(9535);
+            Core.HuntMonster("templesiege", "Overdriven Paladin", "Paladin Runes", 6);
+            Core.HuntMonster("templesiege", "Light Elemental", "Light Gem", 6);
+            Core.EnsureComplete(9535);
+        }
 
         // Jewel Bug (9536)
         if (!Core.isCompletedBefore(9536))

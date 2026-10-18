@@ -53,8 +53,13 @@ public class QueenBattle
         Story.KillQuest(8352, "queenbattle", "Chaos Sp-eye");
 
         //Portal of Chaos 8353
-        Story.MapItemQuest(8353, "queenbattle", 9204);
-        Story.KillQuest(8353, "queenbattle", "Chaos Ghost");
+        if (!Story.QuestProgression(8353))
+        {
+            Core.EnsureAccept(8353);
+            Core.GetMapItem(9204, 1, "queenbattle");
+            Core.HuntMonster("queenbattle", "Chaos Ghost", "Weak Chaotic Energy", 12);
+            Core.EnsureComplete(8353);
+        }
 
         //Slain Children 8354
         if (!Story.QuestProgression(8354))

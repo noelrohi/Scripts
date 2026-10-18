@@ -16401,7 +16401,7 @@ case ""Grain Ration"":
                     Core.RegisterQuests(8264);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
-                        Core.HuntMonster(""safiria"", ""Blood Maggot"", ""Bundle of Rice"", 3, log: false);
+                        Core.KillMonster(""castletunnels"", ""r5"", ""Left"", ""Blood Maggot"", ""Bundle of Rice"", 3, log: false);
                         Bot.Wait.ForPickup(req.Name);
                     }
                     Core.CancelRegisteredQuests();

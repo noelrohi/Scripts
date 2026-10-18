@@ -41,8 +41,13 @@ public class Noobshire
         Story.KillQuest(32, "noobshire", "Kittarian Mouse Eater");
 
         //Rats in the Cradle 33
-        Story.MapItemQuest(33, "noobshire", 11, 6);
-        Story.KillQuest(33, "noobshire", "Horc Noob");
+        if (!Story.QuestProgression(33))
+        {
+            Core.EnsureAccept(33);
+            Core.GetMapItem(11, 6, "noobshire");
+            Core.HuntMonster("noobshire", "Horc Noob", "Horc Cheese", 1);
+            Core.EnsureComplete(33);
+        }
 
         //Short in Spoons 35
         Story.KillQuest(35, "noobshire", "Kittarian Mouse Eater");
@@ -57,8 +62,13 @@ public class Noobshire
         Story.KillQuest(38, "noobshire", "Horc Trainer");
 
         //Missing King 39
-        Story.MapItemQuest(39, "noobshire", 12);
-        Story.KillQuest(39, "noobshire", "Horc Noob");
+        if (!Story.QuestProgression(39))
+        {
+            Core.EnsureAccept(39);
+            Core.GetMapItem(12, 1, "noobshire");
+            Core.HuntMonster("noobshire", "Horc Noob", "Rat King Clue", 1);
+            Core.EnsureComplete(39);
+        }
 
         // [[[Tutor]]]
 

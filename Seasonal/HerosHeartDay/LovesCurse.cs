@@ -38,16 +38,14 @@ public class LovesCurse
         Story.ChainQuest(1665);
 
         //Find the Rest of J6 (1656)
-        Story.KillQuest(
-            1656,
-            "curseshore",
-            new[]
-            {
-                "Escaped Ghostly Zardman",
-                "Escaped Ghostly Zardman",
-                "Escaped Ghostly Zardman",
-            }
-        );
+        if (!Story.QuestProgression(1656))
+        {
+            Core.EnsureAccept(1656);
+            Core.HuntMonster("curseshore", "Escaped Ghostly Zardman", "Cyborg Arm", 2);
+            Core.HuntMonster("curseshore", "Escaped Ghostly Zardman", "Cyborg Leg", 2);
+            Core.HuntMonster("curseshore", "Escaped Ghostly Zardman", "Cyborg Chassis", 1);
+            Core.EnsureComplete(1656);
+        }
 
         //Mer'Angel Hunting (1657)
         Story.MapItemQuest(1657, "curseshore", 865);
@@ -71,11 +69,13 @@ public class LovesCurse
         Story.ChainQuest(1668);
 
         //Find the Source of the Curse (1661)
-        Story.KillQuest(
-            1661,
-            "cursered",
-            new[] { "Cyclops Warlord Ghost", "Cyclops Warlord Ghost" }
-        );
+        if (!Story.QuestProgression(1661))
+        {
+            Core.EnsureAccept(1661);
+            Core.HuntMonster("cursered", "Cyclops Warlord Ghost", "Key of True Love", 1);
+            Core.HuntMonster("cursered", "Cyclops Warlord Ghost", "Key of Eternity", 1);
+            Core.EnsureComplete(1661);
+        }
 
         //Defeat the CurseMaker (1662)
         Story.KillQuest(1662, "mercutio", "*");

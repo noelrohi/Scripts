@@ -35,31 +35,54 @@ public class CelestialPast
         Story.PreLoad(this);
 
         //Wayfarer Potion 7674
-        Story.KillQuest(
-            7674,
-            "CelestialPast",
-            new[] { "Blessed Deer", "Blessed Bear", "Blessed Centaur", "Blessed Hydra" }
-        );
+        if (!Story.QuestProgression(7674))
+        {
+            Core.EnsureAccept(7674);
+            Core.HuntMonster("celestialpast", "Blessed Deer", "Leaf of Visibility", 1);
+            Core.HuntMonster("celestialpast", "Blessed Bear", "Root of Clarity", 1);
+            Core.HuntMonster("celestialpast", "Blessed Centaur", "Spice of Direction", 1);
+            Core.HuntMonster("celestialpast", "Blessed Hydra", "Broth", 1);
+            Core.EnsureComplete(7674);
+        }
 
         //The Path Revealed 7675
-        Story.MapItemQuest(7675, "CelestialPast", 7592);
-        Story.KillQuest(7675, "CelestialPast", "Blessed Deer");
+        if (!Story.QuestProgression(7675))
+        {
+            Core.EnsureAccept(7675);
+            Core.GetMapItem(7592, 1, "CelestialPast");
+            Core.HuntMonster("celestialpast", "Blessed Deer", "Beasts Cleared", 5);
+            Core.EnsureComplete(7675);
+        }
 
         //Well of Knowledge 7676
-        Story.MapItemQuest(7676, "CelestialPast", 7593);
-        Story.KillQuest(7676, "CelestialPast", "Blessed Deer");
+        if (!Story.QuestProgression(7676))
+        {
+            Core.EnsureAccept(7676);
+            Core.GetMapItem(7593, 1, "CelestialPast");
+            Core.HuntMonster("celestialpast", "Blessed Deer", "Beasts Defeated", 7);
+            Core.EnsureComplete(7676);
+        }
 
         //Gather the Artifacts 7677
-        Story.MapItemQuest(7677, "CelestialPast", 7594);
-        Story.KillQuest(
-            7677,
-            "CelestialPast",
-            new[] { "Blessed Deer", "Blessed Centaur", "Blessed Hydra", "Blessed Bear" }
-        );
+        if (!Story.QuestProgression(7677))
+        {
+            Core.EnsureAccept(7677);
+            Core.GetMapItem(7594, 1, "CelestialPast");
+            Core.HuntMonster("celestialpast", "Blessed Deer", "Horn of Blessed Gold", 1);
+            Core.HuntMonster("celestialpast", "Blessed Centaur", "Tail of Blessed Centaur", 1);
+            Core.HuntMonster("celestialpast", "Blessed Hydra", "Blessed Green Water", 1);
+            Core.HuntMonster("celestialpast", "Blessed Bear", "Blessed Bear Claw", 1);
+            Core.EnsureComplete(7677);
+        }
 
         //Oh Well, Oh Well Guardian 7678
-        Story.MapItemQuest(7678, "CelestialPast", 7595);
-        Story.KillQuest(7678, "CelestialPast", "Well Guardian");
+        if (!Story.QuestProgression(7678))
+        {
+            Core.EnsureAccept(7678);
+            Core.GetMapItem(7595, 1, "CelestialPast");
+            Core.HuntMonster("celestialpast", "Well Guardian", "Well Guardian Defeated", 1);
+            Core.EnsureComplete(7678);
+        }
 
         //Infernal Commands 7679
         Story.KillQuest(7679, "CelestialPast", "Infernal Soldier");

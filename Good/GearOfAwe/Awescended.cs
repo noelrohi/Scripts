@@ -199,11 +199,15 @@ public class Awescended
             }
 
             //Which Came First, the Dragon or the Dragonoid?
-            Story.KillQuest(
-                8039,
-                "crashsite",
-                new[] { "Barrier Bot", "Dwakel Warrior", "Mithril Man", "ProtoSartorium" }
-            );
+            if (!Story.QuestProgression(8039))
+            {
+                Core.EnsureAccept(8039);
+                Core.HuntMonster("crashsite", "Barrier Bot", "Dwakel Shield Generator", 2);
+                Core.HuntMonster("crashsite", "Dwakel Warrior", "Dwakel Weapon", 10);
+                Core.HuntMonster("crashsite", "Mithril Man", "Mithril Man's Power Armor", 1);
+                Core.HuntMonster("crashsite", "ProtoSartorium", "Protosartorium's Power Armor", 1);
+                Core.EnsureComplete(8039);
+            }
 
             //Artifact Hunting
             if (!Story.QuestProgression(8040))

@@ -41,8 +41,13 @@ public class Manor
         Story.MapItemQuest(1059, "Manor", 403, 10);
 
         //Stop! Potion Time. 1060
-        Story.MapItemQuest(1060, "Manor", 402);
-        Story.KillQuest(1060, "Manor", "Frigid Frogdrake");
+        if (!Story.QuestProgression(1060))
+        {
+            Core.EnsureAccept(1060);
+            Core.GetMapItem(402, 1, "Manor");
+            Core.HuntMonster("manor", "Frigid Frogdrake", "Frigid Frogdrake Horn", 7);
+            Core.EnsureComplete(1060);
+        }
 
         //Inscrutable Motivation 1061
         Story.MapItemQuest(1061, "Manor", 404, 10);

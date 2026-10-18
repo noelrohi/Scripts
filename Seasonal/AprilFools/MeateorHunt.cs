@@ -68,7 +68,13 @@ public class MeateorHunt
         }
 
         //Comet-ted to Memory
-        Story.KillQuest(8617, "Comet", new[] { "Vaderix", "Vaderix" });
+        if (!Story.QuestProgression(8617))
+        {
+            Core.EnsureAccept(8617);
+            Core.HuntMonster("comet", "Vaderix", "Slimy Freggments", 5);
+            Core.HuntMonster("comet", "Vaderix", "Even Slimier Freggment", 1);
+            Core.EnsureComplete(8617);
+        }
 
         //Right Under Your Nose
         Story.KillQuest(8618, "BattleFowl", "ChickenCow");
@@ -84,13 +90,32 @@ public class MeateorHunt
             Core.EnsureComplete(8619);
         }
         //Ashville Hot
-        Story.KillQuest(8620, "AshfallCamp", new[] { "Blackrawk", "Smoldur", "Infernus" });
+        if (!Story.QuestProgression(8620))
+        {
+            Core.EnsureAccept(8620);
+            Core.HuntMonster("ashfallcamp", "Blackrawk", "Black Rocky Freggment", 1);
+            Core.HuntMonster("ashfallcamp", "Smoldur", "Smoldering Freggment", 1);
+            Core.HuntMonster("ashfallcamp", "Infernus", "Infernal Freggment", 1);
+            Core.EnsureComplete(8620);
+        }
 
         //Holy (Chicken)Cow!
-        Story.KillQuest(8621, "CrashRuins", new[] { "Unlucky Explorer", "Cluckmoo Idol" });
+        if (!Story.QuestProgression(8621))
+        {
+            Core.EnsureAccept(8621);
+            Core.HuntMonster("crashruins", "Unlucky Explorer", "Ruined Freggment", 8);
+            Core.HuntMonster("crashruins", "CluckMoo Idol", "Idolized Freggment", 1);
+            Core.EnsureComplete(8621);
+        }
 
         //Chilling Tales of Chicken Cows
-        Story.KillQuest(8622, "northlands", new[] { "Ice Symbiote", "Ice Symbiote" });
+        if (!Story.QuestProgression(8622))
+        {
+            Core.EnsureAccept(8622);
+            Core.HuntMonster("northlands", "Ice Symbiote", "Frosty Freggment", 15);
+            Core.HuntMonster("northlands", "Ice Symbiote", "25 Below Freggment", 1);
+            Core.EnsureComplete(8622);
+        }
 
         //Cowissa
         Bot.Quests.UpdateQuest(8000);
@@ -98,26 +123,45 @@ public class MeateorHunt
         Story.KillQuest(8623, "astravia", "The Moon");
 
         //Collection Dejection
-        Story.KillQuest(8624, "Future", new[] { "The Collector", "The Collector" });
+        if (!Story.QuestProgression(8624))
+        {
+            Core.EnsureAccept(8624);
+            Core.HuntMonster("future", "The Collector", "Collected Freggment", 10);
+            Core.HuntMonster("future", "The Collector", "Private Collection Freggment", 3);
+            Core.EnsureComplete(8624);
+        }
 
         //Poached Eggs
-        Story.KillQuest(
-            8625,
-            "byrodax",
-            new[] { "Byro-Dax Monstrosity", "Space Goop", "Mutated Critter" }
-        );
+        if (!Story.QuestProgression(8625))
+        {
+            Core.EnsureAccept(8625);
+            Core.HuntMonster("byrodax", "Byro-Dax Monstrosity", "Poached Freggment", 1);
+            Core.HuntMonster("byrodax", "Space Goop", "Goopy Freggment", 6);
+            Core.HuntMonster("byrodax", "Mutated Critter", "Mutated Freggment", 12);
+            Core.EnsureComplete(8625);
+        }
 
         //Dumpster Diving
-        Story.KillQuest(8626, "Junkhoard", new[] { "Magpie Junk Heap", "Junk Golem", "Magpie" });
+        if (!Story.QuestProgression(8626))
+        {
+            Core.EnsureAccept(8626);
+            Core.HuntMonster("junkhoard", "Magpie Junk Heap", "Heaping Freggment", 1);
+            Core.HuntMonster("junkhoard", "Junk Golem", "Trashy Freggment", 10);
+            Core.HuntMonster("junkhoard", "Magpie", "Stolen Freggment", 8);
+            Core.EnsureComplete(8626);
+        }
 
         //A Dreadful Dinner
         Story.KillQuest(8627, "Dreadspace", "Troblor");
 
         //Succeed or Fry Trying
-        Story.KillQuest(
-            8628,
-            "thirdspell",
-            new[] { "Great Solar Elemental", "Sun Flare", "Solar Incarnation" }
-        );
+        if (!Story.QuestProgression(8628))
+        {
+            Core.EnsureAccept(8628);
+            Core.HuntMonster("thirdspell", "Great Solar Elemental", "Fried Freggment", 3);
+            Core.HuntMonster("thirdspell", "Sun Flare", "Boiled Freggment", 12);
+            Core.HuntMonster("thirdspell", "Solar Incarnation ", "Sun-Cooked Freggment", 1);
+            Core.EnsureComplete(8628);
+        }
     }
 }

@@ -70,8 +70,13 @@ public class OrbHunt
         Story.KillQuest(8311, "queenreign", "Plaguemoss");
 
         // 8312|Infected With The Cure
-        Story.MapItemQuest(8312, "queenreign", 9122, 4);
-        Story.KillQuest(8312, "queenreign", "Plaguemoss");
+        if (!Story.QuestProgression(8312))
+        {
+            Core.EnsureAccept(8312);
+            Core.GetMapItem(9122, 4, "queenreign");
+            Core.HuntMonster("queenreign", "Plaguemoss", "Cure Tested", 4);
+            Core.EnsureComplete(8312);
+        }
 
         // 8313|Hurtful Healing
         Story.KillQuest(8313, "queenreign", "Plaguemoss");
@@ -89,8 +94,13 @@ public class OrbHunt
         Story.KillQuest(8317, "queenreign", "Calcified Wyrm");
 
         // 8318|Lair Located
-        Story.MapItemQuest(8318, "queenreign", 9124);
-        Story.KillQuest(8318, "queenreign", "Calcified Remains");
+        if (!Story.QuestProgression(8318))
+        {
+            Core.EnsureAccept(8318);
+            Core.GetMapItem(9124, 1, "queenreign");
+            Core.HuntMonster("queenreign", "Calcified Remains", "Calcified Remains Defeated", 6);
+            Core.EnsureComplete(8318);
+        }
 
         // 8319|The Earth Orb
         Story.KillQuest(8319, "queenreign", "Grou'luu");
@@ -114,7 +124,15 @@ public class OrbHunt
         Story.KillQuest(8325, "queenreign", "Sa-Laatan");
 
         // 8326|Water. Earth. Energy? Air.
-        Story.KillQuest(8326, "queenreign", new[] { "Sa-Laatan", "Grou'luu", "Extriki", "Jaaku" });
+        if (!Story.QuestProgression(8326))
+        {
+            Core.EnsureAccept(8326);
+            Core.HuntMonster("queenreign", "Sa-Laatan", "Sa-Lataan Defeated", 1);
+            Core.HuntMonster("queenreign", "Grou'luu", "Grou'luu Defeated", 1);
+            Core.HuntMonster("queenreign", "Extriki", "Extriki Defeated", 1);
+            Core.HuntMonster("queenreign", "Jaaku", "Jaaku Defeated", 1);
+            Core.EnsureComplete(8326);
+        }
 
         // 8328|Plant Stalk-ers
         Story.KillQuest(8328, "orbhunt", "Seed Stalker");
@@ -142,8 +160,13 @@ public class OrbHunt
         Story.MapItemQuest(8335, "orbhunt", 9158, 4);
 
         // 8336|Gone With the Djinn
-        Story.MapItemQuest(8336, "orbhunt", 9159);
-        Story.KillQuest(8336, "orbhunt", "Lotus Spider");
+        if (!Story.QuestProgression(8336))
+        {
+            Core.EnsureAccept(8336);
+            Core.GetMapItem(9159, 1, "orbhunt");
+            Core.HuntMonster("orbhunt", "Lotus Spider", "Djinn Energy Restored", 10);
+            Core.EnsureComplete(8336);
+        }
 
         // 8337|The Light Orb
         Story.KillQuest(8337, "orbhunt", "Sek Duat I");
@@ -155,16 +178,26 @@ public class OrbHunt
         Story.KillQuest(8339, "orbhunt", "Nax Beast");
 
         // 8340|Children of the Night
-        Story.MapItemQuest(8340, "orbhunt", 9160, 4);
-        Story.KillQuest(8340, "orbhunt", "Hive");
+        if (!Story.QuestProgression(8340))
+        {
+            Core.EnsureAccept(8340);
+            Core.GetMapItem(9160, 4, "orbhunt");
+            Core.HuntMonster("orbhunt", "Hive", "Battles Overturned", 8);
+            Core.EnsureComplete(8340);
+        }
 
         // 8341|We've Woken The Hive
         Story.KillQuest(8341, "orbhunt", "Hive");
 
         // 8342|Ritual Disruption
-        Story.MapItemQuest(8342, "orbhunt", 9161, 4);
-        Story.MapItemQuest(8342, "orbhunt", 9162);
-        Story.KillQuest(8342, "orbhunt", "Hive");
+        if (!Story.QuestProgression(8342))
+        {
+            Core.EnsureAccept(8342);
+            Core.GetMapItem(9161, 4, "orbhunt");
+            Core.GetMapItem(9162, 1, "orbhunt");
+            Core.HuntMonster("orbhunt", "Hive", "Minion Defeated", 10);
+            Core.EnsureComplete(8342);
+        }
 
         // 8343|The Darkness Orb
         Story.KillQuest(8343, "orbhunt", "Kolyaban");
@@ -179,16 +212,28 @@ public class OrbHunt
         Story.KillQuest(8346, "orbhunt", "Animus of Ice");
 
         // 8347|Bones For Stones
-        Story.KillQuest(
-            8347,
-            "orbhunt",
-            new[] { "Lotus Spider", "Hive", "Ice Infernal", "Seed Stalker" }
-        );
+        if (!Story.QuestProgression(8347))
+        {
+            Core.EnsureAccept(8347);
+            Core.HuntMonster("orbhunt", "Lotus Spider", "Bones of Light", 4);
+            Core.HuntMonster("orbhunt", "Hive", "Bones of Monster", 4);
+            Core.HuntMonster("orbhunt", "Ice Infernal", "Bones of Ice", 4);
+            Core.HuntMonster("orbhunt", "Seed Stalker", "Bones of Mana", 4);
+            Core.EnsureComplete(8347);
+        }
 
         // 8348|The Ice Orb
         Story.KillQuest(8348, "orbhunt", "Quetzal");
 
         // 8349|A Hymn of Ice and Fire, and Light and Dark
-        Story.KillQuest(8349, "orbhunt", new[] { "Chamat", "Horothotep", "Kolyaban", "Quetzal" });
+        if (!Story.QuestProgression(8349))
+        {
+            Core.EnsureAccept(8349);
+            Core.HuntMonster("orbhunt", "Chamat", "Chamat Defeated", 1);
+            Core.HuntMonster("orbhunt", "Horothotep", "Horothotep Defeated", 1);
+            Core.HuntMonster("orbhunt", "Kolyaban", "Kolyaban Defeated", 1);
+            Core.HuntMonster("orbhunt", "Quetzal", "Quetzal Defeated", 1);
+            Core.EnsureComplete(8349);
+        }
     }
 }

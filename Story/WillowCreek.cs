@@ -39,10 +39,22 @@ public class WillowCreek
         Story.PreLoad(this);
 
         // Willow Creek 27
-        Story.KillQuest(27, "forest", new[] { "Zardman Grunt", "Boss Zardman" });
+        if (!Story.QuestProgression(27))
+        {
+            Core.EnsureAccept(27);
+            Core.HuntMonster("forest", "Zardman Grunt", "Hideous Zard Tail", 5);
+            Core.HuntMonster("forest", "Boss Zardman", "Chieftain's Head", 1);
+            Core.EnsureComplete(27);
+        }
 
         // Can you do it? 59
-        Story.KillQuest(59, "willowcreek", new[] { "Mosquito", "Frogdrake" });
+        if (!Story.QuestProgression(59))
+        {
+            Core.EnsureAccept(59);
+            Core.HuntMonster("willowcreek", "Mosquito", "Mosquito Wing", 5);
+            Core.HuntMonster("willowcreek", "Frogdrake", "Frogdrake's Feet", 5);
+            Core.EnsureComplete(59);
+        }
 
         // Backyard Zards 22
         Story.KillQuest(22, "willowcreek", "Frogzard");

@@ -42,8 +42,13 @@ public class DarkDungeon
         Story.KillQuest(3540, "darkdungeon", "Dungeon Paladin");
 
         //Shining a Light 3541
-        Story.MapItemQuest(3541, "darkdungeon", 2674, 4);
-        Story.KillQuest(3541, "darkdungeon", "Shadow Imp");
+        if (!Story.QuestProgression(3541))
+        {
+            Core.EnsureAccept(3541);
+            Core.GetMapItem(2674, 4, "darkdungeon");
+            Core.HuntMonster("darkdungeon", "Shadow Imp", "Shadow Dispelled", 10);
+            Core.EnsureComplete(3541);
+        }
 
         //Break the Doors Down 3542
         Story.MapItemQuest(3542, "darkdungeon", 2679, 5);

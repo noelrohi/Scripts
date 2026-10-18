@@ -43,8 +43,13 @@ public class YokaiRiver
         Story.PreLoad(this);
 
         // Gather the Spirits (6443)
-        Story.MapItemQuest(6443, "yokaistarriver", 5949, 5);
-        Story.KillQuest(6443, "yokaistarriver", "Ghostly Chickencow");
+        if (!Story.QuestProgression(6443))
+        {
+            Core.EnsureAccept(6443);
+            Core.GetMapItem(5949, 5, "yokaistarriver");
+            Core.HuntMonster("yokaistarriver", "Ghostly Chickencow", "Spirit Captured", 10);
+            Core.EnsureComplete(6443);
+        }
 
         // Spiders and Dreamsilk (6444)
         Story.KillQuest(6444, "yokaistarriver", "Spirit Spider");

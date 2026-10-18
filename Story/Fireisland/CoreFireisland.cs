@@ -50,15 +50,35 @@ public class CoreFireIsland
         Story.PreLoad(this);
 
         //Heat of Battle 4054
-        Story.KillQuest(4054, "Embersea", new[] { "Flame Soldier", "Storm Scout" });
+        if (!Story.QuestProgression(4054))
+        {
+            Core.EnsureAccept(4054);
+            Core.HuntMonster("embersea", "Flame Soldier", "Flame Soldier slain", 3);
+            Core.HuntMonster("embersea", "Storm Scout", "Storm Scout slain", 3);
+            Core.EnsureComplete(4054);
+        }
 
         //Light the Flame 4055
-        Story.MapItemQuest(4055, "Embersea", 3153, 22);
-        Story.KillQuest(4055, "Embersea", "Living Lava");
+        if (!Story.QuestProgression(4055))
+        {
+            Core.EnsureAccept(4055);
+            Core.GetMapItem(3153, 22, "Embersea");
+            Core.HuntMonster("embersea", "Living Lava", "Living Lava slain", 4);
+            Core.EnsureComplete(4055);
+        }
 
         //Kill It With Fire [Member] 4056
         if (Core.IsMember)
-            Story.KillQuest(4056, "Embersea", new[] { "Coal Creeper", "Pyradon", "Fyresyn" });
+        {
+            if (!Story.QuestProgression(4056))
+            {
+                Core.EnsureAccept(4056);
+                Core.HuntMonster("embersea", "Coal Creeper", "Coal Creeper slain", 5);
+                Core.HuntMonster("embersea", "Pyradon", "Pyradon slain", 2);
+                Core.HuntMonster("embersea", "Fyresyn", "Fyresyn slain", 1);
+                Core.EnsureComplete(4056);
+            }
+        }
     }
 
     public void Pyrewatch()
@@ -71,7 +91,14 @@ public class CoreFireIsland
         Story.PreLoad(this);
 
         //Flee the Flames
-        Story.KillQuest(4070, "pyrewatch", new[] { "Lavazard", "Fyreborn Tiger", "Caustocrush" });
+        if (!Story.QuestProgression(4070))
+        {
+            Core.EnsureAccept(4070);
+            Core.HuntMonster("pyrewatch", "Lavazard", "Lavazard Slain", 3);
+            Core.HuntMonster("pyrewatch", "Fyreborn Tiger", "Tiger Slain", 5);
+            Core.HuntMonster("pyrewatch", "Caustocrush", "Caustocrush Slain", 3);
+            Core.EnsureComplete(4070);
+        }
 
         //Taste of their own Medicine
         Story.KillQuest(4071, "pyrewatch", "Fire Pikeman");
@@ -80,7 +107,13 @@ public class CoreFireIsland
         Story.MapItemQuest(4072, "pyrewatch", 3159, 12);
 
         //Push on to Pyrewatch
-        Story.KillQuest(4073, "pyrewatch", new[] { "Firestorm Knight", "Firestorm Knight" });
+        if (!Story.QuestProgression(4073))
+        {
+            Core.EnsureAccept(4073);
+            Core.HuntMonster("pyrewatch", "Firestorm Knight", "Battle Plans", 1);
+            Core.HuntMonster("pyrewatch", "Firestorm Knight", "Peak Defended", 10);
+            Core.EnsureComplete(4073);
+        }
 
         //Friends of Pyrewatch Peak
         if (!Story.QuestProgression(4074))
@@ -94,8 +127,13 @@ public class CoreFireIsland
         }
 
         //A Salve to Soothe
-        Story.MapItemQuest(4075, "pyrewatch", 3160, 5);
-        Story.KillQuest(4075, "pyrewatch", "Lavazard");
+        if (!Story.QuestProgression(4075))
+        {
+            Core.EnsureAccept(4075);
+            Core.GetMapItem(3160, 5, "pyrewatch");
+            Core.HuntMonster("pyrewatch", "Lavazard", "Glowing Embers", 5);
+            Core.EnsureComplete(4075);
+        }
 
         //Protect the Plague Sufferers 4076
         if (!Story.QuestProgression(4076))
@@ -178,19 +216,28 @@ public class CoreFireIsland
         }
 
         //Rumors and Smoke
-        Story.MapItemQuest(4131, "feverfew", 3245);
-        Story.KillQuest(
-            4131,
-            "feverfew",
-            new[] { "Firestorm Knight", "Firestorm Major", "Firestorm Knight", "Firestorm Major" }
-        );
+        if (!Story.QuestProgression(4131))
+        {
+            Core.EnsureAccept(4131);
+            Core.GetMapItem(3245, 1, "feverfew");
+            Core.HuntMonster("feverfew", "Firestorm Knight", "Intent Rumor", 3);
+            Core.HuntMonster("feverfew", "Firestorm Major", "Location Rumor", 2);
+            Core.HuntMonster("feverfew", "Firestorm Knight", "Fate Rumor", 2);
+            Core.HuntMonster("feverfew", "Firestorm Major", "Identity Rumor", 1);
+            Core.EnsureComplete(4131);
+        }
 
         //Dam the Flood
         Story.MapItemQuest(4132, "feverfew", 3244, 5);
 
         //Salvage Mission
-        Story.MapItemQuest(4133, "feverfew", 3243, 5);
-        Story.KillQuest(4133, "feverfew", "Twisted Undine");
+        if (!Story.QuestProgression(4133))
+        {
+            Core.EnsureAccept(4133);
+            Core.GetMapItem(3243, 5, "feverfew");
+            Core.HuntMonster("feverfew", "Twisted Undine", "Locatrix Animus Found", 1);
+            Core.EnsureComplete(4133);
+        }
 
         //Fear the Fog
         if (!Story.QuestProgression(4134))
@@ -234,18 +281,24 @@ public class CoreFireIsland
         }
 
         //The Power to Heal
-        Story.KillQuest(
-            4139,
-            "feverfew",
-            new[] { "Feverfew Vase", "Twisted Undine", "Locked Chest" }
-        );
+        if (!Story.QuestProgression(4139))
+        {
+            Core.EnsureAccept(4139);
+            Core.HuntMonster("feverfew", "Feverfew Vase", "Saltwater Powder", 3);
+            Core.HuntMonster("feverfew", "Twisted Undine", "Undine Effluvia", 2);
+            Core.HuntMonster("feverfew", "Locked Chest", "Herbalist Manual", 1);
+            Core.EnsureComplete(4139);
+        }
 
         //The Deadsea Caverns
-        Story.KillQuest(
-            4140,
-            "feverfew",
-            new[] { "Coral Creeper", "Twisted Undine", "Salamander" }
-        );
+        if (!Story.QuestProgression(4140))
+        {
+            Core.EnsureAccept(4140);
+            Core.HuntMonster("feverfew", "Coral Creeper", "Coral Creeper Slain", 3);
+            Core.HuntMonster("feverfew", "Twisted Undine", "Twisted Undine Slain", 3);
+            Core.HuntMonster("feverfew", "Salamander", "Salamander Slain", 3);
+            Core.EnsureComplete(4140);
+        }
 
         //Open the Floodgates
         Story.MapItemQuest(4141, "feverfew", 3241);
@@ -264,20 +317,36 @@ public class CoreFireIsland
         Story.PreLoad(this);
 
         //Stonecold Defense
-        Story.KillQuest(4201, "phoenixrise", new[] { "Lava Troll", "Infernal Goblin" });
+        if (!Story.QuestProgression(4201))
+        {
+            Core.EnsureAccept(4201);
+            Core.HuntMonster("phoenixrise", "Lava Troll", "Lava Tonic", 5);
+            Core.HuntMonster("phoenixrise", "Infernal Goblin ", "Leather Wing", 3);
+            Core.EnsureComplete(4201);
+        }
 
         //Preying for a Good Offense
-        Story.KillQuest(4202, "phoenixrise", new[] { "Infernal Goblin", "Lava Troll", "Gargrowl" });
+        if (!Story.QuestProgression(4202))
+        {
+            Core.EnsureAccept(4202);
+            Core.HuntMonster("phoenixrise", "Infernal Goblin ", "Infernal Goblin Slain", 3);
+            Core.HuntMonster("phoenixrise", "Lava Troll", "Lava Troll Slain", 3);
+            Core.HuntMonster("phoenixrise", "Gargrowl", "Gargrowl Slain", 3);
+            Core.EnsureComplete(4202);
+        }
 
         //Red Alert
         Story.MapItemQuest(4203, "phoenixrise", 3283, 4);
 
         //Disguise Fur a Good Cause
-        Story.KillQuest(
-            4204,
-            "phoenixrise",
-            new[] { "Lava Troll", "Firestorm Tiger", "Infernal Goblin" }
-        );
+        if (!Story.QuestProgression(4204))
+        {
+            Core.EnsureAccept(4204);
+            Core.HuntMonster("phoenixrise", "Lava Troll", "MeltRite Glue", 1);
+            Core.HuntMonster("phoenixrise", "Firestorm Tiger", "Whole Tigerskin", 2);
+            Core.HuntMonster("phoenixrise", "Infernal Goblin ", "Binding Leather", 3);
+            Core.EnsureComplete(4204);
+        }
 
         //Hunt for the Stolen
         Story.MapItemQuest(4205, "phoenixrise", 3285);
@@ -289,8 +358,13 @@ public class CoreFireIsland
         Story.KillQuest(4207, "phoenixrise", "Pyrric Ursus");
 
         //Rune Chances of a Backstab
-        Story.MapItemQuest(4208, "phoenixrise", 3284, 7);
-        Story.KillQuest(4208, "phoenixrise", "Infernal Goblin");
+        if (!Story.QuestProgression(4208))
+        {
+            Core.EnsureAccept(4208);
+            Core.GetMapItem(3284, 7, "phoenixrise");
+            Core.HuntMonster("phoenixrise", "Infernal Goblin ", "Infernal Goblin Slain", 6);
+            Core.EnsureComplete(4208);
+        }
 
         //Clear out the Caverns
         if (!Story.QuestProgression(4209))

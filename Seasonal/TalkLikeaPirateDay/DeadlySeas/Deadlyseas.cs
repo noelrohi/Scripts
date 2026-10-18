@@ -58,8 +58,13 @@ public class Deadlyseas
         Story.MapItemQuest(10860, "deadlyseas", [16189, 16190, 16191]);
 
         // 10861 | A Bad Eeling
-        Story.MapItemQuest(10861, "deadlyseas", 16192);
-        Story.KillQuest(10861, "deadlyseas", UseableMonsters[0]); // Eel Skin x12
+        if (!Story.QuestProgression(10861))
+        {
+            Core.EnsureAccept(10861);
+            Core.GetMapItem(16192, 1, "deadlyseas");
+            Core.HuntMonster("deadlyseas", "Isthmian Eel", "Eel Skin", 12);
+            Core.EnsureComplete(10861);
+        }
 
         // 10862 | Manatees and Mermaids
         if (!Story.QuestProgression(10862))

@@ -49,8 +49,13 @@ public class Isthmiacastle
         Story.KillQuest(10870, "isthmiacastle", UseableMonsters[1]); // Isthmian Sea Biscuit x3
 
         // 10871 | Rogue Carp
-        Story.MapItemQuest(10871, "isthmiacastle", 16209);
-        Story.KillQuest(10871, "isthmiacastle", UseableMonsters[0]); // Eel Stomach Stone x6
+        if (!Story.QuestProgression(10871))
+        {
+            Core.EnsureAccept(10871);
+            Core.GetMapItem(16209, 1, "isthmiacastle");
+            Core.HuntMonster("isthmiacastle", "Isthmian Eel", "Eel Stomach Stone", 6);
+            Core.EnsureComplete(10871);
+        }
 
         // 10872 | Carpe Die
         Story.KillQuest(
@@ -64,16 +69,26 @@ public class Isthmiacastle
         );
 
         // 10873 | Nurse Shark
-        Story.MapItemQuest(10873, "isthmiacastle", 16210);
-        Story.KillQuest(10873, "isthmiacastle", UseableMonsters[4]); // Shark Scythe x12
+        if (!Story.QuestProgression(10873))
+        {
+            Core.EnsureAccept(10873);
+            Core.GetMapItem(16210, 1, "isthmiacastle");
+            Core.HuntMonster("isthmiacastle", "Reaper Shark", "Shark Scythe", 12);
+            Core.EnsureComplete(10873);
+        }
 
         // 10874 | Fish are Friends
         Story.MapItemQuest(10874, "isthmiacastle", 16211);
 		Story.MapItemQuest(10874, "isthmiacastle", 16214, 10);
 
         // 10875 | Dead Management
-        Story.MapItemQuest(10875, "isthmiacastle", 16212);
-        Story.KillQuest(10875, "isthmiacastle", UseableMonsters[0]); // Guard's Sand Dollar x2
+        if (!Story.QuestProgression(10875))
+        {
+            Core.EnsureAccept(10875);
+            Core.GetMapItem(16212, 1, "isthmiacastle");
+            Core.HuntMonster("isthmiacastle", "Isthmian Eel", "Guard's Sand Dollar", 2);
+            Core.EnsureComplete(10875);
+        }
 
         // 10876 | Dream of the Lost
         Story.MapItemQuest(10876, "isthmiacastle", 16213);

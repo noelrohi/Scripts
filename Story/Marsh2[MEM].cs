@@ -45,13 +45,31 @@ public class Marsh2
         Story.KillQuest(1475, "marsh2", "Undead Berserker");
 
         //The Eyes (and Teeth) Have It 1476
-        Story.KillQuest(1476, "marsh2", new[] { "Ghoul", "Marsh Lurker" });
+        if (!Story.QuestProgression(1476))
+        {
+            Core.EnsureAccept(1476);
+            Core.HuntMonster("marsh2", "Ghoul", "Ghoul Tooth", 10);
+            Core.HuntMonster("marsh2", "Marsh Lurker", "Marsh Lurker's Eye", 12);
+            Core.EnsureComplete(1476);
+        }
 
         //Halfway There 1477
-        Story.KillQuest(1477, "marsh2", new[] { "Lich", "Lesser Shadow Serpent" });
+        if (!Story.QuestProgression(1477))
+        {
+            Core.EnsureAccept(1477);
+            Core.HuntMonster("marsh2", "Lich", "Mossy Bone", 15);
+            Core.HuntMonster("marsh2", "Lesser Shadow Serpent", "Shadow Serpent Venom", 1);
+            Core.EnsureComplete(1477);
+        }
 
         //Charge It 1478
-        Story.KillQuest(1478, "marsh2", new[] { "Thrax Ironhide", "Lesser Groglurk" });
+        if (!Story.QuestProgression(1478))
+        {
+            Core.EnsureAccept(1478);
+            Core.HuntMonster("marsh2", "Thrax Ironhide", "Positive Charge", 1);
+            Core.HuntMonster("marsh2", "Lesser Groglurk", "Negative Charge", 1);
+            Core.EnsureComplete(1478);
+        }
 
         //What Was That?! 1479
         Story.MapItemQuest(1479, "marsh2", 723);

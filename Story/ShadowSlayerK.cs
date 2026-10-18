@@ -273,9 +273,14 @@ public class ShadowSlayerK
         // 9842 | Door Stuck
         if (!Story.QuestProgression(9842))
         {
-            Story.MapItemQuest(9842, "badmoon", 13448, 3);
-            Story.MapItemQuest(9842, "badmoon", 13449);
-            Story.KillQuest(9842, "badmoon", UseableMonsters[1]);
+            if (!Story.QuestProgression(9842))
+            {
+                Core.EnsureAccept(9842);
+                Core.GetMapItem(13448, 3, "badmoon");
+                Core.GetMapItem(13449, 1, "badmoon");
+                Core.HuntMonster("badmoon", "Ghoul", "Pristine Phalanges", 1);
+                Core.EnsureComplete(9842);
+            }
         }
 
         // 9843 | Nothing But A Hound Dog

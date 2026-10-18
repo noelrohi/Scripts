@@ -346,8 +346,16 @@ public class DragonOfTime
             Egg.GetMysteriousEgg();
 
             Core.EquipClass(ClassType.Solo);
-            Bot.Quests.UpdateQuest(3880);
-            Core.KillMonster("chaoslord", "r2", "Left", "*", "Conquered Past", isTemp: false, publicRoom: true);
+            int chaosProgress = Bot.Flash.CallGameFunction<int>("world.getQuestValue", 182);
+            try
+            {
+                Bot.Quests.UpdateQuest(3880);
+                Core.KillMonster("chaoslord", "r2", "Left", "*", "Conquered Past", isTemp: false, publicRoom: true);
+            }
+            finally
+            {
+                Bot.Quests.UpdateQuest(chaosProgress, 182);
+            }
             Bot.Quests.UpdateQuest(10, 159);
             Core.HuntMonster("towerofdoom10", "Slugbutter", "Slugbutter Trophy", 100, false, publicRoom: true);
             Core.EquipClass(ClassType.Dodge);

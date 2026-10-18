@@ -56,8 +56,13 @@ public class Arcangrove
         Story.KillQuest(3372, "arcangrove", "Gorillaphant");
 
         //Plants vs Chaos 3373
-        Story.MapItemQuest(3373, "arcangrove", 2505, 6);
-        Story.KillQuest(3373, "arcangrove", "Seed Spitter");
+        if (!Story.QuestProgression(3373))
+        {
+            Core.EnsureAccept(3373);
+            Core.GetMapItem(2505, 6, "arcangrove");
+            Core.HuntMonster("arcangrove", "Seed Spitter", "Spitter Seed", 6);
+            Core.EnsureComplete(3373);
+        }
 
         //Like Aloe... With Teeth 3374
         Story.KillQuest(3374, "arcangrove", "Seed Spitter");

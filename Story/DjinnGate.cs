@@ -165,7 +165,13 @@ public class DjinnGateStory
         Story.KillQuest(6161, "DjinnGate", "Gedoz");
 
         //Quest for Resources 6162
-        Story.KillQuest(6162, "DjinnGate", new[] { "Harpy", "Lamia" });
+        if (!Story.QuestProgression(6162))
+        {
+            Core.EnsureAccept(6162);
+            Core.HuntMonster("djinngate", "Harpy", "Potent Harpy Mana", 2);
+            Core.HuntMonster("djinngate", "Lamia", "Potent Lamia Mana", 2);
+            Core.EnsureComplete(6162);
+        }
 
         //The Key of Smoke 7301
         Story.KillQuest(7301, "AshfallCamp", "Smoldur");

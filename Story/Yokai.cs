@@ -116,7 +116,14 @@ public class YokaiQuests
         Story.KillQuest(6460, "ShogunWar", "Shadow Samurai");
 
         // Tea for Me 6461
-        Story.KillQuest(6461, "ShogunWar", new[] { "Kijimuna", "Reishi", "Bamboo Treeant" });
+        if (!Story.QuestProgression(6461))
+        {
+            Core.EnsureAccept(6461);
+            Core.HuntMonster("shogunwar", "Kijimuna", "Kijimuna Pollen", 3);
+            Core.HuntMonster("shogunwar", "Reishi", "Glowing Mushroom Cap", 3);
+            Core.HuntMonster("shogunwar", "Bamboo Treeant", "Bamboo Leaf", 3);
+            Core.EnsureComplete(6461);
+        }
     }
 
     public void ShinrinGrove()
@@ -160,8 +167,13 @@ public class YokaiQuests
 
         // Put out the Fire 6465
         Core.EquipClass(ClassType.Farm);
-        Story.MapItemQuest(6465, "greenshell", 5964, 5);
-        Story.KillQuest(6465, "greenshell", "Tsurubebi");
+        if (!Story.QuestProgression(6465))
+        {
+            Core.EnsureAccept(6465);
+            Core.GetMapItem(5964, 5, "greenshell");
+            Core.HuntMonster("greenshell", "Tsurubebi", "Tsurubebi Extinguished", 5);
+            Core.EnsureComplete(6465);
+        }
 
         // Expell the Tsukumogami 6466
         Story.KillQuest(6466, "greenshell", "Tsukumogami");
@@ -173,12 +185,22 @@ public class YokaiQuests
         Story.KillQuest(6468, "shinringrove", "Moglinberry Bush");
 
         // How to Breathe Underwater 6469
-        Story.MapItemQuest(6469, "greenshell", 5965, 8);
-        Story.KillQuest(6469, "shinringrove", "Reishi");
+        if (!Story.QuestProgression(6469))
+        {
+            Core.EnsureAccept(6469);
+            Core.GetMapItem(5965, 8, "greenshell");
+            Core.HuntMonster("shinringrove", "Reishi", "Luminous Spores", 6);
+            Core.EnsureComplete(6469);
+        }
 
         // Search for the Shinrin Do 6470
-        Story.MapItemQuest(6470, "greenshell", 5966);
-        Story.KillQuest(6470, "greenshell", "Merdraconian");
+        if (!Story.QuestProgression(6470))
+        {
+            Core.EnsureAccept(6470);
+            Core.GetMapItem(5966, 1, "greenshell");
+            Core.HuntMonster("greenshell", "Merdraconian", "Merdraconians Slain", 3);
+            Core.EnsureComplete(6470);
+        }
 
         // Take the Shinrin Do 6471
         Story.MapItemQuest(6471, "greenshell", 5967);
@@ -227,8 +249,13 @@ public class YokaiQuests
         }
 
         // Burn the Bones 6476
-        Story.MapItemQuest(6476, "heiwavalley", 5968, 6);
-        Story.KillQuest(6476, "heiwavalley", "Kosenjobi");
+        if (!Story.QuestProgression(6476))
+        {
+            Core.EnsureAccept(6476);
+            Core.GetMapItem(5968, 6, "heiwavalley");
+            Core.HuntMonster("heiwavalley", "Kosenjobi", "Kosenjobi Flame", 6);
+            Core.EnsureComplete(6476);
+        }
 
         // Goryuken 6477
         Story.KillQuest(6477, "heiwavalley", "Goryo");
@@ -277,15 +304,25 @@ public class YokaiQuests
         Story.MapItemQuest(6487, "shadowfortress", 5973);
 
         // Shadow Essences 6488
-        Story.MapItemQuest(6488, "shadowfortress", 5974);
-        Story.KillQuest(6488, "shadowfortress", "Living Shadow");
+        if (!Story.QuestProgression(6488))
+        {
+            Core.EnsureAccept(6488);
+            Core.GetMapItem(5974, 1, "shadowfortress");
+            Core.HuntMonster("shadowfortress", "Living Shadow", "Shadow Essence", 7);
+            Core.EnsureComplete(6488);
+        }
 
         // New Recruits 6489
         Story.KillQuest(6489, "shadowfortress", "Shadow Samurai");
 
         // Shadow Heads 6490
-        Story.MapItemQuest(6490, "shadowfortress", 5975, 7);
-        Story.KillQuest(6490, "shadowfortress", "Creeping Shadow");
+        if (!Story.QuestProgression(6490))
+        {
+            Core.EnsureAccept(6490);
+            Core.GetMapItem(5975, 7, "shadowfortress");
+            Core.HuntMonster("shadowfortress", "Creeping Shadow", "Shadows Slain", 7);
+            Core.EnsureComplete(6490);
+        }
 
         // A Head has Woken
         Story.KillQuest(6491, "shadowfortress", "7th Head of Orochi");

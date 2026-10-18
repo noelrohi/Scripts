@@ -937875,5 +937875,47 @@
     ],
     "Rewards": [],
     "SimpleRewards": []
+  },
+  {
+    "ID": 10895,
+    "Slot": 654,
+    "Value": 10,
+    "Name": "Decompressing",
+    "Once": false,
+    "Field": null,
+    "Index": 0,
+    "Upgrade": false,
+    "Level": 0,
+    "RequiredClassID": 0,
+    "RequiredClassPoints": 0,
+    "RequiredFactionId": 78,
+    "RequiredFactionRep": 0,
+    "Gold": 1,
+    "XP": 1,
+    "AcceptRequirements": [],
+    "Requirements": [
+      {
+        "ItemID": 100330,
+        "sName": "Astravian Cortisol",
+        "sDesc": " ",
+        "iQty": 6,
+        "iStk": 6,
+        "bUpg": "0",
+        "bWear": "0",
+        "bCoins": "0",
+        "sType": "Quest Item",
+        "EnhPatternID": 0,
+        "ProcID": 0,
+        "bHouse": "0",
+        "Category": "Unknown",
+        "bTemp": "1",
+        "sES": "None",
+        "sLink": "",
+        "sFile": null,
+        "sMeta": null
+      }
+    ],
+    "Rewards": [],
+    "SimpleRewards": []
   }
 ]

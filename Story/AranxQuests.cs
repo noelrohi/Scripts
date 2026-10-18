@@ -39,28 +39,58 @@ public class AranxQuests
         Story.MapItemQuest(6497, "pocketdimension", 5988, 3);
 
         //Explore the Ice Dimension 6498
-        Story.MapItemQuest(6498, "icedimension", 5989);
-        Story.KillQuest(6498, "icedimension", "Ice Spitter");
+        if (!Story.QuestProgression(6498))
+        {
+            Core.EnsureAccept(6498);
+            Core.GetMapItem(5989, 1, "icedimension");
+            Core.HuntMonster("icedimension", "Ice Spitter", "Enemies Defeated", 10);
+            Core.EnsureComplete(6498);
+        }
 
         //Open the Next Dimension 6499
-        Story.MapItemQuest(6499, "icedimension", 5990, 5);
-        Story.KillQuest(6499, "icedimension", "Ice Elemental");
+        if (!Story.QuestProgression(6499))
+        {
+            Core.EnsureAccept(6499);
+            Core.GetMapItem(5990, 5, "icedimension");
+            Core.HuntMonster("icedimension", "Ice Elemental", "Frigid Resonance", 5);
+            Core.EnsureComplete(6499);
+        }
 
         //Explore the Sand Dimension 6500
-        Story.MapItemQuest(6500, "sanddimension", 5991);
-        Story.KillQuest(6500, "sanddimension", "Lotus Spider");
+        if (!Story.QuestProgression(6500))
+        {
+            Core.EnsureAccept(6500);
+            Core.GetMapItem(5991, 1, "sanddimension");
+            Core.HuntMonster("sanddimension", "Lotus Spider", "Enemies Defeated", 10);
+            Core.EnsureComplete(6500);
+        }
 
         //Open the 3rd Dimension 6501
-        Story.MapItemQuest(6501, "sanddimension", 5992, 5);
-        Story.KillQuest(6501, "sanddimension", "Lotus Spider");
+        if (!Story.QuestProgression(6501))
+        {
+            Core.EnsureAccept(6501);
+            Core.GetMapItem(5992, 5, "sanddimension");
+            Core.HuntMonster("sanddimension", "Lotus Spider", "Arid Resonance", 5);
+            Core.EnsureComplete(6501);
+        }
 
         //Explore the Dark Dimension 6502
-        Story.MapItemQuest(6502, "darkdimension", 5993);
-        Story.KillQuest(6502, "darkdimension", "Void Phoenix");
+        if (!Story.QuestProgression(6502))
+        {
+            Core.EnsureAccept(6502);
+            Core.GetMapItem(5993, 1, "darkdimension");
+            Core.HuntMonster("darkdimension", "Void Phoenix", "Enemies Defeated", 10);
+            Core.EnsureComplete(6502);
+        }
 
         //Open the 4th Dimension 6503
-        Story.MapItemQuest(6503, "darkdimension", 5994, 5);
-        Story.KillQuest(6503, "darkdimension", "Void Phoenix");
+        if (!Story.QuestProgression(6503))
+        {
+            Core.EnsureAccept(6503);
+            Core.GetMapItem(5994, 5, "darkdimension");
+            Core.HuntMonster("darkdimension", "Void Phoenix", "Dark Resonance", 5);
+            Core.EnsureComplete(6503);
+        }
 
         //Find Arthelyn 6504
         Story.MapItemQuest(6504, "ivoliss", 5995);

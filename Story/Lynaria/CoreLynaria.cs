@@ -52,8 +52,13 @@ public class CoreLynaria
         #endregion Useable Monsters
 
         // 10230 | Sleeping Diana
-        Story.MapItemQuest(10230, "bocklingrove", 14429);
-        Story.KillQuest(10230, "bocklingrove", UseableMonsters[0]);
+        if (!Story.QuestProgression(10230))
+        {
+            Core.EnsureAccept(10230);
+            Core.GetMapItem(14429, 1, "bocklingrove");
+            Core.HuntMonster("bocklingrove", "Wolf", "Playfight with Wolves", 12);
+            Core.EnsureComplete(10230);
+        }
 
         // 10231 | At the Edge of the Forest
         if (!Story.QuestProgression(10231))
@@ -131,8 +136,13 @@ public class CoreLynaria
         // 10243 | Roger and Angelica
         if (!Story.QuestProgression(10243))
         {
-            Story.MapItemQuest(10243, "bocklincastle", 14446);
-            Story.KillQuest(10243, "bocklincastle", UseableMonsters[0]);
+            if (!Story.QuestProgression(10243))
+            {
+                Core.EnsureAccept(10243);
+                Core.GetMapItem(14446, 1, "bocklincastle");
+                Core.HuntMonster("bocklincastle", "Undead Garde", "Undead Sigils", 9);
+                Core.EnsureComplete(10243);
+            }
         }
 
         // 10244 | The Way to Emmaus
@@ -161,15 +171,25 @@ public class CoreLynaria
         }
 
         // 10248 | Killer Pursued by Furies
-        Story.MapItemQuest(10248, "bocklincastle", 14448);
-        Story.KillQuest(10248, "bocklincastle", UseableMonsters[3]);
+        if (!Story.QuestProgression(10248))
+        {
+            Core.EnsureAccept(10248);
+            Core.GetMapItem(14448, 1, "bocklincastle");
+            Core.HuntMonster("bocklincastle", "Forsaken Necromancer", "Necromancer's Broken Soul", 1);
+            Core.EnsureComplete(10248);
+        }
 
         // 10249 | Vestal
         Story.MapItemQuest(10249, "bocklincastle", 14449, 6);
 
         // 10250 | Abandoned Venus
-        Story.MapItemQuest(10250, "bocklincastle", 14450);
-        Story.KillQuest(10250, "bocklincastle", UseableMonsters[4]);
+        if (!Story.QuestProgression(10250))
+        {
+            Core.EnsureAccept(10250);
+            Core.GetMapItem(14450, 1, "bocklincastle");
+            Core.HuntMonster("bocklincastle", "Faceless Ritualist", "White Hood", 12);
+            Core.EnsureComplete(10250);
+        }
 
         // 10251 | Bacchanalia
         if (!Story.QuestProgression(10251))
@@ -240,16 +260,26 @@ public class CoreLynaria
         if (!Story.QuestProgression(10260))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.MapItemQuest(10260, "bocklinsanctum", 14479);
-            Story.KillQuest(10260, "bocklinsanctum", UseableMonsters[2]);
+            if (!Story.QuestProgression(10260))
+            {
+                Core.EnsureAccept(10260);
+                Core.GetMapItem(14479, 1, "bocklinsanctum");
+                Core.HuntMonster("bocklinsanctum", "Tarnished Scion", "Scion's Crest", 1);
+                Core.EnsureComplete(10260);
+            }
         }
 
         // 10261 | Servants Stay Unseen
         if (!Story.QuestProgression(10261))
         {
             Core.EquipClass(ClassType.Farm);
-            Story.MapItemQuest(10261, "bocklinsanctum", 14480);
-            Story.KillQuest(10261, "bocklinsanctum", UseableMonsters[3]);
+            if (!Story.QuestProgression(10261))
+            {
+                Core.EnsureAccept(10261);
+                Core.GetMapItem(14480, 1, "bocklinsanctum");
+                Core.HuntMonster("bocklinsanctum", "Ghostly Servant", "Ghost Appeased", 15);
+                Core.EnsureComplete(10261);
+            }
         }
 
         // 10262 | The Slaying of Sacred Deer

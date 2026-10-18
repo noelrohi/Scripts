@@ -46,9 +46,15 @@ public class PoisonForest
         Story.PreLoad(this);
 
         //Poison Creation 1948
-        Story.MapItemQuest(1948, "PoisonForest", 964, 3);
-        Story.MapItemQuest(1948, "PoisonForest", 965, 3);
-        Story.KillQuest(1948, "PoisonForest", new[] { "Marsh Lurker", "Traitor Knight" });
+        if (!Story.QuestProgression(1948))
+        {
+            Core.EnsureAccept(1948);
+            Core.GetMapItem(964, 3, "PoisonForest");
+            Core.GetMapItem(965, 3, "PoisonForest");
+            Core.HuntMonster("poisonforest", "Marsh Lurker", "Toxic Gallstones", 3);
+            Core.HuntMonster("poisonforest", "Traitor Knight", "Traitor's Sweat", 8);
+            Core.EnsureComplete(1948);
+        }
 
         //Vegetal Decay 1949
         if (
@@ -114,11 +120,21 @@ public class PoisonForest
         }
 
         //Termination Tonic 1954
-        Story.MapItemQuest(1954, "PoisonForest", 970);
-        Story.KillQuest(1954, "PoisonForest", "Traitor Knight");
+        if (!Story.QuestProgression(1954))
+        {
+            Core.EnsureAccept(1954);
+            Core.GetMapItem(970, 1, "PoisonForest");
+            Core.HuntMonster("poisonforest", "Traitor Knight", "Enraged Blood", 11);
+            Core.EnsureComplete(1954);
+        }
 
         //Burn ALL the Things! 1955
-        Story.MapItemQuest(1955, "PoisonForest", 969, 11);
-        Story.KillQuest(1955, "PoisonForest", "Xavier Lionfang");
+        if (!Story.QuestProgression(1955))
+        {
+            Core.EnsureAccept(1955);
+            Core.GetMapItem(969, 11, "PoisonForest");
+            Core.HuntMonster("poisonforest", "Xavier Lionfang", "Xavier Lionfang Slain", 1);
+            Core.EnsureComplete(1955);
+        }
     }
 }

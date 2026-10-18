@@ -40,8 +40,13 @@ public class MidnightWar
         Story.MapItemQuest(5389, "midnightcrown", new[] { 4746, 4747 }, 4);
 
         // Gunpowder, Lots! (5390)
-        Story.MapItemQuest(5390, "midnightcrown", 4748, 5);
-        Story.KillQuest(5390, "midnightcrown", "Scoundrel");
+        if (!Story.QuestProgression(5390))
+        {
+            Core.EnsureAccept(5390);
+            Core.GetMapItem(4748, 5, "midnightcrown");
+            Core.HuntMonster("midnightcrown", "Scoundrel", "Gunpowder", 5);
+            Core.EnsureComplete(5390);
+        }
 
         // Boar-ed of Seafood (5391)
         Story.KillQuest(5391, "midnightcrown", "Island Boar");
@@ -54,8 +59,13 @@ public class MidnightWar
         Story.MapItemQuest(5393, "midnightcrown", 4752);
 
         // It Pays To Be Prepared! (5394)
-        Story.MapItemQuest(5394, "midnightcrown", 4753);
-        Story.KillQuest(5394, "midnightcrown", "Scoundrel");
+        if (!Story.QuestProgression(5394))
+        {
+            Core.EnsureAccept(5394);
+            Core.GetMapItem(4753, 1, "midnightcrown");
+            Core.HuntMonster("midnightcrown", "Scoundrel", "Stolen Silver", 9);
+            Core.EnsureComplete(5394);
+        }
 
         // A Bit O' Protein (5395)
         Story.KillQuest(5395, "midnightcrown", "Island Boar");

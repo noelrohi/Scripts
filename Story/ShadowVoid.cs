@@ -59,14 +59,25 @@ public class ShadowVoid
         Story.KillQuest(7127, "ShadowVoid", "Shadowfiend");
 
         //Build Another Bridge 7128
-        Story.KillQuest(7128, "ShadowVoid", new[] { "Shadowfiend", "Light Matter" });
+        if (!Story.QuestProgression(7128))
+        {
+            Core.EnsureAccept(7128);
+            Core.HuntMonster("shadowvoid", "Shadowfiend", "Shadow Matter", 6);
+            Core.HuntMonster("shadowvoid", "Light Matter", "Bright Oil", 5);
+            Core.EnsureComplete(7128);
+        }
 
         //Find Safiria 7129
         Story.MapItemQuest(7129, "ShadowVoid", 6765);
 
         //Dissolve the Chains 7130
-        Story.MapItemQuest(7130, "ShadowVoid", 6766);
-        Story.KillQuest(7130, "ShadowVoid", "Light Matter");
+        if (!Story.QuestProgression(7130))
+        {
+            Core.EnsureAccept(7130);
+            Core.GetMapItem(6766, 1, "ShadowVoid");
+            Core.HuntMonster("shadowvoid", "Light Matter", "Bright Acid", 3);
+            Core.EnsureComplete(7130);
+        }
 
         //Fragment of Doom 7131
         Story.KillQuest(7131, "ShadowVoid", "Fragment of Doom");

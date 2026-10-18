@@ -50,31 +50,57 @@ public class VoidChasm
         Story.KillQuest(9544, "voidchasm", "Nation Outrider");
 
         // Hyperspace-Plasia 9545
-        Story.MapItemQuest(9545, "voidchasm", 12619, 6);
-        Story.KillQuest(9545, "voidchasm", "Paladin Ascendant");
+        if (!Story.QuestProgression(9545))
+        {
+            Core.EnsureAccept(9545);
+            Core.GetMapItem(12619, 6, "voidchasm");
+            Core.HuntMonster("voidchasm", "Paladin Ascendant", "Alberic Seal", 3);
+            Core.EnsureComplete(9545);
+        }
 
         // Tangled Aortas 9546
         Story.MapItemQuest(9546, "voidchasm", new[] { 12620, 12621 });
 
         // Nation Code 9547
-        Story.MapItemQuest(9547, "voidchasm", 12622);
-        Story.KillQuest(9547, "voidchasm", "Nation Outrider");
+        if (!Story.QuestProgression(9547))
+        {
+            Core.EnsureAccept(9547);
+            Core.GetMapItem(12622, 1, "voidchasm");
+            Core.HuntMonster("voidchasm", "Nation Outrider", "Outrider's Keepsake", 4);
+            Core.EnsureComplete(9547);
+        }
 
         // Snake Ears 9548
         Story.KillQuest(9548, "voidchasm", "Void Fang");
 
         // Faustian Leftovers 9549
-        Story.MapItemQuest(9549, "voidchasm", new[] { 12623, 12627, 12628 });
-        Story.KillQuest(9549, "voidchasm", "The Hushed");
+        if (!Story.QuestProgression(9549))
+        {
+            Core.EnsureAccept(9549);
+            Core.GetMapItems(new[] { (12623, 1), (12627, 1), (12628, 1) }, "voidchasm");
+            Core.HuntMonster("voidchasm", "The Hushed", "Phantom's Sigh", 5);
+            Core.EnsureComplete(9549);
+        }
 
         // Broken Lives 9550
-        Story.MapItemQuest(9550, "voidchasm", 12624, 4);
-        Story.KillQuest(9550, "voidchasm", new[] { "The Hushed", "Void Fang" });
+        if (!Story.QuestProgression(9550))
+        {
+            Core.EnsureAccept(9550);
+            Core.GetMapItem(12624, 4, "voidchasm");
+            Core.HuntMonster("voidchasm", "The Hushed", "Blank Contract", 3);
+            Core.HuntMonster("voidchasm", "Void Fang", "Fiendish Sinew", 6);
+            Core.EnsureComplete(9550);
+        }
 
         // Call of the Fiend 9551
         Core.EquipClass(ClassType.Solo);
-        Story.MapItemQuest(9551, "voidchasm", new[] { 12625, 12626 });
-        Story.KillQuest(9551, "voidchasm", "Carnage");
+        if (!Story.QuestProgression(9551))
+        {
+            Core.EnsureAccept(9551);
+            Core.GetMapItems(new[] { (12625, 1), (12626, 1) }, "voidchasm");
+            Core.HuntMonster("voidchasm", "Carnage", "Voided Blood Sample", 1);
+            Core.EnsureComplete(9551);
+        }
 
         // Famiglia di Carcano 9552
         Story.KillQuest(9552, "voidchasm", "Carcano");

@@ -46,8 +46,13 @@ public class MerrowTrench
         Story.KillQuest(7080, "merrowtrench", "Moaney McBoney");
         Story.KillQuest(7081, "merrowtrench", "Merdraconian Squatter");
         Story.MapItemQuest(7082, "merrowtrench", 6691);
-        Story.MapItemQuest(7083, "merrowtrench", 6692);
-        Story.KillQuest(7083, "merrowtrench", "Electric Eel");
+        if (!Story.QuestProgression(7083))
+        {
+            Core.EnsureAccept(7083);
+            Core.GetMapItem(6692, 1, "merrowtrench");
+            Core.HuntMonster("merrowtrench", "Electric Eel", "Explosive Electricity", 10);
+            Core.EnsureComplete(7083);
+        }
         Story.KillQuest(7084, "merrowtrench", "Cecaelia");
     }
 }

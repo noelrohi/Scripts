@@ -41,7 +41,13 @@ public class ThunderFang
         Story.KillQuest(4241, "thunderfang", "Lightning Ball");
 
         // Shards and Sparks 4242
-        Story.KillQuest(4242, "thunderfang", new[] { "Lightning Ball", "Energy Elemental" });
+        if (!Story.QuestProgression(4242))
+        {
+            Core.EnsureAccept(4242);
+            Core.HuntMonster("thunderfang", "Energy Elemental", "Energy Gem", 3);
+            Core.HuntMonster("thunderfang", "Lightning Ball", "Lightning Spark", 5);
+            Core.EnsureComplete(4242);
+        }
 
         // Hunt for the Storm Cache 4243
         Story.KillQuest(4243, "thunderfang", "Energy Elemental");

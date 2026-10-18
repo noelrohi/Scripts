@@ -359,16 +359,26 @@ public class CoreDageBirthday
         // 10628 | The Fun Police
         if (!Story.QuestProgression(10628))
         {
-            Story.MapItemQuest(10628, "legiontournament", 15584);
-            Story.KillQuest(10628, "legiontournament", UseableMonsters[2]);
+            if (!Story.QuestProgression(10628))
+            {
+                Core.EnsureAccept(10628);
+                Core.GetMapItem(15584, 1, "legiontournament");
+                Core.HuntMonster("legiontournament", "Legion Willbreaker", "Willbreaker's Gyve", 12);
+                Core.EnsureComplete(10628);
+            }
         }
 
 
         // 10629 | Despair-ity
         if (!Story.QuestProgression(10629))
         {
-            Story.MapItemQuest(10629, "legiontournament", 15585);
-            Story.KillQuest(10629, "legiontournament", UseableMonsters[3]);
+            if (!Story.QuestProgression(10629))
+            {
+                Core.EnsureAccept(10629);
+                Core.GetMapItem(15585, 1, "legiontournament");
+                Core.HuntMonster("legiontournament", "Legion Ritualist", "Ritualist's Barley Seed", 250);
+                Core.EnsureComplete(10629);
+            }
         }
 
 
@@ -383,8 +393,13 @@ public class CoreDageBirthday
         if (!Story.QuestProgression(10631))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.MapItemQuest(10631, "legiontournament", 15587);
-            Story.KillQuest(10631, "legiontournament", UseableMonsters[4]);
+            if (!Story.QuestProgression(10631))
+            {
+                Core.EnsureAccept(10631);
+                Core.GetMapItem(15587, 1, "legiontournament");
+                Core.HuntMonster("legiontournament", "Deathwing", "Deathwing Feather", 120);
+                Core.EnsureComplete(10631);
+            }
         }
 
 

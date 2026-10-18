@@ -59,8 +59,13 @@ public class OblivionTundra
         #endregion Useable Monsters
 
         // 10036 | Indignant Stubbornness
-        Story.MapItemQuest(10036, "obliviontundra", 14064);
-        Story.KillQuest(10036, "obliviontundra", UseableMonsters[0]);
+        if (!Story.QuestProgression(10036))
+        {
+            Core.EnsureAccept(10036);
+            Core.GetMapItem(14064, 1, "obliviontundra");
+            Core.HuntMonster("obliviontundra", "Empty Creature", "Pale Pelt", 12);
+            Core.EnsureComplete(10036);
+        }
 
         // 10037 | Over the Edge
         Story.MapItemQuest(

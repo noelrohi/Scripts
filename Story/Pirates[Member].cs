@@ -56,7 +56,12 @@ public class Pirates
         Story.MapItemQuest(1540, "pirates", 771, 10);
 
         //Blow Stuff Up! 1541
-        Story.MapItemQuest(1541, "pirates", 772, 10);
-        Story.KillQuest(1541, "pirates", "Undead Pirate");
+        if (!Story.QuestProgression(1541))
+        {
+            Core.EnsureAccept(1541);
+            Core.GetMapItem(772, 10, "pirates");
+            Core.HuntMonster("pirates", "Undead Pirate", "Fuse", 10);
+            Core.EnsureComplete(1541);
+        }
     }
 }

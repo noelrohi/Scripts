@@ -46,15 +46,25 @@ public class XansLair
         Story.KillQuest(1242, "volcano", "Lava Golem");
 
         // Level 2 1243
-        Story.MapItemQuest(1243, "volcano", 526, 3);
-        Story.KillQuest(1243, "volcano", "Fire Imp");
+        if (!Story.QuestProgression(1243))
+        {
+            Core.EnsureAccept(1243);
+            Core.GetMapItem(526, 3, "volcano");
+            Core.HuntMonster("volcano", "Fire Imp", "Broiled Clue", 7);
+            Core.EnsureComplete(1243);
+        }
 
         // Level 3 1244
         Story.KillQuest(1244, "volcano", "Fire Imp");
 
         // Level 4 1245
-        Story.MapItemQuest(1245, "volcano", 527, 8);
-        Story.KillQuest(1245, "volcano", "Lava Golem");
+        if (!Story.QuestProgression(1245))
+        {
+            Core.EnsureAccept(1245);
+            Core.GetMapItem(527, 8, "volcano");
+            Core.HuntMonster("volcano", "Lava Golem", "Blazing Clue", 10);
+            Core.EnsureComplete(1245);
+        }
 
         // Level 5 1246
         Story.KillQuest(1246, "volcano", "Fire Imp");
@@ -69,15 +79,25 @@ public class XansLair
         Story.KillQuest(1249, "volcano", "Flamethrower Dwakel");
 
         // Level 9 1250
-        Story.MapItemQuest(1250, "volcano", 529, 8);
-        Story.KillQuest(1250, "volcano", "Fire Imp");
+        if (!Story.QuestProgression(1250))
+        {
+            Core.EnsureAccept(1250);
+            Core.GetMapItem(529, 8, "volcano");
+            Core.HuntMonster("volcano", "Fire Imp", "Torched Clue", 10);
+            Core.EnsureComplete(1250);
+        }
 
         // Level 10 1251
         Story.KillQuest(1251, "volcano", "Flamethrower Dwakel");
 
         // Level 11 1252
-        Story.MapItemQuest(1252, "volcano", 530, 10);
-        Story.KillQuest(1252, "volcano", "Fire Imp");
+        if (!Story.QuestProgression(1252))
+        {
+            Core.EnsureAccept(1252);
+            Core.GetMapItem(530, 10, "volcano");
+            Core.HuntMonster("volcano", "Fire Imp", "Melted Clue", 10);
+            Core.EnsureComplete(1252);
+        }
 
         // Level 12 1253
         Story.KillQuest(1253, "volcano", "Flame Elemental");
@@ -98,11 +118,21 @@ public class XansLair
         Story.KillQuest(1258, "volcano", "Flamethrower Dwakel");
 
         // Level 18 1259
-        Story.KillQuest(1259, "volcano", new[] { "Fire Imp", "Flame Elemental" });
+        if (!Story.QuestProgression(1259))
+        {
+            Core.EnsureAccept(1259);
+            Core.HuntMonster("volcano", "Fire Imp", "Singed Clue", 15);
+            Core.EnsureComplete(1259);
+        }
 
         // Level 19 1260
-        Story.MapItemQuest(1260, "volcano", 533, 6);
-        Story.KillQuest(1260, "volcano", "Fire Imp");
+        if (!Story.QuestProgression(1260))
+        {
+            Core.EnsureAccept(1260);
+            Core.GetMapItem(533, 6, "volcano");
+            Core.HuntMonster("volcano", "Fire Imp", "Smoking Clue", 13);
+            Core.EnsureComplete(1260);
+        }
 
         // Level 20 1261
         Story.KillQuest(1261, "volcano", "Magman");
@@ -172,8 +202,14 @@ public class XansLair
         Story.KillQuest(2154, "xancave", "Lava Goblin");
 
         // Crossing Over 2155
-        Story.MapItemQuest(2155, "xancave", 1223, 8);
-        Story.KillQuest(2155, "xancave", new[] { "Lava Goblin", "Lava Goblin" });
+        if (!Story.QuestProgression(2155))
+        {
+            Core.EnsureAccept(2155);
+            Core.GetMapItem(1223, 8, "xancave");
+            Core.HuntMonster("xancave", "Lava Goblin", "Fire Salts", 10);
+            Core.HuntMonster("xancave", "Lava Goblin", "Fire Wire", 10);
+            Core.EnsureComplete(2155);
+        }
 
         // Guardian Of Shurpu 2156
         Story.KillQuest(2156, "xancave", "Shurpu Ring Guardian");

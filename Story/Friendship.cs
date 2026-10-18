@@ -61,20 +61,18 @@ public class Friendship
         }
 
         // Darkness Distress (9103)
-        Story.MapItemQuest(9103, "greyguard", 11205);
-        Story.KillQuest(
-         9103,
-         "greyguard",
-         new[]
-         {
-        "Gloombloom",
-        "Carcass Creeper",
-        "Fearweaver",
-        "Darkbark",
-        "Twilighteeth",
-        "Maulignant",
-         }
-     );
+        if (!Story.QuestProgression(9103))
+        {
+            Core.EnsureAccept(9103);
+            Core.GetMapItem(11205, 1, "greyguard");
+            Core.HuntMonster("greyguard", "Gloombloom", "Gloomy Monster", 1);
+            Core.HuntMonster("greyguard", "Carcass Creeper", "Shadowy Monster", 1);
+            Core.HuntMonster("greyguard", "Fearweaver", "Dim Monster", 1);
+            Core.HuntMonster("greyguard", "Darkbark", "Dark Monster", 1);
+            Core.HuntMonster("greyguard", "Twilighteeth", "Darker Monster", 1);
+            Core.HuntMonster("greyguard", "Maulignant", "Darkest Monster", 1);
+            Core.EnsureComplete(9103);
+        }
 
         // Your New FF (9104)
         if (!Story.QuestProgression(9104))

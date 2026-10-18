@@ -37,20 +37,43 @@ public class DracoCon
         Core.EquipClass(ClassType.Farm);
 
         // Zorbak's Legion: Chapter 1 (5357)
-        Story.KillQuest(5357, "dracocon", new[] { "Zombie Tog", "Zombie Dravir" });
+        if (!Story.QuestProgression(5357))
+        {
+            Core.EnsureAccept(5357);
+            Core.HuntMonster("dracocon", "Zombie Tog", "Zombie Tog Slain", 7);
+            Core.HuntMonster("dracocon", "Zombie Dravir", "Zombie Dravir Slain", 6);
+            Core.EnsureComplete(5357);
+        }
 
         // Zorbak's Legion: Eggstreme Plan (5358)
         Story.KillQuest(5358, "dracocon", "Zombie Dravir");
 
         // Zorbak's Legion: Drac Attack (5359)
-        Story.KillQuest(5359, "dracocon", new[] { "Angry Wisp", "Red Spirit" });
+        if (!Story.QuestProgression(5359))
+        {
+            Core.EnsureAccept(5359);
+            Core.HuntMonster("dracocon", "Red Spirit", "Angry Spirit", 5);
+            Core.HuntMonster("dracocon", "Angry Wisp", "Kill O' Whisp", 5);
+            Core.EnsureComplete(5359);
+        }
 
         // Zorbak's Legion: Undead vs Undead (5360)
-        Story.KillQuest(5360, "dracocon", new[] { "Undead Soldier", "Zombie Warrior" });
+        if (!Story.QuestProgression(5360))
+        {
+            Core.EnsureAccept(5360);
+            Core.HuntMonster("dracocon", "Undead Soldier", "Undead Soldier Slain", 5);
+            Core.HuntMonster("dracocon", "Zombie Warrior", "Zombie Warrior Slain", 5);
+            Core.EnsureComplete(5360);
+        }
 
         // Zorbak's Legion: Tiny Terrors (5361)
-        Story.MapItemQuest(5361, "dracocon", 4723, 5);
-        Story.KillQuest(5361, "dracocon", "Villager");
+        if (!Story.QuestProgression(5361))
+        {
+            Core.EnsureAccept(5361);
+            Core.GetMapItem(4723, 5, "dracocon");
+            Core.HuntMonster("dracocon", "Villager", "Villager Convinced", 10);
+            Core.EnsureComplete(5361);
+        }
 
         // Eggcelent Hunt (5362)
         Story.MapItemQuest(5362, "dracocon", 4724, 13);
@@ -59,8 +82,13 @@ public class DracoCon
         Story.KillQuest(5363, "dracocon", "Zombie Warrior");
 
         // Bling, Baby, Bling (5364)
-        Story.MapItemQuest(5364, "dracocon", 4725, 5);
-        Story.KillQuest(5364, "dracocon", "Battle Gem");
+        if (!Story.QuestProgression(5364))
+        {
+            Core.EnsureAccept(5364);
+            Core.GetMapItem(4725, 5, "dracocon");
+            Core.HuntMonster("dracocon", "Battle Gem", "Battle Gems", 10);
+            Core.EnsureComplete(5364);
+        }
 
         // Class 101: Slaying for Dummies (5365)
         Story.KillQuest(5365, "dracocon", "Dragon Training Dummy");
@@ -92,11 +120,15 @@ public class DracoCon
         if (!Story.QuestProgression(5372))
         {
             Core.EquipClass(ClassType.Solo);
-            Story.KillQuest(
-                5372,
-                "dracocon",
-                new[] { "Drummer", "Guitarist", "Keyboardist", "Singer" }
-            );
+            if (!Story.QuestProgression(5372))
+            {
+                Core.EnsureAccept(5372);
+                Core.HuntMonster("dracocon", "Drummer", "Drummer Defeated", 1);
+                Core.HuntMonster("dracocon", "Guitarist", "Guitarist Defeated", 1);
+                Core.HuntMonster("dracocon", "Keyboardist", "Keyboard Player Defeated", 1);
+                Core.HuntMonster("dracocon", "Singer", "Singer Defeated", 1);
+                Core.EnsureComplete(5372);
+            }
             Core.EquipClass(ClassType.Farm);
         }
     }

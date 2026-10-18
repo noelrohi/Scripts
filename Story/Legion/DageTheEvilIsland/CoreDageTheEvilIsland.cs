@@ -62,7 +62,13 @@ public class CoreDageTheEvilIsland
         Core.AddDrop("Ultra Dark Mystery Stone Of Evil Animosity");
 
         //Test 1: Proving Ground 4084
-        Story.KillQuest(4084, "DarkFortress", new[] { "Dark Makai", "Cloaked Fiend" });
+        if (!Story.QuestProgression(4084))
+        {
+            Core.EnsureAccept(4084);
+            Core.HuntMonster("darkfortress", "Dark Makai", "Dark Makai Slain", 13);
+            Core.HuntMonster("darkfortress", "Dark Makai", "Cavern Dweller Slain", 13);
+            Core.EnsureComplete(4084);
+        }
 
         //Test 2: Nulgath's Disdain 4085
         if (!Story.QuestProgression(4085))
@@ -88,13 +94,24 @@ public class CoreDageTheEvilIsland
         }
 
         //Test 4: Dark Battleground 4088
-        Story.KillQuest(4088, "DarkFortress", new[] { "Cloaked Fiend" });
+        if (!Story.QuestProgression(4088))
+        {
+            Core.EnsureAccept(4088);
+            Core.HuntMonster("darkfortress", "Cloaked Fiend", "Guard Slain", 13);
+            Core.EnsureComplete(4088);
+        }
 
         //Test 5: Shadows Within Shadows 4089
         Story.KillQuest(4089, "DarkFortress", "Dark Elemental");
 
         //Test 6: Runed Fiends 4090
-        Story.KillQuest(4090, "DarkFortress", new[] { "Dark Elemental", "Cloaked Fiend" });
+        if (!Story.QuestProgression(4090))
+        {
+            Core.EnsureAccept(4090);
+            Core.HuntMonster("darkfortress", "Dark Elemental", "Rune Scroll", 1);
+            Core.HuntMonster("darkfortress", "Cloaked Fiend", "Fiend Scroll", 1);
+            Core.EnsureComplete(4090);
+        }
 
         //Surprise Test: Truth Revealed 4091
         Story.KillQuest(4091, "DarkFortress", "Wilhelm");
@@ -119,11 +136,14 @@ public class CoreDageTheEvilIsland
         Story.KillQuest(4182, "Seraph", "Seraphic Recruit");
 
         //Whispers Rumors and Seraphic Scrolls 4183
-        Story.KillQuest(
-            4183,
-            "Seraph",
-            new[] { "Legion Infiltrator", "Seraphic Recruit", "Legion Augur" }
-        );
+        if (!Story.QuestProgression(4183))
+        {
+            Core.EnsureAccept(4183);
+            Core.HuntMonster("seraph", "Legion Infiltrator", "Spy Rumors", 5);
+            Core.HuntMonster("seraph", "Legion Infiltrator", "Seraphic Scrolls", 3);
+            Core.HuntMonster("seraph", "Legion Infiltrator", "Undead Legion Sigil", 7);
+            Core.EnsureComplete(4183);
+        }
         //Me? A Spy? 4184
         Story.KillQuest(4184, "Seraph", "Legion Augur");
 
@@ -166,18 +186,34 @@ public class CoreDageTheEvilIsland
         Story.KillQuest(4188, "LegionCrypt", "Legion Doomknight");
 
         //Eyes on the Prize 4189
-        Story.MapItemQuest(4189, "LegionCrypt", 3295, 5);
-        Story.KillQuest(4189, "LegionCrypt", "Gravedigger");
+        if (!Story.QuestProgression(4189))
+        {
+            Core.EnsureAccept(4189);
+            Core.GetMapItem(3295, 5, "LegionCrypt");
+            Core.HuntMonster("legioncrypt", "Gravedigger", "Gravedigger Gun", 5);
+            Core.EnsureComplete(4189);
+        }
 
         //Filler Quest 4190
-        Story.MapItemQuest(4190, "LegionCrypt", 3296, 5);
-        Story.KillQuest(4190, "LegionCrypt", "Legion Doomknight");
+        if (!Story.QuestProgression(4190))
+        {
+            Core.EnsureAccept(4190);
+            Core.GetMapItem(3296, 5, "LegionCrypt");
+            Core.HuntMonster("legioncrypt", "Legion DoomKnight", "Dead Doomknight", 6);
+            Core.EnsureComplete(4190);
+        }
 
         //Insider Information 4191
         Story.MapItemQuest(4191, "LegionCrypt", 3297);
 
         //Spiky Situation 4192
-        Story.KillQuest(4192, "LegionCrypt", new[] { "Gravedigger", "Legion Doomknight" });
+        if (!Story.QuestProgression(4192))
+        {
+            Core.EnsureAccept(4192);
+            Core.HuntMonster("legioncrypt", "Gravedigger", "Gravedigger Knife", 6);
+            Core.HuntMonster("legioncrypt", "Legion DoomKnight", "Legion Weapons", 7);
+            Core.EnsureComplete(4192);
+        }
         //Run it Back Again 4193
         Story.KillQuest(4193, "LegionCrypt", "Legion Doomknight");
 
@@ -267,11 +303,14 @@ public class CoreDageTheEvilIsland
         }
 
         //Group Effort 4891
-        Story.KillQuest(
-            4891,
-            "Envy",
-            new[] { "Legion Defector", "Fawning Sycophant", "Disciple of Envy" }
-        );
+        if (!Story.QuestProgression(4891))
+        {
+            Core.EnsureAccept(4891);
+            Core.HuntMonster("envy", "Legion Defector", "Part 1", 1);
+            Core.HuntMonster("envy", "Fawning Sycophant", "Part 2", 1);
+            Core.HuntMonster("envy", "Disciple of Envy", "Part 3", 1);
+            Core.EnsureComplete(4891);
+        }
 
         //Defeat Envy 4892
         Story.KillQuest(4892, "Envy", "Envy");
@@ -290,7 +329,13 @@ public class CoreDageTheEvilIsland
         Story.PreLoad(this);
 
         //Get Rid of the Guards 5648
-        Story.KillQuest(5648, "Laken", new[] { "Cyborg Dog", "Augmented Guard" });
+        if (!Story.QuestProgression(5648))
+        {
+            Core.EnsureAccept(5648);
+            Core.HuntMonster("laken", "Cyborg Dog", "Cyborg Dogs Slain", 4);
+            Core.HuntMonster("laken", "Augmented Guard", "Augmented Guards Slain", 4);
+            Core.EnsureComplete(5648);
+        }
 
         //Get the Data 5649
         Story.KillQuest(5649, "Laken", "Mad Scientist");
@@ -311,12 +356,22 @@ public class CoreDageTheEvilIsland
         }
 
         //Find Ada 5653
-        Story.MapItemQuest(5653, "Laken", 5124);
-        Story.KillQuest(5653, "Laken", "Dustbunny");
+        if (!Story.QuestProgression(5653))
+        {
+            Core.EnsureAccept(5653);
+            Core.GetMapItem(5124, 1, "Laken");
+            Core.HuntMonster("laken", "Dustbunny", "Dustbunny Slain", 5);
+            Core.EnsureComplete(5653);
+        }
 
         //Keep Looking 5654
-        Story.MapItemQuest(5654, "Laken", 5125);
-        Story.KillQuest(5654, "Laken", "Closet Moth");
+        if (!Story.QuestProgression(5654))
+        {
+            Core.EnsureAccept(5654);
+            Core.GetMapItem(5125, 1, "Laken");
+            Core.HuntMonster("laken", "Closet Moth", "Closet Moth Slain", 5);
+            Core.EnsureComplete(5654);
+        }
 
         //Gotcha! 5655
         if (!Story.QuestProgression(5655))

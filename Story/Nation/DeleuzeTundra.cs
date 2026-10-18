@@ -89,22 +89,37 @@ public class DeleuzeTundraStory
         // 10028 | Sleepflying
         if (!Story.QuestProgression(10028))
         {
-            Story.MapItemQuest(10028, "deleuzetundra", 14052);
-            Story.KillQuest(10028, "deleuzetundra", UseableMonsters[0]);
+            if (!Story.QuestProgression(10028))
+            {
+                Core.EnsureAccept(10028);
+                Core.GetMapItem(14052, 1, "deleuzetundra");
+                Core.HuntMonster("deleuzetundra", "Empty Creature", "Void Heart", 3);
+                Core.EnsureComplete(10028);
+            }
         }
 
         // 10029 | Battle-Weary
         if (!Story.QuestProgression(10029))
         {
-            Story.MapItemQuest(10029, "deleuzetundra", 14053, 5);
-            Story.KillQuest(10029, "deleuzetundra", UseableMonsters[1]);
+            if (!Story.QuestProgression(10029))
+            {
+                Core.EnsureAccept(10029);
+                Core.GetMapItem(14053, 5, "deleuzetundra");
+                Core.HuntMonster("deleuzetundra", "Nation Outrider", "Blunt Blade", 15);
+                Core.EnsureComplete(10029);
+            }
         }
 
         // 10030 | Self-Destructive Spell
         if (!Story.QuestProgression(10030))
         {
-            Story.MapItemQuest(10030, "deleuzetundra", 14054);
-            Story.KillQuest(10030, "deleuzetundra", UseableMonsters[2]);
+            if (!Story.QuestProgression(10030))
+            {
+                Core.EnsureAccept(10030);
+                Core.GetMapItem(14054, 1, "deleuzetundra");
+                Core.HuntMonster("deleuzetundra", "Oblivion Magus", "Obliteration Rune", 15);
+                Core.EnsureComplete(10030);
+            }
         }
 
         // 10031 | Allure of the Void

@@ -70,12 +70,22 @@ public class LaeWedding
         Story.MapItemQuest(9948, "laewed", new[] { 13773, 13774 });
 
         // 9949 | Occult Objection
-        Story.MapItemQuest(9949, "laewed", 13775);
-        Story.KillQuest(9949, "laewed", UseableMonsters[2]);
+        if (!Story.QuestProgression(9949))
+        {
+            Core.EnsureAccept(9949);
+            Core.GetMapItem(13775, 1, "laewed");
+            Core.HuntMonster("laewed", "Vengeful Spirit", "Vengeful Ectoplasm", 8);
+            Core.EnsureComplete(9949);
+        }
 
         // 9950 | Wraithful
-        Story.MapItemQuest(9950, "laewed", 13776);
-        Story.KillQuest(9950, "laewed", UseableMonsters[3]);
+        if (!Story.QuestProgression(9950))
+        {
+            Core.EnsureAccept(9950);
+            Core.GetMapItem(13776, 1, "laewed");
+            Core.HuntMonster("laewed", "Wrathful Spirit", "Wrathful Ectoplasm", 6);
+            Core.EnsureComplete(9950);
+        }
 
         // 9951 | Old, Blue, and…?
         if (!Story.QuestProgression(9951))

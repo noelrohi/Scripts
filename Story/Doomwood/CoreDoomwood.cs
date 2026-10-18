@@ -135,7 +135,13 @@ public class CoreDoomwood
         Story.MapItemQuest(1082, "maul", 434, 13);
 
         //1083    The Infected
-        Story.KillQuest(1083, "maul", new[] { "Personal Chopper", "Slimeskull" });
+        if (!Story.QuestProgression(1083))
+        {
+            Core.EnsureAccept(1083);
+            Core.HuntMonster("maul", "Personal Chopper", "Chopper Quarantined", 2);
+            Core.HuntMonster("maul", "Slimeskull", "Slimeskull Quarantined", 6);
+            Core.EnsureComplete(1083);
+        }
 
         //1084    Chopping Spree
         if (!Story.QuestProgression(1084))
@@ -169,7 +175,13 @@ public class CoreDoomwood
         }
 
         //1088    The Ego and the ID
-        Story.KillQuest(1088, "doomwood", new[] { "Doomwood Soldier", "Doomwood Soldier" });
+        if (!Story.QuestProgression(1088))
+        {
+            Core.EnsureAccept(1088);
+            Core.HuntMonster("doomwood", "Doomwood Soldier", "Tombstone-Tuff (tm) Case", 1);
+            Core.HuntMonster("doomwood", "Doomwood Soldier", "Nekron CruelPix Camera", 1);
+            Core.EnsureComplete(1088);
+        }
 
         //1090    An IDeal Seal
         if (!Story.QuestProgression(1090))
@@ -216,15 +228,31 @@ public class CoreDoomwood
         Story.MapItemQuest(1115, "necroU", 449, 6);
 
         //1116    Hip Bone's Connected to the Back Bone
-        Story.KillQuest(1116, "necroU", new[] { "Doomwood Soldier", "Doomwood Soldier" });
+        if (!Story.QuestProgression(1116))
+        {
+            Core.EnsureAccept(1116);
+            Core.HuntMonster("necrou", "Doomwood Soldier", "Back Bone", 3);
+            Core.HuntMonster("necrou", "Doomwood Soldier", "Hip Bone", 3);
+            Core.EnsureComplete(1116);
+        }
 
         //1117    Back Bone's Connected to the Neck Bone
-        Story.MapItemQuest(1117, "necroU", 451, 3);
-        Story.KillQuest(1117, "necroU", "Doomwood Treeant");
+        if (!Story.QuestProgression(1117))
+        {
+            Core.EnsureAccept(1117);
+            Core.GetMapItem(451, 3, "necroU");
+            Core.HuntMonster("necrou", "Doomwood Treeant", "Splint-wood", 7);
+            Core.EnsureComplete(1117);
+        }
 
         //1118   Slip 'n Slimes
-        Story.MapItemQuest(1118, "necroU", 452, 5);
-        Story.KillQuest(1118, "necroU", "Slimeskull");
+        if (!Story.QuestProgression(1118))
+        {
+            Core.EnsureAccept(1118);
+            Core.GetMapItem(452, 5, "necroU");
+            Core.HuntMonster("necrou", "Slimeskull", "Sheet of Slime", 5);
+            Core.EnsureComplete(1118);
+        }
 
         //1119   Sl-eye-me
         Story.MapItemQuest(1119, "necroU", 453, 5);
@@ -233,9 +261,14 @@ public class CoreDoomwood
         Story.KillQuest(1120, "necroU", "Doomwood Soldier");
 
         //1121   Skullaton Shells
-        Story.MapItemQuest(1121, "necroU", 454, 3);
-        Story.MapItemQuest(1121, "necroU", 455, 3);
-        Story.KillQuest(1121, "necroU", new[] { "Shelleton", "Necro U" });
+        if (!Story.QuestProgression(1121))
+        {
+            Core.EnsureAccept(1121);
+            Core.GetMapItem(454, 3, "necroU");
+            Core.GetMapItem(455, 3, "necroU");
+            Core.HuntMonster("necrou", "Shelleton", "Shelleton Bale Culled", 3);
+            Core.EnsureComplete(1121);
+        }
 
         //1154   Noxious Noxus
         Story.ChainQuest(1154);
@@ -306,21 +339,43 @@ public class CoreDoomwood
         Story.MapItemQuest(1129, "temple", 458, 12);
 
         //1130    Level 8
-        Story.KillQuest(1130, "temple", new[] { "Doomwood Ectomancer", "Skeletal Fire Mage" });
+        if (!Story.QuestProgression(1130))
+        {
+            Core.EnsureAccept(1130);
+            Core.HuntMonster("temple", "Doomwood Ectomancer", "Ectoplasmic Orb", 1);
+            Core.HuntMonster("temple", "Skeletal Fire Mage", "Conflagration Orb", 1);
+            Core.EnsureComplete(1130);
+        }
 
         //1131    Level 9
-        Story.MapItemQuest(1131, "temple", 459, 8);
-        Story.KillQuest(1131, "temple", "Ghoul");
+        if (!Story.QuestProgression(1131))
+        {
+            Core.EnsureAccept(1131);
+            Core.GetMapItem(459, 8, "temple");
+            Core.HuntMonster("temple", "Ghoul", "Ghouls Gone", 10);
+            Core.EnsureComplete(1131);
+        }
 
         //1132    Level 10
         Story.KillQuest(1132, "temple", "Doomwood Ectomancer");
 
         //1133    Level 11
-        Story.MapItemQuest(1133, "temple", 460, 10);
-        Story.KillQuest(1133, "temple", "Sanguine Souleater");
+        if (!Story.QuestProgression(1133))
+        {
+            Core.EnsureAccept(1133);
+            Core.GetMapItem(460, 10, "temple");
+            Core.HuntMonster("temple", "Sanguine Souleater", "Souls Soothed", 10);
+            Core.EnsureComplete(1133);
+        }
 
         //1134    Level 12
-        Story.KillQuest(1134, "temple", new[] { "SlimeSkull", "Doomwood Ectomancer" });
+        if (!Story.QuestProgression(1134))
+        {
+            Core.EnsureAccept(1134);
+            Core.HuntMonster("temple", "Slimeskull", "Slime-Soaked Skull", 1);
+            Core.HuntMonster("temple", "Doomwood Ectomancer", "Ecto-Covered Core", 1);
+            Core.EnsureComplete(1134);
+        }
 
         //1135    Level 13
         Story.MapItemQuest(1135, "temple", 461, 12);
@@ -335,14 +390,32 @@ public class CoreDoomwood
         Story.MapItemQuest(1139, "temple", 462, 10);
 
         //1140    Level 17
-        Story.KillQuest(1140, "temple", new[] { "Doomwood Bonemuncher", "Skeleton" });
+        if (!Story.QuestProgression(1140))
+        {
+            Core.EnsureAccept(1140);
+            Core.HuntMonster("temple", "Doomwood Bonemuncher", "Spiky Collar", 1);
+            Core.HuntMonster("temple", "Skeleton", "Vertebrae Trophy", 1);
+            Core.EnsureComplete(1140);
+        }
 
         //1141    Level 18
-        Story.KillQuest(1141, "temple", new[] { "Undead Mage", "Skeletal Fire Mage" });
+        if (!Story.QuestProgression(1141))
+        {
+            Core.EnsureAccept(1141);
+            Core.HuntMonster("temple", "Undead Mage", "Tattered Necronomicon", 5);
+            Core.HuntMonster("temple", "Skeletal Fire Mage", "Scorched Necronomicon", 5);
+            Core.EnsureComplete(1141);
+        }
 
         //1142    Level 19
-        Story.MapItemQuest(1142, "temple", 463, 6);
-        Story.KillQuest(1142, "temple", new[] { "Shelleton", "Skeleton" });
+        if (!Story.QuestProgression(1142))
+        {
+            Core.EnsureAccept(1142);
+            Core.GetMapItem(463, 6, "temple");
+            Core.HuntMonster("temple", "Shelleton", "Screaming Shell-skull", 10);
+            Core.HuntMonster("temple", "Skeleton", "Grinning Jawbone", 3);
+            Core.EnsureComplete(1142);
+        }
 
         //1143    Level 20
         Story.KillQuest(1143, "temple", "Lich");
@@ -388,8 +461,13 @@ public class CoreDoomwood
         Story.KillQuest(1156, "lab", "Ant Giant");
 
         //1157    Out of Tune(ing Knobs)
-        Story.MapItemQuest(1157, "lab", 489, 3);
-        Story.KillQuest(1157, "lab", "Ant Giant");
+        if (!Story.QuestProgression(1157))
+        {
+            Core.EnsureAccept(1157);
+            Core.GetMapItem(489, 3, "lab");
+            Core.HuntMonster("lab", "Ant Giant", "Tuning Knob", 3);
+            Core.EnsureComplete(1157);
+        }
 
         //1158    Code of Conduct-or
         Story.KillQuest(1158, "lab", "Ant Giant");
@@ -401,8 +479,13 @@ public class CoreDoomwood
         Story.MapItemQuest(1160, "lab", 490, 6);
 
         //1161   You Doing This Again?
-        Story.MapItemQuest(1161, "lab", 491, 7);
-        Story.KillQuest(1161, "lab", "Giant Scorpion");
+        if (!Story.QuestProgression(1161))
+        {
+            Core.EnsureAccept(1161);
+            Core.GetMapItem(491, 7, "lab");
+            Core.HuntMonster("lab", "Giant Scorpion", "Spool of Blue Wire", 10);
+            Core.EnsureComplete(1161);
+        }
 
         //1162    Die, All of You!
         Story.KillQuest(1162, "lab", "Ant Giant");
@@ -438,20 +521,36 @@ public class CoreDoomwood
         }
 
         //2045    Retrieve the Past, Room 1
-        Story.MapItemQuest(2045, "necrodungeon", 1001);
-        Story.KillQuest(2045, "necrodungeon", "Necropolis Soldier");
+        if (!Story.QuestProgression(2045))
+        {
+            Core.EnsureAccept(2045);
+            Core.GetMapItem(1001, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Necropolis Soldier", "Necropolis Soldier Slain", 7);
+            Core.EnsureComplete(2045);
+        }
 
         //2046    Retrieve the Past, Room 2
         Story.MapItemQuest(2046, "necrodungeon", 1015, 5);
         Story.MapItemQuest(2046, "necrodungeon", 1002);
 
         //2047    Retrieve the Past, Room 3
-        Story.MapItemQuest(2047, "necrodungeon", 1003);
-        Story.KillQuest(2047, "necrodungeon", "SlimeSkull");
+        if (!Story.QuestProgression(2047))
+        {
+            Core.EnsureAccept(2047);
+            Core.GetMapItem(1003, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Slimeskull", "Slime Sentry Squished", 8);
+            Core.EnsureComplete(2047);
+        }
 
         //2048    Retrieve the Past, Room 4
-        Story.MapItemQuest(2048, "necrodungeon", 1004);
-        Story.KillQuest(2048, "necrodungeon", new[] { "Necropolis Soldier", "Ghoul" });
+        if (!Story.QuestProgression(2048))
+        {
+            Core.EnsureAccept(2048);
+            Core.GetMapItem(1004, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Necropolis Soldier", "Slimed Elevator Key", 1);
+            Core.HuntMonster("necrodungeon", "Ghoul", "Ghoul Guardian Slain", 4);
+            Core.EnsureComplete(2048);
+        }
 
         //2049    Deeper into Darkness
         if (!Story.QuestProgression(2049))
@@ -463,30 +562,56 @@ public class CoreDoomwood
         }
 
         //2050    Retrieve the Past, Room 5
-        Story.MapItemQuest(2050, "necrodungeon", 1005);
-        Story.MapItemQuest(2050, "necrodungeon", 1016, 3);
-        Story.KillQuest(2050, "necrodungeon", new[] { "SlimeSkull", "Necropolis Soldier" });
+        if (!Story.QuestProgression(2050))
+        {
+            Core.EnsureAccept(2050);
+            Core.GetMapItem(1005, 1, "necrodungeon");
+            Core.GetMapItem(1016, 3, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Slimeskull", "Suspicious Slime Bribed", 3);
+            Core.HuntMonster("necrodungeon", "Necropolis Soldier", "Suspicious Soldier Bribed", 4);
+            Core.EnsureComplete(2050);
+        }
 
         //2051    Retrieve the Past, Room 6
         Story.MapItemQuest(2051, "necrodungeon", 1017, 5);
         Story.MapItemQuest(2051, "necrodungeon", 1006);
 
         //2052    Retrieve the Past, Room 7
-        Story.MapItemQuest(2052, "necrodungeon", 1007);
-        Story.KillQuest(2052, "necrodungeon", "SlimeSkull");
+        if (!Story.QuestProgression(2052))
+        {
+            Core.EnsureAccept(2052);
+            Core.GetMapItem(1007, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Slimeskull", "Vial of Slime Scent", 9);
+            Core.EnsureComplete(2052);
+        }
 
         //2053    Monster Subway Ahead!
-        Story.MapItemQuest(2053, "necrodungeon", 1008);
-        Story.KillQuest(2053, "necrodungeon", "Doom Crawler");
+        if (!Story.QuestProgression(2053))
+        {
+            Core.EnsureAccept(2053);
+            Core.GetMapItem(1008, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Doom Crawler", "Doomcrawler Destroyed", 1);
+            Core.EnsureComplete(2053);
+        }
 
         //2054    Underground RailRoad... to DOOM!
-        Story.MapItemQuest(2054, "necrodungeon", 1009);
-        Story.MapItemQuest(2054, "necrodungeon", 1018, 8);
-        Story.KillQuest(2054, "necrodungeon", "Ghoul");
+        if (!Story.QuestProgression(2054))
+        {
+            Core.EnsureAccept(2054);
+            Core.GetMapItem(1009, 1, "necrodungeon");
+            Core.GetMapItem(1018, 8, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Ghoul", "Chunk of Crawler Food", 8);
+            Core.EnsureComplete(2054);
+        }
 
         //2055    Retrieve the Past, Room 10
-        Story.MapItemQuest(2055, "necrodungeon", 1010);
-        Story.KillQuest(2055, "necrodungeon", "Necropolis Soldier");
+        if (!Story.QuestProgression(2055))
+        {
+            Core.EnsureAccept(2055);
+            Core.GetMapItem(1010, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Necropolis Soldier", "Bony Elevator Key", 1);
+            Core.EnsureComplete(2055);
+        }
 
         //2056    The Deepest Descent
         if (!Story.QuestProgression(2056))
@@ -502,8 +627,13 @@ public class CoreDoomwood
         Story.MapItemQuest(2057, "necrodungeon", 1011);
 
         //2058    Retrieve the Past, Room 12
-        Story.MapItemQuest(2058, "necrodungeon", 1012);
-        Story.KillQuest(2058, "necrodungeon", "Necropolis Soldier");
+        if (!Story.QuestProgression(2058))
+        {
+            Core.EnsureAccept(2058);
+            Core.GetMapItem(1012, 1, "necrodungeon");
+            Core.HuntMonster("necrodungeon", "Necropolis Soldier", "Soldier Swayed", 7);
+            Core.EnsureComplete(2058);
+        }
 
         //2059    Retrieve the Past, Room 13
         Story.MapItemQuest(2059, "necrodungeon", 1019, 5);
@@ -538,19 +668,36 @@ public class CoreDoomwood
         Story.KillQuest(2070, "necrocavern", "Shadowstone Elemental");
 
         //2071    Blinded by the Darkness
-        Story.MapItemQuest(2071, "necrocavern", 1042, 6);
-        Story.KillQuest(2071, "necrocavern", "Shadow Imp");
+        if (!Story.QuestProgression(2071))
+        {
+            Core.EnsureAccept(2071);
+            Core.GetMapItem(1042, 6, "necrocavern");
+            Core.HuntMonster("necrocavern", "Shadow Imp", "Shadow Imp Slain", 6);
+            Core.EnsureComplete(2071);
+        }
 
         //2072    The Tale Never Dies
-        Story.MapItemQuest(2072, "necrocavern", 1044);
-        Story.MapItemQuest(2072, "necrocavern", 1045, 3);
-        Story.KillQuest(2072, "necrocavern", new[] { "Shadow Imp", "Shadowstone Elemental" });
+        if (!Story.QuestProgression(2072))
+        {
+            Core.EnsureAccept(2072);
+            Core.GetMapItem(1044, 1, "necrocavern");
+            Core.GetMapItem(1045, 3, "necrocavern");
+            Core.HuntMonster("necrocavern", "Shadow Imp", "Shadow Ink Obtained", 5);
+            Core.HuntMonster("necrocavern", "Shadowstone Elemental", "Inkstone Obtained", 1);
+            Core.EnsureComplete(2072);
+        }
 
         //2073    Doom Outside the Dome
         Story.KillQuest(2073, "necrocavern", "Shadowstone Elemental");
 
         //2074    Last Bastion of Light
-        Story.KillQuest(2074, "necrocavern", new[] { "Shadowstone Elemental", "Shadow Imp" });
+        if (!Story.QuestProgression(2074))
+        {
+            Core.EnsureAccept(2074);
+            Core.HuntMonster("necrocavern", "Shadowstone Elemental", "Rock Intruder Shattered", 3);
+            Core.HuntMonster("necrocavern", "Shadow Imp", "Imp Invader Slain", 4);
+            Core.EnsureComplete(2074);
+        }
 
         //2075    Shadowy Corruption
         Story.MapItemQuest(2075, "necrocavern", 1043, 5);
@@ -574,11 +721,23 @@ public class CoreDoomwood
         Story.PreLoad(this);
 
         //7589    Bullies
-        Story.KillQuest(7589, "thorngarde", new[] { "CryptHacker", "NecroDrone", "NecroMech" });
+        if (!Story.QuestProgression(7589))
+        {
+            Core.EnsureAccept(7589);
+            Core.HuntMonster("thorngarde", "CryptHacker", "CryptHacker Slain", 4);
+            Core.HuntMonster("thorngarde", "NecroDrone", "NecroDrone Slain", 1);
+            Core.HuntMonster("thorngarde", "NecroMech", "NecroMech Slain", 1);
+            Core.EnsureComplete(7589);
+        }
 
         //7590    Free the People
-        Story.MapItemQuest(7590, "thorngarde", 7485, 5);
-        Story.KillQuest(7590, "thorngarde", "NecroMech");
+        if (!Story.QuestProgression(7590))
+        {
+            Core.EnsureAccept(7590);
+            Core.GetMapItem(7485, 5, "thorngarde");
+            Core.HuntMonster("thorngarde", "NecroMech", "Deadtech Key", 5);
+            Core.EnsureComplete(7590);
+        }
 
         //7591    Sample It
         Story.KillQuest(7591, "thorngarde", "NecroMech");
@@ -600,18 +759,34 @@ public class CoreDoomwood
         Story.MapItemQuest(7594, "thorngarde", 7486);
 
         //7595    Find my Stuff
-        Story.MapItemQuest(7595, "thorngarde", new[] { 7487, 7488 });
-        Story.KillQuest(7595, "thorngarde", "NecroDrone");
+        if (!Story.QuestProgression(7595))
+        {
+            Core.EnsureAccept(7595);
+            Core.GetMapItems(new[] { (7487, 1), (7488, 1) }, "thorngarde");
+            Core.HuntMonster("thorngarde", "NecroDrone", "Kyger's Bunny", 1);
+            Core.EnsureComplete(7595);
+        }
 
         //7596    Save my Friends
-        Story.MapItemQuest(7596, "thorngarde", new[] { 7489, 7490, 7491 });
-        Story.KillQuest(7596, "thorngarde", "NecroMech");
+        if (!Story.QuestProgression(7596))
+        {
+            Core.EnsureAccept(7596);
+            Core.GetMapItems(new[] { (7489, 1), (7490, 1), (7491, 1) }, "thorngarde");
+            Core.HuntMonster("thorngarde", "NecroMech", "NecroMech Slain", 3);
+            Core.EnsureComplete(7596);
+        }
 
         //7597    Pull the Wires
         Story.KillQuest(7597, "thorngarde", "CryptHacker");
 
         //7598    Dress-up Time!
-        Story.KillQuest(7598, "thorngarde", new[] { "CryptHacker", "NecroDrone" });
+        if (!Story.QuestProgression(7598))
+        {
+            Core.EnsureAccept(7598);
+            Core.HuntMonster("thorngarde", "CryptHacker", "CryptHacker Headgear", 1);
+            Core.HuntMonster("thorngarde", "NecroDrone", "Deadtech Pieces", 5);
+            Core.EnsureComplete(7598);
+        }
 
         //7599    I Need a Distraction
         if (!Story.QuestProgression(7599))
@@ -651,11 +826,22 @@ public class CoreDoomwood
         Story.KillQuest(7603, "stonewood", "NecroDrone");
 
         //7604    Gather Spell Components
-        Story.MapItemQuest(7604, "stonewood", 7510, 6);
-        Story.KillQuest(7604, "stonewood", "Doomwood Treeant");
+        if (!Story.QuestProgression(7604))
+        {
+            Core.EnsureAccept(7604);
+            Core.GetMapItem(7510, 6, "stonewood");
+            Core.HuntMonster("stonewood", "Doomwood Treeant", "Treeant Pollen", 8);
+            Core.EnsureComplete(7604);
+        }
 
         //7605    A Few Things More
-        Story.KillQuest(7605, "stonewood", new[] { "NecroDrone", "NecroMech" });
+        if (!Story.QuestProgression(7605))
+        {
+            Core.EnsureAccept(7605);
+            Core.HuntMonster("stonewood", "NecroDrone", "Fresh Marrow", 8);
+            Core.HuntMonster("stonewood", "NecroMech", "Pristine Wishbone", 1);
+            Core.EnsureComplete(7605);
+        }
 
         //7606    Search for the Axe
         Story.MapItemQuest(7606, "stonewood", 7511, 4);
@@ -681,8 +867,13 @@ public class CoreDoomwood
         Story.KillQuest(7609, "techdungeon", "NecroMech");
 
         //7610    Ew, Rats
-        Story.MapItemQuest(7610, "techdungeon", 7515, 6);
-        Story.KillQuest(7610, "techdungeon", "Rotting Rat");
+        if (!Story.QuestProgression(7610))
+        {
+            Core.EnsureAccept(7610);
+            Core.GetMapItem(7515, 6, "techdungeon");
+            Core.HuntMonster("techdungeon", "Rotting Rat", "Rat Slain", 10);
+            Core.EnsureComplete(7610);
+        }
 
         //7611    Grab Their Gear
         if (!Story.QuestProgression(7611))
@@ -701,8 +892,13 @@ public class CoreDoomwood
         Story.MapItemQuest(7613, "techdungeon", 7516);
 
         //7614    Head on Out
-        Story.MapItemQuest(7614, "techdungeon", 7517);
-        Story.KillQuest(7614, "techdungeon", "DoomBorg Guard");
+        if (!Story.QuestProgression(7614))
+        {
+            Core.EnsureAccept(7614);
+            Core.GetMapItem(7517, 1, "techdungeon");
+            Core.HuntMonster("techdungeon", "DoomBorg Guard", "Deadtech Guard Slain", 12);
+            Core.EnsureComplete(7614);
+        }
 
         //7615    Take Him Down
         Story.KillQuest(7615, "techdungeon", "Kalron the Cryptborg");
@@ -856,8 +1052,13 @@ public class CoreDoomwood
         Story.KillQuest(7639, "techfortress", "CryptHacker");
 
         //7640    Signal Flare
-        Story.MapItemQuest(7640, "techfortress", 7561);
-        Story.KillQuest(7640, "techfortress", "NecroDrone");
+        if (!Story.QuestProgression(7640))
+        {
+            Core.EnsureAccept(7640);
+            Core.GetMapItem(7561, 1, "techfortress");
+            Core.HuntMonster("techfortress", "NecroDrone", "Flare", 1);
+            Core.EnsureComplete(7640);
+        }
 
         //7641    Medal Time
         if (!Story.QuestProgression(7641))

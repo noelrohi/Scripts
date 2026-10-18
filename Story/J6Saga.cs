@@ -195,7 +195,13 @@ public class J6Saga
         Story.KillQuest(2849, "alley", "Thug Boss");
 
         //Security Breach
-        Story.KillQuest(2844, "alley", new[] { "Security Cam", " Guard Robot" });
+        if (!Story.QuestProgression(2844))
+        {
+            Core.EnsureAccept(2844);
+            Core.HuntMonster("alley", "Security Cam", "Security Cam Destroyed", 5);
+            Core.HuntMonster("alley", "Guard Robot", "Destroyed Robo Guard", 7);
+            Core.EnsureComplete(2844);
+        }
 
         //No Sniffin' Around
         Story.KillQuest(2845, "alley", "Guard Dog Robot");

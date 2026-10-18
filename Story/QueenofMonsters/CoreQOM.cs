@@ -55,12 +55,14 @@ public class CoreQOM
         Core.AddDrop(31052);
 
         //Summon Help
-        Story.MapItemQuest(4495, "celestialrealm", 3698);
-        Story.KillQuest(
-            4495,
-            "celestialrealm",
-            new[] { "Celestial Bird of Paradise", "Fallen Knight" }
-        );
+        if (!Story.QuestProgression(4495))
+        {
+            Core.EnsureAccept(4495);
+            Core.GetMapItem(3698, 1, "celestialrealm");
+            Core.HuntMonster("celestialrealm", "Celestial Bird of Paradise", "Golden Grain", 1);
+            Core.HuntMonster("celestialrealm", "Fallen Knight", "Bright Flower Seed", 10);
+            Core.EnsureComplete(4495);
+        }
 
         //Power Up!
         if (!Story.QuestProgression(4496))
@@ -79,15 +81,22 @@ public class CoreQOM
         {
             Core.AddDrop("Dwakel Decoder");
             Core.GetMapItem(106, 1, "crashsite");
-            Story.KillQuest(4498, "celestialrealm", "Infernal Knight");
+            Core.EnsureAccept(4498);
+            Core.HuntMonster("celestialrealm", "Infernal Knight", "Map of Lore", 1);
+            Core.EnsureComplete(4498);
         }
 
         //Reveal the Portal!
         Story.MapItemQuest(4499, "celestialrealm", 3693);
 
         //Investigate the Ruins
-        Story.MapItemQuest(4500, "lostruins", 3694, 3);
-        Story.KillQuest(4500, "lostruins", "Underworld Hound");
+        if (!Story.QuestProgression(4500))
+        {
+            Core.EnsureAccept(4500);
+            Core.GetMapItem(3694, 3, "lostruins");
+            Core.HuntMonster("lostruins", "Underworld Hound", "Underworld Hound Defeated", 5);
+            Core.EnsureComplete(4500);
+        }
 
         //Take out the Knights
         Story.KillQuest(4501, "lostruins", "Fallen Knight");
@@ -160,12 +169,24 @@ public class CoreQOM
         Story.KillQuest(4508, "lostruinswar", "Diabolical Warlord");
 
         //Infernal Destruction
-        Story.KillQuest(5374, "infernalspire", new[] { "Fallen Knight", "Underworld Hound" });
+        if (!Story.QuestProgression(5374))
+        {
+            Core.EnsureAccept(5374);
+            Core.HuntMonster("infernalspire", "Fallen Knight", "Fallen Knight Slain", 8);
+            Core.HuntMonster("infernalspire", "Underworld Hound", "Underworld Hound Slain", 8);
+            Core.EnsureComplete(5374);
+        }
 
         //Gone Without A Trace
-        Story.MapItemQuest(5375, "infernalspire", 4729);
-        Story.MapItemQuest(5375, "infernalspire", 4730);
-        Story.KillQuest(5375, "infernalspire", new[] { "Fallen Knight", "Underworld Hound" });
+        if (!Story.QuestProgression(5375))
+        {
+            Core.EnsureAccept(5375);
+            Core.GetMapItem(4729, 1, "infernalspire");
+            Core.GetMapItem(4730, 1, "infernalspire");
+            Core.KillMonster("infernalspire", "r2", "Left", "Fallen Knight", "Celestial Silk", 1);
+            Core.HuntMonster("infernalspire", "Underworld Hound", "Torn Feathers", 1);
+            Core.EnsureComplete(5375);
+        }
 
         //Helzekiel
         Core.EquipClass(ClassType.Solo);
@@ -185,8 +206,13 @@ public class CoreQOM
         Story.MapItemQuest(5378, "infernalspire", 4731, 6);
 
         //Energy Needed
-        Story.MapItemQuest(5379, "infernalspire", 4732, 6);
-        Story.KillQuest(5379, "infernalspire", "Dungeon Fiend");
+        if (!Story.QuestProgression(5379))
+        {
+            Core.EnsureAccept(5379);
+            Core.GetMapItem(4732, 6, "infernalspire");
+            Core.HuntMonster("infernalspire", "Dungeon Fiend", "Celestial Energy", 6);
+            Core.EnsureComplete(5379);
+        }
 
         //Interrogate the Jailer
         Story.KillQuest(5380, "infernalspire", "Garvodeus");
@@ -262,8 +288,13 @@ public class CoreQOM
         Story.MapItemQuest(5409, "doompally", 4758);
 
         //The Dark Thicket
-        Story.MapItemQuest(5410, "doompally", 4759, 5);
-        Story.KillQuest(5410, "doompally", "Doomwood Bonemuncher");
+        if (!Story.QuestProgression(5410))
+        {
+            Core.EnsureAccept(5410);
+            Core.GetMapItem(4759, 5, "doompally");
+            Core.HuntMonster("doompally", "Doomwood Bonemuncher", "Thicket Monsters Slain", 8);
+            Core.EnsureComplete(5410);
+        }
 
         //Emily
         Story.MapItemQuest(5411, "doompally", 4761);
@@ -295,7 +326,13 @@ public class CoreQOM
         Story.PreLoad(this);
 
         //Hounds and Infernals and Imp, Oh my!
-        Story.KillQuest(5487, "DarkoviaInvasion", new[] { "Underworld Hound", "Infernal Imp" });
+        if (!Story.QuestProgression(5487))
+        {
+            Core.EnsureAccept(5487);
+            Core.HuntMonster("darkoviainvasion", "Underworld Hound", "Underworld Hound Slain", 5);
+            Core.HuntMonster("darkoviainvasion", "Infernal Imp", "Infernal Imp Slain", 5);
+            Core.EnsureComplete(5487);
+        }
 
         //Like Imps in A Pod
         Story.MapItemQuest(5488, "DarkoviaInvasion", 4905, 6);
@@ -307,7 +344,13 @@ public class CoreQOM
         Story.MapItemQuest(5490, "SafiriaInvasion", 4904);
 
         //What We Need Is A Big Can Of Raid
-        Story.KillQuest(5491, "SafiriaInvasion", new[] { "Fallen Knight", "Infernal Knight" });
+        if (!Story.QuestProgression(5491))
+        {
+            Core.EnsureAccept(5491);
+            Core.HuntMonster("safiriainvasion", "Fallen Knight", "Fallen Knights Slain", 5);
+            Core.HuntMonster("safiriainvasion", "Infernal Knight", "Infernal Knights Slain", 5);
+            Core.EnsureComplete(5491);
+        }
 
         //Trapped!
         Story.MapItemQuest(5492, "SafiriaInvasion", 4895, 6);
@@ -317,8 +360,13 @@ public class CoreQOM
         Story.MapItemQuest(5493, "SafiriaInvasion", 4897, 9);
 
         //Here, Doggy Doggy
-        Story.MapItemQuest(5494, "SafiriaInvasion", new[] { 4898, 4899 });
-        Story.KillQuest(5494, "SafiriaInvasion", "Blood Maggot");
+        if (!Story.QuestProgression(5494))
+        {
+            Core.EnsureAccept(5494);
+            Core.GetMapItems(new[] { (4898, 1), (4899, 1) }, "SafiriaInvasion");
+            Core.HuntMonster("safiriainvasion", "Blood Maggot", "Maggot Blood", 6);
+            Core.EnsureComplete(5494);
+        }
 
         //Ma'alech
         Story.KillQuest(5495, "SafiriaInvasion", "Ma'alech");
@@ -327,7 +375,13 @@ public class CoreQOM
         Story.MapItemQuest(5496, "LycanInvasion", 4900);
 
         //The Best Way To Slay An Infernal
-        Story.KillQuest(5497, "LycanInvasion", new[] { "Infernal Knight", "Fallen Knight" });
+        if (!Story.QuestProgression(5497))
+        {
+            Core.EnsureAccept(5497);
+            Core.HuntMonster("lycaninvasion", "Infernal Knight", "Celestial Spear", 6);
+            Core.HuntMonster("lycaninvasion", "Fallen Knight", "Celestial Lightblade", 6);
+            Core.EnsureComplete(5497);
+        }
 
         //A Dire Situation
         Story.KillQuest(5498, "LycanInvasion", "Dire Wolf");
@@ -340,11 +394,22 @@ public class CoreQOM
         Story.KillQuest(5500, "LycanInvasion", "Lord Balax'el");
 
         //Follow Lady Solani
-        Story.MapItemQuest(5501, "SafiriaInvasion", 4902);
-        Story.KillQuest(5501, "SafiriaInvasion", "Fallen Knight");
+        if (!Story.QuestProgression(5501))
+        {
+            Core.EnsureAccept(5501);
+            Core.GetMapItem(4902, 1, "SafiriaInvasion");
+            Core.HuntMonster("safiriainvasion", "Fallen Knight", "Infernals Slain", 5);
+            Core.EnsureComplete(5501);
+        }
 
         //Revenant Slayer
-        Story.KillQuest(5502, "SafiriaInvasion", new[] { "Shadow Imp", "Revenant" });
+        if (!Story.QuestProgression(5502))
+        {
+            Core.EnsureAccept(5502);
+            Core.HuntMonster("safiriainvasion", "Shadow Imp", "Shadow Imp Slain", 8);
+            Core.HuntMonster("safiriainvasion", "Revenant", "Revenant Slain", 8);
+            Core.EnsureComplete(5502);
+        }
 
         //Noddharath
         Story.KillQuest(5503, "SafiriaInvasion", "Noddharath");
@@ -365,7 +430,13 @@ public class CoreQOM
         Story.MapItemQuest(5543, "shadowfallinvasion", 5024);
 
         //Clear the Walls
-        Story.KillQuest(5544, "shadowfallinvasion", new[] { "Infernal Imp", "Infernal Knight" });
+        if (!Story.QuestProgression(5544))
+        {
+            Core.EnsureAccept(5544);
+            Core.HuntMonster("shadowfallinvasion", "Infernal Imp", "Infernal Imp Slain", 6);
+            Core.HuntMonster("shadowfallinvasion", "Infernal Knight", "Infernal Knight Slain", 6);
+            Core.EnsureComplete(5544);
+        }
 
         //Load the Ballistas
         Story.MapItemQuest(5545, "shadowfallinvasion", 5025, 4);
@@ -412,8 +483,13 @@ public class CoreQOM
         Story.MapItemQuest(5554, "shadowfallinvasion", 5031);
 
         //Soul Fuel
-        Story.MapItemQuest(5555, "shadowfallinvasion", 5032);
-        Story.KillQuest(5555, "shadowfallinvasion", "Diabolical Scryer");
+        if (!Story.QuestProgression(5555))
+        {
+            Core.EnsureAccept(5555);
+            Core.GetMapItem(5032, 1, "shadowfallinvasion");
+            Core.HuntMonster("shadowfallinvasion", "Diabolical Scryer", "Infernal Soul", 12);
+            Core.EnsureComplete(5555);
+        }
 
         //Time to Fly
         Story.MapItemQuest(5556, "shadowfallinvasion", 5033);
@@ -464,11 +540,14 @@ public class CoreQOM
         Story.MapItemQuest(5580, "castleinvasion", 5058, 5);
 
         //Destroy the Infernals
-        Story.KillQuest(
-            5581,
-            "castleinvasion",
-            new[] { "Infernal Knight", "Fallen Knight", "Nethermage" }
-        );
+        if (!Story.QuestProgression(5581))
+        {
+            Core.EnsureAccept(5581);
+            Core.HuntMonster("castleinvasion", "Infernal Knight", "Infernal Knights Slain", 3);
+            Core.HuntMonster("castleinvasion", "Fallen Knight", "Fallen Knights Slain", 3);
+            Core.HuntMonster("castleinvasion", "Nethermage", "Nethermages Slain", 3);
+            Core.EnsureComplete(5581);
+        }
 
         //What is THAT??
         if (!Story.QuestProgression(5582))
@@ -484,7 +563,13 @@ public class CoreQOM
         Story.MapItemQuest(5583, "castleinvasion", 5057, 4);
 
         //Get Those Beasts
-        Story.KillQuest(5584, "castleinvasion", new[] { "Infernal Imp", "Underworld Hound" });
+        if (!Story.QuestProgression(5584))
+        {
+            Core.EnsureAccept(5584);
+            Core.HuntMonster("castleinvasion", "Infernal Imp", "Infernal Imps Slain", 4);
+            Core.HuntMonster("castleinvasion", "Underworld Hound", "Underworld Hounds Slain", 4);
+            Core.EnsureComplete(5584);
+        }
 
         Core.Logger("Relaoding the map for the worm");
         Bot.Map.Reload();
@@ -523,8 +608,13 @@ public class CoreQOM
         Story.MapItemQuest(5803, "charredpath", 5248);
 
         //Follow the Pattern.. He Ne Ar Kr
-        Story.MapItemQuest(5804, "crashsite", 5249);
-        Story.KillQuest(5804, "crashsite", "Dwakel Warrior");
+        if (!Story.QuestProgression(5804))
+        {
+            Core.EnsureAccept(5804);
+            Core.GetMapItem(5249, 1, "crashsite");
+            Core.HuntMonster("crashsite", "Dwakel Warrior", "Purified Xenon", 6);
+            Core.EnsureComplete(5804);
+        }
 
         //The PTM is Ready!
         if (!Story.QuestProgression(5805))
@@ -537,26 +627,46 @@ public class CoreQOM
         }
 
         //Save the Creatures
-        Story.MapItemQuest(5806, "charredpath", 5250, 6);
-        Story.KillQuest(5806, "charredpath", "Ragewing");
+        if (!Story.QuestProgression(5806))
+        {
+            Core.EnsureAccept(5806);
+            Core.GetMapItem(5250, 6, "charredpath");
+            Core.HuntMonster("charredpath", "Ragewing", "Monster Stilled", 7);
+            Core.EnsureComplete(5806);
+        }
 
         //Clear the Treeants
-        Story.MapItemQuest(5807, "charredpath", 5251, 3);
-        Story.KillQuest(5807, "charredpath", "Toxic Treeant");
+        if (!Story.QuestProgression(5807))
+        {
+            Core.EnsureAccept(5807);
+            Core.GetMapItem(5251, 3, "charredpath");
+            Core.HuntMonster("charredpath", "Toxic Treeant", "Treeant Felled", 6);
+            Core.EnsureComplete(5807);
+        }
 
         //Excise the Infection
         Story.KillQuest(5808, "charredpath", "Infected Hare");
 
         //Root out the Plague
-        Story.MapItemQuest(5809, "charredpath", 5252, 6);
-        Story.KillQuest(5809, "charredpath", "Plague Spreader");
+        if (!Story.QuestProgression(5809))
+        {
+            Core.EnsureAccept(5809);
+            Core.GetMapItem(5252, 6, "charredpath");
+            Core.HuntMonster("charredpath", "Plague Spreader", "Plague Spreaders Slain", 7);
+            Core.EnsureComplete(5809);
+        }
 
         //I Said Yes, Yes, Yes
         Story.MapItemQuest(5810, "charredpath", 5255);
 
         //Rally the Mages
-        Story.MapItemQuest(5811, "therift", 5253, 4);
-        Story.KillQuest(5811, "therift", "Mana Chest");
+        if (!Story.QuestProgression(5811))
+        {
+            Core.EnsureAccept(5811);
+            Core.GetMapItem(5253, 4, "therift");
+            Core.HuntMonster("therift", "Mana Chest", "Mana Bomb", 8);
+            Core.EnsureComplete(5811);
+        }
 
         //Wisteria Hysteria
         Story.KillQuest(5812, "charredpath", "Toxic Wisteria");
@@ -632,14 +742,25 @@ public class CoreQOM
         Story.MapItemQuest(5837, "underglade", 5271);
 
         //Into the Underglade
-        Story.KillQuest(5838, "underglade", new[] { "Tree Nymph", "Forest Spirit" });
+        if (!Story.QuestProgression(5838))
+        {
+            Core.EnsureAccept(5838);
+            Core.HuntMonster("underglade", "Tree Nymph", "Tree Nymph", 5);
+            Core.HuntMonster("underglade", "Forest Spirit", "Forest Spirit", 5);
+            Core.EnsureComplete(5838);
+        }
 
         //Clear the Spores
         Story.KillQuest(5839, "underglade", "Slime Spore");
 
         //Cleanse the Walls
-        Story.MapItemQuest(5840, "underglade", 5272, 8);
-        Story.KillQuest(5840, "underglade", "Forest Spirit");
+        if (!Story.QuestProgression(5840))
+        {
+            Core.EnsureAccept(5840);
+            Core.GetMapItem(5272, 8, "underglade");
+            Core.HuntMonster("underglade", "Forest Spirit", "Essence of Nature", 8);
+            Core.EnsureComplete(5840);
+        }
 
         //Expose the Entrance
         Story.KillQuest(5841, "underglade", "Blackened Earth");
@@ -648,8 +769,13 @@ public class CoreQOM
         Story.KillQuest(5842, "underglade", "Luminous Fungus");
 
         //More Corruption Revealed
-        Story.MapItemQuest(5843, "underglade", 5273, 6);
-        Story.KillQuest(5843, "underglade", "Forest Spirit");
+        if (!Story.QuestProgression(5843))
+        {
+            Core.EnsureAccept(5843);
+            Core.GetMapItem(5273, 6, "underglade");
+            Core.HuntMonster("underglade", "Forest Spirit", "Elemental Earth", 6);
+            Core.EnsureComplete(5843);
+        }
 
         //The Goblin Threat
         Story.KillQuest(5844, "underglade", "Twisted Goblin");
@@ -674,7 +800,13 @@ public class CoreQOM
         Story.PreLoad(this);
 
         //Capture the Misshapen
-        Story.KillQuest(5849, "Pilgrimage", new[] { "SpiderWing", "Urstrix" });
+        if (!Story.QuestProgression(5849))
+        {
+            Core.EnsureAccept(5849);
+            Core.HuntMonster("pilgrimage", "SpiderWing", "Spiderwing Captured", 4);
+            Core.HuntMonster("pilgrimage", "Urstrix", "Urstrix Captured", 4);
+            Core.EnsureComplete(5849);
+        }
 
         //Defeat the Parasites
         Story.KillQuest(5850, "Pilgrimage", "Ravenous Parasite");
@@ -683,9 +815,15 @@ public class CoreQOM
         Story.KillQuest(5851, "Pilgrimage", "Extrikiti");
 
         //Find Lucky!
-        Story.MapItemQuest(5852, "Pilgrimage", 5289);
-        Story.MapItemQuest(5852, "Pilgrimage", 5288, 3);
-        Story.KillQuest(5852, "Pilgrimage", new[] { "Extrikiti", "Extrikiti" });
+        if (!Story.QuestProgression(5852))
+        {
+            Core.EnsureAccept(5852);
+            Core.GetMapItem(5289, 1, "Pilgrimage");
+            Core.GetMapItem(5288, 3, "Pilgrimage");
+            Core.HuntMonster("pilgrimage", "Extrikiti", "Tuft of Fur", 3);
+            Core.HuntMonster("pilgrimage", "Extrikiti", "Lucky's Collar", 1);
+            Core.EnsureComplete(5852);
+        }
 
         //Gather a Scouting Party
         if (!Story.QuestProgression(5853))
@@ -697,15 +835,25 @@ public class CoreQOM
         }
 
         //Defeat the Parasites
-        Story.MapItemQuest(5854, "Pilgrimage", 5292);
-        Story.KillQuest(5854, "Pilgrimage", "Ravenous Parasite");
+        if (!Story.QuestProgression(5854))
+        {
+            Core.EnsureAccept(5854);
+            Core.GetMapItem(5292, 1, "Pilgrimage");
+            Core.HuntMonster("pilgrimage", "Ravenous Parasite", "Monsters Slain", 10);
+            Core.EnsureComplete(5854);
+        }
 
         //Bad Dog
         Story.KillQuest(5855, "Pilgrimage", "Lucky");
 
         //Connect to the Earth
-        Story.MapItemQuest(6276, "guardiantree", 5769, 5);
-        Story.KillQuest(6276, "guardiantree", "Blossoming Treeant");
+        if (!Story.QuestProgression(6276))
+        {
+            Core.EnsureAccept(6276);
+            Core.GetMapItem(5769, 5, "guardiantree");
+            Core.HuntMonster("guardiantree", "Blossoming Treeant", "Treeant Cuttings", 5);
+            Core.EnsureComplete(6276);
+        }
 
         //Help the Hedgies
         Story.MapItemQuest(6277, "guardiantree", 5776, 5);
@@ -730,8 +878,13 @@ public class CoreQOM
         Story.KillQuest(6281, "guardiantree", "Blossoming Treeant");
 
         //Pass Through the Pollen
-        Story.MapItemQuest(6282, "guardiantree", 5773);
-        Story.KillQuest(6282, "guardiantree", "Pollen Cloud");
+        if (!Story.QuestProgression(6282))
+        {
+            Core.EnsureAccept(6282);
+            Core.GetMapItem(5773, 1, "guardiantree");
+            Core.HuntMonster("guardiantree", "Pollen Cloud", "Pollen Clouds Destroyed", 5);
+            Core.EnsureComplete(6282);
+        }
 
         //Reinvigorate the Sprout
         if (!Story.QuestProgression(6283))
@@ -745,8 +898,13 @@ public class CoreQOM
         Story.MapItemQuest(6284, "guardiantree", 5774);
 
         //Grow a Bridge
-        Story.MapItemQuest(6285, "guardiantree", 5775, 2);
-        Story.KillQuest(6285, "guardiantree", "Myconid");
+        if (!Story.QuestProgression(6285))
+        {
+            Core.EnsureAccept(6285);
+            Core.GetMapItem(5775, 2, "guardiantree");
+            Core.HuntMonster("guardiantree", "Myconid", "Fungal Spores", 6);
+            Core.EnsureComplete(6285);
+        }
 
         //Take Down Terrane
         if (!Story.QuestProgression(6286))
@@ -759,8 +917,13 @@ public class CoreQOM
             return;
 
         //Explore the Cavern
-        Story.MapItemQuest(5856, "TwistedCavern", 5293);
-        Story.KillQuest(5856, "TwistedCavern", "Extrikiti");
+        if (!Story.QuestProgression(5856))
+        {
+            Core.EnsureAccept(5856);
+            Core.GetMapItem(5293, 1, "TwistedCavern");
+            Core.HuntMonster("twistedcavern", "Extrikiti", "Extrikitis Slain", 8);
+            Core.EnsureComplete(5856);
+        }
 
         //Capture the Insects
         Story.KillQuest(5857, "TwistedCavern", "Infesting Swarm");
@@ -779,8 +942,13 @@ public class CoreQOM
         Story.KillQuest(5859, "TwistedCavern", "Seed Stalker");
 
         //Free the Flies
-        Story.MapItemQuest(5860, "TwistedCavern", 5294);
-        Story.KillQuest(5860, "TwistedCavern", "SpiderWing");
+        if (!Story.QuestProgression(5860))
+        {
+            Core.EnsureAccept(5860);
+            Core.GetMapItem(5294, 1, "TwistedCavern");
+            Core.HuntMonster("twistedcavern", "SpiderWing", "Spiderwings Slain", 8);
+            Core.EnsureComplete(5860);
+        }
 
         //Follow the Swarm
         Story.MapItemQuest(5861, "TwistedCavern", 5295, 6);
@@ -802,7 +970,13 @@ public class CoreQOM
         Story.KillQuest(5864, "TwistedCavern", "Lore Golem");
 
         //Time for a Dose
-        Story.KillQuest(5866, "BrokenWoods", new[] { "Urstrix", "SpiderWing" });
+        if (!Story.QuestProgression(5866))
+        {
+            Core.EnsureAccept(5866);
+            Core.HuntMonster("brokenwoods", "Urstrix", "Urstrix Dosed", 3);
+            Core.HuntMonster("brokenwoods", "SpiderWing", "Spiderwing Dosed", 3);
+            Core.EnsureComplete(5866);
+        }
 
         //Comparing Samples
         if (!Story.QuestProgression(5867))
@@ -816,18 +990,35 @@ public class CoreQOM
         }
 
         //Examine the Foliage
-        Story.MapItemQuest(5868, "BrokenWoods", 5296, 4);
-        Story.MapItemQuest(5868, "BrokenWoods", 5297, 4);
-        Story.KillQuest(5868, "BrokenWoods", "Fungal Lord");
+        if (!Story.QuestProgression(5868))
+        {
+            Core.EnsureAccept(5868);
+            Core.GetMapItem(5296, 4, "BrokenWoods");
+            Core.GetMapItem(5297, 4, "BrokenWoods");
+            Core.HuntMonster("brokenwoods", "Fungal Lord", "Fungal Lord Slime", 4);
+            Core.EnsureComplete(5868);
+        }
 
         //Investigate the Goo
         Story.KillQuest(5869, "BrokenWoods", "Extrikiti");
 
         //Second Dose
-        Story.KillQuest(5870, "BrokenWoods", new[] { "Urstrix", "SpiderWing" });
+        if (!Story.QuestProgression(5870))
+        {
+            Core.EnsureAccept(5870);
+            Core.HuntMonster("brokenwoods", "Urstrix", "Urstrix Dosed", 3);
+            Core.HuntMonster("brokenwoods", "SpiderWing", "Spiderwing Dosed", 3);
+            Core.EnsureComplete(5870);
+        }
 
         //Still Not Working
-        Story.KillQuest(5871, "charredpath", new[] { "Ravenous Parasite", "Plague Spreader" });
+        if (!Story.QuestProgression(5871))
+        {
+            Core.EnsureAccept(5871);
+            Core.HuntMonster("charredpath", "Ravenous Parasite", "Captured Parasite", 3);
+            Core.HuntMonster("charredpath", "Plague Spreader", "Captured Plague Spreader", 3);
+            Core.EnsureComplete(5871);
+        }
 
         //Get the Final Ingredients
         if (!Story.QuestProgression(5872))
@@ -865,27 +1056,61 @@ public class CoreQOM
         Story.PreLoad(this);
 
         //8048 | Time to Study
-        Story.KillQuest(8048, "forestreach", new[] { "Monstrous Imp", "Eldritch Parasite" });
+        if (!Story.QuestProgression(8048))
+        {
+            Core.EnsureAccept(8048);
+            Core.HuntMonster("forestreach", "Monstrous Imp", "Monstrous Imp Captured", 8);
+            Core.HuntMonster("forestreach", "Eldritch Parasite", "Eldritch Parasite Captured", 8);
+            Core.EnsureComplete(8048);
+        }
 
         //8049 | Calm Them Down
         Story.KillQuest(8049, "forestreach", "Chaos Spitter");
 
         //8050 | Get the Reagents
-        Story.MapItemQuest(8050, "forestreach", 8362, 5);
-        Story.KillQuest(8050, "forestreach", "Chaos Sp-eye");
+        if (!Story.QuestProgression(8050))
+        {
+            Core.EnsureAccept(8050);
+            Core.GetMapItem(8362, 5, "forestreach");
+            Core.HuntMonster("forestreach", "Chaos Sp-eye", "Chaos Ichor", 6);
+            Core.EnsureComplete(8050);
+        }
 
         //8051 | Samples for Comparison
-        Story.MapItemQuest(8051, "forestreach", 8363, 5);
-        Story.KillQuest(8051, "forestreach", "Chaos Spitter");
+        if (!Story.QuestProgression(8051))
+        {
+            Core.EnsureAccept(8051);
+            Core.GetMapItem(8363, 5, "forestreach");
+            Core.HuntMonster("forestreach", "Chaos Spitter", "Chaos Spitter Cutting", 7);
+            Core.EnsureComplete(8051);
+        }
 
         //8052 | More Testing Required
-        Story.KillQuest(8052, "forestreach", new[] { "EldritchWing", "Chaos Sp-eye" });
+        if (!Story.QuestProgression(8052))
+        {
+            Core.EnsureAccept(8052);
+            Core.HuntMonster("forestreach", "EldritchWing", "EldritchWing Captured", 8);
+            Core.HuntMonster("forestreach", "Chaos Sp-eye", "Chaos Sp-Eye Captured", 8);
+            Core.EnsureComplete(8052);
+        }
 
         //8053 | Tidy Up
-        Story.KillQuest(8053, "forestreach", new[] { "Eldritch Parasite", "Monstrous Imp" });
+        if (!Story.QuestProgression(8053))
+        {
+            Core.EnsureAccept(8053);
+            Core.HuntMonster("forestreach", "Eldritch Parasite", "Eldritch Parasite Slain", 8);
+            Core.HuntMonster("forestreach", "Monstrous Imp", "Monstrous Imp Slain", 8);
+            Core.EnsureComplete(8053);
+        }
 
         //8054 | We Need Neutralizer
-        Story.KillQuest(8054, "forestreach", new[] { "Chaos Spitter", "Chaos Sp-eye" });
+        if (!Story.QuestProgression(8054))
+        {
+            Core.EnsureAccept(8054);
+            Core.HuntMonster("forestreach", "Chaos Spitter", "Acidic Pollen", 6);
+            Core.HuntMonster("forestreach", "Chaos Sp-eye", "Eye Gunk", 4);
+            Core.EnsureComplete(8054);
+        }
 
         //8055 | Neutralize 'Em
         Story.MapItemQuest(8055, "forestreach", 8364, 5);
@@ -992,7 +1217,13 @@ public class CoreQOM
         Story.KillQuest(8091, "transformation", "Monstrite");
 
         //8092 | Acid and Scratch Test
-        Story.KillQuest(8092, "transformation", new[] { "Tentastrike", "Deep Tunneler" });
+        if (!Story.QuestProgression(8092))
+        {
+            Core.EnsureAccept(8092);
+            Core.HuntMonster("transformation", "Tentastrike", "Acid Venom", 5);
+            Core.HuntMonster("transformation", "Deep Tunneler", "Sharpest Fang", 1);
+            Core.EnsureComplete(8092);
+        }
 
         //8093 | The Largest Monstrite
         Story.KillQuest(8093, "transformation", "Eldritch Abomination");
@@ -1009,12 +1240,22 @@ public class CoreQOM
         Story.KillQuest(8097, "downbelow", "Rumbling Rubble");
 
         //8098 | Open the Way
-        Story.MapItemQuest(8098, "downbelow", 8491);
-        Story.KillQuest(8098, "downbelow", "Monstrous Flame");
+        if (!Story.QuestProgression(8098))
+        {
+            Core.EnsureAccept(8098);
+            Core.GetMapItem(8491, 1, "downbelow");
+            Core.HuntMonster("downbelow", "Monstrous Flame", "Monstrous Flame", 5);
+            Core.EnsureComplete(8098);
+        }
 
         //8099 | Follow the Trail
-        Story.MapItemQuest(8099, "downbelow", 8492);
-        Story.KillQuest(8099, "downbelow", "Earthwyrm");
+        if (!Story.QuestProgression(8099))
+        {
+            Core.EnsureAccept(8099);
+            Core.GetMapItem(8492, 1, "downbelow");
+            Core.HuntMonster("downbelow", "Earthwyrm", "Monster Slain", 8);
+            Core.EnsureComplete(8099);
+        }
 
         //8100 | Tentarachnid Horde
         Story.KillQuest(8100, "downbelow", "Tentarachnid");
@@ -1023,19 +1264,34 @@ public class CoreQOM
         Story.KillQuest(8101, "downbelow", "Creeping Shadow");
 
         //8102 | Keep up the Search
-        Story.MapItemQuest(8102, "downbelow", 8493);
-        Story.KillQuest(8102, "downbelow", "Creeping Shadow");
+        if (!Story.QuestProgression(8102))
+        {
+            Core.EnsureAccept(8102);
+            Core.GetMapItem(8493, 1, "downbelow");
+            Core.HuntMonster("downbelow", "Creeping Shadow", "Monster Slain", 6);
+            Core.EnsureComplete(8102);
+        }
 
         //8103 | Defeat the Guardian
         Story.KillQuest(8103, "downbelow", "Guardian Golem");
 
         //8104 | Wall of Rage
-        Story.MapItemQuest(8104, "downbelow", 8494);
-        Story.KillQuest(8104, "downbelow", "Living Rage");
+        if (!Story.QuestProgression(8104))
+        {
+            Core.EnsureAccept(8104);
+            Core.GetMapItem(8494, 1, "downbelow");
+            Core.HuntMonster("downbelow", "Living Rage", "Hidden Hope", 5);
+            Core.EnsureComplete(8104);
+        }
 
         //8105 | Through the Fire
-        Story.MapItemQuest(8105, "downbelow", 8495);
-        Story.KillQuest(8105, "downbelow", "Living Rage");
+        if (!Story.QuestProgression(8105))
+        {
+            Core.EnsureAccept(8105);
+            Core.GetMapItem(8495, 1, "downbelow");
+            Core.HuntMonster("downbelow", "Living Rage", "Monsters Slain", 9);
+            Core.EnsureComplete(8105);
+        }
 
         //8106 | Heart of the Power
         Core.EquipClass(ClassType.Solo);

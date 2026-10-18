@@ -38,7 +38,13 @@ public class BurningBeachStory
         Story.PreLoad(this);
 
         //7573 | Suited to Shield
-        Story.KillQuest(7573, "burningbeach", new[] { "Shark", "Water Goblin" });
+        if (!Story.QuestProgression(7573))
+        {
+            Core.EnsureAccept(7573);
+            Core.HuntMonster("burningbeach", "Shark", "Shark Skin", 5);
+            Core.HuntMonster("burningbeach", "Water Goblin", "Water Goblin Liver", 3);
+            Core.EnsureComplete(7573);
+        }
 
         //7574 | Through Fumes and Flame
         Story.KillQuest(7574, "burningbeach", "Lavazard");

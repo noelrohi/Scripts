@@ -35,33 +35,65 @@ public class WatchTower
         Story.PreLoad(this);
 
         //Chaos Investigation 2602
-        Story.MapItemQuest(2602, "watchtower", 1605, 6);
-        Story.KillQuest(2602, "watchtower", new[] { "Chaorrupted Wolf", "Chaotic Gorillaphant" });
+        if (!Story.QuestProgression(2602))
+        {
+            Core.EnsureAccept(2602);
+            Core.GetMapItem(1605, 6, "watchtower");
+            Core.HuntMonster("watchtower", "Chaorrupted Wolf", "Chaos Wolf Slain", 3);
+            Core.HuntMonster("watchtower", "Chaotic Gorillaphant", "Gorillaphant Slain", 3);
+            Core.EnsureComplete(2602);
+        }
 
         //Hunt for Answers 2603
-        Story.KillQuest(2603, "watchtower", new[] { "Chaos Spider", "Storagebox" });
+        if (!Story.QuestProgression(2603))
+        {
+            Core.EnsureAccept(2603);
+            Core.HuntMonster("watchtower", "Chaos Spider", "Vermin Cleared", 5);
+            Core.HuntMonster("watchtower", "StorageBox", "Tattered Page 1", 1);
+            Core.EnsureComplete(2603);
+        }
 
         //Decryption Hunt 2604
-        Story.MapItemQuest(2604, "watchtower", 1606);
-        Story.KillQuest(2604, "watchtower", "Chaorrupted Knight");
+        if (!Story.QuestProgression(2604))
+        {
+            Core.EnsureAccept(2604);
+            Core.GetMapItem(1606, 1, "watchtower");
+            Core.HuntMonster("watchtower", "Chaorrupted Knight", "Intruder Removed", 6);
+            Core.EnsureComplete(2604);
+        }
 
         //Prisoner Breakout! 2605
         Story.KillQuest(2605, "watchtower", "Chaorrupted Prisoner");
 
         //Hidden Secrets 2606
-        Story.MapItemQuest(2606, "watchtower", new[] { 1607, 1608 });
-        Story.KillQuest(2606, "watchtower", "Chaos Gorillaphant");
+        if (!Story.QuestProgression(2606))
+        {
+            Core.EnsureAccept(2606);
+            Core.GetMapItems(new[] { (1607, 1), (1608, 1) }, "watchtower");
+            Core.HuntMonster("watchtower", "Chaos Gorillaphant", "Secret Guardian Defeated", 1);
+            Core.EnsureComplete(2606);
+        }
 
         //Mage Mystery 2607
-        Story.MapItemQuest(2607, "watchtower", 1609, 4);
-        Story.KillQuest(2607, "watchtower", "Chaos Sp-Eye");
+        if (!Story.QuestProgression(2607))
+        {
+            Core.EnsureAccept(2607);
+            Core.GetMapItem(1609, 4, "watchtower");
+            Core.HuntMonster("watchtower", "Chaos Sp-eye", "Sp-Eye Blinded", 13);
+            Core.EnsureComplete(2607);
+        }
 
         //Take Back Remains 2608
         Story.KillQuest(2608, "watchtower", "Chaorrupted Knight");
 
         //Activate Teleport Rune 2609
-        Story.MapItemQuest(2609, "watchtower", 1610);
-        Story.KillQuest(2609, "watchtower", "Chaorrupted Good Soldier");
+        if (!Story.QuestProgression(2609))
+        {
+            Core.EnsureAccept(2609);
+            Core.GetMapItem(1610, 1, "watchtower");
+            Core.HuntMonster("watchtower", "Chaorrupted Good Soldier", "Chaorrupted Blood", 1);
+            Core.EnsureComplete(2609);
+        }
 
         //Chaos Knight Attacks 2610
         Story.KillQuest(2610, "watchtower", "Chaos Knight");

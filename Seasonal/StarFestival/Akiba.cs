@@ -48,8 +48,13 @@ public class Akiba
         }
 
         // Tanabata Tree of Wishes (6433)
-        Story.MapItemQuest(6433, "bamboo", 5946, 7);
-        Story.KillQuest(6433, "bamboo", "Bamboo Wisp");
+        if (!Story.QuestProgression(6433))
+        {
+            Core.EnsureAccept(6433);
+            Core.GetMapItem(5946, 7, "bamboo");
+            Core.HuntMonster("bamboo", "Bamboo Wisp", "Wisp Light", 5);
+            Core.EnsureComplete(6433);
+        }
 
         // Write a Wish Upon a Star (6434)
         Story.KillQuest(6434, "yokaigrave", "Ninja Nopperabo");

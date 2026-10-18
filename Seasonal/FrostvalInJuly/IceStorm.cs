@@ -37,11 +37,22 @@ public class IceStorm
         Story.MapItemQuest(6423, "icestorm", new[] { 5925, 5926, 5927 });
 
         // 6424|A Test of Alliance
-        Story.MapItemQuest(6424, "lair", 5928);
-        Story.KillQuest(6424, "lair", "Wyvern");
+        if (!Story.QuestProgression(6424))
+        {
+            Core.EnsureAccept(6424);
+            Core.GetMapItem(5928, 1, "lair");
+            Core.HuntMonster("lair", "Wyvern", "Wyvern Defeated", 6);
+            Core.EnsureComplete(6424);
+        }
 
         // 6425|Inspiring the Young
-        Story.KillQuest(6425, "icestorm", new[] { "Earth Dragonling", "Earth Dragonling" });
+        if (!Story.QuestProgression(6425))
+        {
+            Core.EnsureAccept(6425);
+            Core.HuntMonster("icestorm", "Earth Dragonling", "Gift Discovered", 1);
+            Core.HuntMonster("icestorm", "Earth Dragonling", "Dragonling Inspired", 8);
+            Core.EnsureComplete(6425);
+        }
 
         // 6426|Following the Path
         Story.MapItemQuest(6426, "icestorm", 5929);
@@ -71,7 +82,13 @@ public class IceStorm
         Story.KillQuest(8173, "brightlights", "Chaos Gemrald");
 
         // 8174|Fire and Fuses
-        Story.KillQuest(8174, "brightlights", new[] { "Water Goblin", "Fire Imp" });
+        if (!Story.QuestProgression(8174))
+        {
+            Core.EnsureAccept(8174);
+            Core.HuntMonster("brightlights", "Water Goblin", "Fuse", 5);
+            Core.HuntMonster("brightlights", "Fire Imp", "Saltpeter", 5);
+            Core.EnsureComplete(8174);
+        }
 
         // 8175|Light up the Night
         if (!Story.QuestProgression(8175))

@@ -61,31 +61,62 @@ public class AluteaNursery
         Story.KillQuest(8849, "AluteaNursery", "Bone Crustacean");
 
         //The Lost Generation 8850
-        Story.MapItemQuest(8850, "AluteaNursery", 10557, 5);
-        Story.KillQuest(8850, "AluteaNursery", "Bone Crustacean");
+        if (!Story.QuestProgression(8850))
+        {
+            Core.EnsureAccept(8850);
+            Core.GetMapItem(10557, 5, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Bone Crustacean", "Crustacean Caught", 8);
+            Core.EnsureComplete(8850);
+        }
 
         //Tender Temple 8851
-        Story.MapItemQuest(8851, "AluteaNursery", 10558);
-        Story.KillQuest(8851, "AluteaNursery", "Spectral Jellyfish");
+        if (!Story.QuestProgression(8851))
+        {
+            Core.EnsureAccept(8851);
+            Core.GetMapItem(10558, 1, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Spectral Jellyfish", "Cold Stingers", 8);
+            Core.EnsureComplete(8851);
+        }
 
         //Cast Away Buds 8852
-        Story.MapItemQuest(8852, "AluteaNursery", 10559, 2);
-        Story.KillQuest(8852, "AluteaNursery", "Spectral Jellyfish");
+        if (!Story.QuestProgression(8852))
+        {
+            Core.EnsureAccept(8852);
+            Core.GetMapItem(10559, 2, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Spectral Jellyfish", "Jelly Tormentors", 8);
+            Core.EnsureComplete(8852);
+        }
 
         //Current Catching 8853
         Story.MapItemQuest(8853, "AluteaNursery", 10563, 5);
 
         //Silent Sea 8854
-        Story.MapItemQuest(8854, "AluteaNursery", new[] { 10560, 10561 });
-        Story.KillQuest(8854, "AluteaNursery", "Stagnant Water");
+        if (!Story.QuestProgression(8854))
+        {
+            Core.EnsureAccept(8854);
+            Core.GetMapItems(new[] { (10560, 1), (10561, 1) }, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Stagnant Water", "Stagnant Water Cleared", 8);
+            Core.EnsureComplete(8854);
+        }
 
         //Hay! Bale Already! 8855
-        Story.MapItemQuest(8855, "AluteaNursery", 10562, 2);
-        Story.KillQuest(8855, "AluteaNursery", new[] { "Bone Crustacean", "Spectral Jellyfish" });
+        if (!Story.QuestProgression(8855))
+        {
+            Core.EnsureAccept(8855);
+            Core.GetMapItem(10562, 2, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Bone Crustacean", "Shellfish Meat", 8);
+            Core.HuntMonster("aluteanursery", "Spectral Jellyfish", "Jelly Filling", 8);
+            Core.EnsureComplete(8855);
+        }
 
         //Abyss to Sun 8856
-        Story.MapItemQuest(8856, "AluteaNursery", 10564);
-        Story.KillQuest(8856, "AluteaNursery", "Stagnant Water");
+        if (!Story.QuestProgression(8856))
+        {
+            Core.EnsureAccept(8856);
+            Core.GetMapItem(10564, 1, "AluteaNursery");
+            Core.HuntMonster("aluteanursery", "Stagnant Water", "Elemental Defeated", 8);
+            Core.EnsureComplete(8856);
+        }
 
         //Ebbing Grudges 8857
         Story.KillQuest(8857, "AluteaNursery", "Last Alutian");

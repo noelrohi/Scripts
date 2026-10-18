@@ -81,7 +81,13 @@ public class PirateHuntStory
 
         // 10398 - Mercurious
         Core.EquipClass(ClassType.Solo);
-        Story.KillQuest(10398, "piratehunt", new[] { "Dragonsworn Larunda", "Captain Mercurius" });
+        if (!Story.QuestProgression(10398))
+        {
+            Core.EnsureAccept(10398);
+            Core.HuntMonster("piratehunt", "Captain Mercurius", "Mercurius' Funny Hat", 1);
+            Core.HuntMonster("piratehunt", "Dragonsworn Larunda", "Larunda's Counterfeit Amulet", 1);
+            Core.EnsureComplete(10398);
+        }
 
         // 10399 - Scurvy Most Wanted
         Story.ChainQuest(10399);

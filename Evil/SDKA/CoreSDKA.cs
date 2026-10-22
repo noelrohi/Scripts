@@ -1011,15 +1011,33 @@ public class CoreSDKA
                 FarmDSO(6);
                 Core.HuntMonster("arcangrove", "Seed Spitter", "Deadly Knightshade", 16);
                 Core.HuntMonster("bludrut4", "Shadow Serpent", "Dark Energy", 26, isTemp: false);
+                Core.EnsureComplete(upgradeMetalQuest);
+                Bot.Wait.ForPickup(upgradeMetalName);
+                if (!Core.CheckInventory(upgradeMetalName))
+                {
+                    Core.Logger($"Failed to obtain {upgradeMetalName}. Cannot continue the metal upgrade.", stopBot: true);
+                    return;
+                }
             }
 
             // Getting the fully upgraded metal
             // IF the gooquest isnt unlocked do the very slow method first.           
             if (!Bot.Quests.IsUnlocked(2165))
             {
-                FarmDSO(5500);
-                DoomMerge("Corrupt Spirit Orb", 5);
-                DoomMerge("Ominous Aura", 2);
+                int missingAuras = 0;
+                if (!Core.CheckInventory("Ominous Aura", 2))
+                    missingAuras = 2 - Bot.Inventory.GetQuantity("Ominous Aura");
+
+                // Reserve five orbs for the metal and fifty for each missing aura.
+                int requiredOrbs = 5 + (missingAuras * 50);
+                if (!Core.CheckInventory("Corrupt Spirit Orb", requiredOrbs))
+                {
+                    int missingOrbs = requiredOrbs - Bot.Inventory.GetQuantity("Corrupt Spirit Orb");
+                    FarmDSO(missingOrbs * 100);
+                    DoomMerge("Corrupt Spirit Orb", missingOrbs);
+                }
+                if (missingAuras > 0)
+                    DoomMerge("Ominous Aura", missingAuras);
             }
             else
             {
@@ -1027,6 +1045,12 @@ public class CoreSDKA
                 DoomKnightWK("Ominous Aura", 2);
             }
             Core.BuyItem("dwarfhold", 434, fullMetalName);
+        }
+
+        if (!Core.CheckInventory(fullMetalName))
+        {
+            Core.Logger($"Failed to obtain {fullMetalName}. Cannot continue to the Forge Key quest.", stopBot: true);
+            return;
         }
 
         if (!Story.QuestProgression(forgeKeyQuest))

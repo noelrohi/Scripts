@@ -80,7 +80,7 @@ public class EternalDrakath
         if (!Core.CheckInventory("Drakath Armor")) //"Drakath the Eternal"
         {
             Core.Logger(
-                "Cannot continue with \"Drakath Armor\" not enough \"Dage's Scroll Fragment\", cannot complete \"Drakath the Eternal\"."
+                "Drakath Armor is missing, so Drakath the Eternal cannot be obtained. Check the earlier quest reward and armor purchase messages."
             );
             return;
         }

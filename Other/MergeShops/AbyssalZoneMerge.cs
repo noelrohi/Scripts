@@ -98,7 +98,7 @@ public class AbyssalZoneMerge
 
                 case "Undine Base Scrip":
                     Core.FarmingLogger(req.Name, quant);
-                    Core.EquipClass(ClassType.Farm);
+                    Core.EquipClass(ClassType.Solo);
                     Core.HuntMonster("abyssalzone", "Kitefin Shark Bait", req.Name, quant, false, false);
                     break;
 
@@ -109,9 +109,8 @@ public class AbyssalZoneMerge
                     {
                         Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("abyssalzone", "The Ashray", "Ashray Artifacts", log: false);
-                        Core.EquipClass(ClassType.Farm);
                         Core.HuntMonster("abyssalzone", "Necro Adipocere", "Adipocere Antler", 3, log: false);
-                        Core.HuntMonster("abyssalzone", "Foam Scavenger");
+                        Core.HuntMonster("abyssalzone", "Foam Scavenger", "Scavenger Foam", 6, log: false);
                         Bot.Wait.ForPickup(req.Name);
                     }
                     Core.CancelRegisteredQuests();

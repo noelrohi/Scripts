@@ -185,8 +185,13 @@ public class AgeOfRuinDrops
 
             Core.Logger($"{drop}: ({i + 1}/{rewards.Length})");
 
-            while (!Bot.ShouldExit && !Core.CheckInventory(drop))
-                Core.KillMonster(map, cell, pad, "*", log: false);
+            if (map == "seavoice")
+                AOR.FightVoiceInTheSea(drop);
+            else
+            {
+                while (!Bot.ShouldExit && !Core.CheckInventory(drop))
+                    Core.KillMonster(map, cell, pad, "*", log: false);
+            }
         }
 
         foreach (string drop in rewards)

@@ -736,7 +736,7 @@ public class UnlockForgeEnhancements
         if (!Core.CheckInventory("Drakath the Eternal"))
         {
             Core.Logger(
-                "Cannot \"Finish\" `Heros Valiance quest. We'll continue farming it though...\n"
+                "Hero Valiance cannot finish without Drakath the Eternal. Continuing with the remaining materials. Check the earlier Drakath prerequisite messages.\n"
                     + $"\"Drakath Armor\": x{Bot.Inventory.GetQuantity("Drakath Armor")}\n"
                     + $"\"Dage's Scroll Fragment\" x{Bot.Inventory.GetQuantity("Dage's Scroll Fragment")}\n"
                     + $"\"Drakath the Eternal\" x{Bot.Inventory.GetQuantity("Drakath the Eternal")}"
@@ -778,7 +778,7 @@ public class UnlockForgeEnhancements
         }
         else
             Core.Logger(
-                "Could not complete \"Hero's Valiance\", Try again tomarrow after then \"Dage's Scroll Fragment\" Daily."
+                "Hero Valiance was not completed because Drakath the Eternal is missing. Check the earlier Drakath prerequisite messages before farming more daily fragments."
             );
     }
 

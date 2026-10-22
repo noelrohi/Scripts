@@ -66,17 +66,11 @@ public class DrakathArmorBot
 
     public void GetBoth()
     {
-        LOC.Complete13LOC();
-        DrakathArmorQuest();
-        if (!Core.CheckInventory("Dage's Scroll Fragment", 13))
-        {
-            Core.Logger(
-                "Cannot continue with \"Drakath Armor\" not enough \"Dage's Scroll Fragment\""
-            );
+        DrakathOriginalArmor();
+        if (!Core.CheckInventory("Original Drakath Armor"))
             return;
-        }
-        Core.BuyItem(Bot.Map.Name, 994, "Original Drakath Armor");
-        Core.BuyItem(Bot.Map.Name, 994, "Drakath Armor");
+
+        DrakathArmor();
     }
 
     public void DrakathArmor()
@@ -86,7 +80,25 @@ public class DrakathArmorBot
 
         LOC.Complete13LOC();
         DrakathArmorQuest();
-        Core.BuyItem(Bot.Map.Name, 994, "Drakath Armor");
+        if (!Core.CheckInventory(60796))
+            return;
+
+        Core.Join("confrontation");
+        if (Bot.ShouldExit)
+            return;
+
+        Bot.Shops.Load(994);
+        if (!Bot.Shops.IsLoaded || Bot.Shops.ID != 994)
+        {
+            Core.Logger("Could not load Drakath Armor shop 994. The quest reward token is already owned.");
+            return;
+        }
+
+        // The reward token confirms the turn-in even when the quest history is stale.
+        Bot.Shops.BuyItem("Drakath Armor", 1);
+        Bot.Wait.ForTrue(() => Bot.Inventory.Contains("Drakath Armor"), 20);
+        if (!Core.CheckInventory("Drakath Armor"))
+            Core.Logger("Drakath Armor purchase failed with reward token 60796 present. Check the shop unlock and inventory space.");
     }
 
     public void DrakathOriginalArmor()
@@ -96,7 +108,25 @@ public class DrakathArmorBot
 
         LOC.Complete13LOC();
         DrakathArmorQuest();
-        Core.BuyItem(Bot.Map.Name, 994, "Original Drakath Armor");
+        if (!Core.CheckInventory(60796))
+            return;
+
+        Core.Join("confrontation");
+        if (Bot.ShouldExit)
+            return;
+
+        Bot.Shops.Load(994);
+        if (!Bot.Shops.IsLoaded || Bot.Shops.ID != 994)
+        {
+            Core.Logger("Could not load Drakath Armor shop 994. The quest reward token is already owned.");
+            return;
+        }
+
+        // The reward token confirms the turn-in even when the quest history is stale.
+        Bot.Shops.BuyItem("Original Drakath Armor", 1);
+        Bot.Wait.ForTrue(() => Bot.Inventory.Contains("Original Drakath Armor"), 20);
+        if (!Core.CheckInventory("Original Drakath Armor"))
+            Core.Logger("Original Drakath Armor purchase failed with reward token 60796 present. Check the shop unlock and inventory space.");
     }
 
     public void DrakathArmorQuest()
@@ -140,10 +170,7 @@ public class DrakathArmorBot
             Daily.DagesScrollFragment();
             if (!Core.CheckInventory("Dage's Scroll Fragment", 13))
             {
-                Core.Logger(
-                    "Important",
-                    "You do not own \"Dage's Scroll Fragment\". We'll Farm the materials, but you still need to run this again to get Dage's Scroll Fragment -- tomorrow."
-                );
+                Core.Logger("Build Drakath Armor needs 13 Dage scroll fragments before turn-in. The daily did not provide enough. Run again when more are available.");
                 return;
             }
         }
@@ -152,7 +179,18 @@ public class DrakathArmorBot
             Core.CheckInventory("Dage's Scroll Fragment", 13)
             && Core.CheckInventory("Blinding Light of Destiny")
         )
-            Core.EnsureComplete(3882); // Complete Quest: Get Your Original Drakath's Armor
-        Bot.Wait.ForPickup("Get Your Original Drakath's Armor");
+        {
+            Core.EnsureAccept(3882);
+            if (!Bot.Quests.IsInProgress(3882))
+            {
+                Core.Logger("Build Drakath Armor quest 3882 could not be accepted. The armor purchase was skipped.");
+                return;
+            }
+
+            Core.EnsureComplete(3882);
+            Bot.Wait.ForPickup(60796);
+            if (!Core.CheckInventory(60796))
+                Core.Logger($"Build Drakath Armor turn-in did not yield reward token 60796. Current Dage scroll fragments: {Bot.Inventory.GetQuantity("Dage's Scroll Fragment")}. Check the quest turn-in and reward pickup before farming more fragments.");
+        }
     }
 }

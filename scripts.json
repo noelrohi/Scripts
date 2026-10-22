@@ -30,8 +30,8 @@
       "null"
     ],
     "path": "CoreFarms.cs",
-    "size": 164868,
-    "sha256": "b62c6637a5ead3db601b9cc17647f044de87e8298213d6c41f8abd7be1478fa7",
+    "size": 164902,
+    "sha256": "625ed28c3592674705ba900b529b56c81251d9fcc2de713520502f60a1e84e21",
     "fileName": "CoreFarms.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreFarms.cs"
   },
@@ -54,8 +54,8 @@
       "null"
     ],
     "path": "CoreBots.cs",
-    "size": 462975,
-    "sha256": "973931e9d59da8c05f0285ab628003a8e7ca9ec0a9b42f4a61057c08011f3ab9",
+    "size": 463064,
+    "sha256": "d3265a977f601c8b5ff9a0b05ab06d07bd44e71dda405c5e7f27a4e8f75f8dee",
     "fileName": "CoreBots.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreBots.cs"
   },
@@ -672,8 +672,8 @@
       "drops"
     ],
     "path": "Other/AgeOfRuinDrops.cs",
-    "size": 5782,
-    "sha256": "4cf120be4560781aeabe8355759b12e37c10da7241e5c07ba60ebc2162340492",
+    "size": 5718,
+    "sha256": "4d3e78baaa4c03b9bfbc85ceccd64473736ce96ad200c0aba33eb94bb4c136b2",
     "fileName": "AgeOfRuinDrops.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/AgeOfRuinDrops.cs"
   },
@@ -2000,8 +2000,8 @@
       "original drakath armor"
     ],
     "path": "Chaos/DrakathsArmor.cs",
-    "size": 5008,
-    "sha256": "b599d3730a063821118265df19ce195281a5dfc4c3e28451df731f20d71c2002",
+    "size": 6638,
+    "sha256": "3208a1851f2b82a1e29ace693de77162d71fcec216f81dfec016fce643f88f90",
     "fileName": "DrakathsArmor.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Chaos/DrakathsArmor.cs"
   },
@@ -2072,8 +2072,8 @@
       "set"
     ],
     "path": "Chaos/EternalDrakathSet.cs",
-    "size": 4611,
-    "sha256": "b3f6ffdb6fab3a2984270aa4d045b0db1ec84964315e6810a24f8787f34512b6",
+    "size": 4621,
+    "sha256": "fed816dae753c219994886bbf90f008f7c56ee10264d353d7f8f2a339782a9fd",
     "fileName": "EternalDrakathSet.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Chaos/EternalDrakathSet.cs"
   },
@@ -3770,8 +3770,8 @@
       "ravenous"
     ],
     "path": "Enhancement/UnlockForgeEnhancements.cs",
-    "size": 54235,
-    "sha256": "1e4c85251dec3a32b96f2715ed2f750b8805a74c38b50d3be4d8eec8c0684ecf",
+    "size": 54358,
+    "sha256": "d0bd2c022449c26a174d2864873b771c3675f14ebaf2dc54d7b9f7d49389014d",
     "fileName": "UnlockForgeEnhancements.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Enhancement/UnlockForgeEnhancements.cs"
   },
@@ -11015,8 +11015,8 @@
       "void soul"
     ],
     "path": "Hollowborn/HollowbornNation/5RolesUnreversed.cs",
-    "size": 6590,
-    "sha256": "0c6dd4935cdd4c75be22a91227eacd6baf4f666f118c9ea3be5fac43060d8912",
+    "size": 6777,
+    "sha256": "30ed9dd4a5a9babbfc186818817fb28e8e779fcb03416107af780c3012f9b4db",
     "fileName": "5RolesUnreversed.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Hollowborn/HollowbornNation/5RolesUnreversed.cs"
   },
@@ -11713,8 +11713,8 @@
       "null"
     ],
     "path": "Evil/SDKA/CoreSDKA.cs",
-    "size": 39913,
-    "sha256": "f9db553b7e1421f7cd1b4afd44328d523afc47a3e4e01ec4e55d5d0830052e6e",
+    "size": 41129,
+    "sha256": "0063b51516069a90827e3cc286f40c911c99db8d4d2d780e9be8416437f74ed1",
     "fileName": "CoreSDKA.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Evil/SDKA/CoreSDKA.cs"
   },
@@ -12107,8 +12107,8 @@
       "class"
     ],
     "path": "Other/Classes/VerusDoomKnight.cs",
-    "size": 12301,
-    "sha256": "7f29add0b96b941d30b62fb9f9c97763c6663fbb476da08964139ebeef5cc7b8",
+    "size": 10677,
+    "sha256": "fd33110537f3d685b793ed632cc40bc897ce57da7dc38c87ab117644f51a2c06",
     "fileName": "VerusDoomKnight.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/VerusDoomKnight.cs"
   },
@@ -14462,8 +14462,8 @@
       "streams"
     ],
     "path": "Other/MergeShops/AbyssalZoneMerge.cs",
-    "size": 7555,
-    "sha256": "c6cd90e182ecb9d5362663bb78e5383fa370967bc8da12dfa2cff81aa3f98bf5",
+    "size": 7531,
+    "sha256": "7d70d6053d56476d8bd2f987a34383c7ad50ad3c3d63e829a91cf69bbfddd114",
     "fileName": "AbyssalZoneMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/AbyssalZoneMerge.cs"
   },
@@ -15775,8 +15775,8 @@
       "hook"
     ],
     "path": "Other/MergeShops/SeaviewSouvenirsMerge.cs",
-    "size": 7222,
-    "sha256": "0665a09d1e0e0a8617de74daa5e88cfeaf3feb20818c2b3a9eea14bc69942eb0",
+    "size": 7254,
+    "sha256": "ab722139572747b7a025ab921091e5d7b5ed1de1d2e8bee9ec0d4468dd120f63",
     "fileName": "SeaviewSouvenirsMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/SeaviewSouvenirsMerge.cs"
   },
@@ -16780,8 +16780,8 @@
       "trident"
     ],
     "path": "Other/MergeShops/SeaVoiceMerge.cs",
-    "size": 13755,
-    "sha256": "600eb7bf2b9dea9ca154d454d83c107d08db574e22f8a30cc10b72c11b195e28",
+    "size": 10434,
+    "sha256": "3cf2d20a14346f3ae52bb6f5e333b3da7608ac12117089f60ce1d2a55136877a",
     "fileName": "SeaVoiceMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/SeaVoiceMerge.cs"
   },
@@ -16809,8 +16809,8 @@
       "guard"
     ],
     "path": "Other/MergeShops/ArgyronsWaresMerge.cs",
-    "size": 8294,
-    "sha256": "17677bfce9dfa7e4b11a43a82c07f40a2758ff4336fa264131ce2add6cb5a41b",
+    "size": 8226,
+    "sha256": "be17bd53b92c4ed4cdac5597b7266c0dfaa667e74b353cc1670996a4b295bafc",
     "fileName": "ArgyronsWaresMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/ArgyronsWaresMerge.cs"
   },
@@ -16955,8 +16955,8 @@
       "bow"
     ],
     "path": "Other/MergeShops/MidnightZoneMerge.cs",
-    "size": 6623,
-    "sha256": "d3469fc8f523fc3814581611c3a1f40704bfc24e07d88319f0c5389bf68033f9",
+    "size": 6562,
+    "sha256": "eefe2815e930caa734b3d7afadb9c252368b155affa567dde5eddd5220918e07",
     "fileName": "MidnightZoneMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/MidnightZoneMerge.cs"
   },
@@ -17188,8 +17188,8 @@
       "streams"
     ],
     "path": "Other/MergeShops/TrenchObserveMerge.cs",
-    "size": 7054,
-    "sha256": "83da9af4a94ca46b8e9cba5286bd60189bb4ae672494a1bca91777e5f425ec71",
+    "size": 6993,
+    "sha256": "72ae0b982b0ecc7b8f8e0147a2cc2bc500ac5b35a06b0fe173bd4021b6079c42",
     "fileName": "TrenchObserveMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/TrenchObserveMerge.cs"
   },
@@ -25685,7 +25685,7 @@
     ],
     "path": "Story/LordsofChaos/Core13LoC.cs",
     "size": 92118,
-    "sha256": "5694b8fe96096c644801059eee1dae7f24290726448dcbd3f6a7b838b9a853a6",
+    "sha256": "e777ca2a4a863008d7e0518400b88b58691e5252ac4f3d6d73513787712eddb1",
     "fileName": "Core13LoC.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/LordsofChaos/Core13LoC.cs"
   },
@@ -27210,8 +27210,8 @@
       "null"
     ],
     "path": "Story/AgeOfRuin/CoreAOR.cs",
-    "size": 68712,
-    "sha256": "093f79b982904d54800e350a5315548d9a7f2f4f78cd92595c7d6f6f29b45ebc",
+    "size": 69836,
+    "sha256": "fee882ed5cb69103fe75a0bd0ef540ae41cc61a2cc849fdd95b2ad2fad6d6599",
     "fileName": "CoreAOR.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/AgeOfRuin/CoreAOR.cs"
   },
@@ -28097,8 +28097,8 @@
       "null"
     ],
     "path": "Story/Doomwood/CoreDoomwood.cs",
-    "size": 37760,
-    "sha256": "0001c83274a7ccc575c0ed554b472ba7ae561c3e3994084e744dd4ccd45e635c",
+    "size": 37757,
+    "sha256": "585abaac231d0642833df07bb9a83bad013f4b14855782fe92c860c72bc08350",
     "fileName": "CoreDoomwood.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/Doomwood/CoreDoomwood.cs"
   },
@@ -30035,8 +30035,8 @@
       "somnia"
     ],
     "path": "Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs",
-    "size": 3540,
-    "sha256": "96266aa7c000c81482a4612d60ca27908af1648ef84d108b8b85f00f91c5a286",
+    "size": 4114,
+    "sha256": "b435807d1f910cf86dd8b484d1f17dea20ea5946fa89d55433e70f771348b61b",
     "fileName": "KathoolAdeptPrerequisite.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Prototypes/KathoolAdept/KathoolAdeptPrerequisite.cs"
   },
@@ -35300,5 +35300,39 @@
     "sha256": "082e0dc7af4a0dcd96d53b080bcc04e5b35417d2d0701d0c7e41ebb02215834f",
     "fileName": "3BookOfIce.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/ArchMage/Books/3BookOfIce.cs"
+  },
+  {
+    "name": "Item Enhancement Manager",
+    "description": "Unbanks and enhances selected weapons, helms, and capes, leaving them in inventory. Bypasses Disable AutoEnhance.",
+    "tags": [
+      "enhancement",
+      "unbank",
+      "weapon",
+      "helm",
+      "cape",
+      "inventory"
+    ],
+    "path": "Enhancement/ItemEnhancementManager.cs",
+    "size": 12366,
+    "sha256": "0003db5074765f704dd16a6e4f778d79c7e0ac2a6773b0ecd69118661dae801f",
+    "fileName": "ItemEnhancementManager.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Enhancement/ItemEnhancementManager.cs"
+  },
+  {
+    "name": "Hollowborn Archfiend - Run All",
+    "description": "does all of Hollowborn Archfiend",
+    "tags": [
+      "hollowborn",
+      "hollowborn archfiend",
+      "hollowbornarchfiend",
+      "hollowborn nation",
+      "do all",
+      "run all"
+    ],
+    "path": "Hollowborn/HollowbornNation/0RunAll.cs",
+    "size": 5995,
+    "sha256": "549497c1bd389e6ed642acefea734e735663fee594db006ba08a54ed08c90509",
+    "fileName": "0RunAll.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Hollowborn/HollowbornNation/0RunAll.cs"
   }
 ]

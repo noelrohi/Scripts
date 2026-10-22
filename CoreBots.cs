@@ -371,7 +371,8 @@ public class CoreBots
         Bot.Lite.DisableSoundFx = true;
 
         // Drop Options
-        Bot.Drops.RejectElse = changeTo;
+        // temporary change, remove after new client update with higher number than 1.4.5.0
+        Bot.Drops.RejectElse = false;
         Bot.Drops.StopAsync();
         Bot.Drops.Clear();
         Bot.Drops.Start();

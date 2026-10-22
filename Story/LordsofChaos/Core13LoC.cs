@@ -1823,7 +1823,7 @@ public class Core13LoC
         {
             Core.EnsureAccept(2478);
             Core.HuntMonster("dflesson", "Chaotic Horcboar", "Hero Protein", 1);
-            Core.HuntMonster("dflesson", "Chaotic Chicken", "Spell Rune", 8);
+            Core.HuntMonster("dflesson", "Chaotic Chicken", "Spell Rune", 5);
             Core.EnsureComplete(2478);
         }
 

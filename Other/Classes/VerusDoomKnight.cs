@@ -8,6 +8,7 @@ tags: versus, verus, doomknight, vdk, class
 //cs_include Scripts/CoreStory.cs
 //cs_include Scripts/CoreAdvanced.cs
 //cs_include Scripts/CoreDailies.cs
+//cs_include Scripts/Story/AgeOfRuin/CoreAOR.cs
 
 //cs_include Scripts/Story/LordsofChaos/Core13LoC.cs
 //cs_include Scripts/Story/Doomwood/CoreDoomwood.cs
@@ -43,6 +44,7 @@ public class VerusDoomKnightClass
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
+    private readonly CoreAOR AOR = new();
     private static CoreFarms Farm
     {
         get => _Farm ??= new CoreFarms();
@@ -205,7 +207,7 @@ public class VerusDoomKnightClass
             Core.KillDoomKitten("Doomkitten's Molar", 20, false);
             Adv.GearStore(true, true);
             Infernal.FarmDeadlyDuo("Deadly Duo's Decayed Denture", 10);
-            KillThing(map: "seavoice", mobMapID: 1, itemUsed: 78994, item: "Maw of the Sea", quant: 10, isTemp: false);
+            AOR.FightVoiceInTheSea("Maw of the Sea", 10);
             int energyNeeded = 0;
 
             // Calculate energy based on missing items
@@ -270,52 +272,5 @@ public class VerusDoomKnightClass
             Adv.RankUpClass("Verus DoomKnight");
     }
 
-
-    public void KillThing(string map, int mobMapID, int itemUsed, string item, int quant = 1, bool isTemp = false)
-    {
-        if (isTemp ? Bot.Inventory.Contains(item, quant) : Core.CheckInventory(item, quant))
-            return;
-
-        Core.Join(map);
-        Bot.Wait.ForMapLoad(map);
-        Adv.BuyItem("seavoice", 2320, "Vigil", 1000, 12023);
-        Core.Equip(itemUsed);
-        Core.Logger($"{itemUsed} [Vigil] Equiped? {Bot.Inventory?.IsEquipped("Vigil")}");
-        // Move to mob cell and set respawn
-        if (Bot.Player.Cell != "r2")
-            Core.Jump("r2", "Left");
-        Bot.Player.SetSpawnPoint();
-
-        while (
-            !Bot.ShouldExit
-            && (isTemp ? !Bot.TempInv.Contains(item, quant) : !Core.CheckInventory(item, quant))
-        )
-        {
-            if (!Bot.Player.Alive)
-            {
-                Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
-                continue;
-            }
-
-            if (Bot.Player.Cell != "r2")
-                Core.Jump("r2", "Left");
-
-            // === Handle Oxidize aura (use Vigil to cleanse) ===
-            while (!Bot.ShouldExit && Bot.Self.Auras.Any(a => a.Name == "Oxidize") && !Bot.Self.Auras.Any(a => a.Name == "Vigil"))
-            {
-                if (Bot.Skills.CanUseSkill(5))
-                    Bot.Skills.UseSkill(5);
-                Core.Sleep(500);
-                if (Bot.Self.Auras.Any(a => a.Name == "Vigil"))
-                    break;
-            }
-
-            // === Attack phase ===
-            Bot.Combat.Attack("*");
-            Core.Sleep(500);
-        }
-
-        Core.Logger($"KillThing completed for {item} ({quant}).");
-    }
 
 }

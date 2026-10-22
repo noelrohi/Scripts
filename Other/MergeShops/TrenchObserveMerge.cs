@@ -123,12 +123,11 @@ public class TrenchObserveMerge
 
                 case "Dark Elf Pearl":
                     Core.FarmingLogger(req.Name, quant);
+                    Core.EquipClass(ClassType.Solo);
                     Core.RegisterQuests(9339);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
-                        Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("trenchobserve", "Lady Noelle", "Noelle's Brooch", log: false);
-                        Core.EquipClass(ClassType.Farm);
                         Core.HuntMonster("trenchobserve", "Sea Spirit", "Green Sea Jelly", 2, log: false);
                         Core.HuntMonster("trenchobserve", "Necro Adipocere", log: false);
                         Bot.Wait.ForPickup(req.Name);

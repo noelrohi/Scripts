@@ -120,12 +120,12 @@ public class RolesUnreversed
             {
                 Rewards[] allRewards = [.. Enum.GetValues<Rewards>().Where(r => r != Rewards.All && r != Rewards.None)];
 
-                chosenRewardNames = [.. allRewards.Select(r => r.ToString().Replace('_', ' '))];
+                chosenRewardNames = [.. allRewards.Select(GetRewardName)];
                 chosenRewardIds = [.. allRewards.Select(r => (int)r)];
             }
             else
             {
-                chosenRewardNames = [reward.ToString().Replace('_', ' ')];
+                chosenRewardNames = [GetRewardName(reward)];
                 chosenRewardIds = [(int)reward];
             }
         }
@@ -206,4 +206,9 @@ public class RolesUnreversed
     "Hollowborn Void Orb",
     "Hollowborn Shadow Morph of the Oversoul",
 };
+
+    private static string GetRewardName(Rewards reward) =>
+        reward == Rewards.Hollowborn_Mini_Nulgath_Battle_Pet
+            ? "Hollowborn Mini-Nulgath Battle Pet"
+            : reward.ToString().Replace('_', ' ');
 }

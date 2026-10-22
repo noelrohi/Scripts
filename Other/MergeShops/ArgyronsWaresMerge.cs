@@ -146,8 +146,7 @@ public class ArgyronsWaresMerge
         if (Core.isCompletedBefore(10427))
             return;
 
-        Story.KillQuest(10426, "abaddoncave", "Cursed Dreadspider");
-        Story.KillQuest(10427, "abaddoncave", "Spineback Abaddon");
+        Story.KillQuest(10427, "abaddoncave", "Cursed Dreadspider");
     }
 
     public List<IOption> Select =

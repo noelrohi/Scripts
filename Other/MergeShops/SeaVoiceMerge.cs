@@ -6,6 +6,7 @@ tags: seavoice, merge, seavoice, midnight, glaucus, sage, mystic, morph, compani
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
 //cs_include Scripts/CoreAdvanced.cs
+//cs_include Scripts/Story/AgeOfRuin/CoreAOR.cs
 using System.Dynamic;
 using Newtonsoft.Json;
 using Skua.Core.Interfaces;
@@ -19,6 +20,7 @@ public class SeaVoiceMerge
 {
     private IScriptInterface Bot => IScriptInterface.Instance;
     private CoreBots Core => CoreBots.Instance;
+    private readonly CoreAOR AOR = new();
     private static CoreFarms Farm
     {
         get => _Farm ??= new CoreFarms();
@@ -106,7 +108,7 @@ public class SeaVoiceMerge
                 case "Glaucus Mystic":
                 case "Glaucus Companion":
                     Core.FarmingLogger(req.Name, req.Quantity);
-                    AttackVoiceInTheSea(req.Name, req.Quantity);
+                    AttackVoiceInTheSea(req.Name, quant);
                     break;
 
                 case "Dark Elf Pearl":
@@ -116,7 +118,6 @@ public class SeaVoiceMerge
                     {
                         Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("trenchobserve", "Lady Noelle", "Noelle's Brooch", log: false);
-                        Core.EquipClass(ClassType.Farm);
                         Core.HuntMonster("trenchobserve", "Sea Spirit", "Green Sea Jelly", 2, log: false);
                         Core.HuntMonster("trenchobserve", "Necro Adipocere", log: false);
                         Bot.Wait.ForPickup(req.Name);
@@ -129,10 +130,9 @@ public class SeaVoiceMerge
                     Core.RegisterQuests(9302);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
-                        Core.EquipClass(ClassType.Farm);
+                        Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("midnightzone", "Shadow Viscera", "Fleshy Shadows", 8, log: false);
                         Core.HuntMonster("midnightzone", "Venerated Wraith", "Wraith Memento", 8, log: false);
-                        Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("midnightzone", "Sparagmos", "Memory Card", log: false);
                         Bot.Wait.ForPickup(req.Name);
                     }
@@ -146,9 +146,8 @@ public class SeaVoiceMerge
                     {
                         Core.EquipClass(ClassType.Solo);
                         Core.HuntMonster("abyssalzone", "The Ashray", "Ashray Artifacts", log: false);
-                        Core.EquipClass(ClassType.Farm);
                         Core.HuntMonster("abyssalzone", "Necro Adipocere", "Adipocere Antler", 3, log: false);
-                        Core.HuntMonster("abyssalzone", "Foam Scavenger");
+                        Core.HuntMonster("abyssalzone", "Foam Scavenger", "Scavenger Foam", 6, log: false);
                         Bot.Wait.ForPickup(req.Name);
                     }
                     Core.CancelRegisteredQuests();
@@ -173,145 +172,37 @@ public class SeaVoiceMerge
 
     public void AttackVoiceInTheSea(string itemName, int quant)
     {
-
-        // Define the possible solo classes
         string[] PossibleSoloClasses = new[]
         {
-            "Chrono ShadowHunter",
-            "Chrono ShadowSlayer",
-            "Chaos Avenger",
-            "Verus DoomKnight",
-            "Hollowborn Vindicator",
-            "Lich",
             "ArchPaladin",
-            "Lord of Order",
-            "StoneCrusher",
-            "Dragon of Time",
-            "Unundead Goat",
         };
 
         if (!Core.CheckInventory(PossibleSoloClasses, any: true))
-            Core.Logger(
-                "No soloing classes found in inventory; stopping (go get AP at least and rerun)",
-                stopBot: true
-            );
+            Core.Logger("ArchPaladin not owned. Continuing with configured Solo class.");
 
         Core.RegisterQuests(9349);
         Core.EquipClass(ClassType.Solo);
-        Core.AddDrop("Algal Bloom");
-        Core.Unbank("Algal Bloom");
+        Core.AddDrop("Algal Bloom", itemName);
+        Core.Unbank("Algal Bloom", itemName);
         Adv.GearStore(EnhAfter: true);
 
-        while (!Bot.ShouldExit && !Core.CheckInventory(itemName, quant))
+        string? selectedClass =
+            PossibleSoloClasses.FirstOrDefault(className =>
+                Bot.Inventory.Items.Any(item => item.Name == className)
+                || Bot.Bank.Items.Any(item => item.Name == className)
+            ) ?? Bot.Player.CurrentClass?.Name;
+        if (string.IsNullOrWhiteSpace(selectedClass))
         {
-            // First available class in inventory/bank, fallback to equipped
-            string? selectedClass =
-                PossibleSoloClasses.FirstOrDefault(className =>
-                    Bot.Inventory.Items.Any(item => item.Name == className)
-                    || Bot.Bank.Items.Any(item => item.Name == className)
-                ) ?? Bot.Player.CurrentClass?.Name;
-
-            if (string.IsNullOrWhiteSpace(selectedClass))
-            {
-                Core.Logger("No soloing class found and nothing equipped; aborting SeaVoice.");
-                return;
-            }
-
-            Core.Logger($"Soloing \"Voice of the Sea\" with {selectedClass}");
-
-            Adv.GearStore(EnhAfter: true);
-            Adv.SmartEnhance(selectedClass);
-
-            KillThing(
-                map: "seavoice",
-                mobMapID: 1,
-                itemUsed: 78994,
-                Class: selectedClass,
-                item: itemName,
-                quant: quant
-            );
-        }
-
-        Adv.GearStore(true, EnhAfter: true);
-        Core.CancelRegisteredQuests();
-    }
-
-
-    public void KillThing(
-        string map,
-        int mobMapID,
-        int itemUsed,
-        string Class,
-        string item,
-        int quant = 1,
-        bool isTemp = false
-    )
-    {
-        string? classFromPlayer = Bot.Player.CurrentClass?.Name;
-
-        var itemToEnhance = Bot
-            .Inventory?.Items?.FirstOrDefault(x =>
-                x?.Equipped == true && Adv.WeaponCatagories.Contains(x.Category)
-            )
-            ?.Name;
-
-        // if (itemToEnhance != null)
-        //     Adv.EnhanceItem(
-        //         itemToEnhance,
-        //         EnhancementType.Lucky,
-        //         wSpecial: WeaponSpecial.Awe_Blast
-        //     );
-
-        string? classNameToUse = Class ?? classFromPlayer;
-        if (string.IsNullOrWhiteSpace(classNameToUse))
-        {
-            Core.Logger("KillThing aborted: no class specified and player has no current class.");
+            Core.Logger("No soloing class found and nothing equipped; aborting SeaVoice.");
             return;
         }
 
-        // FIX: actually equip the class you selected
-        Core.Equip(classNameToUse);
-
-        Core.Join(map);
-        Bot.Wait.ForMapLoad(map);
-        Adv.BuyItem("seavoice", 2320, "Vigil", 1000, 12023);
-        Core.Equip(itemUsed);
-        Core.Logger($"{itemUsed} [Vigil] Equiped? {Bot.Inventory?.IsEquipped("Vigil")}");
-        // Move to mob cell and set respawn
-        if (Bot.Player.Cell != "r2")
-            Core.Jump("r2", "Left");
-        Bot.Player.SetSpawnPoint();
-
-        while (
-            !Bot.ShouldExit
-            && (isTemp ? !Bot.TempInv.Contains(item, quant) : !Core.CheckInventory(item, quant))
-        )
-        {
-            if (!Bot.Player.Alive)
-            {
-                Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
-                continue;
-            }
-
-            if (Bot.Player.Cell != "r2")
-                Core.Jump("r2", "Left");
-
-            // === Handle Oxidize aura (use Vigil to cleanse) ===
-            while (!Bot.ShouldExit && Bot.Self.Auras.Any(a => a.Name == "Oxidize") && !Bot.Self.Auras.Any(a => a.Name == "Vigil"))
-            {
-                if (Bot.Skills.CanUseSkill(5))
-                    Bot.Skills.UseSkill(5);
-                Core.Sleep(500);
-                if (Bot.Self.Auras.Any(a => a.Name == "Vigil"))
-                    break;
-            }
-
-            // === Attack phase ===
-            Bot.Combat.Attack("*");
-            Core.Sleep(500);
-        }
-
-        Core.Logger($"KillThing completed for {item} ({quant}).");
+        Core.Logger($"Fighting Voice in the Sea with {selectedClass}");
+        Adv.SmartEnhance(selectedClass);
+        Core.Equip(selectedClass);
+        AOR.FightVoiceInTheSea(itemName, quant);
+        Adv.GearStore(true, EnhAfter: true);
+        Core.CancelRegisteredQuests();
     }
 
     public List<IOption> Select = new()

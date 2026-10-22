@@ -62,9 +62,14 @@ public class KathoolAdeptPrerequisites
     {
         if (Core.CheckInventory("Adeptus Kathooli")){
 			Core.Logger("Prerequisites already in inventory (Adeptus Kathooli)");
-            return;
+			return;
 		}
-			
+		
+		if (Core.CheckInventory("Ashray Villager")&&Core.CheckInventory("Undine Defence Director")&&Core.CheckInventory("Evacuation Protocol Suit")&&Core.CheckInventory("Elven Heritage Guardian")&&Core.CheckInventory("Ashray Elf Warden")&&Core.CheckInventory("DeepWater Drow")&&Core.CheckInventory("Midnight Glaucus Sage")&&Core.CheckInventory("Kathool Acolyte")){
+			Core.Logger("Prerequisites already in inventory (Method 1)");
+			return;
+		}
+		
 		Core.Logger("Farming Prerequisites");
 		
         SSM.BuyAllMerge("Ashray Villager");
@@ -73,7 +78,13 @@ public class KathoolAdeptPrerequisites
 		MZM.BuyAllMerge("Elven Heritage Guardian");
 		AZM.BuyAllMerge("Ashray Elf Warden");
 		TOM.BuyAllMerge("DeepWater Drow");
+		
+		Core.AddDrop("Glaucus Mystic");
 		SVM.BuyAllMerge("Midnight Glaucus Sage");
+		if (!Core.CheckInventory("Midnight Glaucus Sage")){
+			SVM.BuyAllMerge("Midnight Glaucus Sage");
+		}
+		
         Core.EquipClass(ClassType.Solo);
 		Core.HuntMonster("deepchaos", "Kathool", "Kathool Acolyte", 1, false, false);
     }

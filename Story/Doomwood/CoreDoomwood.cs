@@ -352,7 +352,7 @@ public class CoreDoomwood
         {
             Core.EnsureAccept(1131);
             Core.GetMapItem(459, 8, "temple");
-            Core.HuntMonster("temple", "Ghoul", "Ghouls Gone", 10);
+            Core.HuntMonster("temple", "Ghoul", "Ghouls Gone", 6);
             Core.EnsureComplete(1131);
         }
 
@@ -364,7 +364,7 @@ public class CoreDoomwood
         {
             Core.EnsureAccept(1133);
             Core.GetMapItem(460, 10, "temple");
-            Core.HuntMonster("temple", "Sanguine Souleater", "Souls Soothed", 10);
+            Core.HuntMonster("temple", "Sanguine Souleater", "Souls Soothed", 6);
             Core.EnsureComplete(1133);
         }
 
@@ -402,8 +402,8 @@ public class CoreDoomwood
         if (!Story.QuestProgression(1141))
         {
             Core.EnsureAccept(1141);
-            Core.HuntMonster("temple", "Undead Mage", "Tattered Necronomicon", 5);
-            Core.HuntMonster("temple", "Skeletal Fire Mage", "Scorched Necronomicon", 5);
+            Core.HuntMonster("temple", "Undead Mage", "Tattered Necronomicon", 4);
+            Core.HuntMonster("temple", "Skeletal Fire Mage", "Scorched Necronomicon", 2);
             Core.EnsureComplete(1141);
         }
 
@@ -412,7 +412,7 @@ public class CoreDoomwood
         {
             Core.EnsureAccept(1142);
             Core.GetMapItem(463, 6, "temple");
-            Core.HuntMonster("temple", "Shelleton", "Screaming Shell-skull", 10);
+            Core.HuntMonster("temple", "Shelleton", "Screaming Shell-skull", 2);
             Core.HuntMonster("temple", "Skeleton", "Grinning Jawbone", 3);
             Core.EnsureComplete(1142);
         }

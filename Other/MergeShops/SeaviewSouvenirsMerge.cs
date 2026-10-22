@@ -102,12 +102,12 @@ public class SeaviewSouvenirsMerge
 
                 case "Sur-gion Token":
                     Core.FarmingLogger(req.Name, quant);
-                    Core.EquipClass(ClassType.Farm);
+                    Core.EquipClass(ClassType.Solo);
                     Core.RegisterQuests(9235);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
-                        Core.HuntMonster("ashray", "Kitefin Shark Bait", "Shark Fin", 7, log: false);
-                        Core.HuntMonster("ashray", "Ashray Fisherman", "Ashray Blood Sample", 7, log: false);
+                        Core.KillMonster("ashray", "Enter", "Spawn", "Kitefin Shark Bait", "Shark Fin", 7, log: false);
+                        Core.KillMonster("ashray", "r2", "Left", "Ashray Fisherman", "Ashray Blood Sample", 7, log: false);
                         Core.HuntMonster("ashray", "Seafoam Elemental", "Seafoam Bubbles", log: false);
                         Bot.Wait.ForPickup(req.Name);
                     }

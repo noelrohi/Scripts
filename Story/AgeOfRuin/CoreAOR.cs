@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Skua.Core.Interfaces;
 using Skua.Core.Models;
 using Skua.Core.Models.Auras;
+using Skua.Core.Models.Items;
 using Skua.Core.Models.Monsters;
 using Skua.Core.Models.Skills;
 
@@ -38,6 +39,7 @@ public class CoreAOR
         set => _SoW = value;
     }
     private static CoreSoW _SoW;
+    private bool _voiceChargeDetected;
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -607,14 +609,7 @@ public class CoreAOR
         Story.PreLoad(this);
         Core.EnsureAccept(9348);
 
-        KillThing(
-              map: "seavoice",
-              mobMapID: 1,
-              itemUsed: 78994,
-              item: "Voice in the Sea Defeated",
-              quant: 1,
-              isTemp: true
-          );
+        FightVoiceInTheSea("Voice in the Sea Defeated", isTemp: true);
 
         Adv.GearStore(true, EnhAfter: true);
         Core.EnsureComplete(9348);
@@ -1985,80 +1980,109 @@ public class CoreAOR
         }
     }
 
-    public void KillThing(string map, int mobMapID, int itemUsed, string item, int quant = 1, bool isTemp = false)
+    public void FightVoiceInTheSea(string item, int quant = 1, bool isTemp = false)
     {
-        string? classFromPlayer = Bot.Player.CurrentClass?.Name;
+        if (!isTemp)
+            Core.Unbank(item);
+        if (Finished())
+            return;
+        if (!isTemp)
+            Core.AddDrop(item);
 
-        Core.Join(map);
-        Bot.Wait.ForMapLoad(map);
+        // Vainglory compounds the healing reduction from Voice in the Sea.
+        var cape = Bot.Inventory.Items.Find(i => i.Equipped
+            && i.Category == ItemCategory.Cape
+            && i.EnhancementPatternID == (int)CapeSpecial.Vainglory);
+        if (cape != null)
+            Adv.EnhanceItem(
+                cape.Name,
+                EnhancementType.Lucky,
+                CapeSpecial.None,
+                HelmSpecial.None,
+                WeaponSpecial.None,
+                logging: false,
+                bypassDisableAutoEnhance: true
+            );
 
+        Core.Join("seavoice");
         Adv.BuyItem("seavoice", 2320, "Vigil", 1000, 12023);
-        Core.Equip(itemUsed);
-
-        Core.Logger($"{itemUsed} [Vigil] Equipped? {Bot.Inventory?.IsEquipped("Vigil")}");
-
-        if (Bot.Player.Cell != "r2")
+        Core.Equip("Vigil");
+        if (!Bot.Inventory.IsEquipped("Vigil"))
         {
-            Core.Jump("r2", "Left");
-            Bot.Wait.ForCellChange("r2");
+            Core.Logger("Vigil could not be equipped.");
+            return;
         }
 
-        Bot.Player.SetSpawnPoint();
-        Bot.Skills.Stop();
-
-        int skillIndex = 0;
-        int[] skillList = { 1, 2, 3, 4 };
-
+        _voiceChargeDetected = false;
+        Bot.Flash.FlashCall += SeaVoiceFlashListener;
         try
         {
-            while (
-                !Bot.ShouldExit
-                && (isTemp ? !Bot.TempInv.Contains(item, quant) : !Core.CheckInventory(item, quant))
-            )
+            Core.Jump("r2", "Left");
+            Bot.Player.SetSpawnPoint();
+            while (!Bot.ShouldExit && !Finished())
             {
                 if (!Bot.Player.Alive)
                 {
-                    Bot.Wait.ForTrue(() => Bot.Player.Alive, 20);
-                    skillIndex = 0;
-                    continue;
-                }
-
-                if (Bot.Player.Cell != "r2")
-                {
-                    Core.Jump("r2", "Left");
-                    Bot.Wait.ForCellChange("r2");
-                }
-
-                // Use Vigil to cleanse Oxidize.
-                if (Bot.Self.HasActiveAura("Oxidize") && !Bot.Self.HasActiveAura("Vigil"))
-                {
-                    if (Bot.Skills.CanUseSkill(5))
-                        Bot.Skills.UseSkill(5);
-
+                    _voiceChargeDetected = false;
+                    Bot.Skills.Resume();
                     Bot.Sleep(500);
                     continue;
                 }
+                if (Bot.Player.Cell != "r2")
+                    Core.Jump("r2", "Left");
 
-                if (!Bot.Player.HasTarget)
-                    Bot.Combat.Attack("*");
-
-                if (Bot.Player.HasTarget && Bot.Player.Target?.HP <= 0)
-                    continue;
-
-                if (Bot.Skills.CanUseSkill(skillList[skillIndex]))
+                if (_voiceChargeDetected)
                 {
-                    if (Bot.Skills.UseSkill(skillList[skillIndex]))
-                        skillIndex = (skillIndex + 1) % skillList.Length;
+                    while (!Bot.ShouldExit && Bot.Player.Alive && Bot.Player.HasTarget && !Bot.Self.HasActiveAura("Vigil"))
+                    {
+                        if (Bot.Skills.CanUseSkill(5))
+                            Bot.Skills.UseSkill(5);
+                        Bot.Sleep(50);
+                    }
+                    _voiceChargeDetected = false;
+                    Bot.Skills.Resume();
+                    if (!Bot.ShouldExit && Bot.Self.HasActiveAura("Vigil"))
+                        Core.Logger("Vigil active. Class skills resumed.");
+                    continue;
                 }
-                Bot.Sleep(200);
+
+                var target = Bot.Player.Target;
+                if (target == null || target.MapID != 1 || target.HP <= 0)
+                    Bot.Combat.Attack(1);
+                Bot.Sleep(500);
             }
         }
         finally
         {
+            Bot.Flash.FlashCall -= SeaVoiceFlashListener;
+            _voiceChargeDetected = false;
             Bot.Skills.Resume();
-            Bot.Combat.StopAttacking = false;
+            Core.JumpWait();
         }
-        Core.Logger($"KillThing completed for {item} ({quant}).");
+
+        bool Finished()
+        {
+            if (isTemp)
+                return Bot.TempInv.Contains(item, quant);
+            return Bot.Inventory.Contains(item, quant);
+        }
     }
 
+    private void SeaVoiceFlashListener(string name, object[] args)
+    {
+        try
+        {
+            if (name != "pext" || args.Length == 0 || _voiceChargeDetected)
+                return;
+            string rawPacket = args[0]?.ToString() ?? string.Empty;
+            if (rawPacket.IndexOf("You will not resist!", StringComparison.OrdinalIgnoreCase) < 0)
+                return;
+            Bot.Skills.Pause();
+            _voiceChargeDetected = true;
+            Core.Logger("Charge detected. Class skills paused for Vigil.");
+        }
+        catch
+        {
+        }
+    }
 }

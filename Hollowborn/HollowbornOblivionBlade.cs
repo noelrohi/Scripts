@@ -63,7 +63,7 @@ public class HollowbornOblivionBlade
         Nation.FarmVoucher(false, true);
         ArchFiendEnchantedOrbs();
         Nation.FarmUni13(1);
-        Nation.DiamondEvilWar(500);
+        Nation.FarmDiamondofNulgath(500);
         if (!Core.CheckInventory("Unidentified 25"))
         {
             Adv.BuyItem("tercessuinotlim", 1951, "Unmoulded Fiend Essence");
@@ -107,7 +107,7 @@ public class HollowbornOblivionBlade
             Core.BuyItem("tercessuinotlim", 1951, "Unidentified 25");
         }
         Nation.FarmUni13(1);
-        Nation.DiamondEvilWar(150);
+        Nation.FarmDiamondofNulgath(150);
         Nation.FarmBloodGem(10);
         Nation.FarmVoucher(false);
         Core.BuyItem("tercessuinotlim", 1820, "ArchFiend Enchanted Orbs");

@@ -98,7 +98,7 @@ public class TradingandStuffDual
             Core.BuyItem("tercessuinotlim", 1951, "Unidentified 25");
         }
         Nation.FarmUni13(1);
-        Nation.DiamondEvilWar(150);
+        Nation.FarmDiamondofNulgath(150);
         Nation.FarmBloodGem(10);
         Nation.FarmVoucher(false);
         Core.BuyItem("tercessuinotlim", 1820, "ArchFiend Enchanted Orbs");

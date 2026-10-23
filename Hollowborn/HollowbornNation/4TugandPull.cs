@@ -151,9 +151,11 @@ public class TugandPull
             ITFS.FiendsShadow(InTheFiendsShadow.Rewards.None, false, true, 100);
             NDW.NDWQuest(new[] { "Archfiend Essence Fragment" }, 4);
             CVHL.VHLChallenge(8, false);
-            if (Core.CheckInventory(" The Mortal Coil"))
-                Core.Logger("Missing \" The Mortal Coil\" From Nulgath, you must farm this yourself via an army then return to this script", messageBox: true, stopBot: true);
-            else Core.EnsureComplete(QuestID);
+            EnsureMortalCoil();
+            if (Core.CheckInventory("The Mortal Coil"))
+                Core.EnsureComplete(QuestID);
+            else
+                Core.Logger("Could not obtain \"The Mortal Coil\" from Nulgath; stopping before completing Tug and Pull.", messageBox: true, stopBot: true);
             return;
         }
 
@@ -164,10 +166,21 @@ public class TugandPull
             ITFS.FiendsShadow(InTheFiendsShadow.Rewards.None, false, true, 100);
             NDW.NDWQuest(new[] { "Archfiend Essence Fragment" }, 4);
             CVHL.VHLChallenge(8, false);
-            if (Core.CheckInventory(" The Mortal Coil"))
-                Core.Logger("Missing \" The Mortal Coil\" From Nulgath, you must farm this yourself via an army then return to this script", messageBox: true, stopBot: true);
-            else Core.EnsureComplete(QuestID);
+            EnsureMortalCoil();
+            if (Core.CheckInventory("The Mortal Coil"))
+                Core.EnsureComplete(QuestID);
+            else
+                Core.Logger("Could not obtain \"The Mortal Coil\" from Nulgath; stopping before completing Tug and Pull.", messageBox: true, stopBot: true);
         }
+    }
+
+    private void EnsureMortalCoil()
+    {
+        if (Core.CheckInventory("The Mortal Coil"))
+            return;
+
+        Core.EquipClass(ClassType.Dodge);
+        Core.HuntMonster("tercessuinotlim", "Nulgath", "The Mortal Coil", isTemp: false);
     }
 
     private const int QuestID = 10792;

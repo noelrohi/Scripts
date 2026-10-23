@@ -160,6 +160,30 @@ public class CoreBots
 
     private IScriptInterface Bot => IScriptInterface.Instance;
 
+    /// <summary>
+    /// Checks for VibeSkua Avalonia, optionally requiring a minimum numeric client version.
+    /// Recognizes older Avalonia releases that do not publish a client identifier.
+    /// Returns false on other clients or if minimumVersion is not a valid numeric version.
+    /// Usage: Core.IsVibeSkuaAvalonia() or Core.IsVibeSkuaAvalonia("2.0.7").
+    /// </summary>
+    public bool IsVibeSkuaAvalonia(string? minimumVersion = null)
+    {
+        Assembly? client = Assembly.GetEntryAssembly();
+        if (client is null)
+            return false;
+
+        if (!client.GetCustomAttributes<AssemblyMetadataAttribute>().Any(attribute =>
+                attribute.Key == "Skua.ClientId" && attribute.Value == "VibeSkuaAvalonia") &&
+            client.GetType("Skua.App.Avalonia.App") is null)
+            return false;
+
+        if (minimumVersion is null)
+            return true;
+
+        return Version.TryParse(minimumVersion, out Version? minimum) &&
+            client.GetName().Version is Version current && current >= minimum;
+    }
+
     private const string DiscordLink = "https://discord.gg/mScWZYYSKS";
 
     private Stopwatch? _scriptStopwatch;
@@ -245,9 +269,12 @@ public class CoreBots
             {
                 if (loadAttempts >= 30)
                 {
-                    Logger("Player stuck in spirit state after 30s, logging out to trigger auto-relogin.");
+                    Logger("Player stuck in spirit state after 30s, reconnecting.");
                     Bot.Options.AutoRelogin = true;
-                    Bot.Servers.Logout();
+                    if (IsVibeSkuaAvalonia("2.0.7"))
+                        Bot.Servers.Relogin(server);
+                    else
+                        Bot.Servers.Logout();
                     loadAttempts = 0;
                     Bot.Sleep(1000);
                     continue;
@@ -8318,7 +8345,7 @@ public class CoreBots
                 Logger($"Class \"{className}\" not found");
                 return false;
             }
-            
+
             if (classItem.Category != ItemCategory.Class)
             {
                 Logger($"Class \"{className}\" found but not categorized as Class item");
@@ -11009,71 +11036,90 @@ public class CoreBots
         return Bot.Quests.EnsureAccept(QuestID);
     }
 
+
     /// <summary>
-    /// Checks if the map is available for joining or it is seasonal and not yet released
+    /// Checks if the map is available for joining or it is seasonal and not yet released.
     /// </summary>
     public bool isSeasonalMapActive(string map, bool log = true)
     {
         map = map.ToLower().Replace(" ", "");
+
         if (Bot.Map.Name != null && Bot.Map.Name.ToLower() == map)
             return true;
 
         JumpWait();
-        Bot.Events.ExtensionPacketReceived += MapIsNotAvailableListener;
+
         bool seasonalMessageProc = false;
+        Bot.Events.ExtensionPacketReceived += MapIsNotAvailableListener;
 
-        for (int i = 0; i < 20; i++)
+        try
         {
-            if (Bot.Map.Name != null && Bot.Map.Name != map)
-                Bot.Map.Join(!PrivateRooms ? map : $"{map}-{PrivateRoomNumber}", autoCorrect: inPublicRoom());
-            Bot.Wait.ForMapLoad(map);
-
-            string? currentMap = Bot.Map.Name;
-            if (!string.IsNullOrEmpty(currentMap) && currentMap.ToLower() == map)
-                break;
-
-            if (seasonalMessageProc)
+            for (int i = 0; i < 20 && !Bot.ShouldExit; i++)
             {
-                return false;
+                if (seasonalMessageProc)
+                    return false;
+
+                if (Bot.Map.Name != null && Bot.Map.Name.ToLower() != map)
+                    Bot.Map.Join(!PrivateRooms ? map : $"{map}-{PrivateRoomNumber}", autoCorrect: inPublicRoom());
+
+                // Poll for up to 2 seconds, checking for an unavailable warning every 100 ms.
+                for (int wait = 0; wait < 20 && !Bot.ShouldExit; wait++)
+                {
+                    if (seasonalMessageProc)
+                        return false;
+
+                    string? currentMap = Bot.Map.Name;
+                    if (!string.IsNullOrEmpty(currentMap) && currentMap.ToLower() == map)
+                    {
+                        Bot.Wait.ForMapLoad(map, 2);
+                        return Bot.Map.Name != null && Bot.Map.Name.ToLower() == map;
+                    }
+
+                    Sleep();
+                }
+
+                if (seasonalMessageProc)
+                    return false;
+
+                if (i == 19)
+                    Logger($"Failed to join {map}");
             }
 
-            if (i == 19)
-                Logger($"Failed to join {map}");
+            return false;
         }
-
-        Bot.Events.ExtensionPacketReceived -= MapIsNotAvailableListener;
-
-        return Bot.Map.Name != null && Bot.Map.Name.ToLower() == map;
+        finally
+        {
+            Bot.Events.ExtensionPacketReceived -= MapIsNotAvailableListener;
+        }
 
         void MapIsNotAvailableListener(dynamic packet)
         {
             string type = packet["params"].type;
             dynamic data = packet["params"].dataObj;
-            if (type is not null and "str")
-            {
-                string cmd = data[0];
-                switch (cmd)
-                {
-                    case "warning":
-                        string b = Convert.ToString(packet);
-                        string bLower = b.ToLower();
-                        if (
-                            bLower.Contains("is not available.")
-                            || bLower.Contains("map is locked until event begins")
-                            || bLower.Contains("house item from /basecamp")
-                        )
-                        {
-                            if (log)
-                                Logger($"[{map}] Seasonal Message: {data[2]}");
 
-                            seasonalMessageProc = true;
-                            Bot.Events.ExtensionPacketReceived -= MapIsNotAvailableListener;
-                        }
-                        break;
-                }
+            if (type is not "str")
+                return;
+
+            string cmd = data[0];
+            if (cmd != "warning")
+                return;
+
+            string bLower = Convert.ToString(packet).ToLower();
+
+            if (
+                bLower.Contains("is not available.")
+                || bLower.Contains("map is locked until event begins")
+                || bLower.Contains("house item from /basecamp")
+            )
+            {
+                if (log)
+                    Logger($"[{map}] Seasonal Message: {data[2]}");
+
+                seasonalMessageProc = true;
             }
         }
     }
+
 
     /// <summary>
     /// Automatic Class Selection for certain bosses.

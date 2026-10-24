@@ -4976,6 +4976,86 @@
       ]
     }
   },
+  "Kathool Adept": {
+    "Base": {
+      "skillUseMode": "UseIfAvailable",
+      "skillTimeout": 100,
+      "skills": [
+        {
+          "skillId": 3,
+          "rules": [
+            {
+              "type": "Aura",
+              "value": 5,
+              "comparison": "less",
+              "auraName": "Feeding",
+              "auraTarget": "self"
+            }
+          ]
+        },
+        {
+          "skillId": 3,
+          "rules": [
+            {
+              "type": "Aura",
+              "value": 4,
+              "comparison": "greater",
+              "auraName": "Feeding",
+              "auraTarget": "self"
+            }
+          ]
+        },
+        {
+          "skillId": 1
+        },
+        {
+          "skillId": 2
+        },
+        {
+          "skillId": 4
+        }
+      ]
+    },
+    "Farm": {
+      "skillUseMode": "UseIfAvailable",
+      "skillTimeout": 100,
+      "skills": [
+        {
+          "skillId": 3,
+          "rules": [
+            {
+              "type": "Aura",
+              "value": 5,
+              "comparison": "less",
+              "auraName": "Feeding",
+              "auraTarget": "self"
+            }
+          ]
+        },
+        {
+          "skillId": 3,
+          "rules": [
+            {
+              "type": "Aura",
+              "value": 4,
+              "comparison": "greater",
+              "auraName": "Feeding",
+              "auraTarget": "self"
+            }
+          ]
+        },
+        {
+          "skillId": 1
+        },
+        {
+          "skillId": 2
+        },
+        {
+          "skillId": 4
+        }
+      ]
+    }
+  },
   "King's Echo": {
     "Base": {
       "skillUseMode": "UseIfAvailable",

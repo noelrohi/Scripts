@@ -30,12 +30,12 @@ public class BeleensDyeMerge
         set => _Adv = value;
     }
     private static CoreAdvanced _Adv;
-    private static CyseroMerge CyseroMerge
+    private static CyseroMergeShop CyseroMerge
     {
-        get => _CyseroMerge ??= new CyseroMerge();
+        get => _CyseroMerge ??= new CyseroMergeShop();
         set => _CyseroMerge = value;
     }
-    private static CyseroMerge _CyseroMerge;
+    private static CyseroMergeShop _CyseroMerge;
     private static ArtixWeddingMerge ArtixWeddingMerge
     {
         get => _ArtixWeddingMerge ??= new ArtixWeddingMerge();

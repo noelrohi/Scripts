@@ -54,17 +54,32 @@ public class TwilightZoneMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(
-            new[] { "Undine Visitor Badge", "Sundered Tentacle", "Leviathan Scale" }
-        );
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Undine Visitor Badge",
+            "Sundered Tentacle",
+            "Leviathan Scale",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AoR.TwilightZone();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("twilightzone", 2293, findIngredients, buyOnlyThis, buyMode: buyMode);

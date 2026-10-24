@@ -490,11 +490,11 @@ public class Core13LoC
         if (!Story.QuestProgression(470))
         {
             Core.EnsureAccept(470);
-            Core.HuntMonsterMapID("Junkyard", 1, "Wild Kara-Kasa", 5);
-            Core.HuntMonsterMapID("Junkyard", 4, "Wild Bura-Bura", 4);
-            Core.HuntMonsterMapID("Junkyard", 3, "Wild Biwa-Bokuboku", 3);
-            Core.HuntMonsterMapID("Junkyard", 6, "Wild Koto-Furunushi", 2);
-            Core.HuntMonsterMapID("Junkyard", 2, "Wild Bakezouri", 1);
+            Core.KillMonster("junkyard", "Enter", "Left", 1, "Wild Kara-Kasa", 5);
+            Core.KillMonster("junkyard", "r2", "Left", 4, "Wild Bura-Bura", 4);
+            Core.KillMonster("junkyard", "r2", "Left", 3, "Wild Biwa-Bokuboku", 3);
+            Core.KillMonster("junkyard", "r3", "Left", 6, "Wild Koto-Furunushi", 2);
+            Core.KillMonster("junkyard", "Enter", "Left", 2, "Wild Bakezouri", 1);
             Core.EnsureComplete(470);
         }
 
@@ -1118,7 +1118,7 @@ public class Core13LoC
         if (!Story.QuestProgression(978))
         {
             Core.EnsureAccept(978);
-            Core.HuntMonsterMapID("wanders", 46, "Sek-Duat Defeated");
+            Core.KillMonster("wanders", "Boss", "Left", "Sek-Duat", "Sek-Duat Defeated");
             Core.EnsureComplete(978);
             //Editors Note: PLEASE stop breaking this
             //Editors Note2: for each new Sek-Duat Fix Please add 1 to this counter, Counter started 5/7/22 (not entirely acurate just when i made the counter.)
@@ -1194,7 +1194,7 @@ public class Core13LoC
         {
             Core.EquipClass(ClassType.Farm);
             Core.EnsureAccept(1234);
-            Core.HuntMonsterMapID("bloodtusk", 21, "Polished Rocks", 3);
+            Core.KillMonster("bloodtusk", "r8", "Left", "Crystal-Rock", "Polished Rocks", 3);
             Core.HuntMonster("crossroads", "Lemurphant", "Lemurphant Ivory", 5);
             Core.HuntMonster("crossroads", "Chinchilizard", "Liz-Leather Thongs", 5);
             Story.MapItemQuest(1234, "crossroads", 525);
@@ -2318,7 +2318,7 @@ public class Core13LoC
             Core.EquipClass(ClassType.Solo);
             Core.EnsureAccept(3188);
             Core.BuyItem("mirrorportal", 774, "Shriekward Potion", 99);
-            Core.HuntMonsterMapID("mirrorportal", 1, "Chaos Harpy Defeated");
+            Core.KillMonster("mirrorportal", "r3", "Left", "Chaos Harpy", "Chaos Harpy Defeated");
             Core.EnsureComplete(3188);
             if (Core.CheckInventory("Shriekward Potion"))
             {
@@ -2701,7 +2701,7 @@ public class Core13LoC
         if (!Story.QuestProgression(3879))
         {
             Core.EnsureAccept(3879);
-            Core.HuntMonsterMapID("chaosrealm", 13, "Chaos Lord Alteon Defeated");
+            Core.KillMonster("chaosrealm", "r24", "Left", "Alteon", "Chaos Lord Alteon Defeated");
             Core.EnsureComplete(3879);
             Core.Join("whitemap");
         }

@@ -54,17 +54,32 @@ public class AbyssalZoneMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(
-            new[] { "Undine Base Scrip", "Water Elf Antler", "Waves of Tumult" }
-        );
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Undine Base Scrip",
+            "Water Elf Antler",
+            "Waves of Tumult",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AOR.AbyssalZone();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("abyssalzone", 2304, findIngredients, buyOnlyThis, buyMode: buyMode);

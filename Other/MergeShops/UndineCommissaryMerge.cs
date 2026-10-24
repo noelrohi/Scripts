@@ -54,15 +54,31 @@ public class UndineCommissaryMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(new[] { "Undine Base Scrip", "Sun Zone Chit" });
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Undine Base Scrip",
+            "Sun Zone Chit",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AOR.SunlightZone();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("sunlightzone", 2288, findIngredients, buyOnlyThis, buyMode: buyMode);

@@ -61,29 +61,39 @@ public class TrenchObserveMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(
-            new[]
-            {
-                "Undine Base Scrip",
-                "Dark Elf Pearl",
-                "Ashray Elf Warden",
-                "Ashray Elf Top Knot",
-                "Ashray Elf Locks",
-                "Ashray Top Knot and Horns",
-                "Ashray Locks and Horns",
-                "Coastal Corona",
-                "Golden Ashray Trident",
-                "Dancer's Sea Streams",
-            }
-        );
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Undine Base Scrip",
+            "Dark Elf Pearl",
+            "Ashray Elf Warden",
+            "Ashray Elf Top Knot",
+            "Ashray Elf Locks",
+            "Ashray Top Knot and Horns",
+            "Ashray Locks and Horns",
+            "Coastal Corona",
+            "Golden Ashray Trident",
+            "Dancer's Sea Streams",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AOR.DeepWater();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("trenchobserve", 2316, findIngredients, buyOnlyThis, buyMode: buyMode);

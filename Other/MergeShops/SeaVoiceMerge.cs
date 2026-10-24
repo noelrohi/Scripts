@@ -51,28 +51,41 @@ public class SeaVoiceMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(
-            new[]
-            {
-                "Algal Bloom",
-                "Bioluminessence",
-                "Dark Elf Pearl",
-                "Glaucus Mystic",
-                "Water Elf Pearl",
-                "Water Elf Antler",
-                "Glaucus Companion",
-                "Sundered Tentacle",
-                "Calamity Atlanticus Trident",
-            }
-        );
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Algal Bloom",
+            "Bioluminessence",
+            "Dark Elf Pearl",
+            "Glaucus Mystic",
+            "Water Elf Pearl",
+            "Water Elf Antler",
+            "Glaucus Companion",
+            "Sundered Tentacle",
+            "Calamity Atlanticus Trident",
+            "Glaucus Sage",
+            "Midnight Glaucus Mystic",
+            "Midnight Glaucus Sage",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("seavoice", 2320, findIngredients, buyOnlyThis, buyMode: buyMode);
 

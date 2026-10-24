@@ -15,6 +15,7 @@ tags: kathool, chest, merge, kathooldepths, adeptus, kathooli, morph, sacrosanct
 //cs_include Scripts/Other/MergeShops/AbyssalZoneMerge.cs
 //cs_include Scripts/Other/MergeShops/TrenchObserveMerge.cs
 //cs_include Scripts/Other/MergeShops/SeaVoiceMerge.cs
+//cs_include Scripts/Other/MergeShops/MidnightZoneMerge.cs
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Items;
 using Skua.Core.Options;
@@ -78,6 +79,7 @@ public class KathoolsChestMerge
         set => _SVM = value;
     }
     private static SeaVoiceMerge _SVM;
+    private readonly MidnightZoneMerge MZM = new();
 
     public bool DontPreconfigure = true;
     public List<IOption> Generic = sAdv.MergeOptions;
@@ -100,6 +102,7 @@ public class KathoolsChestMerge
                 "Ashray Elf Warden",
                 "DeepWater Drow",
                 "Midnight Glaucus Sage",
+                "Elven Heritage Guardian",
                 "Kathool Acolyte",
                 "Adeptus Relic",
                 "Adeptus Kathooli Hair",
@@ -118,6 +121,9 @@ public class KathoolsChestMerge
 
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        if (!Core.BankingBlackList.Contains("Elven Heritage Guardian"))
+            Core.BankingBlackList.Add("Elven Heritage Guardian");
+
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("kathooldepths", 2322, findIngredients, buyOnlyThis, buyMode: buyMode);
 
@@ -183,6 +189,10 @@ public class KathoolsChestMerge
 
                 case "Midnight Glaucus Sage":
                     SVM.BuyAllMerge(req.Name);
+                    break;
+
+                case "Elven Heritage Guardian":
+                    MZM.BuyAllMerge(req.Name);
                     break;
 
                 case "Kathool Acolyte":

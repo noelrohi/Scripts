@@ -54,15 +54,31 @@ public class SeaviewSouvenirsMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(new[] { "Treasure Chest", "Sur-gion Token" });
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Treasure Chest",
+            "Sur-gion Token",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AOR.AshrayVillage();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("ashray", 2273, findIngredients, buyOnlyThis, buyMode: buyMode);

@@ -518,6 +518,8 @@ public class CoreStory
                         Bot.Wait.ForCellChange(targetCell);
                         Bot.Player?.SetSpawnPoint();
                     }
+                    Core.CanWeAggro();
+
                     if (!Bot.Player!.HasTarget || M != null && Bot.Player?.Target?.MapID != M.MapID)
                     {
                         Bot.Combat.Attack(M!.MapID);

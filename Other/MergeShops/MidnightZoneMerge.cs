@@ -54,15 +54,31 @@ public class MidnightZoneMerge
 
     public void ScriptMain(IScriptInterface Bot)
     {
-        Core.BankingBlackList.AddRange(new[] { "Undine Base Scrip", "Water Elf Pearl" });
+        ProtectRequiredItems();
         Core.SetOptions();
 
         BuyAllMerge();
         Core.SetOptions(false);
     }
 
+    private void ProtectRequiredItems()
+    {
+        string[] items =
+        {
+            "Undine Base Scrip",
+            "Water Elf Pearl",
+        };
+
+        foreach (string item in items)
+        {
+            if (!Core.BankingBlackList.Contains(item))
+                Core.BankingBlackList.Add(item);
+        }
+    }
+
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
+        ProtectRequiredItems();
         AOR.MidnightZone();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("midnightzone", 2302, findIngredients, buyOnlyThis, buyMode: buyMode);

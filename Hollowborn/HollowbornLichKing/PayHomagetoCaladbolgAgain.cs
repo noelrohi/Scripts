@@ -74,12 +74,12 @@ public class PayHomagetoCaladbolgAgain
         if (
             Core.EnsureLoad(9641)
                 .Rewards.All(reward => Core.CheckInventory(reward.Name, toInv: false))
-            || !Core.CheckInventory("Altar Of Caladbolg")
+            || !Core.CheckInventory("Altar Of the Hollowborn Caladbolg")
         )
         {
             Core.Logger(
-                !Core.CheckInventory("Altar Of Caladbolg")
-                    ? "This bot requires you to have a \"Altar Of Caladbolg\". Stopping the bot."
+                !Core.CheckInventory("Altar Of the Hollowborn Caladbolg")
+                    ? "This bot requires you to have a \"Altar Of the Hollowborn Caladbolg\". Stopping the bot."
                     : "All rewards owned, stopping the bot"
             );
             return;
@@ -91,6 +91,12 @@ public class PayHomagetoCaladbolgAgain
             Core.AddDrop(item.ID);
 
         Caladbolg.GetCaladbolg(false);
+        if (!Core.CheckInventory("Caladbolg"))
+        {
+            Core.Logger("Caladbolg could not be obtained. Stopping the bot.");
+            return;
+        }
+
         CoreHollowbornLichKing.Counterblow(
             CoreHollowbornLichKing.CounterblowRewards.Altar_Of_the_Hollowborn_Caladbolg
         );

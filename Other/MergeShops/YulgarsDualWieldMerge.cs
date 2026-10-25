@@ -238,8 +238,7 @@ public class YulgarsDualWieldMerge
         );
         Core.SetOptions();
 
-        // BuyAllMerge();
-        BuyAllMerge("Dual Frostbite");
+        BuyAllMerge();
 
         Core.SetOptions(false);
     }

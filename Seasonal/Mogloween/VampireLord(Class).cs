@@ -60,7 +60,7 @@ public class VampireLord
             if (Bot.Inventory.Contains("Blood Moon Token", 300))
                 break;
         }
-        Core.BuyItem("mogloween", 1477, "Vampire Lord", shopItemID: 5459);
+        Core.BuyItem("mogloween", 1477, "Vampire Lord", shopItemID: 4496);
 
         if (rankUpClass)
             Adv.RankUpClass("Vampire Lord");

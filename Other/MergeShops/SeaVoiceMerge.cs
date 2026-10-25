@@ -190,7 +190,8 @@ public class SeaVoiceMerge
             "ArchPaladin",
         };
 
-        if (!Core.CheckInventory(PossibleSoloClasses, any: true))
+        bool bestGearDisabled = Core.CBOBool("DisableBestGear", out bool disableBestGear) && disableBestGear;
+        if (!bestGearDisabled && !Core.CheckInventory(PossibleSoloClasses, any: true))
             Core.Logger("ArchPaladin not owned. Continuing with configured Solo class.");
 
         Core.RegisterQuests(9349);
@@ -199,11 +200,14 @@ public class SeaVoiceMerge
         Core.Unbank("Algal Bloom", itemName);
         Adv.GearStore(EnhAfter: true);
 
-        string? selectedClass =
-            PossibleSoloClasses.FirstOrDefault(className =>
+        string? selectedClass = Bot.Player.CurrentClass?.Name;
+        if (!bestGearDisabled)
+        {
+            selectedClass = PossibleSoloClasses.FirstOrDefault(className =>
                 Bot.Inventory.Items.Any(item => item.Name == className)
                 || Bot.Bank.Items.Any(item => item.Name == className)
-            ) ?? Bot.Player.CurrentClass?.Name;
+            ) ?? selectedClass;
+        }
         if (string.IsNullOrWhiteSpace(selectedClass))
         {
             Core.Logger("No soloing class found and nothing equipped; aborting SeaVoice.");

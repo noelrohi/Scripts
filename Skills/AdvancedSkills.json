@@ -4986,7 +4986,7 @@
           "rules": [
             {
               "type": "Aura",
-              "value": 5,
+              "value": 0,
               "comparison": "less",
               "auraName": "Feeding",
               "auraTarget": "self"
@@ -4998,7 +4998,7 @@
           "rules": [
             {
               "type": "Aura",
-              "value": 4,
+              "value": 10,
               "comparison": "greater",
               "auraName": "Feeding",
               "auraTarget": "self"
@@ -5025,7 +5025,7 @@
           "rules": [
             {
               "type": "Aura",
-              "value": 5,
+              "value": 0,
               "comparison": "less",
               "auraName": "Feeding",
               "auraTarget": "self"
@@ -5037,7 +5037,7 @@
           "rules": [
             {
               "type": "Aura",
-              "value": 4,
+              "value": 10,
               "comparison": "greater",
               "auraName": "Feeding",
               "auraTarget": "self"
@@ -5046,12 +5046,6 @@
         },
         {
           "skillId": 1
-        },
-        {
-          "skillId": 2
-        },
-        {
-          "skillId": 4
         }
       ]
     }

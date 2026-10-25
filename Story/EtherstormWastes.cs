@@ -377,7 +377,7 @@ public class EtherStormWastes
         {
             Core.EnsureAccept(1634);
             Core.GetMapItem(860, 3, "earthstorm");
-            Core.HuntMonster("earthstorm", "Crystallized Living Fire", "Shattered Heat", 10);
+            Core.HuntMonster("earthstorm", "Crystallized Living Fire", "Shattered Heat", 5);
             Core.HuntMonster("earthstorm", "Sapphire Golem", "Aqua Libertas", 5);
             Core.EnsureComplete(1634);
         }
@@ -387,8 +387,8 @@ public class EtherStormWastes
         {
             Core.EnsureAccept(1635);
             Core.GetMapItem(862, 8, "earthstorm");
-            Core.HuntMonster("earthstorm", "Crystalized Jellyfish", "Water Shell Matrix Decoder", 8);
-            Core.HuntMonster("earthstorm", "Diamond Golem", "Diamond CrystalCutter", 8);
+            Core.HuntMonster("earthstorm", "Crystalized Jellyfish", "Water Shell Matrix Decoder", 6);
+            Core.HuntMonster("earthstorm", "Diamond Golem", "Diamond CrystalCutter", 6);
             Core.EnsureComplete(1635);
         }
 

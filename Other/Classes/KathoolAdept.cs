@@ -220,7 +220,16 @@ public class KathoolAdept
             new AbyssalZoneMerge().BuyAllMerge("Ashray Elf Warden");
 
         if (!Bot.ShouldExit && !Core.CheckInventory("Midnight Glaucus Sage"))
-            new SeaVoiceMerge().BuyAllMerge("Midnight Glaucus Sage");
+        {
+            SeaVoiceMerge seaVoice = new();
+            // Buy prerequisites first so their merges do not consume materials reserved for the Sage.
+            if (!Core.CheckInventory("Midnight Glaucus Mystic"))
+            {
+                seaVoice.BuyAllMerge("Glaucus Sage");
+                seaVoice.BuyAllMerge("Midnight Glaucus Mystic");
+            }
+            seaVoice.BuyAllMerge("Midnight Glaucus Sage");
+        }
 
         if (!Bot.ShouldExit && !Core.CheckInventory("Kathool Acolyte"))
         {

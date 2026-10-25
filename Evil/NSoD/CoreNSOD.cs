@@ -209,7 +209,7 @@ public class CoreNSOD
             return;
 
         if (
-            Bot.Config!.Get<bool>("GetSDKA")
+            Bot.Config!.Get<bool>("getSDKA")
             && Bot.Player.IsMember
             && !Core.CheckInventory(
                 14474 /* Sepulchure's DoomKnight Armor */

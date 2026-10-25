@@ -342,18 +342,11 @@ public class UnlockForgeEnhancements
             false
         ),
         new Option<bool>(
-            "BulkFarmGold",
-            "Pre-Farm Gold(BlackSmithRep)",
-            "Bulk Turnin after farming 100m Gold. (turns in x10 as long as u have 5m gold)",
-            false
-        ),
-        new Option<bool>(
             "SellQuestClass",
             "Sell quest classes",
             "sell the classes backa after the Anima, Pneuma, Examen, and Vim quests",
             false
         ),
-        new Option<bool>("CanSolo", "Can solo", "Solo Sluggbutter"),
         new Option<bool>(
             "UseInsignOnDaunt",
             "Use Insignia for dauntless",
@@ -557,7 +550,6 @@ public class UnlockForgeEnhancements
         LOC.Escherion();
         Farm.BlacksmithingREP(
             4,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -611,7 +603,6 @@ public class UnlockForgeEnhancements
         Farm.Experience(40);
         Farm.BlacksmithingREP(
             5,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -661,7 +652,6 @@ public class UnlockForgeEnhancements
         Farm.Experience(60);
         Farm.BlacksmithingREP(
             6,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
         CoreSS.ShadowfallRise();
@@ -689,7 +679,6 @@ public class UnlockForgeEnhancements
         Core.EnsureAccept(9171);
         Farm.BlacksmithingREP(
             6,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -726,7 +715,6 @@ public class UnlockForgeEnhancements
         Farm.Experience(100);
         Farm.BlacksmithingREP(
             10,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -793,7 +781,6 @@ public class UnlockForgeEnhancements
         Farm.Experience(100);
         Farm.BlacksmithingREP(
             10,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -911,7 +898,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             8,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
         Core.EnsureAccept(8820);
@@ -952,7 +938,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             10,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -981,7 +966,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             10,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1123,7 +1107,7 @@ public class UnlockForgeEnhancements
 
         Farm.Experience(30);
         LOC.Kitsune();
-        Farm.BlacksmithingREP(4, Bot.Config!.Get<bool>("UseGold"), Bot.Config!.Get<bool>("UseGold"));
+        Farm.BlacksmithingREP(4, Bot.Config!.Get<bool>("UseGold"));
 
         Core.EquipClass(ClassType.Solo);
         Core.EnsureAccept(8758);
@@ -1148,7 +1132,6 @@ public class UnlockForgeEnhancements
         Farm.GoodREP(10);
         Farm.BlacksmithingREP(
             9,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1188,7 +1171,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             9,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
         Core.EquipClass(ClassType.Solo);
@@ -1230,7 +1212,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             9,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1254,7 +1235,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             9,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1304,7 +1284,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             9,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1337,7 +1316,6 @@ public class UnlockForgeEnhancements
         Farm.Experience(30);
         Farm.BlacksmithingREP(
             4,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
 
@@ -1363,7 +1341,6 @@ public class UnlockForgeEnhancements
 
         Farm.BlacksmithingREP(
             7,
-            Bot.Config!.Get<bool>("UseGold"),
             Bot.Config!.Get<bool>("UseGold")
         );
         Adv.GearStore(EnhAfter: true);

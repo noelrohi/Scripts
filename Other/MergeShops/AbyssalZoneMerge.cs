@@ -119,16 +119,16 @@ public class AbyssalZoneMerge
 
                 case "Water Elf Antler":
                     Core.FarmingLogger(req.Name, quant);
-                    Core.RegisterQuests(9316);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
                         Core.EquipClass(ClassType.Solo);
+                        Core.EnsureAccept(9316);
                         Core.HuntMonster("abyssalzone", "The Ashray", "Ashray Artifacts", log: false);
                         Core.HuntMonster("abyssalzone", "Necro Adipocere", "Adipocere Antler", 3, log: false);
                         Core.HuntMonster("abyssalzone", "Foam Scavenger", "Scavenger Foam", 6, log: false);
+                        Core.EnsureComplete(9316);
                         Bot.Wait.ForPickup(req.Name);
                     }
-                    Core.CancelRegisteredQuests();
                     break;
 
                 case "Waves of Tumult":

@@ -2072,48 +2072,44 @@ public class CoreFarms
             Core.Logger("Using Gold Method");
 
             Core.SavedState(true, "alchemyacademy");
+            // Count vouchers already in the bank before deciding how many to buy or whether to farm gold.
+            Core.Unbank("Gold Voucher 500k");
             while (!Bot.ShouldExit && FactionRank("Blacksmithing") < rank)
             {
                 Core.EnsureAccept(8737);
 
-                // Get remaining reputation XP needed to reach next rank
-                int remainingRepXP = RemainingFactionXp("Blacksmithing");
-                int itemsNeeded = (remainingRepXP + 999) / 1000; // Round up
+                // Rep still needed for the *requested* rank. RemainingFactionXp() falls back to
+                // 302500 (rank 10) when the faction isn't in the list yet, which made the bot try
+                // to farm 100M gold just to reach rank 4-5.
+                int targetRep = RepThresholds.First(x => x.Rank == Math.Clamp(rank, 1, 10)).RepRequired;
+                int remainingRepXP = Math.Max(0, targetRep - TotalFactionRep("Blacksmithing"));
+                // At least one voucher: the loop only runs while below the requested rank, and a faction
+                // that isn't in the list yet (rank 0) reports 0 rep even when rank 1 is requested.
+                int itemsNeeded = Math.Max(1, (remainingRepXP + 999) / 1000); // 1 voucher = 1000 rep, round up
                 int currentQuantity = Bot.Inventory.GetQuantity("Gold Voucher 500k");
 
-                Core.Logger($"Remaining Reputation XP: {remainingRepXP}");
-                Core.Logger($"Current Gold Voucher Quantity: {currentQuantity}");
-                Core.Logger($"Items Needed: {itemsNeeded}");
+                Core.Logger($"Blacksmithing rep needed for rank {rank}: {remainingRepXP} ({itemsNeeded} vouchers, have {currentQuantity})");
 
-                if (remainingRepXP > 0)
+                int toBuy = Math.Max(0, Math.Min(itemsNeeded - currentQuantity, Math.Min(200, 300 - currentQuantity)));
+                if (toBuy > 0)
                 {
-                    // Cap items at 200 per transaction
-                    int itemsToBuy = Math.Min(
-                        200,
-                        Math.Max(0, Math.Min(itemsNeeded, 300 - currentQuantity))
-                    );
-                    Core.Logger($"Items to Buy in this Transaction: {itemsToBuy}");
-
-                    // Calculate exact gold needed for this transaction
-
-                    int goldNeeded = itemsToBuy * 500000;
-                    Core.Logger($"Gold Needed for {itemsToBuy} vouchers: {goldNeeded}");
-
-                    // Only farm as much gold as needed for this batch
-                    Gold(goldNeeded);
-
-                    if (Core.CheckInventory("Gold Voucher 500k", itemsToBuy))
-                        Core.Logger($"Already have {itemsToBuy} Gold Vouchers, skipping purchase.");
-                    else
-                        Core.BuyItem("alchemyacademy", 2036, "Gold Voucher 500k", itemsToBuy);
-                    Core.BuyItem("alchemyacademy", 2036, "Gold Voucher 500k", itemsToBuy);
-                    Core.EnsureCompleteMulti(8737, itemsNeeded);
+                    // Buy what the current gold covers; only farm gold when we can't afford a single voucher.
+                    int affordable = Bot.Player.Gold / 500000;
+                    if (affordable < 1)
+                    {
+                        int chunk = Math.Min(toBuy, 20);
+                        Core.Logger($"Not enough gold for a voucher, farming {chunk * 500000:N0} gold");
+                        Gold(chunk * 500000);
+                        affordable = Bot.Player.Gold / 500000;
+                    }
+                    toBuy = Math.Min(toBuy, affordable);
+                    if (toBuy > 0)
+                        Core.BuyItem("alchemyacademy", 2036, "Gold Voucher 500k", currentQuantity + toBuy);
                 }
-                else
-                {
-                    Core.Logger("Already at max rank.");
-                    return;
-                }
+
+                int turnIns = Math.Min(itemsNeeded, Bot.Inventory.GetQuantity("Gold Voucher 500k"));
+                if (turnIns > 0)
+                    Core.EnsureCompleteMulti(8737, turnIns);
             }
 
             ToggleBoost(BoostType.Reputation, false);

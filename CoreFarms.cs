@@ -2918,7 +2918,6 @@ public class CoreFarms
 
         int waitTimer = 3500;
         int successful = 1;
-        int failed = 1;
         int startingRep = FactionRep("Fishing");
         int currentRep = startingRep;
 
@@ -3006,8 +3005,12 @@ public class CoreFarms
                         $"%xt%zm%getFish%1%{hitDerp.ToString().ToLowerInvariant()}%"
                     );
 
-                    // Give CatchResult time to arrive before starting another cast.
-                    Bot.Wait.ForTrue(() => receivedCatchResult, 10);
+                    // Wait for the server to confirm the catch before evaluating the result.
+                    if (!Bot.Wait.ForTrue(() => receivedCatchResult, 10))
+                    {
+                        Core.Logger("Timed out waiting for CatchResult; skipping result evaluation.");
+                        continue;
+                    }
 
                     currentRep = FactionRep("Fishing");
 
@@ -3020,12 +3023,7 @@ public class CoreFarms
 
                     if (rank <= 10)
                     {
-                        Core.Logger(
-                            currentRep > startingRep
-                                ? $"Successful! [Dynamite Cast x{successful++}]"
-                                : $"Failed! [Dynamite Cast x{failed++}]"
-                        );
-
+                        Core.Logger($"Dynamite cast completed [x{successful++}]");
                         startingRep = currentRep;
                     }
                 }

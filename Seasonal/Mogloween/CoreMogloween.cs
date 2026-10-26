@@ -680,7 +680,7 @@ public class CoreMogloween
         if (!Story.QuestProgression(8363))
         {
             Core.EnsureAccept(8363);
-            Core.GetMapItem(9249, 8, "necrocarnival");
+            Core.GetMapItem(9249, 9, "necrocarnival");
             Core.HuntMonster("necrocarnival", "Gummy Tapeworm", "Cartilage Gathered", 9);
             Core.EnsureComplete(8363);
         }

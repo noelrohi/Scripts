@@ -177,21 +177,19 @@ public class OblivionTundraMerge
 
                 case "Null Contract":
                     Core.FarmingLogger(req.Name, quant);
-                    Core.EquipClass(ClassType.Farm);
                     Core.RegisterQuests(10046);
+
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {
-                        Core.HuntMonsterQuest(
-                            10046,
-                            new[]
-                            {
-                                ("obliviontundra", UseableMonsters[1], ClassType.Farm),
-                                ("obliviontundra", UseableMonsters[4], ClassType.Farm),
-                                ("obliviontundra", UseableMonsters[5], ClassType.Solo),
-                            }
-                        );
+                        Core.EquipClass(ClassType.Farm);
+                        Core.HuntMonster("obliviontundra", UseableMonsters[1], "Fiend Shard Dust", 6, log: false);
+                        Core.HuntMonster("obliviontundra", UseableMonsters[4], "Rotten Branch", 6, log: false);
+                        Core.EquipClass(ClassType.Solo);
+                        Core.HuntMonster("obliviontundra", UseableMonsters[5], "Oblivion Ring", 1, log: false);
+
                         Bot.Wait.ForPickup(req.Name);
                     }
+
                     Core.CancelRegisteredQuests();
                     break;
 

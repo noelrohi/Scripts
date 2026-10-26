@@ -24064,7 +24064,8 @@ case ""Necrotic Sword of Doom"":
     @"
 case ""Burning Blade Of Abezeth"":
                     Core.EquipClass(ClassType.Solo);
-                    Core.HuntMonster(""celestialarenad"", ""Aranx"", req.Name, isTemp: false);
+                    Core.HuntMonster(""celestialarenad"", ""Aranx"", ""Champion Sash"", 20, isTemp: false);
+                    Adv.BuyItem(""celestialarena"", 1474, ""Burning Blade Of Abezeth"");
                     break;
     "
 },

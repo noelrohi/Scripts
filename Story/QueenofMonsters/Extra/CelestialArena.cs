@@ -114,24 +114,23 @@ public class CelestialArenaQuests
 
         Core.EquipClass(ClassType.Solo);
         Story.KillQuest(6033, "celestialarenad", "Queen of Hope");
-        Core.JumpWait();
+        Core.Jump("r2");
         Story.KillQuest(6034, "celestialarenad", "Malxas Construct");
-        Core.JumpWait();
+        Core.Jump("r3");
         Story.KillQuest(6035, "celestialarenad", "Blessed Gladius");
-        Core.JumpWait();
+        Core.Jump("r4");
         Story.KillQuest(6036, "celestialarenad", "High Celestial Priest");
-        Core.JumpWait();
+        Core.Jump("r5");
         Story.KillQuest(6037, "celestialarenad", "Blessed Enfield");
-        Core.JumpWait();
+        Core.Jump("r6");
         Story.KillQuest(6038, "celestialarenad", "Avatar of Spirits");
-        Core.JumpWait();
+        Core.Jump("r7");
         Story.KillQuest(6039, "celestialarenad", "Avatar of Time");
-        Core.JumpWait();
+        Core.Jump("r8");
         Story.KillQuest(6040, "celestialarenad", "Avatar of Life");
-        Core.JumpWait();
+        Core.Jump("r9");
         Story.KillQuest(6041, "celestialarenad", "Fallen Abezeth");
-        Core.JumpWait();
+        Core.Jump("r10");
         Story.KillQuest(6042, "celestialarenad", "Aranx");
-        Core.JumpWait();
     }
 }

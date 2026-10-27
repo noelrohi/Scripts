@@ -2713,13 +2713,23 @@ public class Core13LoC
             Core.Join("chaoslord");
             if (Bot.Player.Cell != "r2")
                 Core.Jump("r2", "Left");
-            while (!Bot.ShouldExit && !Bot.TempInv.Contains(26880))
+            Core.EquipClass(ClassType.Solo);
+            while (!Bot.ShouldExit)
             {
                 Bot.Combat.Attack("*");
                 Core.Sleep();
+                if (Bot.TempInv.Contains("13th Lord of Chaos Defeated"))
+                {
+                    Core.JumpWait();
+                    break;
+                }
             }
-            Core.JumpWait();
-            Core.EnsureComplete(3880);
+            if (Bot.Quests.CanCompleteFullCheck(3880))
+            {
+                Core.Sleep();
+                Bot.Quests.EnsureComplete(3880);
+                Core.Sleep();
+            }
             Core.Join("whitemap");
         }
 
@@ -2730,16 +2740,23 @@ public class Core13LoC
             Core.Join("finalshowdown");
             if (Bot.Player.Cell != "r2")
                 Core.Jump("r2", "Left");
-            while (!Bot.ShouldExit && !Bot.TempInv.Contains(26881))
+            while (!Bot.ShouldExit)
             {
                 Bot.Combat.Attack("*");
                 Core.Sleep();
                 if (Bot.TempInv.Contains(26881))
+                {
+                    Core.JumpWait();
                     break;
+                }
             }
-            Bot.Wait.ForPickup(26881);
-            Core.Sleep();
-            Core.EnsureComplete(3881);
+
+            if (Bot.Quests.CanCompleteFullCheck(3881))
+            {
+                Core.Sleep();
+                Bot.Quests.EnsureComplete(3881);
+                Core.Sleep();
+            }
             Core.Join("whitemap");
         }
     }

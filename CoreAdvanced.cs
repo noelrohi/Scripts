@@ -3782,6 +3782,7 @@ public class CoreAdvanced
 
                 #region Wizard - Lament - Valiance - Pneuma
                 case "scarlet sorceress":
+                case "kathool adept":
                     if (!uLament() || !uValiance() || !uPneuma())
                         goto default;
 
@@ -4186,7 +4187,6 @@ public class CoreAdvanced
                 case "warrior (rare)":
                 case "warriorscythe general":
                 case "witch":
-                case "kathool adept":
                 default: // If the correct enhancement arent unlocked, or the class in question isnt in the Forge Enhancement Lib, use Awe Enhancements Lib
                     type = EnhancementType.Lucky;
                     return false;

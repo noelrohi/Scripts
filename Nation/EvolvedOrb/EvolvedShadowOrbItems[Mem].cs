@@ -95,10 +95,15 @@ public class EvolvedShadowOrbItems
     public void RebornDarkSide()
     {
         // Pre-check required items
-        if (!Core.CheckInventory(33198, 33360))
+        string[] requiredItems = { "Evolved Shadow Orb", "Platinum Coin of Nulgath: 2500" };
+
+        foreach (string item in requiredItems)
         {
-            Core.Logger("Missing Required Quest Accept Items. CANNOT PROCEED, STOPPING THE BOT", stopBot: true);
-            return;
+            if (!Core.CheckInventory(item))
+            {
+                Core.Logger($"Missing required item: {item}. CANNOT PROCEED, STOPPING THE BOT", stopBot: true);
+                return;
+            }
         }
 
         foreach (int q in new[] { 4773, 4772, 4771 }) // priority order

@@ -5082,6 +5082,9 @@ public class CoreBots
                     Bot.Map.Jump(cell, pad, autoCorrect: inPublicRoom()); // ➡️
                     Bot.Wait.ForCellChange(cell); // ⏳
                 }
+
+                CanWeAggro();
+
                 if (
                     !Bot.Player.HasTarget
                     || Bot.Player.Target != null || Bot.Player?.Target?.HP > 0

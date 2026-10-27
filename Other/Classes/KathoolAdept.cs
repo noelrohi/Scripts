@@ -5,6 +5,8 @@ tags: kathool, depths, adept, class, callofkathool, somnia, fishing
 */
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
+//cs_include Scripts/CoreAdvanced.cs
+//cs_include Scripts/CoreStory.cs
 //cs_include Scripts/Story/AgeOfRuin/CoreAOR.cs
 //cs_include Scripts/Other/MergeShops/UndineCommissaryMerge.cs
 //cs_include Scripts/Other/MergeShops/SeaviewSouvenirsMerge.cs
@@ -23,6 +25,12 @@ public class KathoolAdept
     private CoreBots Core => CoreBots.Instance;
     private readonly CoreFarms Farm = new();
     private readonly CoreAOR AOR = new();
+    private static CoreAdvanced Adv
+    {
+        get => _Adv ??= new CoreAdvanced();
+        set => _Adv = value;
+    }
+    private static CoreAdvanced _Adv;
 
     private readonly string[] RequiredArmors =
     {
@@ -55,11 +63,13 @@ public class KathoolAdept
         }
     }
 
-    public void GetClass()
+    public void GetClass(bool rankUpClass = true)
     {
         if (Core.CheckInventory(104429, toInv: false))
         {
             Core.Logger("Kathool Adept is already owned.");
+            if (rankUpClass)
+                Adv.RankUpClass("Kathool Adept");
             return;
         }
 
@@ -130,10 +140,12 @@ public class KathoolAdept
 
         Core.EnsureComplete(10920, 104429);
         Bot.Wait.ForTrue(() => Bot.Inventory.Contains(104429), 20);
-        if (Bot.ShouldExit)
-            return;
         if (Bot.Inventory.Contains(104429))
+        {
             Core.Logger("Kathool Adept obtained.");
+            if (rankUpClass)
+                Adv.RankUpClass("Kathool Adept");
+        }
         else
             Core.Logger("The Kathool Adept reward was not received. Check the quest and inventory space.");
     }

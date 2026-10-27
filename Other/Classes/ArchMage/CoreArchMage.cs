@@ -619,7 +619,7 @@ public class CoreArchMage
     {
         foreach (string item in Items)
         {
-            if (Core.CheckInventory(item))
+            if (Core.CheckInventory(item, quant))
                 continue;
 
             switch (item)

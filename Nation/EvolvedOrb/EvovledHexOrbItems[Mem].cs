@@ -127,23 +127,28 @@ public class EvovledHexOrbItems
 
         //Blood Tears - 4783
         Core.EnsureAccept(4783);
-        Nation.FarmUni10(30);
-        Nation.FarmTaintedGem(30);
-        Nation.FarmDarkCrystalShard(30);
+        // Nation.FarmUni10(30);
+        // Nation.FarmTaintedGem(30);
+        // Nation.FarmDarkCrystalShard(30);
+        // Nation.FarmVoucher(false);
+        // Nation.FarmTotemofNulgath(10);
+        // Nation.Supplies("Unidentified 29");
+        // Adv.BuyItem("alchemyacademy", 2114, 11626, 10, shopItemID: 9724);
+        Nation.FarmTotemofNulgath(1);
+        Nation.FarmBloodGem(5);
         Nation.FarmVoucher(false);
-        Nation.FarmTotemofNulgath(10);
-        Nation.Supplies("Unidentified 29");
-        Adv.BuyItem("alchemyacademy", 2114, 11626, 10, shopItemID: 9724);
+        Nation.FarmDiamondofNulgath(10);
+        Core.HuntMonster("orchestra", "Faust", "Faust Face", isTemp: false);
 
         Core.EnsureComplete(4783);
 
-        Bot.Wait.ForPickup("Evolved Hex Staf");
+        Bot.Wait.ForPickup("Evolved Blood Guard");
     }
 
     private readonly string[] Rewards =
     {
         "Evolved Hex of Nulgath",
         "Evolved Hex Helm",
-        "Evolved Hex Staf",
+        "Evolved Blood Guard",
     };
 }

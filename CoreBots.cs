@@ -246,6 +246,15 @@ public class CoreBots
 
             Logger($"Bot Started [{loadedBot}]");
 
+            if (Bot.Options.JoinMapTries is 0 or 1)
+            {
+                Logger(
+                    $"You set Join Map Tries to {Bot.Options.JoinMapTries}. \n\nAre you retarded? \n\nResetting it to 3.",
+                    messageBox: true
+                );
+                Bot.Options.JoinMapTries = 3;
+            }
+
             if (
                 Bot.Config != null
                 && Bot.Config.Options != null

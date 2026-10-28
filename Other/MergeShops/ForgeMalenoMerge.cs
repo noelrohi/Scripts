@@ -118,16 +118,19 @@ public class ForgeMalenoMerge
                     }
 
                     Core.FarmingLogger(req.Name, quant);
-                    Core.EquipClass(ClassType.Farm);
                     Core.AddDrop(req.ID);
+                    int questID = 10369;
+                    if (Core.IsMember)
+                        questID = 10370;
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.ID, quant))
                     {
-                        Core.HuntMonsterQuest(
-                            Core.IsMember ? 10370 : 10369,
-                            ("mountmaleno", "Draconian Bandit", ClassType.Farm),
-                            ("mountmaleno", "Maleno Elemental", ClassType.Solo),
-                            ("mountmaleno", "Idalion", ClassType.Solo)
-                        );
+                        Core.EnsureAccept(questID);
+                        Core.EquipClass(ClassType.Farm);
+                        Core.HuntMonster("mountmaleno", "Draconian Bandit", "Lapis Infernalis", 9);
+                        Core.EquipClass(ClassType.Solo);
+                        Core.HuntMonster("mountmaleno", "Maleno Elemental", "Plumbago", 3);
+                        Core.HuntMonster("mountmaleno", "Idalion", "Powder of Algaroth");
+                        Core.EnsureComplete(questID);
                         Bot.Wait.ForPickup(req.Name);
                     }
                     break;

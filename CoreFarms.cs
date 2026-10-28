@@ -1575,9 +1575,9 @@ public class CoreFarms
             }
 
             // Initiate potion craft
-            Core.SendPackets($"%xt%zm%crafting%1%getAlchWait%{reagentid1}%{reagentid2}%true%Ready to Mix%{reagent1}%{reagent2}%{rune}%{trait}%");
+            Core.SendPackets($"%xt%zm%crafting%1%alchStart%{reagentid1}%{reagentid2}%{rune}%1%{trait}%");
 
-            // Wait for SERVER to send alchOnStart
+            // Wait for the server to accept alchStart
             if (!WaitForAlchemyFlag(() => _alchemyCraftStarted, 10000))
             {
                 Core.Logger("Failed to receive server craft start confirmation (10s timeout)");
@@ -1587,7 +1587,7 @@ public class CoreFarms
             Core.Logger("Server confirmed craft start, sending completion packet");
 
             // Send completion packet
-            Core.SendPackets($"%xt%zm%crafting%1%checkAlchComplete%{reagentid1}%{reagentid2}%true%Mix Complete%{reagent1}%{reagent2}%{rune}%{trait}%");
+            Core.SendPackets("%xt%zm%crafting%1%alchDone%");
 
             // Wait for completion (single log)
             bool completed = WaitForAlchemyFlag(() => _alchemyCraftCompleted, 10000);
@@ -1904,21 +1904,19 @@ public class CoreFarms
             string cmd = data!.cmd;
             switch (cmd)
             {
-                case "alchOnStart":
+                case "alchStart":
                     lock (_alchemyLock)
                     {
-                        _alchemyCraftStarted = true;
-                        // if (Core.DL_Enabled == true)
-                        Core.Logger("Alchemy craft started (confirmed by server)");
+                        _alchemyCraftStarted = data.ok == 1;
+                        if (_alchemyCraftStarted)
+                            Core.Logger("Alchemy craft started (confirmed by server)");
                     }
                     break;
 
-                case "dropItem": // Completion comes with the item drop
-                case "alchComplete":
-                case "alchOnComplete":
+                case "alchDone":
                     lock (_alchemyLock)
                     {
-                        if (!_alchemyCraftCompleted) // only log once
+                        if (data.ok == 1 && !_alchemyCraftCompleted) // only log once
                         {
                             _alchemyCraftCompleted = true;
                             Core.Logger("Alchemy craft completed (confirmed by server)");

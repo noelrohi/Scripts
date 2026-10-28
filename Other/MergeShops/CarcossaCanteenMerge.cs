@@ -124,12 +124,13 @@ public class CarcossaCanteenMerge
                     Core.AddDrop(req.ID);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.ID, quant))
                     {
-                        Core.HuntMonsterQuest(
-                            10423,
-                            ("forgealbedo", "Defensive Turret", ClassType.Farm),
-                            ("forgealbedo", "Defense Droid", ClassType.Farm),
-                            ("forgealbedo", "Flame of Albedo", ClassType.Solo)
-                        );
+                        Core.EnsureAccept(10423);
+                        Core.EquipClass(ClassType.Farm);
+                        Core.HuntMonster("forgealbedo", "Defensive Turret", "Corrosive Sublimate", 9);
+                        Core.HuntMonster("forgealbedo", "Defense Droid", "Calx", 6);
+                        Core.EquipClass(ClassType.Solo);
+                        Core.HuntMonster("forgealbedo", "Flame of Albedo", "Albedo Flicker");
+                        Core.EnsureComplete(10423);
                         Bot.Wait.ForPickup(req.Name);
                     }
                     break;

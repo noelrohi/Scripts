@@ -73,13 +73,15 @@ public class EvolvedBloodOrbItems
 
     public void FlowLikeBlood()
     {
+        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33196)
+        || Core.CheckInventory("Evolved Blood of Nulgath"))
+            return;
+
         #region Required Items
         if (!Core.CheckInventory("1v1 PvP Trophy", 10))
             Core.Logger("You do not own \"10x 1v1 PvP Trophies\", stopping", stopBot: true);
 
         Core.AddDrop("Evolved Blood of Nulgath");
-        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33196))
-            return;
 
         if (!Core.CheckInventory("RustBucket"))
         {
@@ -102,15 +104,12 @@ public class EvolvedBloodOrbItems
         }
 
         Nation.FarmUni13(3);
-        Nation.TheAssistant("Unidentified 25");
-        juggernaut.JuggItems(
-            reward: JuggernautItemsofNulgath.RewardsSelection.Dimensional_Championof_Nulgath
-        );
+        Nation.TheAssistant("Unidentified 23");
+        juggernaut.JuggItems(reward: JuggernautItemsofNulgath.RewardsSelection.Dimensional_Championof_Nulgath);
         if (Core.IsMember)
             Nation.ForgeBloodGems(20);
         else
             Nation.FarmBloodGem(20);
-
         Core.EnsureComplete(4780);
         Bot.Wait.ForPickup("Evolved Blood of Nulgath");
     }
@@ -121,14 +120,16 @@ public class EvolvedBloodOrbItems
         if (
             !Core.CheckInventory("Platinum Coin of Nulgath: 300")
             || !Core.CheckInventory("Evolved Blood Orb")
+            || Core.CheckInventory("Evolved Blood Guard")
         )
             return;
 
+        // Blood Tears | 4783
         Core.EnsureAccept(4783);
 
         Nation.FarmDiamondofNulgath(10);
         Nation.FarmVoucher(false);
-        Nation.FarmBloodGem(5);
+        Core.HuntMonster("orchestra", "Faust", "Faust Face", isTemp: false);
         Nation.FarmTotemofNulgath(1);
         Nation.FarmBloodGem(5);
 

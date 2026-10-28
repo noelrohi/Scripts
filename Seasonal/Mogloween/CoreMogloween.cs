@@ -50,6 +50,7 @@ public class CoreMogloween
         EldritchWorld();
         ElodeaTemple();
 		BirgittaMogloween();
+		ShadowSlayerWar();
     }
 
     public void Mogloween()
@@ -1297,4 +1298,51 @@ public class CoreMogloween
         Core.HuntMonster("birgittamogloween", UseableMonsters[0], "Alpha Grigor Defeated", 1);
         Core.EnsureComplete(10905);
     }
+	   
+	public void ShadowSlayerWar()
+    {
+        if (Core.isCompletedBefore(10916)||!Core.isSeasonalMapActive("shadowslayerwar"))
+            return;
+
+        Story.PreLoad(this);
+
+        string[] UseableMonsters =
+        [
+            "Awakened Hunter", // UseableMonsters[0]
+            "Darkovia Hunter", // UseableMonsters[1]
+            "Forest Cultist", // UseableMonsters[2]
+            "ShadowSlayer Z", // UseableMonsters[3]
+            "Sublime Hunter", // UseableMonsters[4]
+            "Vampiric Ancestor ", // UseableMonsters[5]
+            "Werepyre Ancestor ", // UseableMonsters[6]
+        ];
+
+        // 10908 | Wulpurga Medal
+        Story.KillQuest(10908, "shadowslayerwar", UseableMonsters[5]); // Wulpurga Medal x5
+
+        // 10909 | Mega Wulpurga Medal
+        Story.KillQuest(10909, "shadowslayerwar", UseableMonsters[5]); // Mega Walpurga Medal x3
+
+        // 10910 | Ghillie Suit
+        Story.KillQuest(10910, "shadowslayerwar", UseableMonsters[1]); // Darkovian Hunter's Camo x6
+
+        // 10911 | Silver Blood
+        Story.KillQuest(10911, "shadowslayerwar", UseableMonsters[4]); // Sublime Silver x6
+
+        // 10912 | Primal Rage
+        Story.KillQuest(10912, "shadowslayerwar", UseableMonsters[5]); // Ancestral Vision x6
+
+        // 10913 | Chimerical Presence
+        Story.KillQuest(10913, "shadowslayerwar", UseableMonsters[6]); // Werepyre's Moonstone x1
+
+        // 10914 | Sunlit Invocation
+        Story.KillQuest(10914, "shadowslayerwar", UseableMonsters[2]); // Cultist's Sun Wheel x6
+
+        // 10915 | The Most Dangerous Game
+        Story.KillQuest(10915, "shadowslayerwar", UseableMonsters[0]); // Greater Hunter's Hexagram x6
+
+        // 10916 | Daughter of the Sun
+        Story.KillQuest(10916, "shadowslayerwar", UseableMonsters[3]); // ShadowSlayer Z Defeated x1
+    }
+	
 }

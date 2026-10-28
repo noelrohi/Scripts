@@ -76,7 +76,8 @@ public class EvovledHexOrbItems
     {
         #region Required Items
 
-        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33197))
+        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33197) 
+        || Core.CheckInventory("Evolved Hex of Nulgath"))
             return;
 
         Adv.BuyItem(Bot.Map.Name, 299, "Oracle");
@@ -85,12 +86,15 @@ public class EvovledHexOrbItems
         #endregion
 
         // Unlock the Evolved Hex Armor - 4764
-        Core.AddDrop("Evolved Hex of Nulgath");
+        Core.AddDrop("Evolved Hex of Nulgath", "Unidentified 22");
         Core.EnsureAccept(4764);
 
         Nation.FarmUni13(3);
+        Core.Logger("Aquiring uni 22 via `The Assistant` (with War-Torn Memorabilia)," +
+        "as otherwise it costs 15m gold ( you can also aquire the \"4th Betrayal Blade of Nulgath Pet\" along the way)");
         Nation.TheAssistant("Unidentified 22", 1);
-        Nation.TheAssistant("4th Betrayal Blade of Nulgath", 1);
+        if (!Core.CheckInventory(8069))
+            Nation.KisstheVoid(1, "4th Betrayal Blade of Nulgath Pet");
         Core.EquipClass(ClassType.Solo);
         Core.HuntMonster("tercessuinotlim", "Taro Blademaster", "Polish's Book of Avalon", isTemp: false);
         Farm.BludrutBrawlBoss(quant: 500);
@@ -102,18 +106,18 @@ public class EvovledHexOrbItems
 
     public void CutOffOneHead()
     {
-        // Unlock the Evolved Hex Armor 4769
-        if (!Core.CheckInventory("Platinum Coin of Nulgath: 300") || !Core.CheckInventory(33197))
+        if (!Core.CheckInventory("Platinum Coin of Nulgath: 300") || !Core.CheckInventory(33197) 
+        || Core.CheckInventory("Evolved Hex Helm"))
             return;
 
+        // Cut Off One Head... 4769
         Core.EnsureAccept(4769);
 
+        Core.HuntMonster("marsh2", "Soulseeker", "Deathdoll enchant", isTemp: false);
         Nation.FarmDiamondofNulgath(10);
         Nation.FarmVoucher(false);
-        Nation.FarmBloodGem(5);
         Nation.FarmTotemofNulgath(1);
         Nation.FarmBloodGem(5);
-        Core.HuntMonster("marsh2", "Soulseeker", "Deathdoll enchant", isTemp: false);
         Core.HuntMonster("void", "Void Dragon", "Heart of the Void", isTemp: false);
 
         Core.EnsureComplete(4769);
@@ -122,33 +126,28 @@ public class EvovledHexOrbItems
 
     public void EmpoweringtheEmpowered()
     {
-        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33197))
+        if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500") || !Core.CheckInventory(33197) || Core.CheckInventory("Evolved Hex Staff"))
             return;
 
-        //Blood Tears - 4783
-        Core.EnsureAccept(4783);
-        // Nation.FarmUni10(30);
-        // Nation.FarmTaintedGem(30);
-        // Nation.FarmDarkCrystalShard(30);
-        // Nation.FarmVoucher(false);
-        // Nation.FarmTotemofNulgath(10);
-        // Nation.Supplies("Unidentified 29");
-        // Adv.BuyItem("alchemyacademy", 2114, 11626, 10, shopItemID: 9724);
-        Nation.FarmTotemofNulgath(1);
-        Nation.FarmBloodGem(5);
+        //Empowering the Empowered - 4770
+        Core.EnsureAccept(4770);
+        Nation.FarmUni10(30);
+        Nation.FarmTaintedGem(30);
+        Nation.FarmDarkCrystalShard(30);
         Nation.FarmVoucher(false);
-        Nation.FarmDiamondofNulgath(10);
-        Core.HuntMonster("orchestra", "Faust", "Faust Face", isTemp: false);
+        Nation.FarmTotemofNulgath(10);
+        Nation.Supplies("Unidentified 29");
+        Adv.BuyItem("alchemyacademy", 2114, 11626, 10, shopItemID: 9724);
 
-        Core.EnsureComplete(4783);
+        Core.EnsureComplete(4770);
 
-        Bot.Wait.ForPickup("Evolved Blood Guard");
+        Bot.Wait.ForPickup("Evolved Hex Staff");
     }
 
     private readonly string[] Rewards =
     {
         "Evolved Hex of Nulgath",
         "Evolved Hex Helm",
-        "Evolved Blood Guard",
+        "Evolved Hex Staf",
     };
 }

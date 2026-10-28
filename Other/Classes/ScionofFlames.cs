@@ -191,53 +191,62 @@ public class ScionofFlames
                 break;
 
             case "White Flame of Albedo":
+                Core.RegisterQuests(Core.IsMember ? 10424 : 10423);
+
                 while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
                 {
-                    Core.HuntMonsterQuest(
-                        !Core.IsMember ? 10423 : 10424,
-                        ("forgealbedo", "Defensive Turret", ClassType.Farm),
-                        ("forgealbedo", "Defense Droid", ClassType.Farm),
-                        ("forgealbedo", "Flame of Albedo", ClassType.Solo)
-                    );
+                    Core.EquipClass(ClassType.Farm);
+                    Core.HuntMonster("forgealbedo", "Defensive Turret", "Corrosive Sublimate", 9);
+                    Core.HuntMonster("forgealbedo", "Defense Droid", "Calx", 6);
+
+                    Core.EquipClass(ClassType.Solo);
+                    Core.HuntMonster("forgealbedo", "Flame of Albedo", "Albedo Flicker");
 
                     Bot.Wait.ForPickup(item);
                 }
+
+                Core.CancelRegisteredQuests();
                 break;
 
             case "Black Flame of Maleno":
+                Core.RegisterQuests(Core.IsMember ? 10370 : 10369);
+
                 while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
                 {
-                    Core.HuntMonsterQuest(
-                        Core.IsMember ? 10370 : 10369,
-                        ("mountmaleno", "Draconian Bandit", ClassType.Farm),
-                        ("mountmaleno", "Maleno Elemental", ClassType.Solo),
-                        ("mountmaleno", "Idalion", ClassType.Solo)
-                    );
+                    Core.EquipClass(ClassType.Farm);
+                    Core.HuntMonster("mountmaleno", "Draconian Bandit", "Lapis Infernalis", 9);
+
+                    Core.EquipClass(ClassType.Solo);
+                    Core.HuntMonster("mountmaleno", "Maleno Elemental", "Plumbago", 3);
+                    Core.HuntMonster("mountmaleno", "Idalion", "Powder of Algaroth");
 
                     Bot.Wait.ForPickup(item);
                 }
+
+                Core.CancelRegisteredQuests();
                 break;
 
             case "Steel Ingot":
+                Core.RegisterQuests(Core.IsMember ? 10358 : 10357);
+
                 while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
                 {
-                    Core.HuntMonsterQuest(
-                        Core.IsMember ? 10358 : 10357,
-                        ("thelimacity", "Maleno Elemental", ClassType.Solo),
-                        ("thelimacity", "Maleno Match", ClassType.Farm),
-                        ("thelimacity", "Flame of Maleno", ClassType.Solo)
-                    );
+                    Core.EquipClass(ClassType.Solo);
+                    Core.HuntMonster("thelimacity", "Flame of Maleno", "Maleno Flicker");
+                    Core.HuntMonster("thelimacity", "Maleno Elemental", "Elemental Ferrum", 3);
 
+                    Core.EquipClass(ClassType.Farm);
+                    Core.HuntMonster("thelimacity", "Maleno Match", "Ferrum Blood", 12);
                     Bot.Wait.ForPickup(item);
                 }
-                break;
 
+                Core.CancelRegisteredQuests();
+                break;
             case "Aiwass Diamond":
                 Core.EquipClass(ClassType.Farm);
                 Core.RegisterQuests(Core.IsMember ? 10387 : 10385);
                 while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
                 {
-
                     Core.KillMonster("sanctuaryaiwass", "r9", "Top", "*", "Sal Alembroth", 1, false);
                     Core.KillMonster("sanctuaryaiwass", "r9", "Top", "*", "Milk of Sulfur", 1, false);
                     Core.HuntMonster("sanctuaryaiwass", "Anima Animus Aiwass", "Aeon Dream", 1, false);

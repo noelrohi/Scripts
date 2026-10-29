@@ -1543,6 +1543,7 @@ public class CoreFarms
         Core.Logger($"Modifier: {modifier}.");
         Core.Join("alchemy");
 
+        const int mixTimeMs = 16000;
         int i = 1;
         if (loop)
         {
@@ -1572,28 +1573,37 @@ public class CoreFarms
             {
                 _alchemyCraftStarted = false;
                 _alchemyCraftCompleted = false;
+                _alchemyCraftFailed = false;
             }
 
             // Initiate potion craft
             Core.SendPackets($"%xt%zm%crafting%1%alchStart%{reagentid1}%{reagentid2}%{rune}%1%{trait}%");
 
             // Wait for the server to accept alchStart
-            if (!WaitForAlchemyFlag(() => _alchemyCraftStarted, 10000))
+            if (!WaitForAlchemyFlag(() => _alchemyCraftStarted || _alchemyCraftFailed, 10000))
             {
                 Core.Logger("Failed to receive server craft start confirmation (10s timeout)");
                 return false;
             }
 
-            Core.Logger("Server confirmed craft start, sending completion packet");
+            if (_alchemyCraftFailed)
+                return false;
+
+            Core.Logger($"Mixing for {mixTimeMs / 1000} seconds before completion");
+            if (WaitForAlchemyFlag(() => _alchemyCraftFailed, mixTimeMs) || Bot.ShouldExit)
+                return false;
 
             // Send completion packet
             Core.SendPackets("%xt%zm%crafting%1%alchDone%");
 
             // Wait for completion (single log)
-            bool completed = WaitForAlchemyFlag(() => _alchemyCraftCompleted, 10000);
+            bool completed = WaitForAlchemyFlag(() => _alchemyCraftCompleted || _alchemyCraftFailed, 10000);
 
             lock (_alchemyLock)
             {
+                if (_alchemyCraftFailed)
+                    return false;
+
                 if (completed)
                 {
                     // Only log once per craft
@@ -1892,6 +1902,7 @@ public class CoreFarms
     // Add these class-level fields
     private bool _alchemyCraftStarted = false;
     private bool _alchemyCraftCompleted = false;
+    private bool _alchemyCraftFailed = false;
     private readonly object _alchemyLock = new();
     void AlchemyPacketCheck(dynamic packet)
     {
@@ -1908,15 +1919,23 @@ public class CoreFarms
                     lock (_alchemyLock)
                     {
                         _alchemyCraftStarted = data.ok == 1;
+                        _alchemyCraftFailed = !_alchemyCraftStarted;
                         if (_alchemyCraftStarted)
                             Core.Logger("Alchemy craft started (confirmed by server)");
+                        else
+                            Core.Logger($"Alchemy start rejected: {data.msg}");
                     }
                     break;
 
                 case "alchDone":
                     lock (_alchemyLock)
                     {
-                        if (data.ok == 1 && !_alchemyCraftCompleted) // only log once
+                        if (data.ok != 1)
+                        {
+                            _alchemyCraftFailed = true;
+                            Core.Logger($"Alchemy craft rejected: {data.msg}");
+                        }
+                        else if (!_alchemyCraftCompleted) // only log once
                         {
                             _alchemyCraftCompleted = true;
                             Core.Logger("Alchemy craft completed (confirmed by server)");
@@ -1930,6 +1949,7 @@ public class CoreFarms
                     {
                         _alchemyCraftStarted = false;
                         _alchemyCraftCompleted = false;
+                        _alchemyCraftFailed = true;
                         // if (Core.DL_Enabled == true)
                         Core.Logger($"Alchemy error: {data.error ?? "Unknown error"}");
                     }

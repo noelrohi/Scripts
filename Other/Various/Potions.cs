@@ -1,7 +1,7 @@
 /*
-name: Potions
-description: null
-tags: null
+name: Potions (USE THIS SCRIPT)
+description: Craft potions via alchemy (this is the correct one) (use this script to craft potions)
+tags: potions, craft, pots, alchemy, alina, minecraft
 */
 //cs_include Scripts/CoreFarms.cs
 //cs_include Scripts/CoreBots.cs

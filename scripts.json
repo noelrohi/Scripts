@@ -18,8 +18,8 @@
       "null"
     ],
     "path": "CoreFarms.cs",
-    "size": 165076,
-    "sha256": "ae80d58451a5d6af58fd2c4cbcf39c1388c2b643631542d09beb8580cb26ddcd",
+    "size": 165966,
+    "sha256": "50f7f8adf02f16ed92660f44bf5ac9cf6cbc45bbf4882f35e6550acbcc205917",
     "fileName": "CoreFarms.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreFarms.cs"
   },
@@ -12854,14 +12854,19 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Various/HeLimedMe.cs"
   },
   {
-    "name": "Potions",
-    "description": "null",
+    "name": "Potions (USE THIS SCRIPT)",
+    "description": "Craft potions via alchemy (this is the correct one) (use this script to craft potions)",
     "tags": [
-      "null"
+      "potions",
+      "craft",
+      "pots",
+      "alchemy",
+      "alina",
+      "minecraft"
     ],
     "path": "Other/Various/Potions.cs",
-    "size": 21033,
-    "sha256": "20001921ed8b41164226a4b5f621754cdeb4774244cd0c21a720036cdb19218d",
+    "size": 21176,
+    "sha256": "0ab8e0cc55b3daee84daa802d2dae09b4fa7f76fda207e8831c74f31247d4cd0",
     "fileName": "Potions.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Various/Potions.cs"
   },

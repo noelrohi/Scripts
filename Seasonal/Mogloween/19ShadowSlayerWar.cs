@@ -23,7 +23,7 @@ public class ShadowSlayerWar
     {
         Core.SetOptions();
 		
-		if (!Core.isCompletedBefore(10478)){
+		if (!Core.isCompletedBefore(10905)){
 			CoreMogloween.BirgittaMogloween();
 		}
 		

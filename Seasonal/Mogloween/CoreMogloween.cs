@@ -51,6 +51,7 @@ public class CoreMogloween
         ElodeaTemple();
 		BirgittaMogloween();
 		ShadowSlayerWar();
+		Walpurgisnacht();
     }
 
     public void Mogloween()
@@ -1345,4 +1346,59 @@ public class CoreMogloween
         Story.KillQuest(10916, "shadowslayerwar", UseableMonsters[3]); // ShadowSlayer Z Defeated x1
     }
 	
+	public void Walpurgisnacht()
+    {
+        if (Core.isCompletedBefore(10930)||!Core.isSeasonalMapActive("walpurgisnacht"))
+            return;
+
+        Story.PreLoad(this);
+
+        string[] UseableMonsters =
+        [
+            "Awakened Hunter", // UseableMonsters[0]
+            "Beastly Hunger", // UseableMonsters[1]
+            "Bloodlust", // UseableMonsters[2]
+            "Druid Revenant", // UseableMonsters[3]
+            "Forest Cultist", // UseableMonsters[4]
+            "Moon's Firstborn", // UseableMonsters[5]
+            "ShadowSlayer G ", // UseableMonsters[6]
+            "The Gentleman", // UseableMonsters[7]
+        ];
+
+        // 10921 | Vervain and Vaughn
+        Story.MapItemQuest(10921, "walpurgisnacht", 16340);
+        Story.KillQuest(10921, "walpurgisnacht", UseableMonsters[3]); // Druid's Moon Sigil x4
+
+        // 10922 | Marigold and Angelica
+        Story.MapItemQuest(10922, "walpurgisnacht", 16341);
+        Story.KillQuest(10922, "walpurgisnacht", UseableMonsters[4]); // Cultist's Angelica x6
+
+        // 10923 | Nialla's Mourning Cypress
+        Story.MapItemQuest(10923, "walpurgisnacht", 16342);
+        Core.HuntMonster("walpurgisnacht", UseableMonsters[4], "Cultist's Eye", 6);
+        Core.HuntMonster("walpurgisnacht", UseableMonsters[3], "Druid's Eye", 6);
+        Core.EnsureComplete(10923);
+
+        // 10924 | Song's Sheep Sorrel
+        Story.MapItemQuest(10924, "walpurgisnacht", 16343);
+        Story.KillQuest(10924, "walpurgisnacht", UseableMonsters[0]); // Hunter's Septogram x12
+
+        // 10925 | Auld Man's Bell
+        Story.KillQuest(10925, "walpurgisnacht", UseableMonsters[6]); // G's Crossroads Bullet x1
+
+        // 10926 | Muscadier for Focus
+        Story.MapItemQuest(10926, "walpurgisnacht", 16344, 8);
+
+        // 10927 | Blood of the Moon
+        Story.KillQuest(10927, "walpurgisnacht", UseableMonsters[2]); // Moonchild's Blood x6
+
+        // 10928 | Bones of the Forest
+        Story.KillQuest(10928, "walpurgisnacht", UseableMonsters[1]); // Moonchild's Marrow x6
+
+        // 10929 | Empty Nest
+        Story.KillQuest(10929, "walpurgisnacht", UseableMonsters[5]); // Moonchild's Memory x1
+
+        // 10930 | Gentleman of the Crossroads
+        Story.KillQuest(10930, "walpurgisnacht", UseableMonsters[7]); // Father Forest Defeated x1
+    }
 }

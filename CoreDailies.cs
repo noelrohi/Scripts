@@ -1126,12 +1126,15 @@ public class CoreDailies
         if (!Core.CheckInventory("Compass Rose Skull"))
         {
             Core.Logger("Getting the Compass Rose Skull.");
-            Core.HuntMonsterQuest(
-                9894,
-                ("dracocon", "Treasure Pile", ClassType.Farm),
-                ("battleundere", "Treasure Pile", ClassType.Farm),
-                ("greed", "Treasure Pile", ClassType.Farm)
-            );
+            Core.EnsureAccept(9894);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("shadowfall", "Cursed Treasure", "Suspicious Ruby", 1);
+
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("shadowfall", "Vindicator Recruit", "Soul's Deepest Darkness", 5);
+            Core.HuntMonster("shadowfall", "Vindicator Soldier", "Soul's Deepest Darkness", 5);
+            Core.EnsureComplete(9894);
+
         }
         if (!Core.CheckInventory("Obsessor Captain"))
         {

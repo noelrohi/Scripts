@@ -52,6 +52,7 @@ public class RankUpAll
             "Hobo Highlord",
             "No Class",
             "Obsidian No Class",
+            "Hollowborn No-Class",
             InitialClass,
         };
         // Populate SelectedClasses from inventory, excluding specific classes

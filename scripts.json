@@ -42,8 +42,8 @@
       "null"
     ],
     "path": "CoreDailies.cs",
-    "size": 57925,
-    "sha256": "3d2e011ff731f64846b7fa16461fbb644fcd632317b7a86427253447742b80a5",
+    "size": 58016,
+    "sha256": "8edea523060a2c6485a019d4c054978278f84a0fc5a73aa3d74e3258a414b0b0",
     "fileName": "CoreDailies.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreDailies.cs"
   },
@@ -1384,8 +1384,8 @@
       "class points"
     ],
     "path": "Tools/RankUpAllClasses.cs",
-    "size": 2496,
-    "sha256": "ebdba9b9dfdefb035639a3a6d0c5c22d77547b1e6d175d6576f418ba8a75f09f",
+    "size": 2531,
+    "sha256": "0387a220c6982cdf3ebc61d12da1ca000fed0793ddf366a8284ddbe881e6d6ff",
     "fileName": "RankUpAllClasses.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/RankUpAllClasses.cs"
   },
@@ -3226,8 +3226,8 @@
       "NPC"
     ],
     "path": "Story/Friendship.cs",
-    "size": 4155,
-    "sha256": "97188788d01a3a51aec5cf551923e15d4f63413b724ebec0ae34575357a06f28",
+    "size": 4174,
+    "sha256": "e9ef4ca84de81aa7d9ca1af3c8c18419170a07a7675ec224cbcc0ed6fc9abf43",
     "fileName": "Friendship.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/Friendship.cs"
   },
@@ -10447,8 +10447,8 @@
       "ebony-dbon"
     ],
     "path": "Seasonal/BlackFriday/EbonyDragonBladeOfNulgath.cs",
-    "size": 1922,
-    "sha256": "5b299a344dfb8ff9e7e9e97441d1ccfcd0e1a7f3e2b8aaa8f1441e775595c3cd",
+    "size": 1926,
+    "sha256": "0a0d21434c327d418f23a05dbc5ea04a4f94e568001efb3084194f5126dbc506",
     "fileName": "EbonyDragonBladeOfNulgath.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/BlackFriday/EbonyDragonBladeOfNulgath.cs"
   },
@@ -13317,8 +13317,8 @@
       "null"
     ],
     "path": "Legion/Various/LegionDBoN.cs",
-    "size": 1962,
-    "sha256": "4e77d0e397bdc761e662e50baed245b70503394d447016c8ca0b3ff9d7cc7f57",
+    "size": 1966,
+    "sha256": "2de8082597ecef5f7ad4b64ddf560295d61828bc1215819280b06ec9fc05aec6",
     "fileName": "LegionDBoN.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Legion/Various/LegionDBoN.cs"
   },
@@ -13799,8 +13799,8 @@
       "pet"
     ],
     "path": "Legion/MergeShops/UndeadLegionMerge.cs",
-    "size": 29819,
-    "sha256": "945ceb081205e58afbc04c5470f410fc2c5106b8af89ac4b8ee9a31393bff7ec",
+    "size": 29823,
+    "sha256": "4ebd881258f6a6214a4263feab9d7e0ef23b0f2cc6b72d195f431b8b0d85ab8b",
     "fileName": "UndeadLegionMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Legion/MergeShops/UndeadLegionMerge.cs"
   },
@@ -14199,22 +14199,6 @@
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/SummarizeStatistics.cs"
   },
   {
-    "name": "Merge File Generator",
-    "description": "Generates merge scripts and teaches local ingredients from live monsterDrops packets.",
-    "tags": [
-      "developer",
-      "merge",
-      "generator",
-      "drops",
-      "packets"
-    ],
-    "path": "Tools/ForDevelopers/MergeFileGenerator.cs",
-    "size": 50090,
-    "sha256": "64064904e9961dfdd6790d2da9fd4d7ffe0905bfdf673b8e22462d500f6342c4",
-    "fileName": "MergeFileGenerator.cs",
-    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/MergeFileGenerator.cs"
-  },
-  {
     "name": "Merge Shop Bot Generator/Helper",
     "description": "Fill in the map and shop ID and this tool will generate most of the merge bot for you, then you fill in the rest",
     "tags": [
@@ -14225,8 +14209,8 @@
       "developer"
     ],
     "path": "Tools/ForDevelopers/CaseStorage.cs",
-    "size": 1120281,
-    "sha256": "901d3b6196c5c58f3305a180c96f6a9ce20732ece9c52e69fc1e23a83a9c91ff",
+    "size": 1120289,
+    "sha256": "aa78c101837fdccd331483b6d5d6ca05c404a994459514418a0d3936006d4598",
     "fileName": "CaseStorage.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/CaseStorage.cs"
   },
@@ -16671,8 +16655,8 @@
       "null"
     ],
     "path": "Nation/OblivionBlade(RareandNot)/DiamondsofNulgathSale.cs",
-    "size": 1357,
-    "sha256": "3034bf6efc708d4b2cff5f5e63ee797b0e89691d0d4747da012c0cd6e171c7b3",
+    "size": 1359,
+    "sha256": "2f25bf5e70a1c8e886bc70e032e423caff9622c82b6f0e05eddedd29c79cbcb6",
     "fileName": "DiamondsofNulgathSale.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/OblivionBlade(RareandNot)/DiamondsofNulgathSale.cs"
   },
@@ -16719,8 +16703,8 @@
       "null"
     ],
     "path": "Nation/OblivionBlade(RareandNot)/CoreOblivionBladeofNulgath.cs",
-    "size": 8000,
-    "sha256": "fbc94535348984193ff95d700628be1a79a8cef1030e40bbeaa264385fc52ca4",
+    "size": 8026,
+    "sha256": "7b86b29b553356b818dd3df205ee72fa81a6c3d4e4a9ce4edfae77aa84cdf49b",
     "fileName": "CoreOblivionBladeofNulgath.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/OblivionBlade(RareandNot)/CoreOblivionBladeofNulgath.cs"
   },
@@ -17659,8 +17643,8 @@
       "null"
     ],
     "path": "Nation/Various/DragonBlade[mem].cs",
-    "size": 3524,
-    "sha256": "98a7f1f561ef164c629171212f911d0de05be56547a503007569fa24ec07c6b9",
+    "size": 3947,
+    "sha256": "97562e878f4153802ced6074ffed2a17ee6114c61d4122efcfc2e94d54a14a8c",
     "fileName": "DragonBlade[mem].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Nation/Various/DragonBlade[mem].cs"
   },
@@ -24585,8 +24569,8 @@
       "reavers"
     ],
     "path": "Other/MergeShops/NovaShrineGiftsMerge.cs",
-    "size": 14061,
-    "sha256": "90cd6757e02074cb7177381fb016de0dcb5307b55cb3f7e6a55e46741509c0dc",
+    "size": 14065,
+    "sha256": "4cd4f9eb3519a02f14ec8b5878ac87b386cf2c816843aab940768805e9c28f81",
     "fileName": "NovaShrineGiftsMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/NovaShrineGiftsMerge.cs"
   },
@@ -25101,8 +25085,8 @@
       "katanas"
     ],
     "path": "Other/MergeShops/YulgarsDualWieldMerge.cs",
-    "size": 55879,
-    "sha256": "4d56148d421b38ef5f3f97bbd4df1933c6be40c0c5f6ee9366f2734106801501",
+    "size": 55883,
+    "sha256": "fbe4910df1428944029a66dc0719761fff1f5ffecd4c2bab5c9fad8196eb7642",
     "fileName": "YulgarsDualWieldMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/YulgarsDualWieldMerge.cs"
   },
@@ -26709,19 +26693,16 @@
   },
   {
     "name": "Rabbit Merge",
-    "description": "This bot will farm the items belonging to the selected mode for the Rabbit Merge [1178] in /rivensylth",
+    "description": "Farms the Rabbit Merge [1178] in /rivensylth.",
     "tags": [
-      "rabbit",
-      "merge",
       "rivensylth",
-      "speedy",
-      "hare",
-      "suit",
-      "tail"
+      "merge",
+      "rabbit",
+      "merge"
     ],
     "path": "Other/MergeShops/RabbitMerge.cs",
-    "size": 4429,
-    "sha256": "008244e53dbfdae92b204227c4e06db44d22cfdc81bd3847ef320896ea72818b",
+    "size": 3974,
+    "sha256": "fc713678ec41ae680434eb512e624eb0e3ebe6c9d572be64144c0d0fb25c6e61",
     "fileName": "RabbitMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/RabbitMerge.cs"
   },
@@ -28909,8 +28890,8 @@
       "legend"
     ],
     "path": "Other/FarmJoeKits/1MemberFarmsKit.cs",
-    "size": 34613,
-    "sha256": "31f9f3a35c6bb75b4e1e419ac847af59e11ed968b5d766ba018882f03009bf65",
+    "size": 34617,
+    "sha256": "c60f0a399358389077c4926482e3e665278df62a4e0215528436677689528245",
     "fileName": "1MemberFarmsKit.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/FarmJoeKits/1MemberFarmsKit.cs"
   },
@@ -31382,8 +31363,8 @@
       "harvest-day"
     ],
     "path": "Seasonal/HarvestDay/MergeShops/NightmareHarvestMerge.cs",
-    "size": 8006,
-    "sha256": "a981f503fda673ae1830d9c2474bfd1247ff9e63cba6754d89f33fc22b9c5b56",
+    "size": 8957,
+    "sha256": "78ab57336aa31e2c4857f10089a601ed1f98ff5ce35dab80ca0bd785ce3ca0ba",
     "fileName": "NightmareHarvestMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/HarvestDay/MergeShops/NightmareHarvestMerge.cs"
   },
@@ -32781,8 +32762,8 @@
       "merge"
     ],
     "path": "Seasonal/Mogloween/MergeShops/MogloweenSeasonalMerge.cs",
-    "size": 20151,
-    "sha256": "d1c327e382046d39dd7d5cbc0b6065ef5a2b44b59dd27d6edd699037b3458339",
+    "size": 23133,
+    "sha256": "9eca720cf9f08fc5f6b3eda7915cbd01ac30310298b7db5b7e8162916f32c37c",
     "fileName": "MogloweenSeasonalMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/MogloweenSeasonalMerge.cs"
   },
@@ -35453,5 +35434,36 @@
     "sha256": "59a520309ca47b616a4288fd0fc2eba442212d9da205dabafdf39258afb29c46",
     "fileName": "RestoreLoadout.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Ultrasv3/RestoreLoadout.cs"
+  },
+  {
+    "name": "Mogloween Merges Do All",
+    "description": "Runs all Mogloween merge shop scripts in this folder.",
+    "tags": [
+      "mogloween",
+      "merge",
+      "doall"
+    ],
+    "path": "Seasonal/Mogloween/MergeShops/MogloweenMergesDoAll.cs",
+    "size": 13566,
+    "sha256": "67d42dc37ba402c7cb969fec9fc0193a5e35452f65b44051ee45b199eeea29de",
+    "fileName": "MogloweenMergesDoAll.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/MogloweenMergesDoAll.cs"
+  },
+  {
+    "name": null,
+    "description": "Generates a merge bot and teaches local ingredients from live monsterDrops packets.",
+    "tags": [
+      "developer",
+      "merge",
+      "generator",
+      "drops",
+      "packets",
+      "v2"
+    ],
+    "path": "Tools/ForDevelopers/MergeTemplateHelperV3.cs",
+    "size": 53869,
+    "sha256": "fb52a7025c8708945eda45bdeb7dcdf79799aa89afbf429207b5fc89706d7593",
+    "fileName": "MergeTemplateHelperV3.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/MergeTemplateHelperV3.cs"
   }
 ]

@@ -94,6 +94,12 @@ public class EvolvedShadowOrbItems
 
     public void RebornDarkSide()
     {
+        if (Core.CheckInventory("Evolved Shadow of Nulgath"))
+        {
+            Core.Logger("\"Evolved Shadow of Nulgath\" owned");
+            return;
+        }
+
         // Pre-check required items
         string[] requiredItems = { "Evolved Shadow Orb", "Platinum Coin of Nulgath: 2500" };
 
@@ -200,9 +206,14 @@ public class EvolvedShadowOrbItems
         Core.Logger("No valid quest path found.", stopBot: true);
     }
 
-
     public void VoidEmotions()
     {
+        if (Core.CheckInventory("Evolved Shadow Helm"))
+        {
+            Core.Logger("\"Evolved Shadow Helm\" owned");
+            return;
+        }
+
         //Void Emotion 4774
         if (!Core.CheckInventory("Platinum Coin of Nulgath: 300"))
         {
@@ -225,6 +236,12 @@ public class EvolvedShadowOrbItems
 
     public void ShapeNothingness()
     {
+        if (Core.CheckInventory("Evolved Shadow Spear of Nulgath"))
+        {
+            Core.Logger("\"Evolved Shadow Spear of Nulgath\" owned");
+            return;
+        }
+
         if (!Core.CheckInventory("Platinum Coin of Nulgath: 2500"))
         {
             Core.Logger("Platinum Coin of Nulgath 2500 not found");
@@ -246,7 +263,8 @@ public class EvolvedShadowOrbItems
         Nation.Supplies("Random Weapon of Nulgath");
         Nation.FarmVoucher(false);
         Nation.FarmTotemofNulgath(10);
-        Adv.BuyItem("alchemyacademy", 2036, 12056, 15, shopItemID: 9827);
+        // x15 ( 10x2 minimum) Destruction Elixer
+        Adv.BuyItem("alchemyacademy", 2036, 12055, 15, shopItemID: 7653);
         Core.EnsureComplete(4775);
         Bot.Wait.ForPickup("Evolved Shadow Spear of Nulgath");
     }

@@ -52,6 +52,7 @@ public class HuntersReward
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         CoreMogloween.BirgittaMogloween();
+		CoreMogloween.ShadowSlayerWar();
         Adv.StartBuyAllMerge("shadowslayerwar", 2781, findIngredients, buyOnlyThis, buyMode: buyMode);
 
         void findIngredients()
@@ -78,7 +79,7 @@ public class HuntersReward
 					Core.RegisterQuests(10908, 10909);
 					while (!Bot.ShouldExit && !Core.CheckInventory(req.ID, quant))
                     {
-						Core.KillMonster("shadowslayerwar", "r2", "Left", "*");
+						Core.KillMonster("shadowslayerwar", "r11", "Left", "*");
 						Bot.Wait.ForPickup(req.Name);
 					}
                     Core.CancelRegisteredQuests();

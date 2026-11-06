@@ -55,9 +55,67 @@ public class MogloweenSeasonalMerge
     public static CoreAdvanced _sAdv;
 
     public bool DontPreconfigure = true;
-    public List<IOption> Generic = sAdv.MergeOptions;
+    public List<IOption> Generic = new()
+    {
+        CoreBots.Instance.SkipOptions,
+        new Option<MogloweenMergeMode>(
+            "mode",
+            "Select the mode to use",
+            "Select what items to buy from the Mogloween shop.",
+            MogloweenMergeMode.all
+        ),
+        new Option<string>(
+            " ",
+            "Mode Explanation [all]",
+            "Mode [all]: Get all the items from the shop, even non-AC items.",
+            "click here"
+        ),
+        new Option<string>(
+            " ",
+            "Mode Explanation [acOnly]",
+            "Mode [acOnly]: Get all AC-tagged items from the shop.",
+            "click here"
+        ),
+        new Option<string>(
+            " ",
+            "Mode Explanation [acNonLegion]",
+            "Mode [acNonLegion]: Get AC-tagged items while skipping Legion Items.",
+            "click here"
+        ),
+        new Option<string>(
+            " ",
+            "Mode Explanation [mergeMats]",
+            "Mode [mergeMats]: Get the materials for the items without buying them.",
+            "click here"
+        ),
+        new Option<string>(
+            " ",
+            "Mode Explanation [select]",
+            "Mode [select]: Choose which items to get in the Select category.",
+            "click here"
+        ),
+    };
     public string[] MultiOptions = { "Generic", "Select" };
     public string OptionsStorage = sAdv.OptionsStorage;
+
+    private static readonly string[] LegionItems =
+    {
+        "Twisted Legion PumpkinLord Blade",
+        "Creeper Legion Helm",
+        "Creeper Flame Legion Helm",
+        "Flaming Legion Helm",
+        "Evil Legion Helm",
+        "Barbed Legion PumpkinLord Shroud",
+        "Battered Legion PumpkinLord Shroud",
+        "Barbed Legion PumpkinLord Vines",
+        "Barbed Legion PumpkinLord Cape",
+        "Luminous Legion PumpkinLord Cape",
+        "Legion PumpkinLord",
+        "Legion Pumpking Overlord",
+        "Legion Pumpking Morph",
+        "Blade of the Pumpking Legion",
+        "A Gourdly Legion Spirit",
+    };
 
     // [Can Change] This should only be changed by the author.
     //              If true, it will not stop the script if the default case triggers and the user chose to only get mats
@@ -89,12 +147,39 @@ public class MogloweenSeasonalMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(
+        string? buyOnlyThis = null,
+        mergeOptionsEnum? buyMode = null,
+        bool? skipLegionItems = null
+    )
     {
         if (!Core.isSeasonalMapActive("mogloween"))
             return;
         //Only edit the map and shopID here
-        Adv.StartBuyAllMerge("mogloween", 223, findIngredients, buyOnlyThis, buyMode: buyMode);
+        MogloweenMergeMode selectedMode =
+            Bot.Config?.Get<MogloweenMergeMode>("Generic", "mode") ?? MogloweenMergeMode.all;
+        bool acNonLegion = skipLegionItems ?? (selectedMode == MogloweenMergeMode.acNonLegion);
+        mergeOptionsEnum resolvedMode =
+            buyMode
+            ?? (
+                acNonLegion
+                    ? mergeOptionsEnum.acOnly
+                    : selectedMode switch
+                    {
+                        MogloweenMergeMode.acOnly => mergeOptionsEnum.acOnly,
+                        MogloweenMergeMode.mergeMats => mergeOptionsEnum.mergeMats,
+                        MogloweenMergeMode.select => mergeOptionsEnum.select,
+                        _ => mergeOptionsEnum.all,
+                    }
+            );
+        Adv.StartBuyAllMerge(
+            "mogloween",
+            223,
+            findIngredients,
+            buyOnlyThis,
+            itemBlackList: acNonLegion ? LegionItems : null,
+            buyMode: resolvedMode
+        );
 
         #region Dont edit this part
         void findIngredients()
@@ -610,4 +695,13 @@ public class MogloweenSeasonalMerge
             false
         ),
     };
+}
+
+public enum MogloweenMergeMode
+{
+    all = 0,
+    acOnly = 1,
+    mergeMats = 2,
+    select = 3,
+    acNonLegion = 4,
 }

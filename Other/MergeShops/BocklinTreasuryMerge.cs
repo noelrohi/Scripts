@@ -102,7 +102,8 @@ public class BocklinTreasuryMerge
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         Seppy.ShadowfallRise();
-        Lynaria.BocklinSanctum();
+        //very last quest in core is require for alteon's fragments to drop
+        Lynaria.DoAll();
 
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge(

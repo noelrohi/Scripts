@@ -8,7 +8,6 @@ tags: legion exercise, 2, executioner, executioner's judgement, legion, undead c
 //cs_include Scripts/CoreAdvanced.cs
 //cs_include Scripts/CoreStory.cs
 //cs_include Scripts/Legion/CoreLegion.cs
-//cs_include Scripts/Legion/JoinLegion[UndeadWarrior].cs
 using Skua.Core.Interfaces;
 
 public class LegionExercise2

@@ -13,6 +13,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Skua.Core.Interfaces;
+using Skua.Core.Models;
 using Skua.Core.Models.Quests;
 using Skua.Core.Options;
 
@@ -29,10 +30,13 @@ public class Butlerv4
     private static CoreAdvanced _Adv;
 
     public bool DontPreconfigure = true;
-    public string OptionsStorage = "Butler1";
+    // Per account (Butler1-<account>), so one account's leader never changes another's.
+    public string OptionsStorage = AccountStorage();
+    private const string SharedStorage = "Butler1";
 
     public List<IOption> Options = new()
     {
+        new Option<string>("Leader", "Leader", "This account's leader. When set it wins over the Leader 1-4 lists. Stored for this account only, so other accounts keep their own leader.", ""),
         new Option<string>("Leader1Name", "Leader 1 Name", "Name of leader 1.", ""),
         new Option<string>("Leader1Butlers", "Butlers For Leader 1", "Comma-separated butler account names. Example: acc1,acc2,acc3", ""),
         new Option<string>("Leader2Name", "Leader 2 Name", "Name of leader 2.", ""),
@@ -75,6 +79,9 @@ public class Butlerv4
     private bool _leaderPortLookupFailedLogged = false;
     private bool _pickupAllDrops = false;
     private bool _attackFirst = false;
+    private DateTime _optionsWriteTime = DateTime.MinValue;
+    private DateTime _lastOptionsCheck = DateTime.MinValue;
+    private const int OptionsCheckIntervalMs = 2000;
 
     // ── Quest state ──────────────────────────────────────────────────
     private int[] _questIds = Array.Empty<int>();
@@ -89,24 +96,15 @@ public class Butlerv4
 
         Bot.Events.ExtensionPacketReceived += ChatListener;
 
-        string myUsername = Bot.Player.Username ?? "";
-
-        for (int i = 1; i <= 4; i++)
-        {
-            string butlerList = Bot.Config!.Get<string>($"Leader{i}Butlers") ?? "";
-            var butlers = butlerList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            if (butlers.Any(b => string.Equals(b, myUsername, StringComparison.OrdinalIgnoreCase)))
-            {
-                playerName = Bot.Config!.Get<string>($"Leader{i}Name") ?? "";
-                break;
-            }
-        }
+        _optionsWriteTime = OptionsWriteTime();
+        playerName = ResolveLeader();
 
         if (string.IsNullOrEmpty(playerName))
         {
-            Core.Logger($"This account is not assigned to any leader's butler list.", messageBox: true, stopBot: true);
+            Core.Logger($"This account has no Leader set and is not assigned to any leader's butler list.", messageBox: true, stopBot: true);
             return;
         }
+        Core.Logger($"[Butler] Following {playerName} (options: {Bot.Config!.Storage}).");
 
         _attackFirst = Bot.Config!.Get<bool>("AttackFirst");
         if (_attackFirst)
@@ -140,6 +138,7 @@ public class Butlerv4
             while (!Bot.ShouldExit && Bot.Player?.Alive != true)
                 Core.Sleep(250);
 
+            CheckLeaderChanged();
             PollTcpData();
 
             if (_pickupAllDrops && Bot.Drops.CurrentDrops.Any())
@@ -227,6 +226,121 @@ public class Butlerv4
                 QuickDeaggro();
 
             Core.Sleep(500);
+        }
+    }
+
+    // ================================================================
+    //  LEADER
+    // ================================================================
+
+    /// <summary>
+    /// The options storage of the logged-in account, Butler1-&lt;account&gt;. Skua's
+    /// options window and 'skua script start --option' both write to it, so setting
+    /// one account's leader (or lists, drops, quests) never rewrites another
+    /// account's. The first time, it starts as a copy of the shared Butler1 so an
+    /// existing setup carries over. With nobody logged in it is the shared Butler1.
+    /// </summary>
+    private static string AccountStorage()
+    {
+        string account;
+        try
+        {
+            account = Bot.Player.Username?.Trim().ToLowerInvariant() ?? "";
+        }
+        catch
+        {
+            return SharedStorage;
+        }
+        if (account.Length == 0 || account.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            return SharedStorage;
+
+        string storage = $"{SharedStorage}-{account}";
+        try
+        {
+            string shared = Path.Combine(ClientFileSources.SkuaOptionsDIR, $"{SharedStorage}.cfg");
+            string own = Path.Combine(ClientFileSources.SkuaOptionsDIR, $"{storage}.cfg");
+            if (!File.Exists(own) && File.Exists(shared))
+                File.Copy(shared, own);
+        }
+        catch { }
+        return storage;
+    }
+
+    /// <summary>
+    /// This account's leader: the Leader option when set, otherwise the leader of
+    /// the first Leader 1-4 list that names this account. "" when neither does.
+    /// </summary>
+    private string ResolveLeader()
+    {
+        string leader = (Bot.Config!.Get<string>("Leader") ?? "").Trim();
+        if (leader.Length > 0)
+            return leader;
+
+        string myUsername = Bot.Player.Username ?? "";
+        for (int i = 1; i <= 4; i++)
+        {
+            string butlerList = Bot.Config!.Get<string>($"Leader{i}Butlers") ?? "";
+            var butlers = butlerList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (butlers.Any(b => string.Equals(b, myUsername, StringComparison.OrdinalIgnoreCase)))
+                return (Bot.Config!.Get<string>($"Leader{i}Name") ?? "").Trim();
+        }
+        return "";
+    }
+
+    /// <summary>
+    /// Every couple of seconds, re-reads this account's options if their file
+    /// changed, and switches to the new leader if the Leader option or the
+    /// lists now point somewhere else.
+    /// </summary>
+    private void CheckLeaderChanged()
+    {
+        var now = DateTime.UtcNow;
+        if ((now - _lastOptionsCheck).TotalMilliseconds < OptionsCheckIntervalMs)
+            return;
+        _lastOptionsCheck = now;
+
+        DateTime written = OptionsWriteTime();
+        if (written == _optionsWriteTime)
+            return;
+        _optionsWriteTime = written;
+
+        try
+        {
+            Bot.Config!.Load();
+        }
+        catch (Exception ex)
+        {
+            // Load sets the values before it notifies, so a failed notify still leaves them read.
+            Core.Logger($"[Butler] Re-reading options: {ex.Message}");
+        }
+
+        string leader = ResolveLeader();
+        if (string.IsNullOrEmpty(leader))
+        {
+            Core.Logger($"[Butler] Options changed and no longer name a leader for this account; still following {playerName}.");
+            return;
+        }
+        if (string.Equals(leader, playerName, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        Core.Logger($"[Butler] Leader changed: {playerName} -> {leader}.");
+        Disconnect();
+        playerName = leader;
+        _tcpMap = _tcpRoom = _tcpCell = _tcpPad = "";
+        _tcpInCombat = _tcpHasTarget = false;
+        _leaderPortLookupFailedLogged = false;
+    }
+
+    private DateTime OptionsWriteTime()
+    {
+        try
+        {
+            string file = Bot.Config!.OptionsFile;
+            return File.Exists(file) ? File.GetLastWriteTimeUtc(file) : DateTime.MinValue;
+        }
+        catch
+        {
+            return DateTime.MinValue;
         }
     }
 

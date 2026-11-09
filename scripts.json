@@ -18,8 +18,8 @@
       "null"
     ],
     "path": "CoreStory.cs",
-    "size": 55941,
-    "sha256": "1ce34b6f5f45dc28e9430beb64202afc779ff85d0396811d6800f1b49ee9bf71",
+    "size": 57854,
+    "sha256": "54ab4a53b3630431dc09272d4be81778ff40be930788a26047ab0931ec10871f",
     "fileName": "CoreStory.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreStory.cs"
   },
@@ -42,8 +42,8 @@
       "null"
     ],
     "path": "CoreBots.cs",
-    "size": 466903,
-    "sha256": "5aed016cde153563ead08132204ead457bfe6b8bd06b88967f5ef6923c868163",
+    "size": 469222,
+    "sha256": "f6e039edc3affd73aa0f2cd507d5d58a189e7f6c0cf96236fcc98d4b9fb0af20",
     "fileName": "CoreBots.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/CoreBots.cs"
   },
@@ -2267,8 +2267,8 @@
       "bone-break"
     ],
     "path": "Story/BoneBreak.cs",
-    "size": 3050,
-    "sha256": "36fa59b645abecb3528cfcf6d1eaa5a289d50ffcd51f550b81d4d80a04e991c9",
+    "size": 3255,
+    "sha256": "c497b3b08da74dc63488db571802610606eb593b13f80f05b773115ce7afa6fa",
     "fileName": "BoneBreak.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/BoneBreak.cs"
   },
@@ -2768,8 +2768,8 @@
       "etherstorm-wastes"
     ],
     "path": "Story/EtherstormWastes.cs",
-    "size": 19698,
-    "sha256": "57fa6cbddba7364c9ce5ea8e4c19559ee0a9839a68b42cdbf6712019218bca70",
+    "size": 20377,
+    "sha256": "80d627138f125ce6463719e5d05587d32e8bdec0cc11517844faccdca106cceb",
     "fileName": "EtherstormWastes.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/EtherstormWastes.cs"
   },
@@ -2856,8 +2856,8 @@
       "frozen-northlands"
     ],
     "path": "Story/FrozenNorthlands.cs",
-    "size": 1844,
-    "sha256": "417b95936fb4b49a258cb788b4a0e62ba9663b0a4b6dc2e9ed23c2830d8d01b6",
+    "size": 2604,
+    "sha256": "db709b2a13878cec54c7603a7d232784adfa9f45a14bc131a5e59b61e46b6a42",
     "fileName": "FrozenNorthlands.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/FrozenNorthlands.cs"
   },
@@ -2884,8 +2884,8 @@
       "skyguard-saga"
     ],
     "path": "Story/SkyGuardSaga.cs",
-    "size": 10382,
-    "sha256": "719fe91b52aac1548fd144761f8ac565b23eeec966d2acabc83a8e7641d95f14",
+    "size": 10996,
+    "sha256": "7ae11ec9f4e4d53a4191ec233981abc895d65281d949fc56095d2512b91e0516",
     "fileName": "SkyGuardSaga.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/SkyGuardSaga.cs"
   },
@@ -3150,8 +3150,8 @@
       "dragon-road"
     ],
     "path": "Story/DragonRoad[Upholder].cs",
-    "size": 4400,
-    "sha256": "3690bf7378cdc8f389d9dc6cba4f3486b8bd25ddb91f32006aaf604257bb17c7",
+    "size": 4616,
+    "sha256": "b1500342101282a6a3fd343172ef051cd08afbdaf6a3864b324850e98f06101b",
     "fileName": "DragonRoad[Upholder].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/DragonRoad[Upholder].cs"
   },
@@ -3747,8 +3747,8 @@
       "member"
     ],
     "path": "Story/Concert[MEM].cs",
-    "size": 2963,
-    "sha256": "9381a770505c8ff491485bcf53a74cfe4c1490f84e82629a43a51687defc778c",
+    "size": 4334,
+    "sha256": "f229fb47e3b951110349777cc500a0e0b1af5bd3bc831c3056fa5a35bf2dcf13",
     "fileName": "Concert[MEM].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/Concert[MEM].cs"
   },
@@ -3807,8 +3807,8 @@
       "maxius"
     ],
     "path": "Story/BloodMoon.cs",
-    "size": 4142,
-    "sha256": "4faf467b8f554f3add0d47ff04f76af85350d5d8cc1dc0af103744bf9b7e3546",
+    "size": 4281,
+    "sha256": "a31e40bc1d587bd22f4d98b903ff4b84459e1daf5d6de39c2ba3d281609fe0ad",
     "fileName": "BloodMoon.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/BloodMoon.cs"
   },
@@ -4119,8 +4119,8 @@
       "seasonal"
     ],
     "path": "Tools/CheckArmyRoles.cs",
-    "size": 28246,
-    "sha256": "9ec081995658d1727149ae86e7dd91477e97fd69c855c3aef05fda7232f6b906",
+    "size": 28236,
+    "sha256": "f3327f1c2ae2e7b49877a61c22ddb9c428a9139d2cdb1c73c35a597869766ef7",
     "fileName": "CheckArmyRoles.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/CheckArmyRoles.cs"
   },
@@ -8896,8 +8896,8 @@
       "null"
     ],
     "path": "Other/Classes/LightMage.cs",
-    "size": 1125,
-    "sha256": "50a9a2afa715be31b7bd37e92355da08d971a444a22b932d513d3ff08ba63e5c",
+    "size": 1129,
+    "sha256": "8dcd0f52c409dc248650d8910d4edaff02b504e4df5975299939ee7d29418107",
     "fileName": "LightMage.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/Classes/LightMage.cs"
   },
@@ -13088,8 +13088,8 @@
       "armblades"
     ],
     "path": "Other/MergeShops/DiogonsMerge.cs",
-    "size": 8006,
-    "sha256": "2d8953bb48e0d0dc4702126adf9d16a1f503eaa069a04bf1453bf4b6176c8204",
+    "size": 8020,
+    "sha256": "ecbae40934bf7a303d3fb9d1543684479bf1820f7fcd219bf0c610553d085d2e",
     "fileName": "DiogonsMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/DiogonsMerge.cs"
   },
@@ -14359,8 +14359,8 @@
       "fangs"
     ],
     "path": "Other/MergeShops/ForgeMalenoMerge.cs",
-    "size": 10216,
-    "sha256": "eef72455c128ac1d27adf09d183d9a72a702501ae2c5f74335a1d22f49082839",
+    "size": 9625,
+    "sha256": "caa67c575f3fa98d2d49149f951935866ffb7a6de1239ec6074d042ec7791d3b",
     "fileName": "ForgeMalenoMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/ForgeMalenoMerge.cs"
   },
@@ -14617,8 +14617,8 @@
       "null"
     ],
     "path": "Other/FarmJoeKits/CoreFarmerJoe.cs",
-    "size": 53684,
-    "sha256": "71cab9ce888128258fdbfbb8a8591106c34c79541c4f9fd39883ba665889f87a",
+    "size": 55873,
+    "sha256": "7012df1d7e37fe6ded5b1f7dbda98cd0a7bb98af9dc0f398c24b894c37a586f7",
     "fileName": "CoreFarmerJoe.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/FarmJoeKits/CoreFarmerJoe.cs"
   },
@@ -14634,8 +14634,8 @@
       "joe mama"
     ],
     "path": "Other/FarmJoeKits/0FarmerJoeDoAll.cs",
-    "size": 9063,
-    "sha256": "ff2d115030a4c2c426961876c331c094c3ef9d0ccdced6c413460c9aa98276f3",
+    "size": 9080,
+    "sha256": "d381a323f72eb8e2c65fda53ff3d94c9e2f1115bb4505c7598ff8190f6f352c8",
     "fileName": "0FarmerJoeDoAll.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/FarmJoeKits/0FarmerJoeDoAll.cs"
   },
@@ -19699,8 +19699,8 @@
       "null"
     ],
     "path": "Story/MemetsRealm/CoreMemet.cs",
-    "size": 16045,
-    "sha256": "032186eee621ddb80cb9a250857c86079dbb70d6dfc1e712eb8f565edd1cd5f5",
+    "size": 16754,
+    "sha256": "a0e815e272807a957d9bd39dc3267fc6bf2f73cca0b54d05458f08cd6484fa0a",
     "fileName": "CoreMemet.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/MemetsRealm/CoreMemet.cs"
   },
@@ -20705,8 +20705,8 @@
       "null"
     ],
     "path": "Story/ThroneofDarkness/CoreToD.cs",
-    "size": 55161,
-    "sha256": "908e0a4dbdd215216642873c095082bd2b59636c99c7a0e5d3c81adca477d64f",
+    "size": 56866,
+    "sha256": "c4be1f0205d614225be8b3061919057bb9472d7c46e3123269fcb98a558446aa",
     "fileName": "CoreToD.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/ThroneofDarkness/CoreToD.cs"
   },
@@ -20813,8 +20813,8 @@
       "null"
     ],
     "path": "Story/Lynaria/CoreLynaria.cs",
-    "size": 9815,
-    "sha256": "39bd172f5718a0dac6966409ce2eb00e556ba15b3664364438fd1a992274064a",
+    "size": 9989,
+    "sha256": "c420408fbb87aec200465411e605d8e20d268d668010b2259f9da15361a37800",
     "fileName": "CoreLynaria.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/Lynaria/CoreLynaria.cs"
   },
@@ -21021,8 +21021,8 @@
       "fiendshard"
     ],
     "path": "Story/Nation/Fiendshard.cs",
-    "size": 3826,
-    "sha256": "a641b420bbc13093cea46bff2c7833b443879c7b1869a41b8aa3b21ddd45d953",
+    "size": 3804,
+    "sha256": "cdfffd64117018b865b5cdc6a3d307c00f51461406c12ac5ae5989164e035473",
     "fileName": "Fiendshard.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/Nation/Fiendshard.cs"
   },
@@ -25758,8 +25758,8 @@
       "null"
     ],
     "path": "Seasonal/HarvestDay/CoreHarvestDay.cs",
-    "size": 32594,
-    "sha256": "91bbba8eab8fca50ed16adad2139d70635f6357ad422683c9bfab21d79aad5ea",
+    "size": 35762,
+    "sha256": "69727d63e04b8f9b2a43a2b87d1847ce24374522d04858a8c9f7655cce666232",
     "fileName": "CoreHarvestDay.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/HarvestDay/CoreHarvestDay.cs"
   },
@@ -27837,8 +27837,8 @@
       "null"
     ],
     "path": "Seasonal/Mogloween/CoreMogloween.cs",
-    "size": 45335,
-    "sha256": "d24bc9139b0ecc454f5316b0de79910d808c09d96e44ddc1745c8d61e577af31",
+    "size": 45446,
+    "sha256": "4cd35a8a914c9c79a379f17f3f7fdf16c6a945a3f7401c9794fa51725e5b88f4",
     "fileName": "CoreMogloween.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/CoreMogloween.cs"
   },
@@ -31306,8 +31306,8 @@
       "member"
     ],
     "path": "Story/LordsofChaos/ChoasFinaleBonus[Mem]/PyramidofPain[Mem].cs",
-    "size": 3031,
-    "sha256": "91d2a7e1c0df4628e90d41d765f491366da2e1c949a177f07fe9998da5e312bd",
+    "size": 3710,
+    "sha256": "400aad40ad746790731273c843ab904a3b963142447ba67a82636a499d3286c7",
     "fileName": "PyramidofPain[Mem].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/LordsofChaos/ChoasFinaleBonus[Mem]/PyramidofPain[Mem].cs"
   },
@@ -31325,8 +31325,8 @@
       "member"
     ],
     "path": "Story/LordsofChaos/ChoasFinaleBonus[Mem]/KillerCatacombs[Mem].cs",
-    "size": 3707,
-    "sha256": "562c8a44942df69efd872b4ae0d3af39024924679fc15242c2d7903af125eeaa",
+    "size": 4749,
+    "sha256": "1c7dcbea3bedd715df470528016ae9bac025a9f5223bacd08a393285579d7cf8",
     "fileName": "KillerCatacombs[Mem].cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/LordsofChaos/ChoasFinaleBonus[Mem]/KillerCatacombs[Mem].cs"
   },
@@ -31718,8 +31718,8 @@
       "null"
     ],
     "path": "Tools/ForDevelopers/GeneratorHelpers/LocationSwfQuestReader.cs",
-    "size": 22983,
-    "sha256": "20920c72a9a35a5b04ec315bb66456f718d26da4adead2d5b762f63c67fb22a3",
+    "size": 23825,
+    "sha256": "8b6e1f9c186cbdc2435fce189c4e954c9cb81f08d72e933f893e8a1758947a9c",
     "fileName": "LocationSwfQuestReader.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Tools/ForDevelopers/GeneratorHelpers/LocationSwfQuestReader.cs"
   },
@@ -32240,8 +32240,8 @@
       "null"
     ],
     "path": "Seasonal/Friday13th/Story/CoreFriday13th.cs",
-    "size": 36175,
-    "sha256": "8be4d2ec2726819f8e3b23ff141f58b1a724f437f174f1c3ddec0b83378bce08",
+    "size": 40462,
+    "sha256": "2c366d5f7a8b657f63f696a14bc19f9fd45cfcd588ba5ba1cd778a0f6dc8efe8",
     "fileName": "CoreFriday13th.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Friday13th/Story/CoreFriday13th.cs"
   },
@@ -33377,8 +33377,8 @@
       "merge"
     ],
     "path": "Seasonal/Mogloween/MergeShops/MogloweenSeasonalMerge.cs",
-    "size": 23133,
-    "sha256": "9eca720cf9f08fc5f6b3eda7915cbd01ac30310298b7db5b7e8162916f32c37c",
+    "size": 23452,
+    "sha256": "a7ffb2f407cb22cf84064fafbb307ca9ebf8f43b33e4040baae21d35cb5056a9",
     "fileName": "MogloweenSeasonalMerge.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/MogloweenSeasonalMerge.cs"
   },
@@ -33563,8 +33563,8 @@
       "doall"
     ],
     "path": "Seasonal/Mogloween/MergeShops/MogloweenMergesDoAll.cs",
-    "size": 13566,
-    "sha256": "67d42dc37ba402c7cb969fec9fc0193a5e35452f65b44051ee45b199eeea29de",
+    "size": 11161,
+    "sha256": "17d939410011f9816feeb078d5c2c731a9583bf677f280f05ed51e1c2f3911fc",
     "fileName": "MogloweenMergesDoAll.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Mogloween/MergeShops/MogloweenMergesDoAll.cs"
   },
@@ -35465,5 +35465,66 @@
     "sha256": "da12e934c61ac64e4da92ee88c90ba930f5c129ba93f78a9d0bac888a9e46c5a",
     "fileName": "GhostShip.cs",
     "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/Friday13th/Story/MerrowTrenchAndGhostShip/GhostShip.cs"
+  },
+  {
+    "name": "Memory of my Father",
+    "description": "Farms quest 10835 until all four random rewards are owned.",
+    "tags": [
+      "memory of my father",
+      "drakath",
+      "crownsreach",
+      "slugwrath",
+      "quest rewards"
+    ],
+    "path": "Chaos/MemoryOfMyFather.cs",
+    "size": 1656,
+    "sha256": "379c6660acedc76700a28365f102cb11e34942204715c4f26efb407443c3c03c",
+    "fileName": "MemoryOfMyFather.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Chaos/MemoryOfMyFather.cs"
+  },
+  {
+    "name": "Stillins Merge",
+    "description": "Farms the Stillins Merge [2806] in /kiyametgrove.",
+    "tags": [
+      "kiyametgrove",
+      "merge",
+      "stillins",
+      "merge"
+    ],
+    "path": "Other/MergeShops/StillinsShop.cs",
+    "size": 5284,
+    "sha256": "3b3729143b3a09089feb572156937d04065ffa84ccb3571d1eb69cd7870bf0cc",
+    "fileName": "StillinsShop.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Other/MergeShops/StillinsShop.cs"
+  },
+  {
+    "name": "Harvest Day Merges Do All",
+    "description": "Runs all Harvest Day merge shop scripts in this folder.",
+    "tags": [
+      "harvestday",
+      "harvest",
+      "merge",
+      "doall"
+    ],
+    "path": "Seasonal/HarvestDay/MergeShops/HarvestDayMergesDoAll.cs",
+    "size": 8428,
+    "sha256": "9821c3687516fb9997922c12d56ea9db161c256b3a54eb4fbdbb0a5de6b0e515",
+    "fileName": "HarvestDayMergesDoAll.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Seasonal/HarvestDay/MergeShops/HarvestDayMergesDoAll.cs"
+  },
+  {
+    "name": "KiyametGrove",
+    "description": "Completes the quest chain in /kiyametgrove.",
+    "tags": [
+      "kiyametgrove",
+      "story",
+      "quests",
+      "kiyametgrove"
+    ],
+    "path": "Story/KiyametGrove.cs",
+    "size": 1255,
+    "sha256": "e3864721a48b4d85560876ed206576e963107f9d282add9a65e27168c3d6571b",
+    "fileName": "KiyametGrove.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/auqw/Scripts/Skua/Story/KiyametGrove.cs"
   }
 ]

@@ -1072,11 +1072,11 @@ public class CoreAOR
         // 10350 | Talls and Stouts
         if (!Story.QuestProgression(10350))
         {
-            Core.HuntMonsterQuest(
-                10350,
-                ("thelimacity", UseableMonsters[2], ClassType.Farm),
-                ("thelimacity", UseableMonsters[1], ClassType.Farm)
-            );
+            Core.EnsureAccept(10350);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("thelimacity", UseableMonsters[1], "Black Glass Pendant", 9);
+            Core.HuntMonster("thelimacity", UseableMonsters[2], "Golden Ram Horn", 9);
+            Core.EnsureComplete(10350);
         }
 
         // 10351 | A Lost Matchstick
@@ -1106,11 +1106,12 @@ public class CoreAOR
         // 10355 | Putrefaction
         if (!Story.QuestProgression(10355))
         {
-            Core.HuntMonsterQuest(
-                10355,
-                ("thelimacity", UseableMonsters[3], ClassType.Solo),
-                ("thelimacity", UseableMonsters[4], ClassType.Farm)
-            );
+            Core.EnsureAccept(10355);
+            Core.EquipClass(ClassType.Solo);
+            Core.HuntMonster("thelimacity", UseableMonsters[3], "Black Flame", 3);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("thelimacity", UseableMonsters[4], "Burnt Hair", 12);
+            Core.EnsureComplete(10355);
         }
 
         // 10356 | Enatiodromia
@@ -1160,11 +1161,11 @@ public class CoreAOR
         // 10362 | Chymerical Ash
         if (!Story.QuestProgression(10362))
         {
-            Core.HuntMonsterQuest(
-                10362,
-                ("mountmaleno", UseableMonsters[0], ClassType.Farm),
-                ("mountmaleno", UseableMonsters[1], ClassType.Farm)
-            );
+            Core.EnsureAccept(10362);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("mountmaleno", "Soul Raven", "Soul Feather", 6);
+            Core.HuntMonster("mountmaleno", "Maleno Match", "Burnt Letters", 9);
+            Core.EnsureComplete(10362);
         }
 
         // 10363 | Journey Through the Dark Night
@@ -1194,11 +1195,12 @@ public class CoreAOR
         // 10367 | Blithe Hospitality
         if (!Story.QuestProgression(10367))
         {
-            Core.HuntMonsterQuest(
-                10367,
-                ("mountmaleno", UseableMonsters[3], ClassType.Farm),
-                ("mountmaleno", UseableMonsters[2], ClassType.Solo)
-            );
+            Core.EnsureAccept(10367);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("mountmaleno", "Draconian Bandit", "Fused Hoard Coins", 9);
+            Core.EquipClass(ClassType.Solo);
+            Core.HuntMonster("mountmaleno", "Maleno Elemental", "Black Lead", 3);
+            Core.EnsureComplete(10367);
         }
 
         // 10368 | Sal Volatile
@@ -1363,11 +1365,11 @@ public class CoreAOR
         // 10421 | Lost Admin Privileges
         if (!Story.QuestProgression(10421))
         {
-            Core.HuntMonsterQuest(
-                10421,
-                ("forgealbedo", UseableMonsters[1], ClassType.Farm),
-                ("forgealbedo", UseableMonsters[5], ClassType.Farm)
-            );
+            Core.EnsureAccept(10421);
+            Core.EquipClass(ClassType.Farm);
+            Core.HuntMonster("forgealbedo", "Defensive Turret", "Active Fuel Cell", 6);
+            Core.HuntMonster("forgealbedo", "Defense Droid", "Rapid Cooling Fluid", 9);
+            Core.EnsureComplete(10421);
         }
 
         // 10422 | Conscious Unconsciousness
@@ -1811,10 +1813,13 @@ public class CoreAOR
             // 10735 | Silica Spring
             if (!Story.QuestProgression(10735))
             {
-                Core.HuntMonsterQuest(10735,
-                    ("forgecitrinitas", UseableMonsters[5], ClassType.Solo),
-                    ("forgecitrinitas", UseableMonsters[3], ClassType.Farm),
-                    ("forgecitrinitas", UseableMonsters[4], ClassType.Farm));
+                Core.EnsureAccept(10735);
+                Core.EquipClass(ClassType.Solo);
+                Core.HuntMonster("forgecitrinitas", "Clematis", "Clematis' Blood Sample");
+                Core.EquipClass(ClassType.Farm);
+                Core.HuntMonster("forgecitrinitas", "Luma Lifeform", "Lifeform's Hope", 12);
+                Core.HuntMonster("forgecitrinitas", "Defense Droid", "Droid's Battery Acid", 9);
+                Core.EnsureComplete(10735);
             }
         }
 
@@ -1823,10 +1828,13 @@ public class CoreAOR
             // 10736 | Silica Spring (Legend)
             if (!Story.QuestProgression(10736))
             {
-                Core.HuntMonsterQuest(10736,
-                    ("forgecitrinitas", UseableMonsters[5], ClassType.Solo),
-                    ("forgecitrinitas", UseableMonsters[3], ClassType.Farm),
-                    ("forgecitrinitas", UseableMonsters[4], ClassType.Farm));
+                Core.EnsureAccept(10736);
+                Core.EquipClass(ClassType.Solo);
+                Core.HuntMonster("forgecitrinitas", "Clematis", "Clematis' Blood Sample");
+                Core.EquipClass(ClassType.Farm);
+                Core.HuntMonster("forgecitrinitas", "Luma Lifeform", "Lifeform's Hope", 12);
+                Core.HuntMonster("forgecitrinitas", "Defense Droid", "Droid's Battery Acid", 9);
+                Core.EnsureComplete(10736);
             }
         }
 

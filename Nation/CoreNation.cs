@@ -37,7 +37,8 @@ public class CoreNation
     /// <summary>
     /// Crag and Bamboozle name in game
     /// </summary>
-    public string CragName => "Crag &amp; Bamboozle";
+    public int CragName => 4845;
+    // public string CragName => "Crag &amp; Bamboozle";
 
     /// <summary>
     /// Whether the player owns Crag and Bamboozle (4845). Checked by ID, since clients disagree

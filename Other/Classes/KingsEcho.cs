@@ -1,7 +1,7 @@
 /*
 name: King's Echo Class
 description: King's Echo Class
-tags: King's, King, Echo, class, kingsecho
+tags: King's, King, Echo, class, kingsecho, kings echo, kingkong, ke, k, kings, booty
 */
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreStory.cs
@@ -122,7 +122,7 @@ public class KingsEcho
 
                         Core.EnsureAccept(10440);
                         Core.EquipClass(ClassType.Solo);
-                        Core.HuntMonster("queenbattle", "Queen of Monsters", "Calcified Tear", 60, isTemp: false);
+                        Core.HuntMonster("transformation", "Queen of Monsters", "Calcified Tear", 60, isTemp: false);
                         Core.HuntMonster("dreadhaven", "Slugwrath", "Whispers of Chaos", 40, isTemp: false);
                         Core.HuntMonster("ultradrakath", "Champion of Chaos", "Trace of Chaos", 13, isTemp: false);
                         Core.EnsureComplete(10440);

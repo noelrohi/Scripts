@@ -10220,6 +10220,7 @@ public class CoreBots
                     prereqQuest2 = true;
                 }
 
+                Join("citadel");
                 Jump("m22", "Left");
                 tryJoin();
                 break;

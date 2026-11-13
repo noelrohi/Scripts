@@ -2287,7 +2287,8 @@ public class CoreNation
             return;
 
         // <CragName> Owned
-        Deal(0, quant);
+        if (Core.CheckInventory(CragName))
+            Deal(0, quant);
 
         // Nulgath's Birthday Gift /  Bounty Hunter's Drone Pet Owned
         NewWorldsNewOpportunities("Totem of Nulgath", quant);

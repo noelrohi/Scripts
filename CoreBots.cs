@@ -10243,8 +10243,6 @@ public class CoreBots
                             + "Not sure why it loads tercessuinotlim first, but get over it :|",
                         messageBox: false
                     );
-
-                    SimpleQuestBypass((15, 8), (542, 2));
                     Join("citadel");
                     Jump("m22", "Left");
                     EquipClass(ClassType.Solo);
@@ -10261,9 +10259,7 @@ public class CoreBots
 
                     prereqQuest2 = true;
                 }
-
-                Join("citadel");
-                Jump("m22", "Left");
+                
                 tryJoin();
                 break;
 

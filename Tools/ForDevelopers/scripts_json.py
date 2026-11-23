@@ -113,6 +113,9 @@ def dump(entries):
 
 
 def staged_entries():
+    if git("ls-files", "--unmerged", "--", SCRIPTS_JSON):
+        sys.exit(f"{SCRIPTS_JSON} is unmerged. Pick a side and stage it, then sync again:\n"
+                 f"  git checkout --ours {SCRIPTS_JSON} && git add {SCRIPTS_JSON}")
     return json.loads(git("show", ":" + SCRIPTS_JSON))
 
 
